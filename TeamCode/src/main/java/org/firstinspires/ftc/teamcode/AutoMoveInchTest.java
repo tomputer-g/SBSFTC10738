@@ -47,5 +47,6 @@ public class AutoMoveInchTest extends BaseOpMode {
             telemetry.update();
             //moveInchesHighSpeedEncoder(0,-30,1,5,5,0.2,0.2,0);
         }
+        fucc
     }
 }
