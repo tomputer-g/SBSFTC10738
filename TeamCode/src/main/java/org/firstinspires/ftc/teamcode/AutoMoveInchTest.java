@@ -8,14 +8,22 @@ import org.firstinspires.ftc.teamcode19.BaseOpMode;
 @TeleOp
 public class AutoMoveInchTest extends BaseOpMode {
     ElapsedTime t;
-
+    private DistanceSensor sensorRange1,sensorRange2;
     @Override public void init() {
         initDrivetrain();
+        sensorRange1=hardwareMap.get(DistanceSensor.class, "sensor_range1");
+        sensorRange2=hardwareMap.get(DistanceSensor.class, "sensor_range2");
         t = new ElapsedTime();
+        double dist1, dist2;
     }
 
     @Override
     public void loop() {
+        dist1 = sensorRange1.getDistance(DistanceUnit.METER);
+        dist2 = sensorRange2.getDistance(DistanceUnit.METER);
+        telemetry.addData("range1", String.format("%.01f m", dist1));
+        telemetry.addData("range2", String.format("%.01f m", dist2));
+
         if(this.gamepad1.a){
             while(this.gamepad1.a);
             t.reset();
@@ -44,6 +52,9 @@ public class AutoMoveInchTest extends BaseOpMode {
             telemetry.addData("Time",t.milliseconds()+"ms");
             telemetry.update();
             //moveInchesHighSpeedEncoder(0,-30,1,5,5,0.2,0.2,0);
+        }else if(this.gamepad1.left_bumper){
+            while(this.gamepad1.left_bumper);
+
         }
     }
 }
