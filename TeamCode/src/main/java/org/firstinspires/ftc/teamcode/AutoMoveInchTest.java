@@ -25,8 +25,8 @@ public class AutoMoveInchTest extends BaseOpMode {
 
     @Override
     public void loop() {
-        dist1 = sensorRange1.getDistance(DistanceUnit.METER);
-        dist2 = sensorRange2.getDistance(DistanceUnit.METER);
+        dist1 = sensorRange1.getDistance(DistanceUnit.INCH);
+        dist2 = sensorRange2.getDistance(DistanceUnit.INCH);
         telemetry.addData("range1", String.format("%.01f m", dist1));
         telemetry.addData("range2", String.format("%.01f m", dist2));
 
@@ -64,9 +64,10 @@ public class AutoMoveInchTest extends BaseOpMode {
             while(Math.abs(dist1-dist2)<0.03){
                 dist = Math.abs(dist1-dist2);
                 setAllDrivePower(-dist,-dist,dist,dist);
-                dist1 = sensorRange1.getDistance(DistanceUnit.METER);
-                dist2 = sensorRange2.getDistance(DistanceUnit.METER);
+                dist1 = sensorRange1.getDistance(DistanceUnit.INCH);
+                dist2 = sensorRange2.getDistance(DistanceUnit.INCH);
             }
+            setAllDrivePower(0);
         }
     }
 }
