@@ -27,8 +27,13 @@ public class AutoMoveInchTest extends BaseOpMode {
     public void loop() {
         dist1 = sensorRange1.getDistance(DistanceUnit.INCH);
         dist2 = sensorRange2.getDistance(DistanceUnit.INCH);
+<<<<<<< Updated upstream
         telemetry.addData("range1", String.format("%.01f inch", dist1));
         telemetry.addData("range2", String.format("%.01f inch", dist2));
+=======
+        telemetry.addData("range1", String.format("%.01f m", dist1));
+        telemetry.addData("range2", String.format("%.01f m", dist2));
+>>>>>>> Stashed changes
 
         if(this.gamepad1.a){
             while(this.gamepad1.a);
