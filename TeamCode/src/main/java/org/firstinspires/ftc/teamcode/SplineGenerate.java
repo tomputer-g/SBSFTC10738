@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode19;
+package org.firstinspires.ftc.teamcode;
 
 /**
  * Spline Generator program

@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode19;
+package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
+import org.firstinspires.ftc.teamcode19.BaseOpMode;
 
 /**
  * Test Program for the Spline Generator
