@@ -51,7 +51,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
-@TeleOp(name="SKYSTONE Vuforia Nav")
+@TeleOp
 
 public class VuforiaSkystoneChaser extends BaseAuto {
 
@@ -87,8 +87,7 @@ public class VuforiaSkystoneChaser extends BaseAuto {
 
                     telemetry.addLine("Move "+Math.abs(translation.get(1)/mmPerInch)+(translation.get(1)>0?"in. Right":"in. Left"));
                     telemetry.addLine("Forward "+(distGoal - translation.get(0)/mmPerInch)+"in.");
-                    //when x > 0, move right
-                    //after dist = -6.0 it is no longer stable
+
                 }
                 break;
             }
