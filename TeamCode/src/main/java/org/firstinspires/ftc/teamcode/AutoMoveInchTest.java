@@ -61,14 +61,25 @@ public class AutoMoveInchTest extends BaseOpMode {
         }else if(this.gamepad1.left_bumper){
             while(this.gamepad1.left_bumper);
             double dist;
-            while(Math.abs(dist1-dist2)<0.5){
-                dist = Math.abs(dist1-dist2);   
-                telemetry.addData("aaa",dist + "inch");
-                setAllDrivePower(-dist,-dist,dist,dist);
+           // setAllDrivePower(0.1,0.1,0.1,0.1);
+            //wait(3000);
+            //setAllDrivePower(0);
+        for(int xx = 0;xx<=1;++xx){
+            while(Math.abs(dist1-dist2)>0.2){
+                dist = dist1-dist2;
+                telemetry.addData("remaining dist: ",dist + "inch");
+                //magic number 0.00347
+                if(dist > 0) setAllDrivePower(0.00347*dist*dist);
+                else setAllDrivePower(-0.00347*dist*dist);
                 dist1 = sensorRange1.getDistance(DistanceUnit.INCH);
                 dist2 = sensorRange2.getDistance(DistanceUnit.INCH);
+                telemetry.addData("range1", String.format("%.01f inch", dist1));
+                telemetry.addData("range2", String.format("%.01f inch", dist2));
+                telemetry.update();
             }
             setAllDrivePower(0);
+        }
+        setAllDrivePower(0);
         }
     }
 }
