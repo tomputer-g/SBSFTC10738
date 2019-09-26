@@ -69,19 +69,6 @@ public class ConceptVuforiaSkyStoneNavigation extends BaseAuto {
         for (VuforiaTrackable trackable : allTrackables) {
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
                 telemetry.addData("Visible Target", trackable.getName());
-
-                if(trackable.getName().equals("Stone Target")) {
-                    Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                    VectorF translation = lastLocation.getTranslation();
-
-                    telemetry.addLine("Is stone target!1!!");
-                    //when heading > 0, turn right
-                    telemetry.addLine("Turn "+(int)Math.abs(rotation.thirdAngle)+(rotation.thirdAngle>0?"deg. CW":"deg. CCW"));
-                    telemetry.addLine("Move "+Math.abs(translation.get(1)/mmPerInch)+(translation.get(1)>0?"in. Right":"in. Left"));
-                    telemetry.addLine("Forward "+(distGoal - translation.get(0))+"in.");
-                    //when x > 0, move right
-                    //after dist = -6.0 it is no longer stable
-                }
                 targetVisible = true;
 
                 // getUpdatedRobotLocation() will return null if no new information is available since
@@ -89,6 +76,19 @@ public class ConceptVuforiaSkyStoneNavigation extends BaseAuto {
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
                 if (robotLocationTransform != null) {
                     lastLocation = robotLocationTransform;
+                }
+                if(trackable.getName().equals("Stone Target")) {
+                    Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+                    VectorF translation = lastLocation.getTranslation();
+
+                    telemetry.addLine("Is stone target!1!!");
+                    //when heading > 0, turn right
+                    telemetry.addLine("Turn "+(int)Math.abs(rotation.thirdAngle)+(rotation.thirdAngle>0?"deg. CW":"deg. CCW"));
+
+                    telemetry.addLine("Move "+Math.abs(translation.get(1)/mmPerInch)+(translation.get(1)>0?"in. Right":"in. Left"));
+                    telemetry.addLine("Forward "+(distGoal - translation.get(0)/mmPerInch)+"in.");
+                    //when x > 0, move right
+                    //after dist = -6.0 it is no longer stable
                 }
                 break;
             }
