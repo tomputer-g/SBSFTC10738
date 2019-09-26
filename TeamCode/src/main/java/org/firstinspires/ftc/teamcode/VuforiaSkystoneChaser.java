@@ -53,7 +53,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 @TeleOp(name="SKYSTONE Vuforia Nav")
 
-public class ConceptVuforiaSkyStoneNavigation extends BaseAuto {
+public class VuforiaSkystoneChaser extends BaseAuto {
 
     private static double distGoal = -6.0;
 
