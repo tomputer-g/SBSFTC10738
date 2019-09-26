@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode19.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode19.BaseOpMode;
 @Autonomous(group = "Test")
+@Disabled
 public class AutoResetLifter extends BaseOpMode {
     @Override
     public void init() {

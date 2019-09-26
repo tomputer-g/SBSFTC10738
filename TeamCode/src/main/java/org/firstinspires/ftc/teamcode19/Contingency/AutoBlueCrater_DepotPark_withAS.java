@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode19.Contingency;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode19.BaseAuto;
 
 @Autonomous(group = "Plan B")
+@Disabled
 public class AutoBlueCrater_DepotPark_withAS extends BaseAuto {
 
     @Override

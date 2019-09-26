@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode19.Contingency;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode19.BaseAuto;
 
 @Autonomous(group = "Plan B")
+@Disabled
 public class AutoBlueCrater_NoMarker_withoutAS extends BaseAuto {
 
     @Override
