@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode19.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode19.BaseAuto;
 
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 
 @Autonomous(group = "Test")
+@Disabled
 public class AutoVumark extends BaseAuto {
 
     @Override

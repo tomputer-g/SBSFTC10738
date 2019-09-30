@@ -3,9 +3,11 @@ package org.firstinspires.ftc.teamcode19.Final;
 import org.firstinspires.ftc.teamcode19.BaseAuto;
 import android.util.Log;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(group = "Final")
+@Disabled
 public class AutoRedCraterSS_MF extends BaseAuto {
     private double landerAwayTurningAmount = 60;
     // The first turnning Angle of Auto, basically get off the lander

@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode19.Final;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode19.BaseTeleOp;
 
 @TeleOp(group = "Final")
+@Disabled
 public class DEPOT_HS485_3steps extends BaseTeleOp {
     private static final int[][] locations = {{475,0},{475,500},{teleopMinDumpEncoder,0}};//shoulder joint/slide counts (skipping middle stage after servo addition)
     private static double hatch_close = 0, hatch_open = 0.4;

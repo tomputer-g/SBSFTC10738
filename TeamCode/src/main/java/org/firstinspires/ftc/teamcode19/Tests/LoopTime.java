@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode19.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode19.BaseOpMode;
 @Autonomous
+@Disabled
 public class LoopTime extends BaseOpMode {
     private ElapsedTime t;
 

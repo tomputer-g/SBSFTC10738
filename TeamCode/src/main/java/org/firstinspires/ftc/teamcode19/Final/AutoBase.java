@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode19.Final;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode19.BaseAuto;
 
 @Autonomous(group = "Final")
+@Disabled
 public class AutoBase extends BaseAuto {
     // Used to align robot to the crater before moving to the final position
     private int grabberShoulderFinalPos = -5000;

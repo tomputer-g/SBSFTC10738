@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode19.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode19.BaseAuto;
 
 @Autonomous(group = "Test")
+@Disabled
 public class AutoRCVumarkDistance extends BaseAuto {
     private double landerAwayTurningAmount = 56;
     private double threshold = 3;

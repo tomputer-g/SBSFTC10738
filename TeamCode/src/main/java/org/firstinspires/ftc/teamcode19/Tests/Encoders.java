@@ -2,10 +2,12 @@ package org.firstinspires.ftc.teamcode19.Tests;
 
 import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode19.BaseOpMode;
 @Autonomous(group = "Test")
+@Disabled
 public class Encoders extends BaseOpMode {
     @Override
     public void init() {
