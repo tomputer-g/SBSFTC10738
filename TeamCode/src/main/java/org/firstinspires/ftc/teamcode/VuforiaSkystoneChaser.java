@@ -55,7 +55,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 public class VuforiaSkystoneChaser extends BaseAuto {
 
-    private static double distGoal = -6.0;
+    private static double distGoal = 0;
 
     @Override
     public void init() {
@@ -81,13 +81,15 @@ public class VuforiaSkystoneChaser extends BaseAuto {
                     Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                     VectorF translation = lastLocation.getTranslation();
 
-                    telemetry.addLine("Is stone target!1!!");
                     //when heading > 0, turn right
                     telemetry.addLine("Turn "+(int)Math.abs(rotation.thirdAngle)+(rotation.thirdAngle>0?"deg. CW":"deg. CCW"));
 
                     telemetry.addLine("Move "+Math.abs(translation.get(1)/mmPerInch)+(translation.get(1)>0?"in. Right":"in. Left"));
                     telemetry.addLine("Forward "+(distGoal - translation.get(0)/mmPerInch)+"in.");
-
+                    telemetry.addLine("--------------------------------");
+                    telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                            translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+                    telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
                 }
                 break;
             }
