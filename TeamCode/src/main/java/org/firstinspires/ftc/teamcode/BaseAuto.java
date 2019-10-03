@@ -1,7 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.util.Range;
+
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -10,10 +15,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.ZYX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
@@ -30,9 +37,12 @@ public class BaseAuto extends BaseOpMode {
     private final float phoneXRotate = 0;
     private final float phoneYRotate = -60;//=-90+30;
     private final float phoneZRotate = 0;//heading
+    //IMU
+    protected static BNO055IMU imu;
+    protected static double imuHeading;
+    protected static double imuOffset;
 
-    protected void initVuforia(){
-
+    void initVuforia(){
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         parameters.vuforiaLicenseKey = "ATRaSk7/////AAAAGYLgjlimQklSl+oDhmYIEjhzUV34Rljx8+M72Lzbu408S2XaUuMmL8Z0SRdMoKdoQ0dZ4/MeKas+GaC6AGw9GOFc4XyrUVlne2Cue3tTjC75ZTPbhh4odsJQVBlXkb88Ww38LX0oWeUnRS9b2GhGhCqPwhKA+HlZk6SCPSBqMVQg/T3TLKPSpouwA74gpdbw0wtdgp+X6K/1zUkSkp43hx7DATnoDEy467aFKlC/V/vgpVfxMbEVZbiHp8rSgmiVlEfPQuIGSq/pMWdmSNEor5LNY1SpV8BBwSp65OxB6ct9WdmOHJHxlhHdPhqpNRtJSdleNSCO4xAjmXuZ+8dkaU+kmTV/+x/4Po4yxuJVBGKo";
@@ -90,5 +100,59 @@ public class BaseAuto extends BaseOpMode {
 
         for (VuforiaTrackable trackable : allTrackables)
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
+    }
+
+    //IMU
+    protected void initIMU(){
+        BNO055IMU.Parameters BNOParameters = new BNO055IMU.Parameters();
+        BNOParameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        BNOParameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(BNOParameters);
+    }
+
+    protected void getHeading(){
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, ZYX, AngleUnit.DEGREES);
+        imuHeading = Double.parseDouble(String.format(Locale.getDefault(), "%.2f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle)))) - imuOffset;
+    }
+
+    protected void setNewGyro0(){
+        imuOffset = 0;
+        getHeading();
+        imuOffset = imuHeading;
+    }
+
+    protected void turn(double angle, double speed, double threshold) {
+        setMode_RUN_WITH_ENCODER();
+        setNewGyro0();
+        double p_TURN = 0.25;
+        while(!onHeading(speed, angle, p_TURN, threshold));
+    }
+
+    private boolean onHeading(double turnSpeed, double angle, double PCoeff, double threshold) {
+        double   error = getError(angle), steer, speed;
+        boolean  onTarget = false;
+
+        if (Math.abs(error) <= threshold) {
+            steer = 0.0;
+            speed = 0.0;
+            onTarget = true;
+            telemetry.addData("ON TARGET!", error);
+        }
+        else {
+            steer = Range.clip(error * PCoeff, -1, 1);
+            speed  = turnSpeed * steer;
+        }
+        setAllDrivePower(speed);
+        telemetry.update();
+        return onTarget;
+    }
+
+    private double getError(double targetAngle) {
+        getHeading();
+        double robotError = targetAngle - imuHeading;
+        while (robotError > 180)  robotError -= 360;
+        while (robotError <= -180) robotError += 360;
+        return robotError;
     }
 }

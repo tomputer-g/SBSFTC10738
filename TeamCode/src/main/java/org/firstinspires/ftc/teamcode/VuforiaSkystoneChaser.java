@@ -60,6 +60,8 @@ public class VuforiaSkystoneChaser extends BaseAuto {
     @Override
     public void init() {
         initVuforia();
+        initDrivetrain();
+        initIMU();
         targetsSkyStone.activate();
     }
 
@@ -80,7 +82,13 @@ public class VuforiaSkystoneChaser extends BaseAuto {
                 if(trackable.getName().equals("Stone Target")) {
                     Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                     VectorF translation = lastLocation.getTranslation();
-
+                    if(this.gamepad1.a){
+                        while(this.gamepad1.a);
+                        turn(-rotation.thirdAngle,0.1,2);
+                        translation = lastLocation.getTranslation();
+                        moveInches( translation.get(0)/(4*mmPerInch),-translation.get(1)/(4*mmPerInch),0.2);
+                        requestOpModeStop();
+                    }
                     //when heading > 0, turn right
                     telemetry.addLine("Turn "+(int)Math.abs(rotation.thirdAngle)+(rotation.thirdAngle>0?"deg. CW":"deg. CCW"));
 
