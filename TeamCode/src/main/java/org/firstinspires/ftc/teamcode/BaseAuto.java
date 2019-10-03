@@ -24,12 +24,12 @@ public class BaseAuto extends BaseOpMode {
     protected OpenGLMatrix lastLocation = null;
     protected VuforiaTrackables targetsSkyStone;
     protected List<VuforiaTrackable> allTrackables;
-    private final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
-    private final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
-    private final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
+    private final float CAMERA_FORWARD_DISPLACEMENT  = -4.5f * mmPerInch;//2.5 in from end + 1 in correction
+    private final float CAMERA_VERTICAL_DISPLACEMENT = 11.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
+    private final float CAMERA_LEFT_DISPLACEMENT     = 1.5f * mmPerInch;     // eg: Camera is ON the robot's center line
     private final float phoneXRotate = 0;
-    private final float phoneYRotate = -90;
-    private final float phoneZRotate = 0;
+    private final float phoneYRotate = -60;//=-90+30;
+    private final float phoneZRotate = 0;//heading
 
     protected void initVuforia(){
 
@@ -86,6 +86,8 @@ public class BaseAuto extends BaseOpMode {
         rear1.setLocation(OpenGLMatrix.translation(72 * mmPerInch, 36 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
         rear2.setLocation(OpenGLMatrix.translation(72 * mmPerInch, -36 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
         OpenGLMatrix robotFromCamera = OpenGLMatrix.translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT).multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
+
+
         for (VuforiaTrackable trackable : allTrackables)
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
     }
