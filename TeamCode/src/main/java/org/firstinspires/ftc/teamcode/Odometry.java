@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 //@Autonomous(name = "SplineTest")
-public class AAA_AdvRobotics_SplineTest extends BaseOpMode{
+public class Odometry extends BaseOpMode{
     private Vector p,v1;
     private double theta;
     @Override
