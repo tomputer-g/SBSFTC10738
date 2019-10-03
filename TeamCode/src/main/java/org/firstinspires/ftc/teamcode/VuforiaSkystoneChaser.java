@@ -26,9 +26,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.firstinspires.ftc.teamcode;
-
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -50,19 +48,14 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
-
 @TeleOp
-
 public class VuforiaSkystoneChaser extends BaseAuto {
-
     private static double distGoal = -6.0;
-
     @Override
     public void init() {
         initVuforia();
         targetsSkyStone.activate();
     }
-
     @Override
     public void loop() {
         boolean targetVisible = false;
@@ -70,7 +63,6 @@ public class VuforiaSkystoneChaser extends BaseAuto {
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
                 telemetry.addData("Visible Target", trackable.getName());
                 targetVisible = true;
-
                 // getUpdatedRobotLocation() will return null if no new information is available since
                 // the last time that call was made, or if the trackable is not currently visible.
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
@@ -80,21 +72,17 @@ public class VuforiaSkystoneChaser extends BaseAuto {
                 if(trackable.getName().equals("Stone Target")) {
                     Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                     VectorF translation = lastLocation.getTranslation();
-
                     telemetry.addLine("Is stone target!1!!");
                     //when heading > 0, turn right
                     telemetry.addLine("Turn "+(int)Math.abs(rotation.thirdAngle)+(rotation.thirdAngle>0?"deg. CW":"deg. CCW"));
-
                     telemetry.addLine("Move "+Math.abs(translation.get(1)/mmPerInch)+(translation.get(1)>0?"in. Right":"in. Left"));
                     telemetry.addLine("Forward "+(distGoal - translation.get(0)/mmPerInch)+"in.");
-
                 }
                 break;
             }
         }
         telemetry.update();
     }
-
     @Override
     public void stop() {
         targetsSkyStone.deactivate();
