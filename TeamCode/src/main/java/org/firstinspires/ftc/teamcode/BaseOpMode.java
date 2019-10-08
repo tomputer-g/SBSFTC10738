@@ -98,6 +98,10 @@ public class BaseOpMode extends OpMode {
         setMode_RUN_WITH_ENCODER();
     }
 
+    protected void initOdometry(){
+        telemetry.addLine("BaseOpMode -> initOdometry() still a stub!");
+    }
+
     protected void move(double vx, double vy, double vr){
         LF.setPower(0.5 * (vx - vy + vr));
         LB.setPower(0.5 * (-vy - vx + vr));
