@@ -23,7 +23,7 @@ Make sure TeleOp2019Trident and BaseAuto can inherit needed stuff by setting the
 public class BaseOpMode extends OpMode {
 
     protected DcMotor LF, LB, RF, RB;
-    
+
     @Override public void init() {
         msStuckDetectInit = 10000;
         msStuckDetectLoop = 30000;
@@ -95,6 +95,10 @@ public class BaseOpMode extends OpMode {
         RF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         RB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         setMode_RUN_WITH_ENCODER();
+    }
+
+    protected void initOdometry(){
+        telemetry.addLine("BaseOpMode -> initOdometry() still a stub!");
     }
 
     protected void move(double vx, double vy, double vr){

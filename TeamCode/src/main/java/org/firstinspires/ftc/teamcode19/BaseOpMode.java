@@ -132,6 +132,7 @@ public class BaseOpMode extends OpMode {
         RB.setPower(0.5 * (-vx + vy + vr));
     }
 
+
     protected double to3d(double d){
         DecimalFormat df = new DecimalFormat("##0.000");
         return Double.parseDouble(df.format(d));
