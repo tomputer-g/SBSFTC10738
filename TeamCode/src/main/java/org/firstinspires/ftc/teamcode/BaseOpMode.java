@@ -24,7 +24,6 @@ public class BaseOpMode extends OpMode {
 
     protected DcMotor LF, LB, RF, RB;
 
-
     @Override public void init() {
         msStuckDetectInit = 10000;
         msStuckDetectLoop = 30000;

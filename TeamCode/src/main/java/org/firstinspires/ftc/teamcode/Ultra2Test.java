@@ -27,13 +27,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /**
@@ -47,11 +48,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  *
  * @see <a href="http://modernroboticsinc.com/range-sensor">MR Range Sensor</a>
  */
-@TeleOp(name = "Sensor: MR range sensor", group = "Sensor")
+@TeleOp(name = "Sensor: MR range sensor x2", group = "Sensor")
 //@Disabled comment out or remove this line to enable this opmode
-public class SensorMRRangeSensor extends LinearOpMode {
+public class Ultra2Test extends LinearOpMode {
 
     ModernRoboticsI2cRangeSensor rangeSensor1, rangeSensor2;
+    List<Double> sen1 = new ArrayList<Double>();
+    List<Double> sen2 = new ArrayList<Double>();
 
     @Override public void runOpMode() {
 
@@ -63,15 +66,27 @@ public class SensorMRRangeSensor extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            telemetry.addData("raw ultrasonic", rangeSensor1.rawUltrasonic());
-            telemetry.addData("raw optical", rangeSensor1.rawOptical());
-            telemetry.addData("cm optical", "%.2f cm", rangeSensor1.cmOptical());
-            telemetry.addData("cm", "%.2f cm", rangeSensor1.getDistance(DistanceUnit.CM));
-            telemetry.addData("raw ultrasonic", rangeSensor2.rawUltrasonic());
-            telemetry.addData("raw optical", rangeSensor2.rawOptical());
-            telemetry.addData("cm optical", "%.2f cm", rangeSensor2.cmOptical());
-            telemetry.addData("cm", "%.2f cm", rangeSensor2.getDistance(DistanceUnit.CM));
+            telemetry.addData("1: ", "%.2f cm", rangeSensor1.getDistance(DistanceUnit.CM));
+            telemetry.addData("2: ", "%.2f cm", rangeSensor2.getDistance(DistanceUnit.CM));
+
+            if(this.gamepad1.left_bumper){
+                while(this.gamepad1.left_bumper);
+                sen1.add(rangeSensor1.getDistance(DistanceUnit.CM));
+            }
+            if(this.gamepad1.right_bumper){
+                while(this.gamepad1.right_bumper);
+                sen2.add(rangeSensor2.getDistance(DistanceUnit.CM));
+            }
+            if(this.gamepad1.a){
+                while(this.gamepad1.a);
+                sen1.add(rangeSensor1.getDistance(DistanceUnit.CM));
+                sen2.add(rangeSensor2.getDistance(DistanceUnit.CM));
+            }
+
+            telemetry.addData("Sensor 1 Data: ", sen1);
+            telemetry.addData("Sensor 2 Data: ", sen2);
             telemetry.update();
         }
     }
 }
+
