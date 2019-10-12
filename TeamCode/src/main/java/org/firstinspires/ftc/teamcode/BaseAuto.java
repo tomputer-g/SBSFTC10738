@@ -106,7 +106,10 @@ public class BaseAuto extends BaseOpMode {
     protected void initIMU(){
         BNO055IMU.Parameters BNOParameters = new BNO055IMU.Parameters();
         BNOParameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        BNOParameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         BNOParameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        BNOParameters.loggingEnabled = true;
+        BNOParameters.loggingTag = "imu";
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(BNOParameters);
     }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -16,7 +17,7 @@ public class FaceTheWallTest extends BaseAuto {
     public void init() {
         initDrivetrain();
         t = new ElapsedTime();
-        rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "front");
+        //rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "front");
         //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         initIMU();
 
@@ -25,15 +26,15 @@ public class FaceTheWallTest extends BaseAuto {
     @Override
     public void loop() {
 
-        if(this.gamepad1.start){
-            while(this.gamepad1.start);
-            distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
+        if(this.gamepad1.left_bumper){
+            while(this.gamepad1.left_bumper);
+            //distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
             //distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
-            while(!(near(distFront,12,0.3))){
+            /*while(!(near(distFront,12,0.3))){
                 setAllDrivePower(0.5,0.5,-0.5,-0.5);
                 distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
                 //distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
-            }
+            }*/
             turn(90,0.5,3);
             /*
             imuHeading=0;
