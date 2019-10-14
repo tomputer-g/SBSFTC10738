@@ -94,7 +94,6 @@ public class BaseOpMode extends OpMode {
         LB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         RF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         RB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        setMode_RUN_WITH_ENCODER();
     }
 
     protected void initOdometry(){

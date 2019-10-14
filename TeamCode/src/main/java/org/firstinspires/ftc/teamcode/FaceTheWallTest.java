@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -9,30 +10,31 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @TeleOp
 
 public class FaceTheWallTest extends BaseAuto {
-    ModernRoboticsI2cRangeSensor rangeSensor1, rangeSensor2;
+    ModernRoboticsI2cRangeSensor rangeSensorFront, rangeSensorSide;
     ElapsedTime t;
-    double dist1, dist2;
+    double distFront, distSide, diff;
     @Override
     public void init() {
         initDrivetrain();
         t = new ElapsedTime();
-        rangeSensor1 = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "s1");
-        rangeSensor2 = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "s2");
+        //rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "front");
+        //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         initIMU();
+
     }
 
     @Override
     public void loop() {
 
-        if(this.gamepad1.start){
-            while(this.gamepad1.start);
-            dist1 = rangeSensor1.getDistance(DistanceUnit.INCH);
-            dist2 = rangeSensor2.getDistance(DistanceUnit.INCH);
-            while(!(near(dist1,12,0.3) && near(dist2,12,0.3))){
-                setAllDrivePower(0.5,0);
-                dist1 = rangeSensor1.getDistance(DistanceUnit.INCH);
-                dist2 = rangeSensor2.getDistance(DistanceUnit.INCH);
-            }
+        if(this.gamepad1.left_bumper){
+            while(this.gamepad1.left_bumper);
+            //distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
+            //distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
+            /*while(!(near(distFront,12,0.3))){
+                setAllDrivePower(0.5,0.5,-0.5,-0.5);
+                distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
+                //distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
+            }*/
             turn(90,0.5,3);
             /*
             imuHeading=0;
@@ -40,11 +42,16 @@ public class FaceTheWallTest extends BaseAuto {
                 setAllDrivePower(0.5,0.5,-0.5,-0.5);
             }
             */
-            while(!(near(dist1,18,0.3) && near(dist2,18,0.3))){
-                setAllDrivePower(0.5,0);
-                dist1 = rangeSensor1.getDistance(DistanceUnit.INCH);
-                dist2 = rangeSensor2.getDistance(DistanceUnit.INCH);
+            /*
+            while(!(near(distFront,18,0.3))){
+                distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
+                distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
+//                diff = Math.min(0.2,Math.max((distSide-12)/10,-0.2))/2;
+//                setAllDrivePower(0.5+diff,0.5+diff,-0.5-diff,-0.5-diff);
             }
+
+             */
+
         }
 
     }

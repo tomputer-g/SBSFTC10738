@@ -34,17 +34,17 @@ public class AutoMoveInchTest extends BaseOpMode {
     public void loop() {
         /*
         dist1 = sensorRange1.getDistance(DistanceUnit.INCH);
-        dist2 = sensorRange2.getDistance(DistanceUnit.INCH);
+        distSide = sensorRange2.getDistance(DistanceUnit.INCH);
         */
         dist1 = ultra1.getDistance(DistanceUnit.INCH);
-       // dist2 = ultra2.getDistance(DistanceUnit.INCH);
+       // distSide = ultra2.getDistance(DistanceUnit.INCH);
         /*
         telemetry.addData("range1", String.format("%.01f inch", dist1));
-        telemetry.addData("range2", String.format("%.01f inch", dist2));
+        telemetry.addData("range2", String.format("%.01f inch", distSide));
 */
         //telemetry.addData("distUltra", String.format(".2f cm", dist_ultra));
         telemetry.addData("dist1:", "%.2f inch", dist1);
-        telemetry.addData("dist2:", "%.2f inch", dist2);
+        telemetry.addData("distSide:", "%.2f inch", dist2);
 
         if(this.gamepad1.a){
             while(this.gamepad1.a);
@@ -82,8 +82,8 @@ public class AutoMoveInchTest extends BaseOpMode {
             //wait(3000);
             //setAllDrivePower(0);
             for(int xx = 0;xx<=1;++xx){
-                while(Math.abs(dist1-dist2)>0.2){
-                    dist = dist1-dist2;
+                while(Math.abs(dist1-distSide)>0.2){
+                    dist = dist1-distSide;
                     telemetry.addData("remaining dist: ",dist + "inch");
 
                     //magic number 0.00347
@@ -91,9 +91,9 @@ public class AutoMoveInchTest extends BaseOpMode {
                     else setAllDrivePower(Math.max(-0.00347*dist*dist, -0.4));
 
                     dist1 = ultra1.getDistance(DistanceUnit.INCH);
-                    dist2 = ultra2.getDistance(DistanceUnit.INCH);
+                    distSide = ultra2.getDistance(DistanceUnit.INCH);
                     telemetry.addData("range1", String.format("%.01f inch", dist1));
-                    telemetry.addData("range2", String.format("%.01f inch", dist2));
+                    telemetry.addData("range2", String.format("%.01f inch", distSide));
                     telemetry.update();
                 }
                 setAllDrivePower(0);
