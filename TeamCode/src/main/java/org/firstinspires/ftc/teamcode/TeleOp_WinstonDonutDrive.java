@@ -1,13 +1,8 @@
-package org.firstinspires.ftc.teamcode.Tests;
+package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.BaseOpMode;
-
-@TeleOp()
-public class TeleOp_DonutDrive extends BaseOpMode {
-
+public class TeleOp_WinstonDonutDrive extends BaseOpMode {
     private double outerSpeed = 0.5, innerSpeed = 0, cornerSpeed = 0.5;
     @Override
     public void init() {
