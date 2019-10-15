@@ -62,6 +62,8 @@ public class FaceTheWallTest extends BaseAuto {
                 telemetry.update();
                 distLeft = left.getDistance(DistanceUnit.INCH);
             }
+              setAllDrivePower(0.4,0.4,-0.4,-0.4);
+              wait(200);
               setAllDrivePower(0);
             //turn(90,0.1,3);
             /*
