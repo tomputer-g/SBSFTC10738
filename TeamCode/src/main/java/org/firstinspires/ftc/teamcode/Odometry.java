@@ -1,16 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 //@Autonomous(name = "SplineTest")
-public class Odometry extends BaseOpMode{
+public class AAA_AdvRobotics_SplineTest extends BaseOpMode{
     private Vector2 p,v1;
-    private double theta,a,b;
+    private double theta;
     @Override
-    public void init(){
-        p=new Vector2(0,0);
+    public void init(){p=new Vector2()};
+    protected void pup_date(a,b){
+        p.add(new Vector2(a*Math.cos(theta),a*Math.sin(theta)));
+        p.add(new Vector2(b*Math.cos(theta+Math.Pi/2),b*Math.sin(theta+Math.Pi/2)));
     }
     @Override
     public void loop(){
-        
-        p.add(new Vector2(a*Math.cos(theta),a*Math.sin(theta)));
-        p.add(new Vector2(b*Math.cos(theta+Math.PI/2),b*Math.sin(theta+Math.PI/2)));
+        pup_date();
     }
 }
