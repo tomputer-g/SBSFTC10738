@@ -15,7 +15,7 @@ public class FaceTheWallTest extends BaseAuto {
     Rev2mDistanceSensor left,right;
     ElapsedTime t;
     double distFront, distSide, diff,distLeft,distRight,speed;
-    int indicator;
+    double indicator;
     @Override
     public void init() {
 
@@ -32,19 +32,16 @@ public class FaceTheWallTest extends BaseAuto {
     @Override
     public void loop() {
         distLeft = left.getDistance(DistanceUnit.INCH);
-            telemetry.addData("inch",distLeft);
-            telemetry.update();
+        telemetry.addData("inch ahead",distLeft);
+        telemetry.addData("speed",speed);
+        telemetry.update();
             if(this.gamepad1.dpad_up){
                 while (this.gamepad1.dpad_up);
                 speed+=0.05;
-                telemetry.addData("speed",speed);
-                telemetry.update();
             }
         if(this.gamepad1.dpad_down){
             while (this.gamepad1.dpad_down);
             speed-=0.05;
-            telemetry.addData("speed",speed);
-            telemetry.update();
         }
         if(this.gamepad1.left_bumper){
             while(this.gamepad1.left_bumper);
@@ -52,9 +49,9 @@ public class FaceTheWallTest extends BaseAuto {
             //distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
             distLeft = left.getDistance(DistanceUnit.INCH);
             //while(!(near(distLeft,12,0.3))){
-              while(distLeft > 15.5){
-                if(distLeft > 15.5) indicator = 1;
-                else indicator = -1;
+            while(distLeft > 16.5){
+                //indicator = ((1/(1+Math.pow(Math.E,-(distLeft-18))))-0.5)*2;
+                indicator = 1;
                 setAllDrivePower(indicator*(-speed),indicator*(-speed),indicator*speed,indicator*speed);
                 //distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
                 //distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
@@ -81,6 +78,12 @@ public class FaceTheWallTest extends BaseAuto {
                 setAllDrivePower(-0.1,-0.1,0.1,0.1);
             }
 */
+        }
+        if(this.gamepad1.right_bumper){
+            while(this.gamepad1.right_bumper);
+            setAllDrivePower(-speed,-speed,speed,speed);
+            wait(2000);
+            setAllDrivePower(0);
         }
 
     }
