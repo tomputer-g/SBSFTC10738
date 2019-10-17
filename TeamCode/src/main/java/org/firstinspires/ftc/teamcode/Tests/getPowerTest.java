@@ -10,6 +10,7 @@ public class getPowerTest extends BaseOpMode {
 
     @Override
     public void loop() {
-        super.loop();//TODO: test if getPower() gives actual power or set target power
+
+
     }
 }

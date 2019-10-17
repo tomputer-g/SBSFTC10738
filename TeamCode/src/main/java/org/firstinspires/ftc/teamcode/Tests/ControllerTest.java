@@ -1,6 +1,5 @@
-package org.firstinspires.ftc.teamcode19.Tests;
+package org.firstinspires.ftc.teamcode.Tests;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode19.BaseOpMode;
@@ -9,7 +8,6 @@ import org.firstinspires.ftc.teamcode19.BaseOpMode;
  * Created by Ziming Gao on 12/11/2017.
  */
 @TeleOp(name = "Ctrler test", group = "test")
-@Disabled
 public class ControllerTest extends BaseOpMode {
 
     @Override public void init() {}
