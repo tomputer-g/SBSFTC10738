@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import java.text.DecimalFormat;
+
+@TeleOp
 public class TeleOp_RocketLeague extends BaseOpMode {
 
     private double v = 0, x = 0;
@@ -25,23 +30,50 @@ public class TeleOp_RocketLeague extends BaseOpMode {
         x = this.gamepad1.left_stick_x;
 
         telemetry.addLine("V: "+to3d(v)+", X: "+to3d(x));
-        if(x > 0){//right
-            if(v+x > 1){
-                winstonSetPower(1, v-x, v-x, v-2*x);
-                telemetry.addLine("Plan B pwr scaling");
-            }else{
-                winstonSetPower(v+x, v, v, v-x);
+        if(v > 0){
+            if(x > 0){//right
+                if(v+x > 1){
+                    winstonSetPower(1, 0.5, 0.5, 0);
+                    telemetry.addLine("Plan B pwr scaling");
+                }else{
+                    winstonSetPower(v+x, v, v, v-x);
 
+                }
+
+            }else if(x < 0) {
+                if (v - x > 1) {
+                    winstonSetPower(0.5, 0, 1, 0.5);
+                    telemetry.addLine("Plan B pwr scaling");
+                } else {
+                    winstonSetPower(v, v + x, v - x, v);
+                }
+            }else{
+                winstonSetPower(v,v,v,v);
             }
 
-        }else if(x < 0){//left
-            if(v-x > 1){
-                winstonSetPower(v+x, 1, v+2*x, v+x);
-                telemetry.addLine("Plan B pwr scaling");
-            }else{
-                winstonSetPower(v, v-x, v+x, v);//apparently this is exactly the same resultant as above
-            }
+        }else if(v < 0){
+            //TODO: change for neg power
+            /***
+            if(x > 0){//right
+                if(v+x > 1){
+                    winstonSetPower(1, 0.5, 0.5, 0);
+                    telemetry.addLine("Plan B pwr scaling");
+                }else{
+                    winstonSetPower(v+x, v, v, v-x);
 
+                }
+
+            }else if(x < 0) {
+                if (v - x > 1) {
+                    winstonSetPower(0.5, 0, 1, 0.5);
+                    telemetry.addLine("Plan B pwr scaling");
+                } else {
+                    winstonSetPower(v, v + x, v - x, v);
+                }
+            }else{
+                winstonSetPower(v,v,v,v);
+            }
+             **/
         }else{//straight
             winstonSetPower(v,v,v,v);
         }
@@ -51,6 +83,14 @@ public class TeleOp_RocketLeague extends BaseOpMode {
 
     private void winstonSetPower(double LF, double LB, double RF, double RB){
         setAllDrivePower(-LF, -LB, RF, RB);
-        telemetry.addLine("Powers: "+to3d(LF)+", "+to3d(LB)+", "+to3d(RF)+", "+to3d(RB));
+        telemetry.addLine();
+        telemetry.addLine(""+to3dstr(LF)+"  |  "+to3dstr(RF));
+        telemetry.addLine("-----------------------");
+        telemetry.addLine(""+to3dstr(LB)+"  |  "+to3dstr(RB));
+    }
+
+    protected String to3dstr(double d){
+        DecimalFormat df = new DecimalFormat("##0.000");
+        return df.format(d);
     }
 }
