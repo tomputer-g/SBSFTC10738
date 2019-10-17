@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.text.DecimalFormat;
 
+import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 import static java.lang.Thread.sleep;
 
@@ -106,10 +107,28 @@ public class BaseOpMode extends OpMode {
         RF.setPower(0.5 * (vx + vy + vr));
         RB.setPower(0.5 * (-vx + vy + vr));
     }
+    private double sigmoid_brake(double power){
+        return (1.8/(1+pow(Math.E,5*power)))-0.9;
+    }
+
     protected void brake(){
         double lf=LF.getPower(),lb=LB.getPower(),rf=RF.getPower(),rb=RB.getPower();
-
+        for(int i=0;i<4;i++){
+            setAllDrivePower(lf-0.2*lf*i,lb-0.2*lb*i,rf-rf*0.2*i,rb-rb*0.2*i);
+            if(Math.abs(lf-0.2*lf*i)<0.2) break;
+        }
+        setAllDrivePower(0);
+        for(int i=0;i<7;i++){
+            setAllDrivePower(1,1,-1,-1);
+            wait(20);
+            setAllDrivePower(0);
+            wait(5);
+        }
+        //setAllDrivePower(sigmoid_brake(lf),sigmoid_brake(lb),sigmoid_brake(rf),sigmoid_brake(rb));
+        //wait(300);
+        setAllDrivePower(0);
     }
+
     protected double to3d(double d){
         DecimalFormat df = new DecimalFormat("##0.000");
         return Double.parseDouble(df.format(d));

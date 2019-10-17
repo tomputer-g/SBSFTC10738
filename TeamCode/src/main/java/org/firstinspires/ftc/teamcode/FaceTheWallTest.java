@@ -82,8 +82,8 @@ public class FaceTheWallTest extends BaseAuto {
         if(this.gamepad1.right_bumper){
             while(this.gamepad1.right_bumper);
             setAllDrivePower(-speed,-speed,speed,speed);
-            wait(2000);
-            setAllDrivePower(0);
+            wait(1500);
+            brake();
         }
 
     }
