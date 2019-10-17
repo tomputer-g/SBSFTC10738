@@ -106,7 +106,10 @@ public class BaseOpMode extends OpMode {
         RF.setPower(0.5 * (vx + vy + vr));
         RB.setPower(0.5 * (-vx + vy + vr));
     }
+    protected void brake(){
+        double lf=LF.getPower(),lb=LB.getPower(),rf=RF.getPower(),rb=RB.getPower();
 
+    }
     protected double to3d(double d){
         DecimalFormat df = new DecimalFormat("##0.000");
         return Double.parseDouble(df.format(d));
