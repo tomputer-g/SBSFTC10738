@@ -129,6 +129,18 @@ public class BaseOpMode extends OpMode {
         setAllDrivePower(0);
     }
 
+    protected void displayMotorPowers(double LF, double LB, double RF, double RB){
+        telemetry.addLine();
+        telemetry.addLine(""+to3dstr(LF)+"  |  "+to3dstr(RF));
+        telemetry.addLine("-----------------------");
+        telemetry.addLine(""+to3dstr(LB)+"  |  "+to3dstr(RB));
+    }
+
+    protected String to3dstr(double d){
+        DecimalFormat df = new DecimalFormat("##0.000");
+        return df.format(d);
+    }
+
     protected double to3d(double d){
         DecimalFormat df = new DecimalFormat("##0.000");
         return Double.parseDouble(df.format(d));

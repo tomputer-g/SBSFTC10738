@@ -2,10 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import java.text.DecimalFormat;
-
 @TeleOp
-public class TeleOp_RocketLeague extends BaseOpMode {
+public class TeleOp_AnyPowerRocketLeague extends BaseOpMode {
 
     private double v = 0, x = 0;
     @Override
@@ -15,34 +13,24 @@ public class TeleOp_RocketLeague extends BaseOpMode {
 
     @Override
     public void loop() {
-        if(this.gamepad1.right_trigger > 0.1)
-            v = 0.8;
-        else if(this.gamepad1.left_trigger > 0.1)
-            v = -0.5;
-        else
-            v = 0;
 
-        if(this.gamepad1.x){
-            //hold = fast
-            v *= 2;
-        }
 
         x = this.gamepad1.left_stick_x;
-        //v = -this.gamepad1.right_stick_y;//y stick is inverted default
+        v = -this.gamepad1.right_stick_y;//y stick is inverted default
 
         telemetry.addLine("speed: "+to3d(v)+", turn: "+to3d(x));
         if(v > 0){
             if(x > 0){//right
                 if(v+x > 1){
-                    winstonSetPower(1, 0.5, 0.5, 0);
-                    telemetry.addLine("Plan B pwr scaling");
+                    winstonSetPower(1, 1-x, 1-x, 1-2*x);
+                    telemetry.addLine("Compromising V...");
                 }else{
                     winstonSetPower(v+x, v, v, v-x);
                 }
             }else if(x < 0) {
                 if (v - x > 1) {
-                    winstonSetPower(0.5, 0, 1, 0.5);
-                    telemetry.addLine("Plan B pwr scaling");
+                    winstonSetPower(1+x, 1+2*x, 1, 1+x);
+                    telemetry.addLine("Compromising V...");
                 } else {
                     winstonSetPower(v, v + x, v - x, v);
                 }
@@ -53,16 +41,16 @@ public class TeleOp_RocketLeague extends BaseOpMode {
         }else if(v < 0){
             if(x > 0){//right
                 if(v-x < -1){
-                    winstonSetPower(-0.5, -1, 0, -0.5);
-                    telemetry.addLine("Plan B pwr scaling");
+                    winstonSetPower(-1+x, -1, -1+2*x, -1+x);
+                    telemetry.addLine("Compromising V...");
                 }else{
                     winstonSetPower(v, v-x, v+x, v);
                 }
 
             }else if(x < 0) {
                 if (v+x < -1) {
-                    winstonSetPower(0, -0.5, -0.5, -1);
-                    telemetry.addLine("Plan B pwr scaling");
+                    winstonSetPower(-1-2*x, -1-x, -1-x, -1);
+                    telemetry.addLine("Compromising V...");
                 } else {
                     winstonSetPower(v-x, v, v, v+x);
                 }
