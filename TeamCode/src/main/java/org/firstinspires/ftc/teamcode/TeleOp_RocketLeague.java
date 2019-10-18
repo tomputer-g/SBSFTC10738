@@ -37,9 +37,7 @@ public class TeleOp_RocketLeague extends BaseOpMode {
                     telemetry.addLine("Plan B pwr scaling");
                 }else{
                     winstonSetPower(v+x, v, v, v-x);
-
                 }
-
             }else if(x < 0) {
                 if (v - x > 1) {
                     winstonSetPower(0.5, 0, 1, 0.5);
@@ -47,35 +45,31 @@ public class TeleOp_RocketLeague extends BaseOpMode {
                 } else {
                     winstonSetPower(v, v + x, v - x, v);
                 }
-            }else{
+            }else{//x = 0 (straight line)
                 winstonSetPower(v,v,v,v);
             }
 
         }else if(v < 0){
-            //TODO: change for neg power
-            /***
             if(x > 0){//right
-                if(v+x > 1){
-                    winstonSetPower(1, 0.5, 0.5, 0);
+                if(v-x < -1){
+                    winstonSetPower(-0.5, -1, 0, -0.5);
                     telemetry.addLine("Plan B pwr scaling");
                 }else{
-                    winstonSetPower(v+x, v, v, v-x);
-
+                    winstonSetPower(v, v-x, v+x, v);
                 }
 
             }else if(x < 0) {
-                if (v - x > 1) {
-                    winstonSetPower(0.5, 0, 1, 0.5);
+                if (v+x < -1) {
+                    winstonSetPower(0, -0.5, -0.5, 1);
                     telemetry.addLine("Plan B pwr scaling");
                 } else {
-                    winstonSetPower(v, v + x, v - x, v);
+                    winstonSetPower(v-x, v, v, v+x);
                 }
-            }else{
+            }else{//x = 0 (straight line)
                 winstonSetPower(v,v,v,v);
             }
-             **/
-        }else{//straight
-            winstonSetPower(v,v,v,v);
+        }else{//v = 0 (turn only)
+            winstonSetPower(-x,-x,x,x);
         }
         telemetry.update();
 
