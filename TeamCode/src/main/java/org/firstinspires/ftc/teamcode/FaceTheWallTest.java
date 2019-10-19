@@ -21,8 +21,8 @@ public class FaceTheWallTest extends BaseAuto {
 
         initDrivetrain();
         t = new ElapsedTime();
-        //rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "front");
-        //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
+        rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
+        rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "front");
         left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
         right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
         initIMU();
@@ -45,39 +45,38 @@ public class FaceTheWallTest extends BaseAuto {
         }
         if(this.gamepad1.left_bumper){
             while(this.gamepad1.left_bumper);
-            //distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
-            //distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
+            distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
+            distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
             distLeft = left.getDistance(DistanceUnit.INCH);
-            //while(!(near(distLeft,12,0.3))){
-            while(distLeft > 16.5){
+            while(distFront > 16.5){
                 //indicator = ((1/(1+Math.pow(Math.E,-(distLeft-18))))-0.5)*2;
                 indicator = 1;
                 setAllDrivePower(indicator*(-speed),indicator*(-speed),indicator*speed,indicator*speed);
-                //distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
-                //distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
-                telemetry.addData("inch",distLeft);
+                distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
+                distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
+                telemetry.addData("inch",distFront);
                 telemetry.update();
-                distLeft = left.getDistance(DistanceUnit.INCH);
             }
-              setAllDrivePower(0.4,0.4,-0.4,-0.4);
-              wait(200);
-              setAllDrivePower(0);
-            //turn(90,0.1,3);
-            /*
+
+              //setAllDrivePower(0.4,0.4,-0.4,-0.4);
+              //wait(200);
+              //setAllDrivePower(0);
             imuHeading=0;
-            while(!near(imuHeading,90,2)){
-                setAllDrivePower(0.5,0.5,-0.5,-0.5);
-            }
-            */
-/*
-            while(!(near(distLeft,18,0.3))){
-                //distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
-                //distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
-//                diff = Math.min(0.2,Math.max((distSide-12)/10,-0.2))/2;
+            turn(90,0.1,3);
+
+            //imuHeading=0;
+            //while(!near(imuHeading,90,2)){
+            //    setAllDrivePower(0.5,0.5,-0.5,-0.5);
+            //}
+
+
+            while(!(near(distLeft,18,1))){
+                distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
+                distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
+                diff = Math.min(0.2,Math.max((distSide-12)/10,-0.2))/2;
                 distLeft = left.getDistance(DistanceUnit.INCH);
                 setAllDrivePower(-0.1,-0.1,0.1,0.1);
             }
-*/
         }
         if(this.gamepad1.right_bumper){
             while(this.gamepad1.right_bumper);
