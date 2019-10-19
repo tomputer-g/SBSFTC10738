@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp
-public class TeleOp_AnyPowerRocketLeague extends BaseOpMode {
+
+public class TeleOp_SteroidsRocketLeague extends BaseOpMode {
 
     private double v = 0, x = 0;
     @Override
@@ -15,8 +15,21 @@ public class TeleOp_AnyPowerRocketLeague extends BaseOpMode {
     public void loop() {
 
 
-        x = this.gamepad1.left_stick_x;
-        v = -this.gamepad1.right_stick_y;//y stick is inverted default
+
+        if(this.gamepad1.right_trigger > 0.1)
+            v = 0.5;
+        else if(this.gamepad1.left_trigger > 0.1)
+            v = -0.5;
+        else
+            v = 0;
+
+        if(this.gamepad1.x){
+            //hold = fast
+            v *= 2;
+        }
+
+        x = this.gamepad1.right_stick_x;
+        //v = -this.gamepad1.left_stick_y;//y stick is inverted default
 
         telemetry.addLine("speed: "+to3d(v)+", turn: "+to3d(x));
         if(v > 0){
