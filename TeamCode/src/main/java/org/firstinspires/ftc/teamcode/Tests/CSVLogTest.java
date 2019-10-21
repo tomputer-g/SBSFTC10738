@@ -30,7 +30,7 @@ public class CSVLogTest extends BaseOpMode{
     }
 
     @Override public void loop() {
-        writeLog(t.milliseconds()+", test, test2, blah\n");
+        writeLog(t.milliseconds()+", test, test2, blah");
     }
 
     @Override public void stop() {

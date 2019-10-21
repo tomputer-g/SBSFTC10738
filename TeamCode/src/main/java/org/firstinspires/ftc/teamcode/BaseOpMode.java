@@ -323,10 +323,10 @@ public class BaseOpMode extends OpMode {
     protected void writeLogHeader(String headers){
         writeLog(headers);
     }
-    
+
     protected void writeLog(String message){
         try{
-            logWriter.write(message);
+            logWriter.write(message+"\n");
         }catch (Exception e){
             telemetry.addLine(e.toString());
         }
