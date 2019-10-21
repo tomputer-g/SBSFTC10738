@@ -16,9 +16,10 @@ public class FaceTheWallTest extends BaseAuto {
     ElapsedTime t;
     double distFront, distSide, diff,distLeft,distRight,speed;
     double indicator;
-    @Override
+    String logName = "FaceWallLog"+System.currentTimeMillis()+".csv";
     public void init() {
-
+        initLogger(logName);
+        writeLogHeader("time,LF_count,LB_count,RF_count,RB_count,LF_power,LB_power,RF_power,RB_power,front_UltS,left_UltS,right_UltS,front_left_REV,front_right_REV");
         initDrivetrain();
         t = new ElapsedTime();
         rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
@@ -28,41 +29,51 @@ public class FaceTheWallTest extends BaseAuto {
         initIMU();
         speed = 0.3;
     }
-
     @Override
-    public void loop() {
-        distLeft = left.getDistance(DistanceUnit.INCH);
-        telemetry.addData("inch ahead",distLeft);
-        telemetry.addData("speed",speed);
-        telemetry.update();
-            if(this.gamepad1.dpad_up){
-                while (this.gamepad1.dpad_up);
-                speed+=0.05;
-            }
+    public void init_loop() {
+        if(this.gamepad1.dpad_up){
+            while (this.gamepad1.dpad_up);
+            speed+=0.05;
+        }
         if(this.gamepad1.dpad_down){
             while (this.gamepad1.dpad_down);
             speed-=0.05;
         }
+        telemetry.addLine("speed: "+speed);
+        telemetry.update();
+        }
+
+    @Override
+    public void loop() {
+
+        //distLeft = left.getDistance(DistanceUnit.INCH);
+        //telemetry.addData("inch ahead",distLeft);
+
+
         if(this.gamepad1.left_bumper){
             while(this.gamepad1.left_bumper);
             distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
             distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
             distLeft = left.getDistance(DistanceUnit.INCH);
+            distRight = right.getDistance(DistanceUnit.INCH);
             while(distFront > 16.5){
                 //indicator = ((1/(1+Math.pow(Math.E,-(distLeft-18))))-0.5)*2;
                 indicator = 1;
                 setAllDrivePower(indicator*(-speed),indicator*(-speed),indicator*speed,indicator*speed);
                 distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
                 distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
+                distLeft = left.getDistance(DistanceUnit.INCH);
+                distRight = right.getDistance(DistanceUnit.INCH);
                 telemetry.addData("inch",distFront);
                 telemetry.update();
+                writeLog(t.milliseconds()+",NA,NA,NA,NA,"+LF.getPower()+","+LB.getPower()+","+RF.getPower()+","+RB.getPower()+","+distFront+","+distSide+",No_Sensor,"+distLeft+","+distRight);
             }
-
-              //setAllDrivePower(0.4,0.4,-0.4,-0.4);
+            setAllDrivePower(0);
+            brake();
               //wait(200);
-              //setAllDrivePower(0);
-            imuHeading=0;
-            turn(90,0.1,3);
+
+            //imuHeading=0;
+            //turn(90,0.05,3);
 
             //imuHeading=0;
             //while(!near(imuHeading,90,2)){
@@ -70,13 +81,13 @@ public class FaceTheWallTest extends BaseAuto {
             //}
 
 
-            while(!(near(distLeft,18,1))){
-                distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
-                distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
-                diff = Math.min(0.2,Math.max((distSide-12)/10,-0.2))/2;
-                distLeft = left.getDistance(DistanceUnit.INCH);
-                setAllDrivePower(-0.1,-0.1,0.1,0.1);
-            }
+            //while(!(near(distLeft,18,1))){
+            //    distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
+            //    distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
+            //   diff = Math.min(0.2,Math.max((distSide-12)/10,-0.2))/2;
+            //   distLeft = left.getDistance(DistanceUnit.INCH);
+            //   setAllDrivePower(-0.1,-0.1,0.1,0.1);
+            //}
         }
         if(this.gamepad1.right_bumper){
             while(this.gamepad1.right_bumper);
@@ -85,5 +96,9 @@ public class FaceTheWallTest extends BaseAuto {
             brake();
         }
 
+    }
+    @Override public void stop() {
+        setAllDrivePower(0);
+        stopLog();
     }
 }
