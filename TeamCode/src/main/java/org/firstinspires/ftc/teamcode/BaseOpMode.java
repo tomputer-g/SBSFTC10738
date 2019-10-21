@@ -1,11 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Log;
+
 import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DecimalFormat;
 
 import static java.lang.Math.pow;
@@ -24,6 +29,9 @@ Make sure TeleOp2019Trident and BaseAuto can inherit needed stuff by setting the
 public class BaseOpMode extends OpMode {
 
     protected DcMotor LF, LB, RF, RB;
+    private final String logPrefix = "/sdcard/";
+    private BufferedWriter logWriter;
+
 
     @Override public void init() {
         msStuckDetectInit = 10000;
@@ -297,4 +305,41 @@ public class BaseOpMode extends OpMode {
 
         while(!near(LF.getCurrentPosition(), LF.getTargetPosition(), 50) || !near(RF.getCurrentPosition(), RF.getTargetPosition(), 50) || !near(RB.getCurrentPosition(), RB.getTargetPosition(), 50) || !near(LB.getCurrentPosition(), LB.getTargetPosition(), 50));
     }
+
+    //---------------------------------------------------Logging stuff-------------------------------------------
+
+    protected void initLogger(String filename){
+        String path = logPrefix + filename;
+        telemetry.addLine("Writing log to "+path);
+        try {
+            logWriter = new BufferedWriter(new FileWriter(path));
+            //writer = new FileWriter(filename);
+            telemetry.addLine("writer create success");
+        } catch (IOException e) {
+            telemetry.addLine(e.toString());
+        }
+    }
+
+    protected void writeLogHeader(String headers){
+        writeLog(headers);
+    }
+    
+    protected void writeLog(String message){
+        try{
+            logWriter.write(message);
+        }catch (Exception e){
+            telemetry.addLine(e.toString());
+        }
+    }
+
+    protected void stopLog(){
+        if(logWriter != null) {
+            try {
+                logWriter.close();
+            } catch (IOException e) {
+                telemetry.addLine(e.toString());
+            }
+        }
+    }
+
 }

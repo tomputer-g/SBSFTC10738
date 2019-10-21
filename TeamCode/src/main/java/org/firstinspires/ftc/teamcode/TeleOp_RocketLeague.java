@@ -98,6 +98,7 @@ public class TeleOp_RocketLeague extends BaseOpMode {
                 }
 
             }else if(v < 0){
+                x = -x;
                 if(x > 0){//right
                     if(v-x < -1){
                         if(x > limit){
