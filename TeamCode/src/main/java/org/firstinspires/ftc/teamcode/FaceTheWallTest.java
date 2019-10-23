@@ -66,7 +66,7 @@ public class FaceTheWallTest extends BaseAuto {
                 distRight = right.getDistance(DistanceUnit.INCH);
                 telemetry.addData("inch",distFront);
                 telemetry.update();
-                writeLog(t.milliseconds()+",NA,NA,NA,NA,"+LF.getPower()+","+LB.getPower()+","+RF.getPower()+","+RB.getPower()+","+distFront+","+distSide+",No_Sensor,"+distLeft+","+distRight);
+                writeLog(t.milliseconds()+",NA,NA,NA,NA,"+LF.getPower()+","+LB.getPower()+","+RF.getPower()+","+RB.getPower()+","+distFront+","+",No_Sensor,"+distSide+","+distLeft+","+distRight);
             }
             setAllDrivePower(0);
             brake();
