@@ -14,6 +14,5 @@ public class TractionCalibration extends BaseAuto{
     protected double getMC(DcMotor i){
         //stub should return motor count given a motor
         return 0;
-
     }
 }
