@@ -15,7 +15,7 @@ public class LogTest extends BaseAuto {
     Rev2mDistanceSensor left,right;
     ElapsedTime t;
     double distFront, distSide,distLeft,distRight,speed;
-    boolean started = false;
+    int started = 0;
     String logName = "LogTestLog"+System.currentTimeMillis()+".csv";
     public void init() {
         initLogger(logName);
@@ -47,9 +47,12 @@ public class LogTest extends BaseAuto {
 
     @Override
     public void loop() {
-        if(this.gamepad1.left_bumper)started = !started;
-        if(started)setAllDrivePower(-speed,-speed,speed,speed);
-        else setAllDrivePower(0);
+        if(this.gamepad1.left_bumper)started++;
+        if(started==1)setAllDrivePower(-speed,-speed,speed,speed);
+        else if(started ==2){
+            setAllDrivePower(0);
+            brake();
+        }
         distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
         distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
         distLeft = left.getDistance(DistanceUnit.INCH);
