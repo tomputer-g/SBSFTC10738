@@ -114,6 +114,11 @@ public class BaseOpMode extends OpMode {
         RF.setPower(0.5 * (vx + vy + vr));
         RB.setPower(0.5 * (-vx + vy + vr));
     }
+
+    protected void setAllPDrivePower1(double a,double b,double c,double d){
+        setAllDrivePower(a,b,-c,-d);
+    }
+
     private double sigmoid_brake(double power){
         return (1.8/(1+pow(Math.E,5*power)))-0.9;
     }
