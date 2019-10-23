@@ -17,6 +17,8 @@ public class LogTest extends BaseAuto {
     double distFront, distSide,distLeft,distRight,speed;
     int started = 0;
     String logName = "LogTestLog"+System.currentTimeMillis()+".csv";
+    boolean dpadUPrimed =false, dpadDPrimed = false, leftBPrimed = false;
+
     public void init() {
         initLogger(logName);
         writeLogHeader("time,LF_count,LB_count,RF_count,RB_count,LF_power,LB_power,RF_power,RB_power,front_UltS,left_UltS,right_UltS,front_left_REV,front_right_REV");
@@ -33,13 +35,15 @@ public class LogTest extends BaseAuto {
     @Override
     public void init_loop() {
         if(this.gamepad1.dpad_up){
-            while (this.gamepad1.dpad_up);
+            dpadUPrimed = true;
             speed+=0.05;
         }
+        if(!this.gamepad1.dpad_up && dpadUPrimed)dpadUPrimed=false;
         if(this.gamepad1.dpad_down){
-            while (this.gamepad1.dpad_down);
+            dpadDPrimed = true;
             speed-=0.05;
         }
+        if(!this.gamepad1.dpad_down && dpadDPrimed)dpadDPrimed=false;
         telemetry.addLine("speed: "+speed);
         distLeft = left.getDistance(DistanceUnit.INCH);
         telemetry.addData("inch ahead",distFront);
@@ -47,9 +51,13 @@ public class LogTest extends BaseAuto {
 
     @Override
     public void loop() {
-        if(this.gamepad1.left_bumper)started++;
+        if(this.gamepad1.left_bumper){
+            leftBPrimed = true;
+            started++;
+        }
+        if(!this.gamepad1.left_bumper && leftBPrimed)leftBPrimed=false;
         if(started==1)setAllDrivePower(-speed,-speed,speed,speed);
-        else if(started ==2){
+        else if(started >=2){
             setAllDrivePower(0);
             brake();
         }

@@ -12,8 +12,6 @@ public class TractionCalibration extends BaseAuto{
         pcLF=cLF; pcLB=cLB; pcRF=cRF; pcRB=cRB;
     }
     protected double getMC(DcMotor i){
-        //stub should return motor count given a motor
-        return 0;
-
+        return i.getCurrentPosition();
     }
 }
