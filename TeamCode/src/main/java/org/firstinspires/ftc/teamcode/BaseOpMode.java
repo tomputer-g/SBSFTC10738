@@ -43,7 +43,6 @@ public class BaseOpMode extends OpMode {
 
     }
 
-
     protected void setMode_RUN_WITH_ENCODER(){
         LF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         LB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -126,9 +125,9 @@ public class BaseOpMode extends OpMode {
             if(Math.abs(lf-0.2*lf*i)<0.2) break;
         }
         setAllDrivePower(0);
-        for(int i=0;i<7;i++){
-            setAllDrivePower(1,1,-1,-1);
-            wait(20);
+        for(int i=0;i<1;i++){
+            setAllDrivePower(.3,.3,-.3,-.3);
+            wait(300);
             setAllDrivePower(0);
             wait(5);
         }
