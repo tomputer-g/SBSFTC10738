@@ -22,10 +22,11 @@ public class AutoGrabberTest extends BaseOpMode {
 
     @Override
     public void loop() {
-        if(dist.getDistance(DistanceUnit.CM) < 2.5){
+        if(dist.getDistance(DistanceUnit.CM) < 2.8){
             telemetry.addLine("Autograbbing");
             servo.setPosition(1);
         }
+
         telemetry.addData("Dist",dist.getDistance(DistanceUnit.CM));
         telemetry.update();
     }
