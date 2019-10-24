@@ -1,23 +1,27 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
+import android.text.method.Touch;
 
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.TouchSensor;
+
+@TeleOp
 public class TouchSensorTest extends BaseAuto{
     ElapsedTime t;
     String logName = "TouchSensorLog"+System.currentTimeMillis()+".csv";
-    DigitalChannel touch;
+    TouchSensor touch;
     public void init() {
         initLogger(logName);
         writeLogHeader("time,touched");
         t = new ElapsedTime();
-        touch = hardwareMap.get(DigitalChannel.class, "touch");
-        touch.setMode(DigitalChannel.Mode.INPUT);
+        touch = hardwareMap.get(TouchSensor.class, "touch");
     }
     @Override
     public void loop() {
-        telemetry.addData("Digital Touch", touch.getState()?"Is Pressed":"Is Not Pressed");
-        writeLog(t.milliseconds()+","+touch.getState());
+        telemetry.addData("Digital Touch", touch.isPressed()?"Is Pressed":"Is Not Pressed");
+        writeLog(t.milliseconds()+","+touch.isPressed());
+
     }
 
 
