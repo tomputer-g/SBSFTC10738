@@ -23,12 +23,13 @@ public class BrickGrabTest extends BaseAuto {
         left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
         right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
         initIMU();
-        speed = 0.3;
+        speed = 0.15;
     }
     @Override
     public void loop() {
         if(gamepad1.right_bumper){
             while(gamepad1.right_bumper){}
+            brake();
             while(!near(dl,dr,.8)){
                 dl=left.getDistance(DistanceUnit.INCH);
                 dr=right.getDistance(DistanceUnit.INCH);

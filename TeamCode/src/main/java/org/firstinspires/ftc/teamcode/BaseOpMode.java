@@ -130,9 +130,9 @@ public class BaseOpMode extends OpMode {
             if(Math.abs(lf-0.2*lf*i)<0.2) break;
         }
         setAllDrivePower(0);
-        for(int i=0;i<1;i++){
+        for(int i=0;i<10;i++){
             setAllDrivePower(.3,.3,-.3,-.3);
-            wait(300);
+            wait(50);
             setAllDrivePower(0);
             wait(5);
         }
