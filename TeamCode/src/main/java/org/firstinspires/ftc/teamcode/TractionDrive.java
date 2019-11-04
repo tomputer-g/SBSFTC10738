@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-public class TractionCalibration extends BaseAuto{
+public class TractionDrive extends BaseAuto{
     double pcLF=0,pcLB=0,pcRF=0,pcRB=0,cLF,cLB,cRF,cRB,min,minp,pLF,pLB,pRF,pRB;
-    protected void setAllpowerTC(double ipLF,double ipLB,double ipRF,double ipRB)
+    protected void setTDpower(double ipLF,double ipLB,double ipRF,double ipRB)
     {
         pLF=Math.abs(ipLF); pLB=Math.abs(ipLB); pRF=Math.abs(ipRF); pRB=Math.abs(ipRB);
         cLF = Math.abs(getMC(LF)-pcLF); cLB = Math.abs(getMC(LB)-pcLB); cRF = Math.abs(getMC(RF)-pcRF); cRB = Math.abs(getMC(RB)-pcRB);
