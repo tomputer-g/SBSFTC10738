@@ -28,6 +28,7 @@
  */
 
 package org.firstinspires.ftc.teamcode20.Tests;
+import org.firstinspires.ftc.teamcode20.BaseAuto;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -36,7 +37,6 @@ import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.teamcode20.BaseAuto;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
