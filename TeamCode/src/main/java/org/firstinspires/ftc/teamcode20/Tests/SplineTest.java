@@ -11,12 +11,12 @@ import org.firstinspires.ftc.teamcode19.BaseOpMode;
 */
 @Autonomous(group = "test")
 public class SplineTest extends BaseOpMode {
-	double[][] points = {{0,0},{1,2},{2,3},{3,0}};
+	double[][] points = {{0,0},{5,10},{10,15},{15,0}};
 	double[][] result = SplineGenerate.splinefunction(points);
 	double[] theta={0,0};
 	double[] v=new double[2];
 	double[] p={0,0};
-	ElapsedTime t;
+	double speed,t;
 	int i=0;
 	@Override
 	public void init() {
@@ -24,22 +24,24 @@ public class SplineTest extends BaseOpMode {
 			telemetry.addLine(j[0]+" "+j[1]+" "+j[2]+" "+j[3]+" "+j[4]);
 		telemetry.update();
 		v[0]=1;
-
+		speed=0;
+		t=0;
 	}
-
 	@Override
 	public void loop() {
-		if(near(p[0],result[i][0],0.01)&&near(p[1],result[i][1],0.01))
+		if(near(p[0],points[i][0],0.01)&&near(p[1],points[i][1],0.01))
 			i++;
 		if(i==points.length-1)
 			requestOpModeStop();
-		v[1]=result[i][1]*(t.milliseconds()/1000-points[i-1][0])+2*result[i][2]*(t.milliseconds()/1000-points[i-1][0])+3*result[i][3]*(t.milliseconds()/1000-points[i-1][0])*(t.milliseconds()/1000-points[i-1][0]);
-		theta[1]=Math.atan(v[1]);
-
+		v[0]=1;
+		v[1]=3*result[i][0]*Math.pow((t-results[i][3]),2)+2*result[i][2]*(t-result[i][4])+result[i][1];
+		//theta[1]=Math.atan(v[1]);
 		//turn(theta[1]-theta[0]);
-		setAllDrivePower(v[0],v[1]);
-		theta[0]=theta[1];
+		//moveInches(Math.sqrt(Math.pow(v[0]*0.01,2)+Math.pow(v[1]*0.01,2)),0,speed);
+		//theta[0]=theta[1];
+		moveInches(v[0]*0.01,v[1]*0.01,speed);
 		p[0]+=v[0];
 		p[1]+=v[1];
+		t+=0.01
 	}
 }
