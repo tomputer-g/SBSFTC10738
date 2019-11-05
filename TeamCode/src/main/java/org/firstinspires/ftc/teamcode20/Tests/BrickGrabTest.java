@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 
-@TeleOp
+@TeleOp(name = "闲话终日有 干就自然无", group = "Tests")
 
 public class BrickGrabTest extends BaseAuto {
     Rev2mDistanceSensor left,right;
@@ -30,7 +30,7 @@ public class BrickGrabTest extends BaseAuto {
         if(gamepad1.right_bumper){
             while(gamepad1.right_bumper){}
             brake();
-            while(!near(dl,dr,.8)){
+            while(!near(dl,dr,.5)){
                 dl=left.getDistance(DistanceUnit.INCH);
                 dr=right.getDistance(DistanceUnit.INCH);
                 if(dl<dr)setAllDrivePower(-speed,-speed,-speed,-speed);
