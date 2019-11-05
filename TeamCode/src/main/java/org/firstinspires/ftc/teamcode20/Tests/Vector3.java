@@ -12,20 +12,25 @@ public class Vector3 {
         this.x=x; this.y=y; this.z = z;
     }
 
-    //calculation methods
-    //add to the called vector,change its value
     public void add(Vector3 a){
         this.x+=a.x;
         this.y+=a.y;
         this.z+=a.z;
     }
-    //return the sum of the vectors(no change on original vectors)
+    public void multiply(double a){
+        this.x*=a; this.y*=a; this.z*=a;
+    }
+    //basic operations
     public static Vector3 sum(Vector3 a, Vector3 b) {
         return new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
     }
-    public void mult(double a){
-        x*=a; y*=a; z*=a;
+    public static Vector3 dotproduct(Vector3 a, Vector3 b){
+        return new Vector3(a.x*b.x,a.y*b.y,a.z*b.z);
     }
+    public static Vector3 crossproduct(Vector3 a, Vector3 b){
+        return new Vector3(a.y*b.z - a.z*b.y, a.z*b.x - b.z*a.x, a.x*b.y - a.y*b.x);
+    }
+
 
     //other methods
     public double dist3D(){

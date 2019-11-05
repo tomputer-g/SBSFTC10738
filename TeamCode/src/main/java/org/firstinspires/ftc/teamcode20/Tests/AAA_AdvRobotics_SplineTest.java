@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 import org.firstinspires.ftc.teamcode19.BaseOpMode;
 
-//@Autonomous(name = "SplineTest")
+@Autonomous
 public class AAA_AdvRobotics_SplineTest extends BaseOpMode {
     private int[][] testPoints = {{2,0},{4,2}};
     @Override
