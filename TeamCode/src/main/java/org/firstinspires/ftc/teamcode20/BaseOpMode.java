@@ -104,6 +104,15 @@ public class BaseOpMode extends OpMode {
         telemetry.addLine("BaseOpMode -> initOdometry() still a stub!");
     }
 
+    protected boolean cBP(boolean b,boolean[] f){
+        /*
+        if(b)f[0]=true;
+        else if(!b&&f[0])f[0]=false;
+        if(!f[0])
+        */
+            return true;
+    }
+
     protected void move(double vx, double vy, double vr){
         LF.setPower(0.5 * (vx - vy + vr));
         LB.setPower(0.5 * (-vy - vx + vr));

@@ -13,6 +13,7 @@ public class BrickGrabTest extends BaseAuto {
     Rev2mDistanceSensor left,right;
     ElapsedTime t;
     double speed,dl,dr;
+    boolean rBprimed=false;
     //double indicator;
     //String logName = "FaceWallLog"+System.currentTimeMillis()+".csv";
     public void init() {
@@ -27,27 +28,62 @@ public class BrickGrabTest extends BaseAuto {
     }
     @Override
     public void loop() {
-        if(gamepad1.right_bumper){
-            while(gamepad1.right_bumper){}
-            brake();
+        if(gamepad1.dpad_up){
+            while (gamepad1.dpad_up);
+            speed+=0.05;
+        }
+        if(gamepad1.dpad_down){
+            while (gamepad1.dpad_down);
+            speed-=0.05;
+        }
+        telemetry.addData("speed",speed);
+        telemetry.addData("WAITING FOR ACTIONS",0);
+        if(this.gamepad1.right_bumper){
+            rBprimed = true;
+            setAllDrivePower(0);
+            telemetry.addData("开整",0);
+            dl=left.getDistance(DistanceUnit.INCH);
+            dr=right.getDistance(DistanceUnit.INCH);
             while(!near(dl,dr,.5)){
                 dl=left.getDistance(DistanceUnit.INCH);
                 dr=right.getDistance(DistanceUnit.INCH);
-                if(dl<dr)setAllDrivePower(-speed,-speed,-speed,-speed);
-                else setAllDrivePower(speed,speed,speed,speed);
+                if(dl<dr)setAllDrivePower(speed-0.2,speed+0.2,speed-0.2,speed+0.2);
+                else setAllDrivePower(-speed+0.2,-speed-0.2,-speed+0.2,-speed-0.2);
             }
             setAllDrivePower(0);
-            while(dr<20){
+        }
+        if(!this.gamepad1.right_bumper && rBprimed)rBprimed=false;
+        /**
+        if(this.gamepad1.right_bumper){
+            while(gamepad1.right_bumper);
+            setAllDrivePower(0);
+            telemetry.addData("开整",0);
+            dl=left.getDistance(DistanceUnit.INCH);
+            dr=right.getDistance(DistanceUnit.INCH);
+            while(!near(dl,dr,.5)){
+                dl=left.getDistance(DistanceUnit.INCH);
+                dr=right.getDistance(DistanceUnit.INCH);
+                if(dl<dr)setAllDrivePower(speed+0.5,speed-0.5,speed+0.5,speed-0.5);
+                else setAllDrivePower(-speed-0.5,-speed+0.5,-speed-0.5,-speed+0.5);
+            }
+            setAllDrivePower(0);
+            /*
+            double a=left.getDistance(DistanceUnit.INCH);
+            dr=right.getDistance(DistanceUnit.INCH);
+            while(dr>a){
                 dl=left.getDistance(DistanceUnit.INCH);
                 dr=right.getDistance(DistanceUnit.INCH);
                 setAllPDrivePower1(-speed,speed,-speed,speed);
             }
             setAllDrivePower(0);
-        }
+            */
+            telemetry.update();
+        //}
+
+        telemetry.update();
     }
     @Override
     public void stop() {
         setAllDrivePower(0);
-        stopLog();
     }
 }
