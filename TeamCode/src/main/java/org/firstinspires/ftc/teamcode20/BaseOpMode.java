@@ -105,11 +105,15 @@ public class BaseOpMode extends OpMode {
     }
 
     protected boolean cBP(boolean b,boolean[] f){
+        //chzch butt on press
+        //淦 --yeah
+        //微笑着面对它
         if(b||!f[0]){
             if(b)f[0]=false;
-            else f[0]=True;
-            if(f)return true;
+            else f[0]=true;
+            if(f[0])return true;
         }
+        return false;
     }
 
     protected void move(double vx, double vy, double vr){
@@ -119,7 +123,7 @@ public class BaseOpMode extends OpMode {
         RB.setPower(0.5 * (-vx + vy + vr));
     }
 
-    protected void setAllPDrivePower1(double a,double b,double c,double d){
+    protected void 好活(double a, double b, double c, double d){
         setAllDrivePower(a,b,-c,-d);
     }
 
