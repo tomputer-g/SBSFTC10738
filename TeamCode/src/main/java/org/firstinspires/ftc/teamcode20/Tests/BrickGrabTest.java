@@ -38,22 +38,21 @@ public class BrickGrabTest extends BaseAuto {
         }
         telemetry.addData("speed",speed);
         telemetry.addData("WAITING FOR ACTIONS",0);
-        if(this.gamepad1.right_bumper){
+        if(this.gamepad1.right_bumper) {
             rBprimed = true;
             setAllDrivePower(0);
-            telemetry.addData("开整",0);
-            dl=left.getDistance(DistanceUnit.INCH);
-            dr=right.getDistance(DistanceUnit.INCH);
-            while(!near(dl,dr,.5)){
-                dl=left.getDistance(DistanceUnit.INCH);
-                dr=right.getDistance(DistanceUnit.INCH);
-                if(dl<dr)setAllDrivePower(speed-0.2,speed+0.2,speed-0.2,speed+0.2);
-                else setAllDrivePower(-speed+0.2,-speed-0.2,-speed+0.2,-speed-0.2);
+            telemetry.addData("开整", 0);
+            dl = left.getDistance(DistanceUnit.INCH);
+            dr = right.getDistance(DistanceUnit.INCH);
+            while (!near(dl, dr, .5)) {
+                dl = left.getDistance(DistanceUnit.INCH);
+                dr = right.getDistance(DistanceUnit.INCH);
+                if (dl < dr) setAllDrivePower(speed - 0.2, speed + 0.2, speed - 0.2, speed + 0.2);
+                else setAllDrivePower(-speed + 0.2, -speed - 0.2, -speed + 0.2, -speed - 0.2);
             }
             setAllDrivePower(0);
-        }
-        if(!this.gamepad1.right_bumper && rBprimed)rBprimed=false;
-        /**
+
+        /*
         if(this.gamepad1.right_bumper){
             while(gamepad1.right_bumper);
             setAllDrivePower(0);
@@ -67,19 +66,22 @@ public class BrickGrabTest extends BaseAuto {
                 else setAllDrivePower(-speed-0.5,-speed+0.5,-speed-0.5,-speed+0.5);
             }
             setAllDrivePower(0);
-            /*
-            double a=left.getDistance(DistanceUnit.INCH);
-            dr=right.getDistance(DistanceUnit.INCH);
-            while(dr>a){
-                dl=left.getDistance(DistanceUnit.INCH);
-                dr=right.getDistance(DistanceUnit.INCH);
-                setAllPDrivePower1(-speed,speed,-speed,speed);
+
+         */
+            double a = left.getDistance(DistanceUnit.INCH);
+            dr = right.getDistance(DistanceUnit.INCH);
+            dl = left.getDistance(DistanceUnit.INCH);
+            while (!(dr < 3 || dl < 3)) {
+                dl = left.getDistance(DistanceUnit.INCH);
+                dr = right.getDistance(DistanceUnit.INCH);
+                setAllPDrivePower1(speed, speed, speed, speed);
             }
             setAllDrivePower(0);
-            */
-            telemetry.update();
-        //}
 
+            telemetry.update();
+            if (!this.gamepad1.right_bumper && rBprimed) rBprimed = false;
+
+        }
         telemetry.update();
     }
     @Override
