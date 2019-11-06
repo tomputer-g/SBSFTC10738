@@ -123,7 +123,7 @@ public class BaseOpMode extends OpMode {
         RB.setPower(0.5 * (-vx + vy + vr));
     }
 
-    protected void 好活(double a, double b, double c, double d){
+    protected void setAllDrivePower1(double a, double b, double c, double d){
         setAllDrivePower(a,b,-c,-d);
     }
 
