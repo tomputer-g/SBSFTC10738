@@ -13,7 +13,9 @@ public class BrickGrabTest extends BaseAuto {
     Rev2mDistanceSensor left,right;
     ElapsedTime t;
     double speed,dl,dr;
-    boolean rBprimed=false;
+    boolean[] rB = {true};
+    boolean[] dpadUP = {true};
+    boolean[] dpadDOWN = {true};
     //double indicator;
     //String logName = "FaceWallLog"+System.currentTimeMillis()+".csv";
     public void init() {
@@ -24,35 +26,36 @@ public class BrickGrabTest extends BaseAuto {
         left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
         right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
         initIMU();
-        speed = 0.15;
+        speed = 0.12;
     }
     @Override
     public void loop() {
-        if(gamepad1.dpad_up){
-            while (gamepad1.dpad_up);
+        if(cBP(this.gamepad1.dpad_up,dpadUP)){
             speed+=0.05;
         }
-        if(gamepad1.dpad_down){
-            while (gamepad1.dpad_down);
+        if(cBP(this.gamepad1.dpad_down,dpadDOWN)){
             speed-=0.05;
         }
-        telemetry.addData("speed",speed);
+        telemetry.addData("Speed","%.2f",speed);
         telemetry.addData("WAITING FOR ACTIONS",0);
-        if(this.gamepad1.right_bumper){
-            rBprimed = true;
+        if(cBP(this.gamepad1.right_bumper, rB)) {
             setAllDrivePower(0);
-            telemetry.addData("开整",0);
-            dl=left.getDistance(DistanceUnit.INCH);
-            dr=right.getDistance(DistanceUnit.INCH);
-            while(!near(dl,dr,.5)){
-                dl=left.getDistance(DistanceUnit.INCH);
-                dr=right.getDistance(DistanceUnit.INCH);
-                if(dl<dr)setAllDrivePower(speed-0.2,speed+0.2,speed-0.2,speed+0.2);
-                else setAllDrivePower(-speed+0.2,-speed-0.2,-speed+0.2,-speed-0.2);
+            telemetry.addData("开整", 0);
+            dl = left.getDistance(DistanceUnit.INCH);
+            dr = right.getDistance(DistanceUnit.INCH);
+            while (!near(dl, dr, .5)) {
+                dl = left.getDistance(DistanceUnit.INCH);
+                dr = right.getDistance(DistanceUnit.INCH);
+                if (dl < dr) setAllDrivePower(speed - 0.2, speed + 0.2, speed - 0.2, speed + 0.2);
+                else setAllDrivePower(-speed + 0.2, -speed - 0.2, -speed + 0.2, -speed - 0.2);
             }
             setAllDrivePower(0);
+            while (dr<20) {
+             //   dl = left.getDistance(DistanceUnit.INCH);
+                dr = right.getDistance(DistanceUnit.INCH);
+                好活(speed, speed, speed, speed);
+            }
         }
-        if(!this.gamepad1.right_bumper && rBprimed)rBprimed=false;
         /**
         if(this.gamepad1.right_bumper){
             while(gamepad1.right_bumper);
@@ -73,7 +76,7 @@ public class BrickGrabTest extends BaseAuto {
             while(dr>a){
                 dl=left.getDistance(DistanceUnit.INCH);
                 dr=right.getDistance(DistanceUnit.INCH);
-                setAllPDrivePower1(-speed,speed,-speed,speed);
+                好活(-speed,speed,-speed,speed);
             }
             setAllDrivePower(0);
             */
