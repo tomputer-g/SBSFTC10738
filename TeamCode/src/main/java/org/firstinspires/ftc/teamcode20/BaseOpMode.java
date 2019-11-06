@@ -105,12 +105,11 @@ public class BaseOpMode extends OpMode {
     }
 
     protected boolean cBP(boolean b,boolean[] f){
-        /*
-        if(b)f[0]=true;
-        else if(!b&&f[0])f[0]=false;
-        if(!f[0])
-        */
-            return true;
+        if(b||!f[0]){
+            if(b)f[0]=false;
+            else f[0]=True;
+            if(f)return true;
+        }
     }
 
     protected void move(double vx, double vy, double vr){
