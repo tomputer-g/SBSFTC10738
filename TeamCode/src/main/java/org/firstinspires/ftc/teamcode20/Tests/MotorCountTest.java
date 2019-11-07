@@ -11,7 +11,7 @@ public class MotorCountTest extends TractionControl {
     double speed,brakeSpeed;
     int actionIndex = 0;
     double icLF=0,icLB=0,icRF=0,icRB=0;
-    boolean[] primed = {false};
+    boolean[] primed = {true};
     //String logName = "MotorCountTest"+System.currentTimeMillis()+".csv";
     public void init() {
         //initLogger(logName);
@@ -20,7 +20,7 @@ public class MotorCountTest extends TractionControl {
         t = new ElapsedTime();
         initIMU();
         speed = 0.3;
-        brakeSpeed = 0.3;
+        brakeSpeed = 1;
         actionIndex = 1;
     }
     @Override
