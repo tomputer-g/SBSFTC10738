@@ -11,7 +11,7 @@ public class MotorCountTest extends TractionControl {
     double speed,brakeSpeed;
     int actionIndex = 0;
     double icLF=0,icLB=0,icRF=0,icRB=0;
-    boolean[] primed = {true};
+    boolean[] primedl = {true};boolean[] primedr = {true};boolean[] primedu = {true};boolean[] primedd = {true};boolean[] primedlb = {true};boolean[] primedrb = {true};
     //String logName = "MotorCountTest"+System.currentTimeMillis()+".csv";
     public void init() {
         //initLogger(logName);
@@ -25,17 +25,17 @@ public class MotorCountTest extends TractionControl {
     }
     @Override
     public void init_loop() {
-        if(cBP(this.gamepad1.dpad_up,primed))
+        if(cBP(this.gamepad1.dpad_up,primedu))
             speed+=0.05;
-        if(cBP(this.gamepad1.dpad_down,primed))
+        if(cBP(this.gamepad1.dpad_down,primedd))
             speed-=0.05;
-        if(cBP(this.gamepad1.dpad_left,primed))
+        if(cBP(this.gamepad1.dpad_left,primedl))
             brakeSpeed-=0.05;
-        if(cBP(this.gamepad1.dpad_right,primed))
+        if(cBP(this.gamepad1.dpad_right,primedr))
             brakeSpeed+=0.05;
-        if(cBP(this.gamepad1.left_bumper,primed))
+        if(cBP(this.gamepad1.left_bumper,primedlb))
             actionIndex = 1;
-        if(cBP(this.gamepad1.right_bumper,primed))
+        if(cBP(this.gamepad1.right_bumper,primedrb))
             actionIndex = 2;
         icLF=getMC(LF);icLB=getMC(LB);icRF=getMC(RF);icRB=getMC(RB);
         telemetry.addLine("vr: "+speed);
@@ -48,7 +48,7 @@ public class MotorCountTest extends TractionControl {
 
     @Override
     public void loop() {
-        if(cBP(this.gamepad1.left_bumper,primed)) actionIndex = 0;
+        if(cBP(this.gamepad1.left_bumper,primedlb)) actionIndex = 0;
         if(actionIndex == 1)
             setAllDrivePower(-speed,-speed,speed,speed);
         else{
