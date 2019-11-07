@@ -40,7 +40,7 @@ public class BrickGrabTest extends BaseAuto {
         telemetry.addData("WAITING FOR ACTIONS",0);
         if(cBP(this.gamepad1.right_bumper, rB)) {
             setAllDrivePower(0);
-            telemetry.addData("开整", 0);
+            telemetry.addData("magical conch", 0);
             dl = left.getDistance(DistanceUnit.INCH);
             dr = right.getDistance(DistanceUnit.INCH);
             while (!near(dl, dr, .5)) {
@@ -53,7 +53,7 @@ public class BrickGrabTest extends BaseAuto {
             while (dr<20) {
              //   dl = left.getDistance(DistanceUnit.INCH);
                 dr = right.getDistance(DistanceUnit.INCH);
-                好活(speed, speed, speed, speed);
+                setAllDrivePower1(speed, speed, speed, speed);
             }
         }
         /**
