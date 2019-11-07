@@ -27,7 +27,7 @@ public class BaseOpMode extends OpMode {
     protected DcMotor LF, LB, RF, RB;
     private final String logPrefix = "/sdcard/";
     private BufferedWriter logWriter;
-
+    private boolean[] buttonFlags={};
 
     @Override public void init() {
         msStuckDetectInit = 10000;
@@ -104,7 +104,7 @@ public class BaseOpMode extends OpMode {
         telemetry.addLine("BaseOpMode -> initOdometry() still a stub!");
     }
 
-    protected boolean cBP(boolean b,boolean[] f){
+    protected boolean 整(boolean b, boolean[] f){
         //chzch butt on press
         //淦 --yeah
         //微笑着面对它
@@ -121,10 +121,6 @@ public class BaseOpMode extends OpMode {
         LB.setPower(0.5 * (-vy - vx + vr));
         RF.setPower(0.5 * (vx + vy + vr));
         RB.setPower(0.5 * (-vx + vy + vr));
-    }
-
-    protected void setAllDrivePower1(double a, double b, double c, double d){
-        setAllDrivePower(a,b,-c,-d);
     }
 
     private double sigmoid_brake(double power){
@@ -166,7 +162,15 @@ public class BaseOpMode extends OpMode {
         //wait(300);
         setAllDrivePower(0);
     }
-    
+
+    protected void setAllDrivePower1(double a, double b, double c, double d){
+        setAllDrivePower(a,b,-c,-d);
+    }
+
+    protected void 好活(double a,double b,double c,double d){
+        setAllDrivePower(a,b,-c,-d);
+    }
+
     protected void moveInches(double xInch, double yInch, double speed){
         setMode_RESET_AND_RUN_TO_POSITION();
         double xmult = 60, ymult = 57.174, p_mult = 80;

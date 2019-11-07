@@ -12,10 +12,9 @@ import org.firstinspires.ftc.teamcode20.BaseAuto;
 public class BrickGrabTest extends BaseAuto {
     Rev2mDistanceSensor left,right;
     ElapsedTime t;
-    double vr,dl,dr, vt;
+    double vr, 周志艳, 周智妍, vt, v,threshold;
     boolean[] rB = {true};
-    boolean[] dpadUP = {true};
-    boolean[] dpadDOWN = {true};
+    boolean[] dpadUP = {true}, dpadDOWN = {true}, dpadLEFT = {true}, dpadRIGHT = {true};
     //double indicator;
     //String logName = "FaceWallLog"+System.currentTimeMillis()+".csv";
     public void init() {
@@ -26,42 +25,107 @@ public class BrickGrabTest extends BaseAuto {
         left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
         right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
         initIMU();
-        vr = 0.12;
+        vr = 0.1;
+        v = 0.15;
+        threshold=3.5;
     }
     @Override
     public void loop() {
-        if(cBP(this.gamepad1.dpad_up,dpadUP)){
-            vr +=0.05;
+        if(整(this.gamepad1.dpad_up,dpadUP)){
+            vr +=0.02;
         }
-        if(cBP(this.gamepad1.dpad_down,dpadDOWN)){
-            vr -=0.05;
+        if(整(this.gamepad1.dpad_down,dpadDOWN)){
+            vr -=0.02;
         }
-        telemetry.addData("Left", "%.2f", dl);
-        telemetry.addData("Right","%.2f",dr);
+        if(整(this.gamepad1.dpad_left,dpadLEFT)){
+            v-=0.02;
+        }
+        if(整(this.gamepad1.dpad_right,dpadRIGHT)){
+            v+=0.02;
+        }
+        telemetry.addData("Left", "%.2f", left.getDistance(DistanceUnit.INCH));
+        telemetry.addData("Right","%.2f",right.getDistance(DistanceUnit.INCH));
         telemetry.addData("Rotational speed","%.2f", vr);
         telemetry.addData("Translational speed", "%.2f",vt);
+        telemetry.addData("Forward speed", "%.2f",v);
+
         telemetry.addData("WAITING FOR ACTIONS",0);
 
-        if(cBP(this.gamepad1.right_bumper, rB)) {
-            setAllDrivePower(0);
-            dl = left.getDistance(DistanceUnit.INCH);
-            dr = right.getDistance(DistanceUnit.INCH);
-            vt = (dl+dr)/(2*11.25)*vr;
-            while (!near(dl, dr, .5)) {
-                dl = left.getDistance(DistanceUnit.INCH);
-                dr = right.getDistance(DistanceUnit.INCH);
+        if(整(this.gamepad1.right_bumper, rB)) {
+            周志艳 = left.getDistance(DistanceUnit.INCH);
+            周智妍 = right.getDistance(DistanceUnit.INCH);
+            /*
+            while((周志艳 > 20 && 周智妍 > 20) || (Math.abs(周志艳-周智妍) > 6)){
+                周志艳 = left.getDistance(DistanceUnit.INCH);
+                周智妍 = right.getDistance(DistanceUnit.INCH);
+                telemetry.addData("Left", "%.2f", left.getDistance(DistanceUnit.INCH));
+                telemetry.addData("Right","%.2f",right.getDistance(DistanceUnit.INCH));
                 telemetry.update();
-                if(dl > 30 || dr > 30);
-                else if (dl < dr) setAllDrivePower(vr - vt, vr + vt, vr - vt, vr + vt);
-                else setAllDrivePower(-vr + vt, -vr - vt, -vr + vt, -vr - vt);
+                //好活(-v,-v,-v,-v); 向前（屁股向后）
+                好活(v,v,v,v);
+            }
+            */
+            boolean 可乐 = false;
+            while (!可乐){
+                周志艳 = left.getDistance(DistanceUnit.INCH);
+                周智妍 = right.getDistance(DistanceUnit.INCH);
+                if(周志艳 <threshold&& 周智妍 <threshold){
+                    setAllDrivePower(0);
+                    可乐 = true;
+                }
+                else if(周志艳 <threshold){
+                    setAllDrivePower(0.2, -0.2, 0.2, -0.2);
+                }
+                else if(周智妍 <threshold){
+                    setAllDrivePower(-0.2, 0.2, -0.2, 0.2);
+                }
+                else{
+                    好活(v,v,v,v);
+                    vt = ((周志艳 + 周智妍)/2) / 10 * vr + 0.08;
+                    if(near(周志艳, 周智妍,8)){
+                        if (周志艳 < 周智妍) setAllDrivePower(v/2 + vr - vt, v/2 + vr + vt, -v/2 + vr - vt, -v/2 + vr + vt);
+                        else setAllDrivePower(v/2 -vr + vt, v/2 -vr - vt, -v/2 -vr + vt, -v/2 -vr - vt);
+                    }
+                    else if (周志艳 < 周智妍){
+                        setAllDrivePower(LF.getPower() +0.05, LB.getPower()-0.05, RF.getPower()+0.05, RB.getPower()-0.05);
+                    }
+                    else setAllDrivePower(LF.getPower() -0.05, LB.getPower()+0.05, RF.getPower()-0.05, RB.getPower()+0.05);
+
+                    wait(80);
+                }
+            }
+            /*
+            //else 好活(0.2,0.2,0.2,0.2);
+            setAllDrivePower(0);
+            周志艳 = left.getDistance(DistanceUnit.INCH);
+            周智妍 = right.getDistance(DistanceUnit.INCH);
+            vt = ((周志艳+周智妍)/2) / 10 * vr + 0.08;
+            while (!near(周志艳, 周智妍, .2)){
+                周志艳 = left.getDistance(DistanceUnit.INCH);
+                周智妍 = right.getDistance(DistanceUnit.INCH);
+                telemetry.addData("Rotational speed","%.2f", vr);
+                telemetry.addData("Left", "%.2f", left.getDistance(DistanceUnit.INCH));
+                telemetry.addData("Right","%.2f",right.getDistance(DistanceUnit.INCH));
+                telemetry.update();
+                if (周志艳 < 周智妍) setAllDrivePower(v/2 + vr - vt, v/2 + vr + vt, -v/2 + vr - vt, -v/2 + vr + vt);
+                else setAllDrivePower(v/2 -vr + vt, v/2 -vr - vt, -v/2 -vr + vt, -v/2 -vr - vt);
             }
             setAllDrivePower(0);
-            while (dr<20) {
-             //   dl = left.getDistance(DistanceUnit.INCH);
-                dr = right.getDistance(DistanceUnit.INCH);
-                setAllDrivePower1(vr, vr, vr, vr);
+            double aa = right.getDistance(DistanceUnit.INCH);
+            周志艳 = left.getDistance(DistanceUnit.INCH);
+            周智妍 = right.getDistance(DistanceUnit.INCH);
+            while (周智妍<aa+3 && near(周智妍,周志艳,2)) {
+             //   周志艳 = left.getDistance(DistanceUnit.INCH);
+                telemetry.addData("Left", "%.2f", left.getDistance(DistanceUnit.INCH));
+                telemetry.addData("Right","%.2f",right.getDistance(DistanceUnit.INCH));
+                周智妍 = right.getDistance(DistanceUnit.INCH);
+                setAllDrivePower(-0.2, 0.2, -0.2, 0.2); //right way
+                //setAllDrivePower(0.2, -0.2, 0.2, -0.2); //left way
                 telemetry.update();
             }
+
+             */
+            setAllDrivePower(0);
         }
 
         telemetry.update();

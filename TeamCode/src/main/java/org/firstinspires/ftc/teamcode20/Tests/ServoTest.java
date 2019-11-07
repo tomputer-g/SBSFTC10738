@@ -9,7 +9,20 @@ import com.qualcomm.robotcore.hardware.Servo;
  */
 @TeleOp
 public class ServoTest extends OpMode {
+    boolean x,l,r;
+    boolean[] X = {true}, L = {true}, R = {true};
     private Servo servo;
+    protected static boolean 整(boolean b, boolean[] f){
+        //chzch butt on press
+        //淦 --yeah
+        //微笑着面对它
+        if(b||!f[0]){
+            if(b)f[0]=false;
+            else f[0]=true;
+            if(f[0])return true;
+        }
+        return false;
+    }
     @Override
     public void init() {
         servo = hardwareMap.get(Servo.class,"servo");
@@ -19,20 +32,18 @@ public class ServoTest extends OpMode {
     @Override
     public void loop() {
 
-        if(this.gamepad1.x){
+        if(整(this.gamepad1.x,X)){
             servo.setPosition(0.5);
         }
 
-        if(this.gamepad1.dpad_left){
-            while(this.gamepad1.dpad_left);
+        if(整(this.gamepad1.dpad_left,L)){
             if (servo.getPosition() >= 0.05)
                 servo.setPosition(servo.getPosition() - 0.05);
             if (servo.getPosition() < 0.05)
                 servo.setPosition(0);
 
         }
-        else if(this.gamepad1.dpad_right){
-            while(this.gamepad1.dpad_right);
+        else if(整(this.gamepad1.dpad_right,R)){
             if (servo.getPosition() <= 0.95)
                 servo.setPosition(servo.getPosition() + 0.05);
             if (servo.getPosition() > 0.95)
