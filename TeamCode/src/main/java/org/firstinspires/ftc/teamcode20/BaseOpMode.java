@@ -27,7 +27,6 @@ public class BaseOpMode extends OpMode {
     protected DcMotor LF, LB, RF, RB;
     private final String logPrefix = "/sdcard/";
     private BufferedWriter logWriter;
-    //private boolean[] buttonFlag={};
 
     @Override public void init() {
         msStuckDetectInit = 10000;
