@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-
+@Deprecated
 public class TeleOp_SteroidsRocketLeague extends BaseOpMode {
 
     private double v = 0, x = 0;

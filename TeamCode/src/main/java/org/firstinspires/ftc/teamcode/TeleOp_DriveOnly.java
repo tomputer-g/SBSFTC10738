@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode19.BaseTeleOp;
 
-@TeleOp(group = "Final")
+@TeleOp
 public class TeleOp_DriveOnly extends BaseTeleOp {
 
     @Override

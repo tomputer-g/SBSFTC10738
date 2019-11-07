@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+@Deprecated
 public class TeleOp_WinstonDonutDrive extends BaseOpMode {
     private double outerSpeed = 0.5, innerSpeed = 0, cornerSpeed = 0.5;
     @Override

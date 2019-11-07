@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import java.text.DecimalFormat;
-
 @TeleOp()
 public class TeleOp_RocketLeague extends BaseOpMode {
 

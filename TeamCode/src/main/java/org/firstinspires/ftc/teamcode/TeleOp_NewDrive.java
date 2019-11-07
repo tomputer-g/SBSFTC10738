@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-
+@Deprecated
 public class TeleOp_NewDrive extends BaseOpMode {
 
     protected static final double ctrl_deadzone = 0.2;
