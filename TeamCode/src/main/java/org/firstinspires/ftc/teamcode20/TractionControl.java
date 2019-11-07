@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode20;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-public class TractionDrive extends BaseAuto{
+public class TractionControl extends BaseAuto{
     private static double pcLF=0,pcLB=0,pcRF=0,pcRB=0,cLF,cLB,cRF,cRB,min,minp,pLF,pLB,pRF,pRB;
     public void setTDpower(double ipLF,double ipLB,double ipRF,double ipRB)
     {

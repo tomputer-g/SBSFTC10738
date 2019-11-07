@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 import org.firstinspires.ftc.teamcode20.*;
 
 
 @TeleOp(name = "MotorCountTest", group = "Tests")
-public class MotorCountTest extends TractionDrive {
+public class MotorCountTest extends TractionControl {
     ElapsedTime t;
     double speed,brakeSpeed;
     int actionIndex = 0;
@@ -31,7 +31,7 @@ public class MotorCountTest extends TractionDrive {
             speed-=0.05;
         if(cBP(this.gamepad1.dpad_left,primed))
             brakeSpeed-=0.05;
-        if(cBP(this.gamepad1.dpad_right,primed))   
+        if(cBP(this.gamepad1.dpad_right,primed))
             brakeSpeed+=0.05;
         if(cBP(this.gamepad1.left_bumper,primed))
             actionIndex = 1;
