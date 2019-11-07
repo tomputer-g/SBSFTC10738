@@ -3,7 +3,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class TractionControl extends BaseAuto{
     private static double pcLF=0,pcLB=0,pcRF=0,pcRB=0,cLF,cLB,cRF,cRB,min,minp,pLF,pLB,pRF,pRB;
-    public void setTDpower(double ipLF,double ipLB,double ipRF,double ipRB)
+    protected void setTDpower(double ipLF,double ipLB,double ipRF,double ipRB)
     {
         pLF=Math.abs(ipLF); pLB=Math.abs(ipLB); pRF=Math.abs(ipRF); pRB=Math.abs(ipRB);
         cLF = Math.abs(getMC(LF)-pcLF); cLB = Math.abs(getMC(LB)-pcLB); cRF = Math.abs(getMC(RF)-pcRF); cRB = Math.abs(getMC(RB)-pcRB);
@@ -12,10 +12,10 @@ public class TractionControl extends BaseAuto{
         setAllDrivePower1(cLF/min>pLF/minp?0:pLF, cLB/min>pLB/minp?0:pLB, cRF/min>pRF/minp?0:pRF, cRB/min>pRB/minp?0:pRB);
         pcLF=cLF; pcLB=cLB; pcRF=cRF; pcRB=cRB;
     }
-    public static double getMC(DcMotor i){
+    protected static double getMC(DcMotor i){
         return i.getCurrentPosition();
     }
-    public void brakeTD(double brakespeed,double tolerance){
+    protected void brakeTD(double brakespeed,double tolerance){
         pcLF=0;pcLB=0;pcRF=0;pcRB=0;
         while(!near(cLF,0,10)||!near(cLB,0,10)||!near(cRF,0,10)||!near(cRB,0,10)){
                 cLF = Math.abs(getMC(LF)-pcLF); cLB = Math.abs(getMC(LB)-pcLB); cRF = Math.abs(getMC(RF)-pcRF); cRB = Math.abs(getMC(RB)-pcRB);
