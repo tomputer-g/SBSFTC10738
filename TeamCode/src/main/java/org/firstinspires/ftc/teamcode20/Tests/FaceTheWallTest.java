@@ -39,7 +39,7 @@ public class FaceTheWallTest extends BaseAuto {
             while (this.gamepad1.dpad_down);
             speed-=0.05;
         }
-        telemetry.addLine("speed: "+speed);
+        telemetry.addLine("vr: "+speed);
         telemetry.update();
         }
 

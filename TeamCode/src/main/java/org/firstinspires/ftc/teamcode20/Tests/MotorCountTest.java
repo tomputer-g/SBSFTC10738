@@ -38,8 +38,8 @@ public class MotorCountTest extends TractionControl {
         if(cBP(this.gamepad1.right_bumper,primed))
             actionIndex = 2;
         icLF=getMC(LF);icLB=getMC(LB);icRF=getMC(RF);icRB=getMC(RB);
-        telemetry.addLine("speed: "+speed);
-        telemetry.addLine("brake speed: "+brakeSpeed);
+        telemetry.addLine("vr: "+speed);
+        telemetry.addLine("brake vr: "+brakeSpeed);
         telemetry.addLine("actionIndex: "+actionIndex);
         telemetry.addLine("MC: "+getMC(LF)+","+getMC(LB)+","+getMC(RF)+","+getMC(RB));
         telemetry.update();

@@ -37,7 +37,7 @@ public class SplineTest extends BaseOpMode {
 		v[1]=3*result[i][0]*Math.pow((t-result[i][3]),2)+2*result[i][2]*(t-result[i][4])+result[i][1];
 		//theta[1]=Math.atan(v[1]);
 		//turn(theta[1]-theta[0]);
-		//moveInches(Math.sqrt(Math.pow(v[0]*0.01,2)+Math.pow(v[1]*0.01,2)),0,speed);
+		//moveInches(Math.sqrt(Math.pow(v[0]*0.01,2)+Math.pow(v[1]*0.01,2)),0,vr);
 		//theta[0]=theta[1];
 		moveInches(v[0]*0.01,v[1]*0.01,speed);
 		p[0]+=v[0];
