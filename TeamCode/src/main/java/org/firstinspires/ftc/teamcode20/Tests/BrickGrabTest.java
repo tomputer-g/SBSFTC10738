@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode20.BaseAuto;
 public class BrickGrabTest extends BaseAuto {
     Rev2mDistanceSensor left,right;
     ElapsedTime t;
-    double speed,dl,dr;
+    double vr,dl,dr, vt;
     boolean[] rB = {true};
     boolean[] dpadUP = {true};
     boolean[] dpadDOWN = {true};
@@ -26,62 +26,43 @@ public class BrickGrabTest extends BaseAuto {
         left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
         right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
         initIMU();
-        speed = 0.12;
+        vr = 0.12;
     }
     @Override
     public void loop() {
         if(cBP(this.gamepad1.dpad_up,dpadUP)){
-            speed+=0.05;
+            vr +=0.05;
         }
         if(cBP(this.gamepad1.dpad_down,dpadDOWN)){
-            speed-=0.05;
+            vr -=0.05;
         }
-        telemetry.addData("Speed","%.2f",speed);
+        telemetry.addData("Left", "%.2f", dl);
+        telemetry.addData("Right","%.2f",dr);
+        telemetry.addData("Rotational speed","%.2f", vr);
+        telemetry.addData("Translational speed", "%.2f",vt);
         telemetry.addData("WAITING FOR ACTIONS",0);
+
         if(cBP(this.gamepad1.right_bumper, rB)) {
             setAllDrivePower(0);
-            telemetry.addData("magical conch", 0);
             dl = left.getDistance(DistanceUnit.INCH);
             dr = right.getDistance(DistanceUnit.INCH);
+            vt = (dl+dr)/(2*11.25)*vr;
             while (!near(dl, dr, .5)) {
                 dl = left.getDistance(DistanceUnit.INCH);
                 dr = right.getDistance(DistanceUnit.INCH);
-                if (dl < dr) setAllDrivePower(speed - 0.2, speed + 0.2, speed - 0.2, speed + 0.2);
-                else setAllDrivePower(-speed + 0.2, -speed - 0.2, -speed + 0.2, -speed - 0.2);
+                telemetry.update();
+                if(dl > 30 || dr > 30);
+                else if (dl < dr) setAllDrivePower(vr - vt, vr + vt, vr - vt, vr + vt);
+                else setAllDrivePower(-vr + vt, -vr - vt, -vr + vt, -vr - vt);
             }
             setAllDrivePower(0);
             while (dr<20) {
              //   dl = left.getDistance(DistanceUnit.INCH);
                 dr = right.getDistance(DistanceUnit.INCH);
-                setAllDrivePower1(speed, speed, speed, speed);
+                setAllDrivePower1(vr, vr, vr, vr);
+                telemetry.update();
             }
         }
-        /**
-        if(this.gamepad1.right_bumper){
-            while(gamepad1.right_bumper);
-            setAllDrivePower(0);
-            telemetry.addData("开整",0);
-            dl=left.getDistance(DistanceUnit.INCH);
-            dr=right.getDistance(DistanceUnit.INCH);
-            while(!near(dl,dr,.5)){
-                dl=left.getDistance(DistanceUnit.INCH);
-                dr=right.getDistance(DistanceUnit.INCH);
-                if(dl<dr)setAllDrivePower(speed+0.5,speed-0.5,speed+0.5,speed-0.5);
-                else setAllDrivePower(-speed-0.5,-speed+0.5,-speed-0.5,-speed+0.5);
-            }
-            setAllDrivePower(0);
-            /*
-            double a=left.getDistance(DistanceUnit.INCH);
-            dr=right.getDistance(DistanceUnit.INCH);
-            while(dr>a){
-                dl=left.getDistance(DistanceUnit.INCH);
-                dr=right.getDistance(DistanceUnit.INCH);
-                好活(-speed,speed,-speed,speed);
-            }
-            setAllDrivePower(0);
-            */
-            telemetry.update();
-        //}
 
         telemetry.update();
     }

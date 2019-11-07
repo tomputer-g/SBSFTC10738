@@ -60,8 +60,8 @@ public class TeleOp_DonutDrive extends BaseOpMode {
             setAllDrivePower(0);
         }
 
-        telemetry.addLine("DPAD L/R to modify outer speed");
-        telemetry.addLine("DPAD D/U to modify inner speed");
+        telemetry.addLine("DPAD L/R to modify outer vr");
+        telemetry.addLine("DPAD D/U to modify inner vr");
         telemetry.addLine("X/B to modify corner speeds");
         telemetry.addLine("Hold A to run at set speeds");
         telemetry.addLine(""+to3d(outerSpeed)+"  |  "+to3d(cornerSpeed));

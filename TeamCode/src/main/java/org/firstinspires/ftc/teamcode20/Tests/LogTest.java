@@ -44,7 +44,7 @@ public class LogTest extends BaseAuto {
             speed-=0.05;
         }
         if(!this.gamepad1.dpad_down && dpadDPrimed)dpadDPrimed=false;
-        telemetry.addLine("speed: "+speed);
+        telemetry.addLine("vr: "+speed);
         distLeft = left.getDistance(DistanceUnit.INCH);
         telemetry.addData("inch ahead",distFront);
     }
