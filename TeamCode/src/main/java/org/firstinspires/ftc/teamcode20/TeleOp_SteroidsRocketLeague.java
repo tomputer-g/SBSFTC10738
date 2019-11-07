@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode20;
 
-
+@Deprecated
 public class TeleOp_SteroidsRocketLeague extends BaseOpMode {
 
     private double v = 0, x = 0;
