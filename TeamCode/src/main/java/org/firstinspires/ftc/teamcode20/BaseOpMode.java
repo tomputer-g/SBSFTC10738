@@ -131,24 +131,6 @@ public class BaseOpMode extends OpMode {
         return (1.8/(1+pow(Math.E,5*power)))-0.9;
     }
 
-    protected void brake(){
-        double lf=LF.getPower(),lb=LB.getPower(),rf=RF.getPower(),rb=RB.getPower();
-        for(int i=0;i<4;i++){
-            setAllDrivePower(lf-0.2*lf*i,lb-0.2*lb*i,rf-rf*0.2*i,rb-rb*0.2*i);
-            if(Math.abs(lf-0.2*lf*i)<0.2) break;
-        }
-        setAllDrivePower(0);
-        for(int i=0;i<10;i++){
-            setAllDrivePower(.3,.3,-.3,-.3);
-            wait(50);
-            setAllDrivePower(0);
-            wait(5);
-        }
-        //setAllDrivePower(sigmoid_brake(lf),sigmoid_brake(lb),sigmoid_brake(rf),sigmoid_brake(rb));
-        //wait(300);
-        setAllDrivePower(0);
-    }
-
     protected void displayMotorPowers(double LF, double LB, double RF, double RB){
         telemetry.addLine();
         telemetry.addLine(""+to3dstr(LF)+"  |  "+to3dstr(RF));
@@ -167,6 +149,24 @@ public class BaseOpMode extends OpMode {
     }
     //----------------------------------------Movement Code here-----------------------------------------
     //for phone: phone camera facing x-, extended grabber is y+
+    protected void brake(){
+        double lf=LF.getPower(),lb=LB.getPower(),rf=RF.getPower(),rb=RB.getPower();
+        for(int i=0;i<4;i++){
+            setAllDrivePower(lf-0.2*lf*i,lb-0.2*lb*i,rf-rf*0.2*i,rb-rb*0.2*i);
+            if(Math.abs(lf-0.2*lf*i)<0.2) break;
+        }
+        setAllDrivePower(0);
+        for(int i=0;i<10;i++){
+            setAllDrivePower(.3,.3,-.3,-.3);
+            wait(50);
+            setAllDrivePower(0);
+            wait(5);
+        }
+        //setAllDrivePower(sigmoid_brake(lf),sigmoid_brake(lb),sigmoid_brake(rf),sigmoid_brake(rb));
+        //wait(300);
+        setAllDrivePower(0);
+    }
+    
     protected void moveInches(double xInch, double yInch, double speed){
         setMode_RESET_AND_RUN_TO_POSITION();
         double xmult = 60, ymult = 57.174, p_mult = 80;
