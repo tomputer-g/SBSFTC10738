@@ -31,25 +31,34 @@ public class MotorCountTest extends TractionDrive {
             speed-=0.05;
         if(cBP(this.gamepad1.dpad_left,primed))
             brakeSpeed-=0.05;
-        if(cBP(this.gamepad1.dpad_right,primed))
+        if(cBP(this.gamepad1.dpad_right,primed))   
             brakeSpeed+=0.05;
+        if(cBP(this.gamepad1.left_bumper,primed))
+            actionIndex = 1;
+        if(cBP(this.gamepad1.right_bumper,primed))
+            actionIndex = 2;
+        icLF=getMC(LF);icLB=getMC(LB);icRF=getMC(RF);icRB=getMC(RB);
         telemetry.addLine("speed: "+speed);
         telemetry.addLine("brake speed: "+brakeSpeed);
+        telemetry.addLine("actionIndex: "+actionIndex);
+        telemetry.addLine("MC: "+getMC(LF)+","+getMC(LB)+","+getMC(RF)+","+getMC(RB));
         telemetry.update();
-        if(cBP(this.gamepad1.left_bumper,primed)) actionIndex = 1;
-        if(cBP(this.gamepad1.right_bumper,primed)) actionIndex = 2;
-        icLF=getMC(LF);icLB=getMC(LB);icRF=getMC(RF);icRB=getMC(RB);
+
     }
 
     @Override
     public void loop() {
-        //setAllDrivePower(-speed,-speed,speed,speed);
-        t.seconds();
-        //telemetry.addLine("d MCs: "+"");
+        if(cBP(this.gamepad1.left_bumper,primed)) actionIndex = 0;
+        if(actionIndex == 1)
+            setAllDrivePower(-speed,-speed,speed,speed);
+        else{
+            brakeTD(brakeSpeed,10);
+            stop();
+        }
         telemetry.addLine("MC: "+getMC(LF)+","+getMC(LB)+","+getMC(RF)+","+getMC(RB));
     }
     @Override public void stop() {
         setAllDrivePower(0);
-        stopLog();
+        //stopLog();
     }
 }
