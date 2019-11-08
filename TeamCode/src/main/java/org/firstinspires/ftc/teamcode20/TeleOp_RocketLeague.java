@@ -10,10 +10,12 @@ public class TeleOp_RocketLeague extends BaseOpMode {
     private boolean isStrafeCtrl = false;
     private final double ctrl_deadzone = 0.2;
 
-    private boolean yPrimed = false, dpadLPrimed = false, dpadRPrimed = false;
+    private boolean yPrimed = false, dpadLPrimed = false, dpadRPrimed = false, BPrimed = false;
     @Override
     public void init() {
         initDrivetrain();
+        initGrabber();
+        grabber.setPosition(0);
     }
 
     @Override
@@ -25,40 +27,53 @@ public class TeleOp_RocketLeague extends BaseOpMode {
             yPrimed = false;
             isStrafeCtrl = !isStrafeCtrl;//toggle control scheme
         }
+
+        if(this.gamepad1.b){
+            BPrimed = true;
+        }
+        if(!this.gamepad1.b && BPrimed){
+            BPrimed = false;
+            if(grabber.getPosition() < 0.5){
+                grabber.setPosition(1);
+            }else{
+                grabber.setPosition(0);
+            }
+        }
         if(isStrafeCtrl){
             telemetry.addLine("STRAFE mode");
             scaledMove(-this.gamepad1.left_stick_x,-this.gamepad1.left_stick_y, -this.gamepad1.right_stick_x);
 
-        }else{
+        }else {
             telemetry.addLine("TANK mode");
-            if(this.gamepad1.dpad_left){
+            if (this.gamepad1.dpad_left) {
                 dpadLPrimed = true;
             }
-            if(!this.gamepad1.dpad_left && dpadLPrimed){
+            if (!this.gamepad1.dpad_left && dpadLPrimed) {
                 dpadLPrimed = false;
                 limit -= 0.01;
-                if(limit < 0) {
+                if (limit < 0) {
                     limit = 0;
                 }
             }
 
-            if(this.gamepad1.dpad_right){
+            if (this.gamepad1.dpad_right) {
                 dpadRPrimed = true;
             }
-            if(!this.gamepad1.dpad_right && dpadRPrimed){
+            if (!this.gamepad1.dpad_right && dpadRPrimed) {
                 dpadRPrimed = false;
                 limit += 0.01;
-                if(limit > 1){
+                if (limit > 1) {
                     limit = 1;
                 }
             }
             telemetry.addData("limit", limit);
-            if(this.gamepad1.right_trigger > 0.1)
+            if (this.gamepad1.right_trigger > 0.1) {//if triggers don't show, are gamepads set to XBOX?
                 v = 0.5;
-            else if(this.gamepad1.left_trigger > 0.1)
+            }else if (this.gamepad1.left_trigger > 0.1){
                 v = -0.5;
-            else
+            }else{
                 v = 0;
+            }
 
             if(this.gamepad1.x)
                 v *= 2;
