@@ -51,7 +51,7 @@ public class VuforiaSkystoneChaserWebcam extends BaseAuto {
     public void init() {
         initVuforiaWebcam();
         initDrivetrain();
-        initIMU();
+        扬();
         targetsSkyStone.activate();
     }
 

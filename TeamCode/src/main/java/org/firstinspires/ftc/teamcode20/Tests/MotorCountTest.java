@@ -11,7 +11,7 @@ public class MotorCountTest extends TractionControl {
     double speed,brakeSpeed;
     int actionIndex = 0;
     double icLF=0,icLB=0,icRF=0,icRB=0;
-    boolean[] primedl = {true};boolean[] primedr = {true};boolean[] primedu = {true};boolean[] primedd = {true};boolean[] primedlb = {true};boolean[] primedrb = {true};
+    boolean[] primed = {true};boolean[] primedr = {true};boolean[] primedu = {true};boolean[] primedd = {true};boolean[] primedlb = {true};boolean[] primedrb = {true};
     //String logName = "MotorCountTest"+System.currentTimeMillis()+".csv";
     public void init() {
         //initLogger(logName);
