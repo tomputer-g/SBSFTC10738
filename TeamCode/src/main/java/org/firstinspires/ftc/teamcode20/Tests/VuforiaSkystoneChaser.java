@@ -52,7 +52,7 @@ public class VuforiaSkystoneChaser extends BaseAuto {
     public void init() {
         initVuforia();
         initDrivetrain();
-        initIMU();
+        扬();
         targetsSkyStone.activate();
     }
 

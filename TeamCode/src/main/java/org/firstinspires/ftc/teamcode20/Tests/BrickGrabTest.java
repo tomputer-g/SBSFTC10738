@@ -24,7 +24,7 @@ public class BrickGrabTest extends BaseAuto {
         t = new ElapsedTime();
         left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
         right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
-        initIMU();
+        扬();
         vr = 0.1;
         v = 0.15;
         threshold=3.5;
@@ -70,33 +70,33 @@ public class BrickGrabTest extends BaseAuto {
                 周志艳 = left.getDistance(DistanceUnit.INCH);
                 周智妍 = right.getDistance(DistanceUnit.INCH);
                 if(周志艳 <threshold&& 周智妍 <threshold){
-                    setAllDrivePower(0);
+                    开倒车(0);
                     可乐 = true;
                 }
                 else if(周志艳 <threshold){
-                    setAllDrivePower(0.2, -0.2, 0.2, -0.2);
+                    开倒车(0.2, -0.2, 0.2, -0.2);
                 }
                 else if(周智妍 <threshold){
-                    setAllDrivePower(-0.2, 0.2, -0.2, 0.2);
+                    开倒车(-0.2, 0.2, -0.2, 0.2);
                 }
                 else{
                     好活(v,v,v,v);
                     vt = ((周志艳 + 周智妍)/2) / 10 * vr + 0.08;
                     if(near(周志艳, 周智妍,8)){
-                        if (周志艳 < 周智妍) setAllDrivePower(v/2 + vr - vt, v/2 + vr + vt, -v/2 + vr - vt, -v/2 + vr + vt);
-                        else setAllDrivePower(v/2 -vr + vt, v/2 -vr - vt, -v/2 -vr + vt, -v/2 -vr - vt);
+                        if (周志艳 < 周智妍) 开倒车(v/2 + vr - vt, v/2 + vr + vt, -v/2 + vr - vt, -v/2 + vr + vt);
+                        else 开倒车(v/2 -vr + vt, v/2 -vr - vt, -v/2 -vr + vt, -v/2 -vr - vt);
                     }
                     else if (周志艳 < 周智妍){
-                        setAllDrivePower(LF.getPower() +0.05, LB.getPower()-0.05, RF.getPower()+0.05, RB.getPower()-0.05);
+                        开倒车(LF.getPower() +0.05, LB.getPower()-0.05, RF.getPower()+0.05, RB.getPower()-0.05);
                     }
-                    else setAllDrivePower(LF.getPower() -0.05, LB.getPower()+0.05, RF.getPower()-0.05, RB.getPower()+0.05);
+                    else 开倒车(LF.getPower() -0.05, LB.getPower()+0.05, RF.getPower()-0.05, RB.getPower()+0.05);
 
                     wait(80);
                 }
             }
             /*
             //else 好活(0.2,0.2,0.2,0.2);
-            setAllDrivePower(0);
+            开倒车(0);
             周志艳 = left.getDistance(DistanceUnit.INCH);
             周智妍 = right.getDistance(DistanceUnit.INCH);
             vt = ((周志艳+周智妍)/2) / 10 * vr + 0.08;
@@ -107,10 +107,10 @@ public class BrickGrabTest extends BaseAuto {
                 telemetry.addData("Left", "%.2f", left.getDistance(DistanceUnit.INCH));
                 telemetry.addData("Right","%.2f",right.getDistance(DistanceUnit.INCH));
                 telemetry.update();
-                if (周志艳 < 周智妍) setAllDrivePower(v/2 + vr - vt, v/2 + vr + vt, -v/2 + vr - vt, -v/2 + vr + vt);
-                else setAllDrivePower(v/2 -vr + vt, v/2 -vr - vt, -v/2 -vr + vt, -v/2 -vr - vt);
+                if (周志艳 < 周智妍) 开倒车(v/2 + vr - vt, v/2 + vr + vt, -v/2 + vr - vt, -v/2 + vr + vt);
+                else 开倒车(v/2 -vr + vt, v/2 -vr - vt, -v/2 -vr + vt, -v/2 -vr - vt);
             }
-            setAllDrivePower(0);
+            开倒车(0);
             double aa = right.getDistance(DistanceUnit.INCH);
             周志艳 = left.getDistance(DistanceUnit.INCH);
             周智妍 = right.getDistance(DistanceUnit.INCH);
@@ -119,19 +119,19 @@ public class BrickGrabTest extends BaseAuto {
                 telemetry.addData("Left", "%.2f", left.getDistance(DistanceUnit.INCH));
                 telemetry.addData("Right","%.2f",right.getDistance(DistanceUnit.INCH));
                 周智妍 = right.getDistance(DistanceUnit.INCH);
-                setAllDrivePower(-0.2, 0.2, -0.2, 0.2); //right way
-                //setAllDrivePower(0.2, -0.2, 0.2, -0.2); //left way
+                开倒车(-0.2, 0.2, -0.2, 0.2); //right way
+                //开倒车(0.2, -0.2, 0.2, -0.2); //left way
                 telemetry.update();
             }
 
              */
-            setAllDrivePower(0);
+            开倒车(0);
         }
 
         telemetry.update();
     }
     @Override
     public void stop() {
-        setAllDrivePower(0);
+        开倒车(0);
     }
 }

@@ -28,7 +28,7 @@ public class LogTest extends BaseAuto {
         rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "front");
         left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
         right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
-        initIMU();
+        扬();
         speed = 0.3;
     }
 

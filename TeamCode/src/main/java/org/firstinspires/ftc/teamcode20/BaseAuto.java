@@ -164,7 +164,7 @@ public class BaseAuto extends BaseOpMode {
     }
 
     //IMU
-    protected void initIMU(){
+    protected void 扬(){
         BNO055IMU.Parameters BNOParameters = new BNO055IMU.Parameters();
         BNOParameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         BNOParameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;

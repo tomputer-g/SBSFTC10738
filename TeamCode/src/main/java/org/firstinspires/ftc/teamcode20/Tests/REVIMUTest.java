@@ -11,7 +11,7 @@ public class REVIMUTest extends BaseAuto{
     private ModernRoboticsI2cRangeSensor rangeSensor;
     @Override
     public void init() {
-        initIMU();
+        扬();
         rangeSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range");
     }
 
