@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class TeleOp_ScaledDrive extends BaseOpMode {
 
     private final double ctrl_deadzone = 0.2;
-    private double linear_proportion = 0.5;
+    private double linear_proportion = 1;
     @Override
     public void init() {
         initDrivetrain();

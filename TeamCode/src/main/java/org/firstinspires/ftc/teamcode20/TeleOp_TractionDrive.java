@@ -6,7 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class TeleOp_TractionDrive extends TractionControl {
 
     private final double ctrl_deadzone = 0.2;
-    private double linear_proportion = 0.5;
+    private double linear_proportion = 1;
+    private boolean[] primed = {true};
     @Override
     public void init() {
         initDrivetrain();
@@ -45,6 +46,7 @@ public class TeleOp_TractionDrive extends TractionControl {
             if(linear_proportion > 0.8)
                 linear_proportion = 0.8;
         }
+        if(cBP(this.gamepad1.left_bumper,primed)) brakeTD(1,10);
 
         telemetry.addLine("Linear: "+linear_proportion + ", Rotational: " + (1-linear_proportion));
         telemetry.update();

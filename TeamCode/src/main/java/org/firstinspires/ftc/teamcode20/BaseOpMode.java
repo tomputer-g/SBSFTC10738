@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode20;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.io.BufferedWriter;
@@ -25,6 +26,7 @@ Make sure TeleOp2019Trident and BaseAuto can inherit needed stuff by setting the
 public class BaseOpMode extends OpMode {
 
     protected DcMotor LF, LB, RF, RB;
+    protected Servo grabber;
     private final String logPrefix = "/sdcard/";
     private BufferedWriter logWriter;
     private boolean[] buttonFlags={};
@@ -39,6 +41,9 @@ public class BaseOpMode extends OpMode {
 
     }
 
+    protected void initGrabber(){
+        grabber = hardwareMap.get(Servo.class, "grabber");
+    }
     protected void setMode_RUN_WITH_ENCODER(){
         LF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         LB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
