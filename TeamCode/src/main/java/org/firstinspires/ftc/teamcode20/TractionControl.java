@@ -19,13 +19,13 @@ public class TractionControl extends BaseAuto{
         pcLF=0;pcLB=0;pcRF=0;pcRB=0;
         while(!near(cLF,0,tolerance)||!near(cLB,0,tolerance)||!near(cRF,0,tolerance)||!near(cRB,0,tolerance)){
                 cLF = Math.abs(getMC(LF)-pcLF); cLB = Math.abs(getMC(LB)-pcLB); cRF = Math.abs(getMC(RF)-pcRF); cRB = Math.abs(getMC(RB)-pcRB);
-                setAllDrivePower(posneg(cLF)*brakespeed,posneg(cLB)*brakespeed,posneg(cRF)*brakespeed,posneg(cRB)*brakespeed);
+                setAllDrivePower(posneg(cLF,tolerance)*brakespeed,posneg(cLB,tolerance)*brakespeed,posneg(cRF,tolerance)*brakespeed,posneg(cRB,tolerance)*brakespeed);
         }
         setAllDrivePower(0);
     }
-    private double posneg(double a){
-        if(a>0) return -1;
-        else if(a==0) return 0;
-        else return 1;
+    private double posneg(double a,double tolerance){
+        if(a>tolerance) return -1;
+        else if(a<-tolerance) return 1;
+        else return 0;
     }
 }
