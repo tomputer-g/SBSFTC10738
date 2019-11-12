@@ -29,7 +29,7 @@ public class BaseOpMode extends OpMode {
     protected Servo grabber;
     private final String logPrefix = "/sdcard/";
     private BufferedWriter logWriter;
-    private boolean[] buttonFlags={};
+    private boolean[] bF={};
 
     @Override public void init() {
         msStuckDetectInit = 10000;
