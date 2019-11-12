@@ -21,7 +21,7 @@ public class FaceTheWallTest extends TractionControl {
     double 操,x;
     int 把你骨灰都扬了 = 1500;
     String logName = "FaceWallLog"+System.currentTimeMillis()+".csv";
-    boolean[] a={true},b={true};
+    boolean[] a={true},b={true},c = {true}, d ={true};
     public void init() {
         initLogger(logName);
         writeLogHeader("time,LF_count,LB_count,RF_count,RB_count,LF_power,LB_power,RF_power,RB_power,front_UltS,left_UltS,right_UltS,front_left_REV,front_right_REV");
@@ -35,30 +35,16 @@ public class FaceTheWallTest extends TractionControl {
         speed = 0.3;
         x=18;
     }
-    @Override
-    public void init_loop() {
-        if(this.gamepad1.dpad_up){
-            while (this.gamepad1.dpad_up);
-            speed+=0.05;
-        }
-        if(this.gamepad1.dpad_down){
-            while (this.gamepad1.dpad_down);
-            speed-=0.05;
-        }
-        telemetry.addLine("vr: "+speed);
-        telemetry.update();
-        }
 
     @Override
     public void loop() {
 
         //distLeft = left.getDistance(DistanceUnit.INCH);
-        //telemetry.addData("inch ahead",distLeft);
+        telemetry.addData("inch ahead",x);
 
         if(整(this.gamepad1.dpad_up,a))x+=1;
         if(整(this.gamepad1.dpad_down,b))x-=1;
-        if(this.gamepad1.left_bumper){
-            while(this.gamepad1.left_bumper);
+        if(整(this.gamepad1.left_bumper,c)){
             distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
             //distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
             distLeft = left.getDistance(DistanceUnit.INCH);
@@ -77,7 +63,7 @@ public class FaceTheWallTest extends TractionControl {
                 writeLog(t.milliseconds()+",NA,NA,NA,NA,"+LF.getPower()+","+LB.getPower()+","+RF.getPower()+","+RB.getPower()+","+distFront+","+",No_Sensor,"+distSide+","+distLeft+","+distRight);
             }
             setAllDrivePower(0);
-            brakeTD(1,10);
+            brakeTD(1,1);
               //wait(200);
 
             //imuHeading=0;
@@ -97,12 +83,12 @@ public class FaceTheWallTest extends TractionControl {
             //   setAllDrivePower(-0.1,-0.1,0.1,0.1);
             //}
         }
-        if(this.gamepad1.right_bumper){
-            while(this.gamepad1.right_bumper);
+        if(整(this.gamepad1.right_bumper,d)){
             setAllDrivePower(-speed,-speed,speed,speed);
             wait(把你骨灰都扬了);
             brake();
         }
+        telemetry.update();
 
     }
     @Override public void stop() {
