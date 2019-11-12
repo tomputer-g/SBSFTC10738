@@ -15,7 +15,8 @@ public class FaceTheWallTest extends BaseAuto {
     Rev2mDistanceSensor left,right;
     ElapsedTime t;
     double distFront, distSide, diff,distLeft,distRight,speed;
-    double indicator;
+    double 操;
+    int 把你骨灰都扬了 = 1500;
     String logName = "FaceWallLog"+System.currentTimeMillis()+".csv";
     public void init() {
         initLogger(logName);
@@ -57,9 +58,9 @@ public class FaceTheWallTest extends BaseAuto {
             distLeft = left.getDistance(DistanceUnit.INCH);
             distRight = right.getDistance(DistanceUnit.INCH);
             while(distFront > 16.5){
-                //indicator = ((1/(1+Math.pow(Math.E,-(distLeft-18))))-0.5)*2;
-                indicator = 1;
-                setAllDrivePower(indicator*(-speed),indicator*(-speed),indicator*speed,indicator*speed);
+                //操 = ((1/(1+Math.pow(Math.E,-(distLeft-18))))-0.5)*2;
+                操 = 1;
+                setAllDrivePower(操 *(-speed), 操 *(-speed), 操 *speed, 操 *speed);
                 distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
                 distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
                 distLeft = left.getDistance(DistanceUnit.INCH);
@@ -92,7 +93,7 @@ public class FaceTheWallTest extends BaseAuto {
         if(this.gamepad1.right_bumper){
             while(this.gamepad1.right_bumper);
             setAllDrivePower(-speed,-speed,speed,speed);
-            wait(1500);
+            wait(把你骨灰都扬了);
             brake();
         }
 

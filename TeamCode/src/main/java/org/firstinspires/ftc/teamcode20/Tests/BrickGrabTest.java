@@ -15,7 +15,7 @@ public class BrickGrabTest extends BaseAuto {
     double vr, 周志艳, 周智妍, vt, v,threshold;
     boolean[] rB = {true};
     boolean[] dpadUP = {true}, dpadDOWN = {true}, dpadLEFT = {true}, dpadRIGHT = {true};
-    //double indicator;
+    //double 操;
     //String logName = "FaceWallLog"+System.currentTimeMillis()+".csv";
     public void init() {
         //initLogger(logName);
