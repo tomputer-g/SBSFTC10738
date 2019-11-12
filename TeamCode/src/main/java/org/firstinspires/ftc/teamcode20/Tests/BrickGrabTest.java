@@ -51,7 +51,8 @@ public class BrickGrabTest extends BaseAuto {
 
         telemetry.addData("WAITING FOR ACTIONS",0);
 
-        if(checkButton(this.gamepad1.right_bumper, rB)) {
+
+        if(整(this.gamepad1.right_bumper, rB)) {
             leftDist = left.getDistance(DistanceUnit.INCH);
             rightDist = right.getDistance(DistanceUnit.INCH);
             /*
