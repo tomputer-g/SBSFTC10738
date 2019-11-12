@@ -109,7 +109,7 @@ public class BaseOpMode extends OpMode {
         telemetry.addLine("BaseOpMode -> initOdometry() still a stub!");
     }
 
-    protected boolean 整(boolean b, boolean[] f){
+    protected boolean checkButton(boolean b, boolean[] f){
         //chzch butt on press
         //淦 --yeah
         //微笑着面对它
