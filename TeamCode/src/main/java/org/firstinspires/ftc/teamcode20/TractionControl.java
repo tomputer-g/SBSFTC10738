@@ -17,7 +17,7 @@ public class TractionControl extends BaseAuto{
     }
     protected void brakeTD(double brakespeed,double tolerance){
         pcLF=0;pcLB=0;pcRF=0;pcRB=0;
-        while(!near(cLF,0,10)||!near(cLB,0,10)||!near(cRF,0,10)||!near(cRB,0,10)){
+        while(!near(cLF,0,tolerance)||!near(cLB,0,tolerance)||!near(cRF,0,tolerance)||!near(cRB,0,tolerance)){
                 cLF = Math.abs(getMC(LF)-pcLF); cLB = Math.abs(getMC(LB)-pcLB); cRF = Math.abs(getMC(RF)-pcRF); cRB = Math.abs(getMC(RB)-pcRB);
                 setAllDrivePower(posneg(cLF)*brakespeed,posneg(cLB)*brakespeed,posneg(cRF)*brakespeed,posneg(cRB)*brakespeed);
         }
