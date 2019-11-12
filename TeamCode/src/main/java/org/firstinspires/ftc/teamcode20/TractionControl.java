@@ -25,6 +25,15 @@ public class TractionControl extends BaseAuto{
         }
         setAllDrivePower(0);
     }
+
+    protected void brakeTD2(double brakespeed, double tolerance){
+        pcLF=getMC(LF);pcLB=getMC(LB);pcRB=getMC(RB);pcRF=getMC(RF); wait(200);
+        while(!near(cLF,pcLF,tolerance)||!near(cLB,pcLB,tolerance)||!near(cRF,pcRF,tolerance)||!near(cRB,pcRB,tolerance)){
+            setAllDrivePower(posneg(cLF,pcLF)*brakespeed,posneg(cLB,pcLB)*brakespeed,posneg(cRF,cRB)*brakespeed,posneg(cLB,pcLB)*brakespeed);
+        }
+        setAllDrivePower(0);
+    }
+
     private double posneg(double a,double tolerance){
         if(a>tolerance) return -1;
         else if(a<-tolerance) return 1;
