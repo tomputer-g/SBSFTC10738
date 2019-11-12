@@ -77,7 +77,7 @@ public class FaceTheWallTest extends TractionControl {
                 writeLog(t.milliseconds()+",NA,NA,NA,NA,"+LF.getPower()+","+LB.getPower()+","+RF.getPower()+","+RB.getPower()+","+distFront+","+",No_Sensor,"+distSide+","+distLeft+","+distRight);
             }
             setAllDrivePower(0);
-            brakeTD(1,10);
+            brakeTD(1,1);
               //wait(200);
 
             //imuHeading=0;
