@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
+import android.os.Trace;
+
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -7,17 +9,19 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
+import org.firstinspires.ftc.teamcode20.TractionControl;
 
 @TeleOp
 
-public class FaceTheWallTest extends BaseAuto {
+public class FaceTheWallTest extends TractionControl {
     ModernRoboticsI2cRangeSensor rangeSensorFront, rangeSensorSide;
     Rev2mDistanceSensor left,right;
     ElapsedTime t;
     double distFront, distSide, diff,distLeft,distRight,speed;
-    double 操;
+    double 操,x;
     int 把你骨灰都扬了 = 1500;
     String logName = "FaceWallLog"+System.currentTimeMillis()+".csv";
+    boolean[] a={true},b={true};
     public void init() {
         initLogger(logName);
         writeLogHeader("time,LF_count,LB_count,RF_count,RB_count,LF_power,LB_power,RF_power,RB_power,front_UltS,left_UltS,right_UltS,front_left_REV,front_right_REV");
@@ -29,6 +33,7 @@ public class FaceTheWallTest extends BaseAuto {
         right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
         扬();
         speed = 0.3;
+        x=18;
     }
     @Override
     public void init_loop() {
@@ -50,14 +55,15 @@ public class FaceTheWallTest extends BaseAuto {
         //distLeft = left.getDistance(DistanceUnit.INCH);
         //telemetry.addData("inch ahead",distLeft);
 
-
+        if(整(this.gamepad1.dpad_up,a))x+=1;
+        if(整(this.gamepad1.dpad_down,b))x-=1;
         if(this.gamepad1.left_bumper){
             while(this.gamepad1.left_bumper);
             distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
             //distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
             distLeft = left.getDistance(DistanceUnit.INCH);
             distRight = right.getDistance(DistanceUnit.INCH);
-            while(distFront > 16.5){
+            while(distFront > x){
                 //操 = ((1/(1+Math.pow(Math.E,-(distLeft-18))))-0.5)*2;
                 操 = 1;
                 setAllDrivePower(操 *(-speed), 操 *(-speed), 操 *speed, 操 *speed);
@@ -66,11 +72,12 @@ public class FaceTheWallTest extends BaseAuto {
                 distLeft = left.getDistance(DistanceUnit.INCH);
                 distRight = right.getDistance(DistanceUnit.INCH);
                 telemetry.addData("inch",distFront);
+                telemetry.addData("x: ",x);
                 telemetry.update();
                 writeLog(t.milliseconds()+",NA,NA,NA,NA,"+LF.getPower()+","+LB.getPower()+","+RF.getPower()+","+RB.getPower()+","+distFront+","+",No_Sensor,"+distSide+","+distLeft+","+distRight);
             }
             setAllDrivePower(0);
-            brake();
+            brakeTD(1,10);
               //wait(200);
 
             //imuHeading=0;
