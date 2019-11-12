@@ -52,8 +52,13 @@ public class BrickGrabTest extends BaseAuto {
         telemetry.addData("WAITING FOR ACTIONS",0);
 
         if(整(this.gamepad1.right_bumper, rB)) {
+<<<<<<< Updated upstream
             周志艳 = left.getDistance(DistanceUnit.INCH);
             周智妍 = right.getDistance(DistanceUnit.INCH);
+=======
+            leftDist = left.getDistance(DistanceUnit.INCH);
+            rightDist = right.getDistance(DistanceUnit.INCH);
+>>>>>>> Stashed changes
             /*
             while((周志艳 > 20 && 周智妍 > 20) || (Math.abs(周志艳-周智妍) > 6)){
                 周志艳 = left.getDistance(DistanceUnit.INCH);
