@@ -31,16 +31,16 @@ public class BrickGrabTest extends BaseAuto {
     }
     @Override
     public void loop() {
-        if(checkButton(this.gamepad1.dpad_up,dpadUP)){
+        if(整(this.gamepad1.dpad_up,dpadUP)){
             vr +=0.02;
         }
-        if(checkButton(this.gamepad1.dpad_down,dpadDOWN)){
+        if(整(this.gamepad1.dpad_down,dpadDOWN)){
             vr -=0.02;
         }
-        if(checkButton(this.gamepad1.dpad_left,dpadLEFT)){
+        if(整(this.gamepad1.dpad_left,dpadLEFT)){
             v-=0.02;
         }
-        if(checkButton(this.gamepad1.dpad_right,dpadRIGHT)){
+        if(整(this.gamepad1.dpad_right,dpadRIGHT)){
             v+=0.02;
         }
         telemetry.addData("Left", "%.2f", left.getDistance(DistanceUnit.INCH));

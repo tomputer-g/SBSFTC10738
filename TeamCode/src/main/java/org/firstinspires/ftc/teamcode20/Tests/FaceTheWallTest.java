@@ -23,7 +23,7 @@ public class FaceTheWallTest extends BaseAuto {
         writeLogHeader("time,LF_count,LB_count,RF_count,RB_count,LF_power,LB_power,RF_power,RB_power,front_UltS,left_UltS,right_UltS,front_left_REV,front_right_REV");
         initDrivetrain();
         t = new ElapsedTime();
-        rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
+        //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "front");
         left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
         right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
@@ -54,7 +54,7 @@ public class FaceTheWallTest extends BaseAuto {
         if(this.gamepad1.left_bumper){
             while(this.gamepad1.left_bumper);
             distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
-            distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
+            //distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
             distLeft = left.getDistance(DistanceUnit.INCH);
             distRight = right.getDistance(DistanceUnit.INCH);
             while(distFront > 16.5){
@@ -62,7 +62,7 @@ public class FaceTheWallTest extends BaseAuto {
                 操 = 1;
                 setAllDrivePower(操 *(-speed), 操 *(-speed), 操 *speed, 操 *speed);
                 distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
-                distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
+                //distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
                 distLeft = left.getDistance(DistanceUnit.INCH);
                 distRight = right.getDistance(DistanceUnit.INCH);
                 telemetry.addData("inch",distFront);
