@@ -49,9 +49,10 @@ public class VuforiaSkystoneChaserWebcam extends BaseAuto {
 
     @Override
     public void init() {
+        msStuckDetectInit = 30000;
         initVuforiaWebcam();
         initDrivetrain();
-        扬();
+        initIMU();
         targetsSkyStone.activate();
     }
 
@@ -84,6 +85,8 @@ public class VuforiaSkystoneChaserWebcam extends BaseAuto {
 
                     telemetry.addLine("Move "+Math.abs(translation.get(1)/mmPerInch)+(translation.get(1)>0?"in. Right":"in. Left"));
                     telemetry.addLine("Forward "+(distGoal - translation.get(0)/mmPerInch)+"in.");
+                    getHeading();
+                    telemetry.addData("IMU angle",imuHeading);
                     telemetry.addLine("--------------------------------");
                     telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                             translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);

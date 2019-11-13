@@ -18,7 +18,7 @@ public class MotorCountTest extends TractionControl {
         //writeLogHeader("time,LF_count,LB_count,RF_count,RB_count,LF_power,LB_power,RF_power,RB_power");
         initDrivetrain();
         t = new ElapsedTime();
-        扬();
+        initIMU();
         speed = 0.3;
         brakeSpeed = 1;
         actionIndex = 1;

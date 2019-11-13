@@ -27,7 +27,7 @@ public class FaceTheWallTest extends BaseAuto {
         rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "front");
         left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
         right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
-        扬();
+        initIMU();
         speed = 0.3;
     }
     @Override

@@ -24,7 +24,7 @@ public class BrickGrabTest extends BaseAuto {
         t = new ElapsedTime();
         left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
         right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
-        扬();
+        initIMU();
         vr = 0.1;
         v = 0.15;
         threshold=3.5;
