@@ -46,7 +46,7 @@ public class TeleOp_TractionDrive extends TractionControl {
             if(linear_proportion > 0.8)
                 linear_proportion = 0.8;
         }
-        if(checkButton(this.gamepad1.left_bumper,primed)) brakeTD(1,10);
+        if(整(this.gamepad1.left_bumper,primed)) brakeTD(1,10);
 
         telemetry.addLine("Linear: "+linear_proportion + ", Rotational: " + (1-linear_proportion));
         telemetry.update();
