@@ -36,7 +36,7 @@ public class BaseAuto extends BaseOpMode {
     private final float CAMERA_VERTICAL_DISPLACEMENT = 0f * mmPerInch;// eg: Camera is 8 Inches above ground
     private final float CAMERA_LEFT_DISPLACEMENT     = 0f * mmPerInch; // eg: Camera is ON the robot's center line
     private final float phoneXRotate = 0;
-    private final float phoneYRotate = -60;//=-90+30;
+    private final float phoneYRotate = 0;//=-90+30;
     private final float phoneZRotate = 0;//heading
     //IMU
     protected static BNO055IMU imu;
