@@ -208,7 +208,11 @@ public class BaseOpMode extends OpMode {
         LB.setTargetPosition(-encoder_x - encoder_y);
         RF.setTargetPosition(encoder_x + encoder_y);
         RB.setTargetPosition(-encoder_x + encoder_y);
-        while((LF.isBusy()||LB.isBusy()||RF.isBusy()||RB.isBusy()) && t.milliseconds() < p_time);
+        setMode_RESET_AND_RUN_TO_POSITION();
+        while((LF.isBusy()||LB.isBusy()||RF.isBusy()||RB.isBusy()) && t.milliseconds() < p_time){};
+        //setAllDrivePower(0);
+        setMode_RUN_WITH_ENCODER();
+        setAllDrivePower(1,1,-1,-1);
         wait(100);
         setAllDrivePower(0);
     }
