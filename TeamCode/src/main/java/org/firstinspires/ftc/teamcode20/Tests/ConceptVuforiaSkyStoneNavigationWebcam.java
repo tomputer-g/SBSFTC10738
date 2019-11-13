@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode20.Tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -82,7 +83,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  */
 
 @TeleOp(name="SKYSTONE Vuforia Nav Webcam", group ="Concept")
-public class VuforiaSkyStoneNavigationWebcam extends LinearOpMode {
+public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
 
     // IMPORTANT: If you are using a USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
@@ -121,6 +122,7 @@ public class VuforiaSkyStoneNavigationWebcam extends LinearOpMode {
     private static final float halfField = 72 * mmPerInch;
     private static final float quadField  = 36 * mmPerInch;
 
+    private double[] displacements = {2, 7};//+ = forward; + = right
     // Class Members
     private OpenGLMatrix lastLocation = null;
     private VuforiaLocalizer vuforia = null;
@@ -137,13 +139,27 @@ public class VuforiaSkyStoneNavigationWebcam extends LinearOpMode {
     private float phoneZRotate    = 0;
 
     @Override public void runOpMode() {
+        /*
+         * Retrieve the camera we are to use.
+         */
+        webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
 
+        /*
+         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+         * We can pass Vuforia the handle to a camera preview resource (on the RC phone);
+         * If no camera monitor is desired, use the parameter-less constructor instead (commented out below).
+         */
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
+        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
 
-        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+        /**
+         * We also indicate which camera on the RC we wish to use.
+         */
+        parameters.cameraName = webcamName;
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
@@ -182,6 +198,24 @@ public class VuforiaSkyStoneNavigationWebcam extends LinearOpMode {
         // For convenience, gather together all the trackable objects in one easily-iterable collection */
         List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
         allTrackables.addAll(targetsSkyStone);
+
+        /**
+         * In order for localization to work, we need to tell the system where each target is on the field, and
+         * where the phone resides on the robot.  These specifications are in the form of <em>transformation matrices.</em>
+         * Transformation matrices are a central, important concept in the math here involved in localization.
+         * See <a href="https://en.wikipedia.org/wiki/Transformation_matrix">Transformation Matrix</a>
+         * for detailed information. Commonly, you'll encounter transformation matrices as instances
+         * of the {@link OpenGLMatrix} class.
+         *
+         * If you are standing in the Red Alliance Station looking towards the center of the field,
+         *     - The X axis runs from your left to the right. (positive from the center to the right)
+         *     - The Y axis runs from the Red Alliance Station towards the other side of the field
+         *       where the Blue Alliance Station is. (Positive is from the center, towards the BlueAlliance station)
+         *     - The Z axis runs from the floor, upwards towards the ceiling.  (Positive is above the floor)
+         *
+         * Before being transformed, each target image is conceptually located at the origin of the field's
+         *  coordinate system (the center of the field), facing up.
+         */
 
         // Set the position of the Stone Target.  Since it's not fixed in position, assume it's at the field origin.
         // Rotated it to to face forward, and raised it to sit on the ground correctly.
@@ -268,8 +302,9 @@ public class VuforiaSkyStoneNavigationWebcam extends LinearOpMode {
 
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
-        final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
-        final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
+        //these do NOT work.
+        final float CAMERA_FORWARD_DISPLACEMENT  = 0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
+        final float CAMERA_VERTICAL_DISPLACEMENT = 0f * mmPerInch;   // eg: Camera is 8 Inches above ground
         final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
@@ -287,7 +322,7 @@ public class VuforiaSkyStoneNavigationWebcam extends LinearOpMode {
         // CONSEQUENTLY do not put any driving commands in this loop.
         // To restore the normal opmode structure, just un-comment the following line:
 
-        //waitForStart();
+        // waitForStart();
 
         // Note: To use the remote camera preview:
         // AFTER you hit Init on the Driver Station, use the "options menu" to select "Camera Stream"
@@ -317,12 +352,12 @@ public class VuforiaSkyStoneNavigationWebcam extends LinearOpMode {
             if (targetVisible) {
                 // express position (translation) of robot in inches.
                 VectorF translation = lastLocation.getTranslation();
-                telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+                telemetry.addData("Pos (in)", "{X, Y} = %.1f, %.1f",
+                        translation.get(0) / mmPerInch + displacements[0], translation.get(1) / mmPerInch + displacements[1]);
 
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+                telemetry.addData( "Heading",rotation.thirdAngle);
             }
             else {
                 telemetry.addData("Visible Target", "none");
