@@ -34,19 +34,7 @@ public class TeleOp_TractionDrive extends TractionControl {
     @Override
     public void loop() {
         scaledMove(linear(-this.gamepad1.left_stick_x, 0.2, linear_proportion), linear(-this.gamepad1.left_stick_y, 0.2, linear_proportion), linear(-this.gamepad1.right_stick_x, 0.2, (1-linear_proportion)));
-
-        if(this.gamepad1.dpad_left){
-            while(this.gamepad1.dpad_left);
-            linear_proportion -= 0.05;
-            if(linear_proportion < 0.2)
-                linear_proportion = 0.2;
-        }else if(this.gamepad1.dpad_right){
-            while(this.gamepad1.dpad_right);
-            linear_proportion += 0.05;
-            if(linear_proportion > 0.8)
-                linear_proportion = 0.8;
-        }
-        if(整(this.gamepad1.left_bumper,primed)) brakeTD(1,10);
+        if(整(this.gamepad1.left_bumper,primed)) brakeTD(1,0);
 
         telemetry.addLine("Linear: "+linear_proportion + ", Rotational: " + (1-linear_proportion));
         telemetry.update();
