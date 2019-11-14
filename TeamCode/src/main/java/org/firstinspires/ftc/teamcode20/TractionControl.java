@@ -14,7 +14,7 @@ public class TractionControl extends BaseAuto{
     //the abs value of powers(one time variable)
     private static double pLF,pLB,pRF,pRB;
 
-    //the initial motor counts(one time variable)
+    //the initial motor counts(one time variable) not used
     private static double iVLF,iVLB,iVRF,iVRB;
 
 
