@@ -10,8 +10,8 @@ import static java.lang.Math.sqrt;
 
 @TeleOp
 public class MiscTest extends BaseAuto {
-    double speed;
-    boolean[] bF={true}, e = {true}, f = {true};
+    double speed,x,y;
+    boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true};
 
     private void 三天之内刹了你(){
         setAllDrivePower(1,1,-1,-1);
@@ -22,7 +22,9 @@ public class MiscTest extends BaseAuto {
     @Override
     public void init(){
         initDrivetrain();
-        speed=0.1;
+        speed=0.25;
+        y = 0;
+        x = 12;
        // 三天之内刹了你();
     }
 
@@ -31,10 +33,19 @@ public class MiscTest extends BaseAuto {
         //x+ left x- right y+ forward y- backward
         if(整(this.gamepad1.dpad_left,e))speed-=0.05;
         if(整(this.gamepad1.dpad_right,f))speed+=0.05;
-        telemetry.addData("",speed);
-        if(整(this.gamepad1.right_bumper,bF)) //moveInches(0,24,speed);
-            //setAllDrivePower(speed);
-            moveInches(0,12,speed);
+        if(整(this.gamepad1.dpad_up,ee))y++;
+        if(整(this.gamepad1.dpad_down,ff))y--;
+        telemetry.addData("speed: ",speed);
+        telemetry.addData("x:", x);
+        telemetry.addData("y: ", y);
+        telemetry.addData("LF",LF.getCurrentPosition());
+        telemetry.addData("LB",LB.getCurrentPosition());
+        telemetry.addData("RF",RF.getCurrentPosition());
+        telemetry.addData("RB",RB.getCurrentPosition());
+        if(整(this.gamepad1.right_bumper,bF))
+            moveInches(0,y,speed);
+        if(整(this.gamepad1.left_bumper,lF))
+            moveInches(x,0,speed);
         telemetry.update();
     }
 }
