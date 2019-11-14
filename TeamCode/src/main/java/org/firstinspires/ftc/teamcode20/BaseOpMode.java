@@ -197,7 +197,7 @@ public class BaseOpMode extends OpMode {
     }
 
     protected void setAllDrivePower1(double a, double b, double c, double d){
-        setAllDrivePower(a,b,-c,-d);
+        setAllDrivePower(-a,-b,c,d);
     }
 
     protected void 好活(double a,double b,double c,double d){
