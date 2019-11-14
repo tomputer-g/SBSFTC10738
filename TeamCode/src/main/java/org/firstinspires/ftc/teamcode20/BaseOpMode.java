@@ -189,7 +189,7 @@ public class BaseOpMode extends OpMode {
     }
 
     protected void moveInches(double xInch, double yInch, double speed){
-        double xmult = 14./1.2, ymult = 14./1.2, p_mult = 80;
+        double xmult = 14., ymult = 14., p_mult = 80;
         int p_time = (int) (sqrt(xInch*xInch + yInch*yInch)*p_mult);
         ElapsedTime t = new ElapsedTime();
         int encoder_x = (int)(xInch * xmult), encoder_y = (int)(yInch * ymult);

@@ -18,8 +18,8 @@ public class MiscTest extends BaseAuto {
     @Override
     public void init(){
         initDrivetrain();
-        speed=0.075;
-        moveInches(0,12,speed);
+        speed=0.07;
+        moveInches(0,24,speed);
        // 三天之内刹了你();
     }
 
