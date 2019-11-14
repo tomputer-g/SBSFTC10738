@@ -28,6 +28,10 @@ public class TractionControl extends BaseAuto{
         }
         setAllDrivePower(0);
     }
+    protected void brakeTDS(double a, double tolerance){
+        reset();
+
+    }
 
     protected void brakeTD2(double brakespeed, double tolerance){
         pcLF=getMC(LF);pcLB=getMC(LB);pcRB=getMC(RB);pcRF=getMC(RF); wait(200);
@@ -49,4 +53,15 @@ public class TractionControl extends BaseAuto{
             return deltaMC>1;
         return true;
     }
+//initialize the traction control variables by resetting the previous motor count and new motor count
+    private void reset(){
+        pcLF=0;pcLB=0;pcRF=0;pcRB=0;
+        cLF=getMC(LF);cLB=getMC(LB);cRB=getMC(RB);cRF=getMC(RF);
+    }
+    //initialize the traction control variables by resetting the previous motor count and new motor count
+    private void deltaMCUpdate(){
+        pcLF=0;pcLB=0;pcRF=0;pcRB=0;
+        cLF=getMC(LF);cLB=getMC(LB);cRB=getMC(RB);cRF=getMC(RF);
+    }
+
 }
