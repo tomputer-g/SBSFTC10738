@@ -66,6 +66,7 @@ public class TractionControl extends BaseAuto{
             setAllDrivePower1(-brakespeed,-brakespeed,-brakespeed,-brakespeed);
             deltaMCUpdate();
         }
+        setAllDrivePower(0);
 
     }
 
