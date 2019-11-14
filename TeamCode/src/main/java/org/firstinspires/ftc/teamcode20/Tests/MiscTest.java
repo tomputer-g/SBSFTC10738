@@ -18,7 +18,7 @@ public class MiscTest extends BaseAuto {
     @Override
     public void init(){
         initDrivetrain();
-        speed=0.07;
+        speed=0.3;
        // 三天之内刹了你();
     }
 
@@ -27,6 +27,6 @@ public class MiscTest extends BaseAuto {
         //x+ left x- right y+ forward y- backward
         if(整(this.gamepad1.right_bumper,bF)) //moveInches(0,24,speed);
             //setAllDrivePower(speed);
-            moveInchesHighSpeed(0,12,0.07,1,1,0.4,0.4,0);
+            moveInches(0,12,speed);
     }
 }
