@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode20.BaseAuto;
 @TeleOp
 public class MiscTest extends BaseAuto {
     double speed;
-    boolean[] bF={true};
+    boolean[] bF={true}, e = {true}, f = {true};
 
     private void 三天之内刹了你(){
         setAllDrivePower(1,1,-1,-1);
@@ -18,15 +18,19 @@ public class MiscTest extends BaseAuto {
     @Override
     public void init(){
         initDrivetrain();
-        speed=0.3;
+        speed=0.1;
        // 三天之内刹了你();
     }
 
     @Override
     public void loop(){
         //x+ left x- right y+ forward y- backward
+        if(整(this.gamepad1.dpad_left,e))speed-=0.05;
+        if(整(this.gamepad1.dpad_right,f))speed+=0.05;
+        telemetry.addData("",speed);
         if(整(this.gamepad1.right_bumper,bF)) //moveInches(0,24,speed);
             //setAllDrivePower(speed);
             moveInches(0,12,speed);
+        telemetry.update();
     }
 }

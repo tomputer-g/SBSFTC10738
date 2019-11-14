@@ -44,6 +44,14 @@ public class BaseOpMode extends OpMode {
     protected void initGrabber(){
         grabber = hardwareMap.get(Servo.class, "grabber");
     }
+
+    protected void reset_ENCODER(){
+        LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
     protected void setMode_RUN_WITH_ENCODER(){
         LF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         LB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -212,27 +220,29 @@ public class BaseOpMode extends OpMode {
             telemetry.update();
         };
         setAllDrivePower(0);
-        setMode_RUN_WITH_ENCODER();
+        ();
 
         */
+
+        setMode_RUN_WITH_ENCODER();
         ElapsedTime t = new ElapsedTime();
         int p_time = (int) (sqrt(xInch*xInch + yInch*yInch)*100);
         double xmult = 14./1.2, ymult = 14./1.2;
         int encoder_x = (int)(xInch * xmult), encoder_y = (int)(yInch * ymult);
-        //double cf=Math.atan(xInch/yInch);
-        //double ns=Math.cos()
+        //double theta=Math.atan(xInch/yInch);
+        //double vy=Math.cos(theta)*speed,vx=Math.sin(theta)*speed;
         double coe=1;
-        while(encoder_x - encoder_y>-LF.getCurrentPosition()||-encoder_x - encoder_y>-LB.getCurrentPosition()||encoder_x + encoder_y>-RF.getCurrentPosition()||-encoder_x + encoder_y>-RB.getCurrentPosition()){
-            telemetry.addData("LF",LF.getCurrentPosition());
+        while(encoder_x - encoder_y<-LF.getCurrentPosition()||-encoder_x - encoder_y<-LB.getCurrentPosition()||encoder_x + encoder_y>-RF.getCurrentPosition()||-encoder_x + encoder_y>-RB.getCurrentPosition()){
+            telemetry.addData("LF",-LF.getCurrentPosition());
             telemetry.addData("target",encoder_x-encoder_y);
 
-            telemetry.addData("LB",LB.getCurrentPosition());
+            telemetry.addData("LB",-LB.getCurrentPosition());
             telemetry.addData("target",-encoder_x-encoder_y);
 
-            telemetry.addData("RF",RF.getCurrentPosition());
+            telemetry.addData("RF",-RF.getCurrentPosition());
             telemetry.addData("target",encoder_x+encoder_y);
 
-            telemetry.addData("RB",RB.getCurrentPosition());
+            telemetry.addData("RB",-RB.getCurrentPosition());
             telemetry.addData("target",-encoder_x+encoder_y);
 
             telemetry.update();
