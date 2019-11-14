@@ -51,6 +51,13 @@ public class BaseOpMode extends OpMode {
         RB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    protected void setMode_RUN_WITHOUT_ENCODER(){
+        LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        LB.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        RF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        RB.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
     protected void setMode_RESET_AND_RUN_TO_POSITION(){
         LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
