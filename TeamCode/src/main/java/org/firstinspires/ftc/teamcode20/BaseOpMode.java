@@ -189,7 +189,7 @@ public class BaseOpMode extends OpMode {
     }
 
     protected void moveInches(double xInch, double yInch, double speed){
-        double xmult = 14., ymult = 14., p_mult = 80;
+        double xmult = 14./2, ymult = 14./2, p_mult = 80;
         int p_time = (int) (sqrt(xInch*xInch + yInch*yInch)*p_mult);
         ElapsedTime t = new ElapsedTime();
         int encoder_x = (int)(xInch * xmult), encoder_y = (int)(yInch * ymult);
@@ -209,7 +209,10 @@ public class BaseOpMode extends OpMode {
         RF.setTargetPosition(encoder_x + encoder_y);
         RB.setTargetPosition(-encoder_x + encoder_y);
         setMode_RESET_AND_RUN_TO_POSITION();
-        while((LF.isBusy()||LB.isBusy()||RF.isBusy()||RB.isBusy()) && t.milliseconds() < p_time){};
+        while((LF.isBusy()||LB.isBusy()||RF.isBusy()||RB.isBusy()) && t.milliseconds() < p_time){
+            telemetry.addData("Power", LF.getPower());
+            telemetry.update();
+        };
         //setAllDrivePower(0);
         setMode_RUN_WITH_ENCODER();
         setAllDrivePower(1,1,-1,-1);
