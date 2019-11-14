@@ -29,7 +29,7 @@ public class BaseOpMode extends OpMode {
     protected Servo grabber;
     private final String logPrefix = "/sdcard/";
     private BufferedWriter logWriter;
-    private boolean[] buttonFlags={};
+    private boolean[] bF={};
 
     @Override public void init() {
         msStuckDetectInit = 10000;
@@ -189,21 +189,32 @@ public class BaseOpMode extends OpMode {
     }
 
     protected void moveInches(double xInch, double yInch, double speed){
-        setMode_RESET_AND_RUN_TO_POSITION();
-        double xmult = 60, ymult = 57.174, p_mult = 80;
+        double xmult = 14./1.2, ymult = 14./1.2, p_mult = 80;
         int p_time = (int) (sqrt(xInch*xInch + yInch*yInch)*p_mult);
         ElapsedTime t = new ElapsedTime();
         int encoder_x = (int)(xInch * xmult), encoder_y = (int)(yInch * ymult);
+        /*
         int encoder_1 = Math.abs(encoder_x + encoder_y); // LB, RF
         int encoder_2 = Math.abs(encoder_x - encoder_y); // LF, RB
         double conversion_fct = speed/((encoder_1 + encoder_2)/2);
         double speed_1 = conversion_fct * encoder_1, speed_2 = conversion_fct * encoder_2;
-        setAllDrivePower(speed_2,speed_1,speed_1,speed_2);
+        */
+        //setAllDrivePower(speed_2,speed_1,speed_1,speed_2);
+        setAllDrivePower(-speed,-speed,speed,speed);
+        //telemetry.addData("speed",speed_1+" "+speed_2);
+        telemetry.addData("position",encoder_x+" "+encoder_y);
+        telemetry.update();
         LF.setTargetPosition(encoder_x - encoder_y);
         LB.setTargetPosition(-encoder_x - encoder_y);
         RF.setTargetPosition(encoder_x + encoder_y);
         RB.setTargetPosition(-encoder_x + encoder_y);
-        while((LF.isBusy()||LB.isBusy()||RF.isBusy()||RB.isBusy()) && t.milliseconds() < p_time);
+        setMode_RESET_AND_RUN_TO_POSITION();
+        while((LF.isBusy()||LB.isBusy()||RF.isBusy()||RB.isBusy()) && t.milliseconds() < p_time){};
+        //setAllDrivePower(0);
+        setMode_RUN_WITH_ENCODER();
+        setAllDrivePower(1,1,-1,-1);
+        wait(100);
+        setAllDrivePower(0);
     }
 
     protected void moveInchesHighSpeed(double xInch, double yInch, double speed, int acc_s, int dec_s, double acc_p, double dec_p, double initial_speed){
