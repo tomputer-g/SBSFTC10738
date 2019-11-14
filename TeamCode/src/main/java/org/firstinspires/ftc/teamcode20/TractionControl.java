@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode20;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class TractionControl extends BaseAuto{
-    private static double pcLF=0,pcLB=0,pcRF=0,pcRB=0,cLF,cLB,cRF,cRB,min,minp,pLF,pLB,pRF,pRB;
+    private static double pcLF=0,pcLB=0,pcRF=0,pcRB=0,cLF,cLB,cRF,cRB,min,minp,pLF,pLB,pRF,pRB,iVLF,iVLB,iVRF,iVRB;
     protected void setTDpower(double ipLF,double ipLB,double ipRF,double ipRB)
     {
         pLF=Math.abs(ipLF); pLB=Math.abs(ipLB); pRF=Math.abs(ipRF); pRB=Math.abs(ipRB);
@@ -16,14 +16,21 @@ public class TractionControl extends BaseAuto{
         return i.getCurrentPosition();
     }
     protected void brakeTD(double brakespeed,double tolerance){
-        pcLF=0;pcLB=0;pcRF=0;pcRB=0;
-        while(!near(cLF,0,tolerance)||!near(cLB,0,tolerance)||!near(cRF,0,tolerance)||!near(cRB,0,tolerance)){
+        pcLF=getMC(LF);pcLB=getMC(LB);pcRB=getMC(RB);pcRF=getMC(RF);
+        iVLF=pcLF;iVLB=pcLB;iVRF=pcRF;iVRB=pcRB;
+        wait(100);
+        cLF = Math.abs(getMC(LF)-pcLF); cLB = Math.abs(getMC(LB)-pcLB); cRF = Math.abs(getMC(RF)-pcRF); cRB = Math.abs(getMC(RB)-pcRB);
+        while(!checkMC(cLF,-1)||!checkMC(cLB,-1)||!checkMC(cRF,1)||!checkMC(cRB,1)){
                 cLF = Math.abs(getMC(LF)-pcLF); cLB = Math.abs(getMC(LB)-pcLB); cRF = Math.abs(getMC(RF)-pcRF); cRB = Math.abs(getMC(RB)-pcRB);
                 pcLF=cLF;pcLB=cLB;pcRB=cRB;pcRF=cRF;
                 setAllDrivePower(posneg(cLF,tolerance)*brakespeed,posneg(cLB,tolerance)*brakespeed,posneg(cRF,tolerance)*brakespeed,posneg(cRB,tolerance)*brakespeed);
                 pcLF=getMC(LF);pcLB=getMC(LB);pcRB=getMC(RB);pcRF=getMC(RF);
         }
         setAllDrivePower(0);
+    }
+    protected void brakeTDS(double a, double tolerance){
+        reset();
+
     }
 
     protected void brakeTD2(double brakespeed, double tolerance){
@@ -39,4 +46,22 @@ public class TractionControl extends BaseAuto{
         else if(a<-tolerance) return 1;
         else return 0;
     }
+    private boolean checkMC(double deltaMC,double initialV){
+        if(initialV>0)
+            return deltaMC<-1;
+        else if (deltaMC<0)
+            return deltaMC>1;
+        return true;
+    }
+//initialize the traction control variables by resetting the previous motor count and new motor count
+    private void reset(){
+        pcLF=0;pcLB=0;pcRF=0;pcRB=0;
+        cLF=getMC(LF);cLB=getMC(LB);cRB=getMC(RB);cRF=getMC(RF);
+    }
+    //initialize the traction control variables by resetting the previous motor count and new motor count
+    private void deltaMCUpdate(){
+        pcLF=0;pcLB=0;pcRF=0;pcRB=0;
+        cLF=getMC(LF);cLB=getMC(LB);cRB=getMC(RB);cRF=getMC(RF);
+    }
+
 }

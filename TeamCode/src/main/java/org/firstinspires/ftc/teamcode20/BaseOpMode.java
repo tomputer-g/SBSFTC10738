@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode20;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.configuration.annotations.MotorType;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.io.BufferedWriter;
