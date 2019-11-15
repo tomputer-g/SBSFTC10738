@@ -44,8 +44,6 @@ public class BrakeTest extends TractionControl {
         else if(phase==1) {
             setAllDrivePower(-runSpeed, -runSpeed, runSpeed, runSpeed);
             telemetry.addData("MOVING AT ",runSpeed);
-            telemetry.addData("actual", LF.getPower());
-            telemetry.addData("encoder", LF.getCurrentPosition());
         }
         else if(phase>1){
             telemetry.addData("BRAKING AT ",brakeSpeed);
@@ -55,6 +53,6 @@ public class BrakeTest extends TractionControl {
             phase = 0;
         }
         telemetry.addData("PHASE ",phase);
-        telemetry.addData("Brake Time:",end-start);
+        telemetry.addData("BRAKE TIME: ",end-start);
     }
 }
