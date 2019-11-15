@@ -107,7 +107,7 @@ public class BaseOpMode extends OpMode {
     protected void setAllDrivePower(double pX, double pY){
         if(Math.abs(pX)+Math.abs(pY) > 1)
             throw new IllegalArgumentException("setAllDrivePower(px,py) sets a power beyond 1");
-        setMode_RUN_WITH_ENCODER();
+        setMode_RUN_WITHOUT_ENCODER();
         LF.setPower(pX-pY);
         LB.setPower(-pX-pY);
         RF.setPower(pX+pY);
@@ -156,8 +156,8 @@ public class BaseOpMode extends OpMode {
         RB.setPower(0.5 * (-vx + vy + vr));
     }
 
-    private double sigmoid_brake(double power){
-        return (1.8/(1+pow(Math.E,5*power)))-0.9;
+    private double sigmoid(double x){
+        return (1.8/(1+pow(Math.E,5*x)))-0.9;
     }
 
     protected void displayMotorPowers(double LF, double LB, double RF, double RB){
@@ -207,7 +207,6 @@ public class BaseOpMode extends OpMode {
     protected void moveInches(double xInch, double yInch, double speed){
         /*
         double xmult = 14./2, ymult = 14./2, p_mult = 80;
-
         int encoder_x = (int)(xInch * xmult), encoder_y = (int)(yInch * ymult);
         int encoder_1 = Math.abs(encoder_x + encoder_y); // LB, RF
         int encoder_2 = Math.abs(encoder_x - encoder_y); // LF, RB
@@ -229,38 +228,38 @@ public class BaseOpMode extends OpMode {
         };
         setAllDrivePower(0);
         ();
-
+        sup fuckers
+        69
+        cole wdnmd-p'
         */
-
-        setMode_RUN_WITH_ENCODER();
+        reset_ENCODER();
+        setMode_RUN_WITHOUT_ENCODER();
         ElapsedTime t = new ElapsedTime();
         int p_time = (int) (sqrt(xInch*xInch + yInch*yInch)*100);
-        double xmult = 14./1.2, ymult = 14./1.2;
-        int encoder_x = (int)(xInch * xmult), encoder_y = (int)(yInch * ymult);
-        //double theta=Math.atan(xInch/yInch);
-        //double vy=Math.cos(theta)*speed,vx=Math.sin(theta)*speed;
+        double xmult = 133.5088/12, ymult = 133.7551/12;
+        int encoder_x=(int)(xInch*xmult),encoder_y=(int)(yInch*ymult);
+        double theta=Math.atan(xInch/yInch);
+        double vy=Math.cos(theta)*speed,vx=Math.sin(theta)*speed;
         double coe=1;
-        while(encoder_x - encoder_y<-LF.getCurrentPosition()||-encoder_x - encoder_y<-LB.getCurrentPosition()||encoder_x + encoder_y>-RF.getCurrentPosition()||-encoder_x + encoder_y>-RB.getCurrentPosition()){
+        while(Math.abs(-encoder_x-encoder_y)>Math.abs(-LF.getCurrentPosition())||Math.abs(encoder_x-encoder_y)>Math.abs(-LB.getCurrentPosition())||Math.abs(-encoder_x+encoder_y)>Math.abs(-RF.getCurrentPosition())||Math.abs(encoder_x+encoder_y)>Math.abs(-RB.getCurrentPosition())){
             telemetry.addData("LF",-LF.getCurrentPosition());
             telemetry.addData("target",encoder_x-encoder_y);
-
             telemetry.addData("LB",-LB.getCurrentPosition());
             telemetry.addData("target",-encoder_x-encoder_y);
-
             telemetry.addData("RF",-RF.getCurrentPosition());
             telemetry.addData("target",encoder_x+encoder_y);
-
             telemetry.addData("RB",-RB.getCurrentPosition());
             telemetry.addData("target",-encoder_x+encoder_y);
-
             telemetry.update();
             //if (p_time < t.milliseconds()) break;
-            setAllDrivePower(-coe*speed,-coe*speed,coe*speed,coe*speed);
-            //coe+=
+            setAllDrivePower(coe*(vx-vy),coe*(-vx-vy),coe*(vx+vy),coe*(-vx+vy));
+            coe+=.1;
+            coe=Math.max(coe,1);
         }
-        setAllDrivePower(1,1,-1,-1);
-        wait(100);
+        setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
+        wait(75);
         setAllDrivePower(0);
+        reset_ENCODER();
     }
 
     protected void moveInchesHighSpeed(double xInch, double yInch, double speed, int acc_s, int dec_s, double acc_p, double dec_p, double initial_speed)
