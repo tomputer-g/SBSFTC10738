@@ -15,11 +15,13 @@ public class TeleOp_RocketLeague extends BaseOpMode {
     public void init() {
         initDrivetrain();
         initGrabber();
-        grabber.setPosition(0);
+        initGrabber();
+        grabber.setPosition(1);
     }
 
     @Override
     public void loop() {
+        //y = switch movement, b = servo toggle, U/D = grab motor,
         if(this.gamepad1.y){
             yPrimed = true;
         }
@@ -36,9 +38,19 @@ public class TeleOp_RocketLeague extends BaseOpMode {
             if(grabber.getPosition() < 0.5){
                 grabber.setPosition(1);
             }else{
-                grabber.setPosition(0);
+                grabber.setPosition(0.2);
             }
         }
+
+        if(this.gamepad1.dpad_up){
+            grabber_motor.setPower(-1);
+        }else if(this.gamepad1.dpad_down){
+            grabber_motor.setPower(1);
+        }else{
+            grabber_motor.setPower(0);
+        }
+
+
         if(isStrafeCtrl){
             telemetry.addLine("STRAFE mode");
             scaledMove(-this.gamepad1.left_stick_x,-this.gamepad1.left_stick_y, -this.gamepad1.right_stick_x);

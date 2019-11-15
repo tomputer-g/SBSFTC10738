@@ -28,6 +28,7 @@ public class BaseOpMode extends OpMode {
 
     protected DcMotor LF, LB, RF, RB;
     protected Servo grabber;
+    protected DcMotor grabber_motor;
     private final String logPrefix = "/sdcard/";
     private BufferedWriter logWriter;
     private boolean[] bF={};
@@ -44,6 +45,9 @@ public class BaseOpMode extends OpMode {
 
     protected void initGrabber(){
         grabber = hardwareMap.get(Servo.class, "grabber");
+        grabber_motor = hardwareMap.get(DcMotor.class, "grabber_motor");
+        grabber_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        grabber_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     protected void reset_ENCODER(){
