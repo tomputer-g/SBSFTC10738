@@ -44,11 +44,12 @@ public class BrakeTest extends TractionControl {
         else if(phase==1) {
             setAllDrivePower(-runSpeed, -runSpeed, runSpeed, runSpeed);
             telemetry.addData("MOVING AT ",runSpeed);
+            telemetry.addData("LF Direction: ",LF.getDirection());
         }
         else if(phase>1){
             telemetry.addData("BRAKING AT ",brakeSpeed);
             start = t.milliseconds();
-            brakeTD(brakeSpeed,0);
+            brakeTD(brakeSpeed);
             end=t.milliseconds();
             phase = 0;
         }

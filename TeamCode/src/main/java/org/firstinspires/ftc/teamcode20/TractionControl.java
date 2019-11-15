@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode20;
+import android.graphics.Path;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.teamcode19.Tests.WallVUMarkTesting;
 
 public class TractionControl extends BaseAuto{
     //previous motor counts
@@ -60,10 +64,12 @@ public class TractionControl extends BaseAuto{
         setAllDrivePower(0);
     }
     */
-    protected void brakeTD(double brakespeed, double target){
+    protected void brakeTD(double brakespeed){
         reset();
-        while(!brakeDone(target)){
-            setAllDrivePower1(-brakespeed,-brakespeed,-brakespeed,-brakespeed);
+        wait(50);
+        while(!brakeDone()){
+            deltaMCUpdate();
+            setAllDrivePower1(check(deltaLF)*brakespeed,check(deltaLB)*brakespeed,check(deltaRF)*brakespeed,-check(deltaRB)*brakespeed);
             deltaMCUpdate();
         }
         setAllDrivePower(0);
@@ -91,8 +97,8 @@ public class TractionControl extends BaseAuto{
     }
 
     //check if the delta motor counts are at expected values
-    private boolean brakeDone(double target){
-        return (deltaLB<target && deltaLF<target && deltaLB<target && deltaLF<target);
+    private boolean brakeDone(){
+        return (deltaLB==0 && deltaLF==0 && deltaLB==0 && deltaLF==0);
     }
 
     //called beginning each setTDpower to initialize the power ad
@@ -102,4 +108,11 @@ public class TractionControl extends BaseAuto{
         reset();
     }
 
+    private double check(double deltaMC){
+        if(deltaMC>0)
+            return -1;
+        else if(deltaMC<0)
+            return 1;
+        return 0;
+    }
 }
