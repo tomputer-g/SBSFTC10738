@@ -47,15 +47,20 @@ public class VuforiaSkystoneChaserWebcam extends BaseAuto {
 
     private static double distGoal = 0;
     private double[] displacements = {2, 7};//+ = forward; + = right
+    private double headingDisplacement = -90;
+    //rotate -90 for heading
 
 
     @Override
     public void init() {
         msStuckDetectInit = 30000;
+        msStuckDetectLoop = 30000;
         initVuforiaWebcam();
         initDrivetrain();
+        initIMU();
         targetsSkyStone.activate();
     }
+
 
     @Override
     public void loop() {
@@ -73,16 +78,12 @@ public class VuforiaSkystoneChaserWebcam extends BaseAuto {
                 }
                 if(trackable.getName().equals("Stone Target")) {
                     Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+                    telemetry.addLine("Turn "+(int)Math.abs(rotation.thirdAngle+headingDisplacement)+(rotation.thirdAngle+headingDisplacement>0?"deg. CW":"deg. CCW"));
+                    turn(-(rotation.thirdAngle+headingDisplacement),0.3,2);//+=ccw
                     VectorF translation = lastLocation.getTranslation();
-                    //when heading > 0, turn right
-                    telemetry.addLine("Turn "+(int)Math.abs(rotation.thirdAngle)+(rotation.thirdAngle>0?"deg. CW":"deg. CCW"));
-
-                    telemetry.addLine("Move "+Math.abs(translation.get(1)/mmPerInch + displacements[1])+(translation.get(1)>0?"in. Right":"in. Left"));
+                    telemetry.addLine("Move "+Math.abs(translation.get(1)/mmPerInch + displacements[1])+(translation.get(1)+displacements[1]>0?"in. Right":"in. Left"));
                     telemetry.addLine("Forward "+(distGoal - translation.get(0)/mmPerInch + displacements[0])+"in.");
-                    telemetry.addLine("--------------------------------");
-                    telemetry.addData("Pos (in)", "{X, Y} = %.1f, %.1f",
-                            translation.get(0) / mmPerInch + displacements[0], translation.get(1) / mmPerInch + displacements[1]);
-                    telemetry.addData("Heading", rotation.thirdAngle);
+                    moveInches(translation.get(1)/mmPerInch+displacements[1], translation.get(0)/mmPerInch+displacements[0], 0.4);
                 }
                 break;
             }
