@@ -1,22 +1,25 @@
 package org.firstinspires.ftc.teamcode20;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp()
 public class TeleOp_RocketLeague extends BaseOpMode {
 
     private double v = 0, x = 0;
     private double limit = 0.5;
-    private boolean isStrafeCtrl = false;
+    private boolean isStrafeCtrl = true;
     private final double ctrl_deadzone = 0.2;
 
-    private boolean yPrimed = false, dpadLPrimed = false, dpadRPrimed = false, BPrimed = false;
+    private boolean yPrimed = false, dpadLPrimed = false, dpadRPrimed = false, BPrimed = false, RBPrimed = false;
+    private boolean movingExtender = false;
     @Override
     public void init() {
         initDrivetrain();
         initGrabber();
-        initGrabber();
+        initLinSlide();
         grabber.setPosition(1);
+
     }
 
     @Override
@@ -42,14 +45,50 @@ public class TeleOp_RocketLeague extends BaseOpMode {
             }
         }
 
-        if(this.gamepad1.dpad_up){
-            grabber_motor.setPower(-1);
-        }else if(this.gamepad1.dpad_down){
-            grabber_motor.setPower(1);
-        }else{
-            grabber_motor.setPower(0);
+        if(this.gamepad1.right_bumper){
+            RBPrimed = true;
+        }
+        if(!this.gamepad1.right_bumper && RBPrimed){
+            RBPrimed = false;
+            movingExtender = true;
+            grabber_extender.setPower(1);
+            if(grabber_extender.getCurrentPosition() < 110){
+                grabber_extender.setTargetPosition(230);
+            }else{
+                grabber_extender.setTargetPosition(0);
+            }
+            grabber_extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
+        if(this.gamepad1.right_trigger > 0.1){
+            moveLinSlide(1);
+        }else if(this.gamepad1.left_trigger > 0.1){
+            moveLinSlide(-1);
+        }else{
+            moveLinSlide(0);
+        }
+        if(this.gamepad1.dpad_up){
+            movingExtender = false;
+            grabber_extender.setPower(0.4);
+        }else if(this.gamepad1.dpad_down){
+            movingExtender = false;
+            grabber_extender.setPower(-0.4);
+        }else{
+            if(!movingExtender){
+                grabber_extender.setPower(0);
+            }else{
+                if(!grabber_extender.isBusy()){
+                    movingExtender = false;
+                    grabber_extender.setPower(0);
+                    grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                }
+            }
+        }
+
+        if(this.gamepad1.a){
+            grabber_extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
 
         if(isStrafeCtrl){
             telemetry.addLine("STRAFE mode");
@@ -156,6 +195,9 @@ public class TeleOp_RocketLeague extends BaseOpMode {
                 winstonSetPower(x,x,-x,-x);
             }
         }
+
+        telemetry.addData("encoder", L1.getCurrentPosition());
+
         telemetry.update();
 
     }

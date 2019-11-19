@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode20;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.configuration.annotations.MotorType;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.io.BufferedWriter;
@@ -28,7 +27,8 @@ public class BaseOpMode extends OpMode {
 
     protected DcMotor LF, LB, RF, RB;
     protected Servo grabber;
-    protected DcMotor grabber_motor;
+    protected DcMotor grabber_extender;
+    protected DcMotor L1, L2;
     private final String logPrefix = "/sdcard/";
     private BufferedWriter logWriter;
     private boolean[] bF={};
@@ -43,11 +43,27 @@ public class BaseOpMode extends OpMode {
 
     }
 
+    protected void initLinSlide(){
+        L1 = hardwareMap.get(DcMotor.class, "L1");
+        L2 = hardwareMap.get(DcMotor.class, "L2");
+        L1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        L2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        L1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        L2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        L1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
+    protected void moveLinSlide(double speed){
+        L1.setPower(speed);
+        L2.setPower(-speed);
+    }
+
     protected void initGrabber(){
         grabber = hardwareMap.get(Servo.class, "grabber");
-        grabber_motor = hardwareMap.get(DcMotor.class, "grabber_motor");
-        grabber_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        grabber_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        grabber_extender = hardwareMap.get(DcMotor.class, "grabber_extender");
+        grabber_extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        grabber_extender.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     protected void reset_ENCODER(){
