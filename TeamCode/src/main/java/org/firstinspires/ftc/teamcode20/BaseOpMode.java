@@ -30,7 +30,9 @@ public class BaseOpMode extends OpMode {
     protected Servo grabber;
     private final String logPrefix = "/sdcard/";
     private BufferedWriter logWriter;
-    private boolean[] bF={};
+    private String[] bFN={"this.gamepad1.left_bumper","this.gamepad1.right_bumper","this.gamepad1.dpad_up","this.gamepad1.dpad_down","this.gamepad1.dpad_left","this.gamepad1.dpad_right","this.gamepad1.a","this.gamepad1.b","this.gamepad1.x","this.gamepad1.y"};
+    private boolean[] bFB={this.gamepad1.left_bumper,this.gamepad1.right_bumper,this.gamepad1.dpad_up,this.gamepad1.dpad_down,this.gamepad1.dpad_left,this.gamepad1.dpad_right,this.gamepad1.a,this.gamepad1.b,this.gamepad1.x,this.gamepad1.y};
+    private boolean[] bF={true,true,true,true,true,true,true,true,true,true};
 
     @Override public void init() {
         msStuckDetectInit = 10000;
@@ -137,10 +139,13 @@ public class BaseOpMode extends OpMode {
         telemetry.addLine("BaseOpMode -> initOdometry() still a stub!");
     }
 
-    protected boolean 整(boolean b, boolean[] f){
+    protected boolean 整(boolean b,boolean[] f){
         //chzch butt on press
         //淦 --yeah
         //微笑着面对它
+        //int index=bFN.indexOf(s);
+        //boolean b=bFB[index];
+        //boolean c=bF[index];
         if(b||!f[0]){
             if(b)f[0]=false;
             else f[0]=true;
@@ -252,9 +257,9 @@ public class BaseOpMode extends OpMode {
             telemetry.addData("target",-encoder_x+encoder_y);
             telemetry.update();
             //if (p_time < t.milliseconds()) break;
-            setAllDrivePower(coe*(vx-vy),coe*(-vx-vy),coe*(vx+vy),coe*(-vx+vy));
-            coe+=.1;
-            coe=Math.max(coe,1);
+            setAllDrivePower(coe*(-vx-vy),coe*(vx-vy),coe*(-vx+vy),coe*(vx+vy));
+            //coe+=.1;
+            //coe=Math.max(coe,1);
         }
         setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
         wait(75);

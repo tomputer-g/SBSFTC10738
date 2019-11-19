@@ -11,7 +11,7 @@ import static java.lang.Math.sqrt;
 @TeleOp
 public class MiscTest extends BaseAuto {
     double speed,x,y;
-    boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true};
+    boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true};
 
     private void 三天之内刹了你(){
         setAllDrivePower(1,1,-1,-1);
@@ -31,10 +31,12 @@ public class MiscTest extends BaseAuto {
     @Override
     public void loop(){
         //x+ left x- right y+ forward y- backward
-        if(整(this.gamepad1.dpad_left,e))speed-=0.05;
-        if(整(this.gamepad1.dpad_right,f))speed+=0.05;
+        if(整(this.gamepad1.y,e))speed-=0.05;
+        if(整(this.gamepad1.a,f))speed+=0.05;
         if(整(this.gamepad1.dpad_up,ee))y++;
         if(整(this.gamepad1.dpad_down,ff))y--;
+        if(整(this.gamepad1.dpad_left,eee))x++;
+        if(整(this.gamepad1.dpad_right,fff))x--;
         telemetry.addData("speed: ",speed);
         telemetry.addData("x:", x);
         telemetry.addData("y: ", y);
@@ -46,6 +48,8 @@ public class MiscTest extends BaseAuto {
             moveInches(0,y,speed);
         if(整(this.gamepad1.left_bumper,lF))
             moveInches(x,0,speed);
+        if (整(this.gamepad1.start, m))
+            moveInches(x,y,speed);
         telemetry.update();
     }
 }
