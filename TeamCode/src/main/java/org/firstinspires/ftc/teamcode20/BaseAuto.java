@@ -216,4 +216,10 @@ public class BaseAuto extends BaseOpMode {
         while (robotError <= -180) robotError += 360;
         return robotError;
     }
+
+    protected void setAllDrivePowerG(double a, double b, double c, double d){
+        getHeading();
+        double p=imuHeading*0.01/9;
+        setAllDrivePower(a-p,b-p,c-p,d-p);
+    }
 }
