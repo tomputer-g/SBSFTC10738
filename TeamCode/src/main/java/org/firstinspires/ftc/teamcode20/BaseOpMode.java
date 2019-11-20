@@ -281,7 +281,7 @@ public class BaseOpMode extends OpMode {
             telemetry.addData("target",-encoder_x+encoder_y);
             telemetry.update();
             //if (p_time < t.milliseconds()) break;
-            setAllDrivePower(coe*(-vx-vy),coe*(vx-vy),coe*(-vx+vy),coe*(vx+vy));
+            setAllDrivePowerG(coe*(-vx-vy),coe*(vx-vy),coe*(-vx+vy),coe*(vx+vy));
             //coe+=.1;
             //coe=Math.max(coe,1);
         }

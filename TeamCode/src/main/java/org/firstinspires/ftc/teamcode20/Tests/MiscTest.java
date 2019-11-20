@@ -12,7 +12,7 @@ import static java.lang.Math.sqrt;
 public class MiscTest extends BaseAuto {
     double speed,x,y;
     boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true};
-
+    ElapsedTime t=new ElapsedTime();
     private void 三天之内刹了你(){
         setAllDrivePower(1,1,-1,-1);
         wait(200);
@@ -21,6 +21,7 @@ public class MiscTest extends BaseAuto {
 
     @Override
     public void init(){
+        initIMU();
         initDrivetrain();
         speed=0.25;
         y = 0;
@@ -44,8 +45,14 @@ public class MiscTest extends BaseAuto {
         telemetry.addData("LB",LB.getCurrentPosition());
         telemetry.addData("RF",RF.getCurrentPosition());
         telemetry.addData("RB",RB.getCurrentPosition());
+        telemetry.addData("Heading",imuHeading);
         if(整(this.gamepad1.right_bumper,bF))
-            moveInches(0,y,speed);
+            //moveInches(0,y,speed);
+            t.reset();
+            while(t.milliseconds()<5000){
+                setAllDrivePowerG(-speed,-speed,speed,speed);
+                telemetry.addData("Heading",imuHeading);
+            }
         if(整(this.gamepad1.left_bumper,lF))
             moveInches(x,0,speed);
         if (整(this.gamepad1.start, m))
