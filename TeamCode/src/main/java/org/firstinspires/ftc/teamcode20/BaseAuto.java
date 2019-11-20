@@ -39,7 +39,7 @@ public class BaseAuto extends BaseOpMode {
     //IMU
     protected static BNO055IMU imu;
     protected static double imuHeading;
-    protected static double imuOffset;
+    protected static double imuOffset=0;
 
     protected void initVuforia(){
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -181,6 +181,7 @@ public class BaseAuto extends BaseOpMode {
         imuOffset = 0;
         getHeading();
         imuOffset = imuHeading;
+
     }
 
     protected void turn(double angle, double speed, double threshold) {
@@ -217,9 +218,9 @@ public class BaseAuto extends BaseOpMode {
         return robotError;
     }
 
-    protected void setAllDrivePowerG(double a, double b, double c, double d){
+    protected void setAllDrivePowerG(double a, double b, double c, double d,double pc){
         getHeading();
-        double p=imuHeading*0.01/9;
+        double p=pc*((imuHeading-imuOffset)*0.1/9);
         setAllDrivePower(a-p,b-p,c-p,d-p);
     }
 }
