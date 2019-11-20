@@ -27,7 +27,7 @@ public class BrickGrabTest extends BaseAuto {
         initIMU();
         vr = 0.1;
         v = 0.15;
-        threshold=3.5;
+        threshold=8;
     }
     @Override
     public void loop() {
@@ -95,37 +95,6 @@ public class BrickGrabTest extends BaseAuto {
                     wait(80);
                 }
             }
-            /*
-            //else 好活(0.2,0.2,0.2,0.2);
-            setAllDrivePower(0);
-            leftDist = left.getDistance(DistanceUnit.INCH);
-            rightDist = right.getDistance(DistanceUnit.INCH);
-            vt = ((leftDist+rightDist)/2) / 10 * vr + 0.08;
-            while (!near(leftDist, rightDist, .2)){
-                leftDist = left.getDistance(DistanceUnit.INCH);
-                rightDist = right.getDistance(DistanceUnit.INCH);
-                telemetry.addData("Rotational speed","%.2f", vr);
-                telemetry.addData("Left", "%.2f", left.getDistance(DistanceUnit.INCH));
-                telemetry.addData("Right","%.2f",right.getDistance(DistanceUnit.INCH));
-                telemetry.update();
-                if (leftDist < rightDist) setAllDrivePower(v/2 + vr - vt, v/2 + vr + vt, -v/2 + vr - vt, -v/2 + vr + vt);
-                else setAllDrivePower(v/2 -vr + vt, v/2 -vr - vt, -v/2 -vr + vt, -v/2 -vr - vt);
-            }
-            开倒车(0);
-            double aa = right.getDistance(DistanceUnit.INCH);
-            leftDist = left.getDistance(DistanceUnit.INCH);
-            rightDist = right.getDistance(DistanceUnit.INCH);
-            while (rightDist<aa+3 && near(rightDist,leftDist,2)) {
-             //   leftDist = left.getDistance(DistanceUnit.INCH);
-                telemetry.addData("Left", "%.2f", left.getDistance(DistanceUnit.INCH));
-                telemetry.addData("Right","%.2f",right.getDistance(DistanceUnit.INCH));
-                rightDist = right.getDistance(DistanceUnit.INCH);
-                setAllDrivePower(-0.2, 0.2, -0.2, 0.2); //right way
-                //setAllDrivePower(0.2, -0.2, 0.2, -0.2); //left way
-                telemetry.update();
-            }
-
-             */
             开倒车(0);
         }
 

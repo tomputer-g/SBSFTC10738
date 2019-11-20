@@ -31,9 +31,9 @@ public class BaseOpMode extends OpMode {
     protected DcMotor L1, L2;
     private final String logPrefix = "/sdcard/";
     private BufferedWriter logWriter;
-    private String[] bFN={"this.gamepad1.left_bumper","this.gamepad1.right_bumper","this.gamepad1.dpad_up","this.gamepad1.dpad_down","this.gamepad1.dpad_left","this.gamepad1.dpad_right","this.gamepad1.a","this.gamepad1.b","this.gamepad1.x","this.gamepad1.y"};
-    private boolean[] bFB={this.gamepad1.left_bumper,this.gamepad1.right_bumper,this.gamepad1.dpad_up,this.gamepad1.dpad_down,this.gamepad1.dpad_left,this.gamepad1.dpad_right,this.gamepad1.a,this.gamepad1.b,this.gamepad1.x,this.gamepad1.y};
-    private boolean[] bF={true,true,true,true,true,true,true,true,true,true};
+    //private String[] bFN={"this.gamepad1.left_bumper","this.gamepad1.right_bumper","this.gamepad1.dpad_up","this.gamepad1.dpad_down","this.gamepad1.dpad_left","this.gamepad1.dpad_right","this.gamepad1.a","this.gamepad1.b","this.gamepad1.x","this.gamepad1.y"};
+    //private boolean[] bFB={this.gamepad1.left_bumper,this.gamepad1.right_bumper,this.gamepad1.dpad_up,this.gamepad1.dpad_down,this.gamepad1.dpad_left,this.gamepad1.dpad_right,this.gamepad1.a,this.gamepad1.b,this.gamepad1.x,this.gamepad1.y};
+    //private boolean[] bF={true,true,true,true,true,true,true,true,true,true};
 
     @Override public void init() {
         msStuckDetectInit = 10000;
@@ -225,6 +225,10 @@ public class BaseOpMode extends OpMode {
         setAllDrivePower(-a,-b,c,d);
     }
 
+    protected void setAllDrivePowerG(double a, double b, double c, double d){
+        
+    }
+
     protected void 好活(double a,double b,double c,double d){
         setAllDrivePower(a,b,-c,-d);
     }
@@ -255,13 +259,13 @@ public class BaseOpMode extends OpMode {
         ();
         sup fuckers
         69
-        cole wdnmd-p'
+        by cole wdnmd-p'
         */
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
         ElapsedTime t = new ElapsedTime();
         int p_time = (int) (sqrt(xInch*xInch + yInch*yInch)*100);
-        double xmult = 133.5088/12, ymult = 133.7551/12;
+        double xmult = 232.5088/12, ymult = 232.7551/12;
         int encoder_x=(int)(xInch*xmult),encoder_y=(int)(yInch*ymult);
         double theta=Math.atan(xInch/yInch);
         double vy=Math.cos(theta)*speed,vx=Math.sin(theta)*speed;
