@@ -46,13 +46,14 @@ public class MiscTest extends BaseAuto {
         telemetry.addData("RF",RF.getCurrentPosition());
         telemetry.addData("RB",RB.getCurrentPosition());
         telemetry.addData("Heading",imuHeading);
-        if(整(this.gamepad1.right_bumper,bF))
+        if(整(this.gamepad1.right_bumper,bF)) {
             //moveInches(0,y,speed);
             t.reset();
-            while(t.milliseconds()<5000){
-                setAllDrivePowerG(-speed,-speed,speed,speed);
-                telemetry.addData("Heading",imuHeading);
+            while (t.milliseconds() < 5000) {
+                setAllDrivePowerG(-speed, -speed, speed, speed);
+                telemetry.addData("Heading", imuHeading);
             }
+        }
         if(整(this.gamepad1.left_bumper,lF))
             moveInches(x,0,speed);
         if (整(this.gamepad1.start, m))
