@@ -32,6 +32,7 @@ public class MiscTest extends BaseAuto {
     @Override
     public void loop(){
         //x+ left x- right y+ forward y- backward
+        getHeading();
         if(整(this.gamepad1.y,e))speed-=0.05;
         if(整(this.gamepad1.a,f))speed+=0.05;
         if(整(this.gamepad1.dpad_up,ee))y++;
