@@ -33,7 +33,7 @@ public class MiscTest extends TractionControl {
         y = 0;
         x = 12;
         pc = .8;
-        pc_side = 1;
+        pc_side = 0.6;
         side_distance = 6;
        // 三天之内刹了你();
     }
