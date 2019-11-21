@@ -53,10 +53,11 @@ public class MiscTest extends TractionControl {
         telemetry.addData("speed: ","%.2f",speed);
         telemetry.addData("x:", x);
         telemetry.addData("y: ", y);
-        telemetry.addData("LF",LF.getCurrentPosition());
-        telemetry.addData("LB",LB.getCurrentPosition());
-        telemetry.addData("RF",RF.getCurrentPosition());
-        telemetry.addData("RB",RB.getCurrentPosition());
+        //telemetry.addData("LF",LF.getCurrentPosition());
+        //telemetry.addData("LB",LB.getCurrentPosition());
+        //telemetry.addData("RF",RF.getCurrentPosition());
+        //telemetry.addData("RB",RB.getCurrentPosition());
+        telemetry.addData("side_dis", side_distance);
         telemetry.addData("Heading",imuHeading);
         telemetry.addData("pc",pc);
         if(整(this.gamepad1.back,jk)){
@@ -65,13 +66,13 @@ public class MiscTest extends TractionControl {
         if(整(this.gamepad1.right_bumper,bF)) {
             //moveInches(0,y,speed);
             t.reset();
-            double a,b,c,d,adjustSide;
+            double adjustSide;
+            double a=-speed,b=-speed,c=speed,d=speed;
             while (t.milliseconds() < 2500) {
-                setAllDrivePowerG(-speed, -speed, speed, speed, pc);
-                a = LF.getPower(); b = LB.getPower(); c = RF.getPower(); d = RB.getPower();
+               // setAllDrivePowerG(m, n, j, k, pc);
                 adjustSide = pc_side*(rangeSensorSide.getDistance(DistanceUnit.INCH) - side_distance);
                 adjustSide = Math.min(0.15,Math.max(-0.15,adjustSide));
-                setAllDrivePower(a-adjustSide,b+adjustSide,c-adjustSide,d+adjustSide);
+                setAllDrivePowerG(a-adjustSide,b+adjustSide,c-adjustSide,d+adjustSide,pc);
                 //sideway:
                 //setAllDrivePowerG(-speed, speed, -speed, speed, pc);
 
