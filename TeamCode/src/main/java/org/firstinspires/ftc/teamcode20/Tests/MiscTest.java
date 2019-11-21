@@ -58,7 +58,7 @@ public class MiscTest extends BaseAuto {
             //moveInches(0,y,speed);
             t.reset();
             while (t.milliseconds() < 3000) {
-                setAllDrivePowerG(-speed, speed, -speed, speed,pc);
+                setAllDrivePowerG(-speed, -speed, speed, speed, pc);
                 telemetry.addData("Heading", imuHeading);
                 telemetry.addData("t",t.milliseconds());
                 telemetry.update();
@@ -67,7 +67,7 @@ public class MiscTest extends BaseAuto {
             setAllDrivePower(0);
         }
         if(整(this.gamepad1.left_bumper,lF))
-            moveInches(x,0,speed);
+            turn(90,speed,0.5);
         if (整(this.gamepad1.start, m))
             moveInches(x,y,speed);
         telemetry.update();
