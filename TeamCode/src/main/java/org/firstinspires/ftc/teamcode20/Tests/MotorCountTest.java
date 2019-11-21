@@ -52,7 +52,7 @@ public class MotorCountTest extends TractionControl {
         if(actionIndex == 1)
             setAllDrivePower(-speed,-speed,speed,speed);
         else{
-            brakeTD(brakeSpeed,10);
+            brakeTD(brakeSpeed);
             stop();
         }
         telemetry.addLine("MC: "+getMC(LF)+","+getMC(LB)+","+getMC(RF)+","+getMC(RB));

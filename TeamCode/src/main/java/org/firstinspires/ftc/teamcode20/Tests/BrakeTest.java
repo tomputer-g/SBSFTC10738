@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode20.TractionControl;
 @TeleOp
 public class BrakeTest extends TractionControl {
     private boolean[] a={true},b={true},c={true},d={true};
-    private double runSpeed =0.5,brakeSpeed=0.2,start,end;
+    private double runSpeed =0.5,brakeSpeed=0.2,start,end,n=0.2;
     int phase=0;
     ElapsedTime t;
     @Override
@@ -20,15 +20,19 @@ public class BrakeTest extends TractionControl {
     }
     @Override
     public void init_loop(){
-        if(整(this.gamepad1.dpad_up,a))
-            runSpeed +=0.05;
-        if(整(this.gamepad1.dpad_down,b))
-            runSpeed -=0.05;
+        if(整(this.gamepad1.dpad_up,a)) {
+            n +=0.01;
+            setTDMult(n);
+        }
+        if(整(this.gamepad1.dpad_down,b)) {
+            n -= 0.01;
+            setTDMult(n);
+        }
         if(整(this.gamepad1.left_bumper,d))
             brakeSpeed -=0.05;
         if(整(this.gamepad1.right_bumper,c))
             brakeSpeed +=0.05;
-        telemetry.addData("RUN SPEED: ", runSpeed);
+        telemetry.addData("MULT: ",n);
         telemetry.addData("BRAKE SPEED: ", brakeSpeed);
         telemetry.update();
     }
@@ -42,19 +46,20 @@ public class BrakeTest extends TractionControl {
             setAllDrivePower(0);
         }
         else if(phase==1) {
-            setAllDrivePower(-runSpeed, -runSpeed, runSpeed, runSpeed);
-            telemetry.addData("MOVING AT ",runSpeed);
-            telemetry.addData("actual", LF.getPower());
-            telemetry.addData("encoder", LF.getCurrentPosition());
+            moveTD(500,0.2);
+            //setAllDrivePower(-runSpeed, -runSpeed, runSpeed, runSpeed);
+            //telemetry.addData("MOVING AT ",runSpeed);
+            //telemetry.addData("LF Direction: ",LF.getDirection());
+            phase=0;
         }
         else if(phase>1){
             telemetry.addData("BRAKING AT ",brakeSpeed);
             start = t.milliseconds();
-            brakeTD(brakeSpeed,0);
+            brakeTD(brakeSpeed);
             end=t.milliseconds();
             phase = 0;
         }
         telemetry.addData("PHASE ",phase);
-        telemetry.addData("Brake Time:",end-start);
+        telemetry.addData("BRAKE TIME: ",end-start);
     }
 }
