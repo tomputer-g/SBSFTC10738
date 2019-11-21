@@ -46,8 +46,8 @@ public class BrakeTest extends TractionControl {
             setAllDrivePower(0);
         }
         else if(phase==1) {
-            moveTD(500,0.2);
-            //setAllDrivePower(-runSpeed, -runSpeed, runSpeed, runSpeed);
+            //moveTD(500,0.2);
+            setAllDrivePower(-runSpeed, -runSpeed, runSpeed, runSpeed);
             //telemetry.addData("MOVING AT ",runSpeed);
             //telemetry.addData("LF Direction: ",LF.getDirection());
             phase=0;
