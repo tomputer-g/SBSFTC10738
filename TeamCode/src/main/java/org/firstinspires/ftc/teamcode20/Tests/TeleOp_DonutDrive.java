@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode20.BaseOpMode;
 
-@TeleOp()
 public class TeleOp_DonutDrive extends BaseOpMode {
 
     private double outerSpeed = 0.5, innerSpeed = 0, cornerSpeed = 0.5;

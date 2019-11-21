@@ -53,8 +53,6 @@ public class VuforiaSkystoneChaserWebcam extends BaseAuto {
 
     @Override
     public void init() {
-        msStuckDetectInit = 30000;
-        msStuckDetectLoop = 30000;
         initVuforiaWebcam();
         initDrivetrain();
         initIMU();

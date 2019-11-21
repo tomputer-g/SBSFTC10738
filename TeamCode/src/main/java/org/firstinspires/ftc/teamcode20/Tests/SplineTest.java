@@ -9,7 +9,6 @@ import org.firstinspires.ftc.teamcode19.BaseOpMode;
  * Version sep.10th
  * Barry Lyu
 */
-@Autonomous(group = "test")
 public class SplineTest extends BaseOpMode {
 	double[][] points = {{0,0},{5,10},{10,15},{15,0}};
 	double[][] result = SplineGenerate.splinefunction(points);
