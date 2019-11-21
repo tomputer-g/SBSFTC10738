@@ -33,7 +33,7 @@ public class MiscTest extends TractionControl {
         y = 0;
         x = 12;
         pc = .8;
-        pc_side = 1;
+        pc_side = 0.8;
         side_distance = 6;
        // 三天之内刹了你();
     }
@@ -48,8 +48,8 @@ public class MiscTest extends TractionControl {
         if(整(this.gamepad1.dpad_down,ff))y--;
         if(整(this.gamepad1.dpad_left,eee))x++;
         if(整(this.gamepad1.dpad_right,fff))x--;
-        if(整(this.gamepad1.x,mm))pc+=0.2;
-        if(整(this.gamepad1.b,mmm))pc-=0.2;
+        if(整(this.gamepad1.x,mm))side_distance++;
+        if(整(this.gamepad1.b,mmm))side_distance--;
         telemetry.addData("speed: ","%.2f",speed);
         telemetry.addData("x:", x);
         telemetry.addData("y: ", y);
@@ -57,6 +57,7 @@ public class MiscTest extends TractionControl {
         //telemetry.addData("LB",LB.getCurrentPosition());
         //telemetry.addData("RF",RF.getCurrentPosition());
         //telemetry.addData("RB",RB.getCurrentPosition());
+        telemetry.addData("side_sensor val ", "%.2f",rangeSensorSide.getDistance(DistanceUnit.INCH));
         telemetry.addData("side_dis", side_distance);
         telemetry.addData("Heading",imuHeading);
         telemetry.addData("pc",pc);
@@ -75,7 +76,7 @@ public class MiscTest extends TractionControl {
                 setAllDrivePowerG(a-adjustSide,b+adjustSide,c-adjustSide,d+adjustSide,pc);
                 //sideway:
                 //setAllDrivePowerG(-speed, speed, -speed, speed, pc);
-
+                telemetry.addData("side_sensor val ", "%.2f",rangeSensorSide.getDistance(DistanceUnit.INCH));
                 telemetry.addData("Heading", imuHeading);
                 telemetry.addData("t",t.milliseconds());
                 telemetry.update();
