@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 import org.firstinspires.ftc.teamcode20.TractionControl;
 
@@ -11,9 +13,10 @@ import static java.lang.Math.sqrt;
 
 @TeleOp
 public class MiscTest extends TractionControl {
-    double speed,x,y,pc;
+    double speed,x,y,pc, side_distance, pc_side;
     boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
     ElapsedTime t=new ElapsedTime();
+    ModernRoboticsI2cRangeSensor rangeSensorSide;
     private void 三天之内刹了你(){
         setAllDrivePower(1,1,-1,-1);
         wait(200);
@@ -24,10 +27,14 @@ public class MiscTest extends TractionControl {
     public void init(){
         initIMU();
         initDrivetrain();
+        rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
+
         speed=0.35;
         y = 0;
         x = 12;
         pc = .8;
+        pc_side = 1;
+        side_distance = 6;
        // 三天之内刹了你();
     }
 
@@ -58,8 +65,13 @@ public class MiscTest extends TractionControl {
         if(整(this.gamepad1.right_bumper,bF)) {
             //moveInches(0,y,speed);
             t.reset();
+            double a,b,c,d,adjustSide;
             while (t.milliseconds() < 2500) {
                 setAllDrivePowerG(-speed, -speed, speed, speed, pc);
+                a = LF.getPower(); b = LB.getPower(); c = RF.getPower(); d = RB.getPower();
+                adjustSide = pc_side*(rangeSensorSide.getDistance(DistanceUnit.INCH) - side_distance);
+                adjustSide = Math.min(0.15,Math.max(-0.15,adjustSide));
+                setAllDrivePower(a-adjustSide,b+adjustSide,c-adjustSide,d+adjustSide);
                 //sideway:
                 //setAllDrivePowerG(-speed, speed, -speed, speed, pc);
 
@@ -68,6 +80,8 @@ public class MiscTest extends TractionControl {
                 telemetry.update();
             }
 
+            setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
+            wait(70);
             setAllDrivePower(0);
         }
         if(整(this.gamepad1.left_bumper,lF))
