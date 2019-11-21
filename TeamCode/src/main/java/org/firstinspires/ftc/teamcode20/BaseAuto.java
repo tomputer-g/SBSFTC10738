@@ -187,7 +187,7 @@ public class BaseAuto extends BaseOpMode {
     protected void turn(double angle, double speed, double threshold) {
         setMode_RUN_WITHOUT_ENCODER();
         setNewGyro0();
-        double p_TURN = 0.05;
+        double p_TURN = 2;
         while(!onHeading(speed, angle, p_TURN, threshold));
     }
 
@@ -199,7 +199,7 @@ public class BaseAuto extends BaseOpMode {
     }
 
     private boolean onHeading(double turnSpeed, double angle, double PCoeff, double threshold) {
-        double   error = getError(angle), steer, speed;
+        double   error = getError(angle)/180, steer, speed;
         boolean  onTarget = false;
         if (Math.abs(error) <= threshold) {
             steer = 0.0;
@@ -218,15 +218,14 @@ public class BaseAuto extends BaseOpMode {
 
     private double getError(double targetAngle) {
         getHeading();
-        double robotError = targetAngle - imuHeading;
+        double robotError = imuHeading-targetAngle;
         while (robotError > 180)  robotError -= 360;
         while (robotError <= -180) robotError += 360;
         return robotError;
     }
 
     protected void setAllDrivePowerG(double a, double b, double c, double d,double pc){
-        getHeading();
-        double p=pc*((imuHeading)*0.1/9);
+        double p=pc*(getError(imuOffset)*0.1/9);
         setAllDrivePower(a-p,b-p,c-p,d-p);
     }
 }
