@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode20.BaseOpMode;
 
-@TeleOp
 public class LinSlideTest extends BaseOpMode {
     private boolean DPDPrimed, DPUPrimed;
     private ElapsedTime t;

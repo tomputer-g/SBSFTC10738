@@ -35,8 +35,14 @@ public class BaseOpMode extends OpMode {
     //private boolean[] bFB={this.gamepad1.left_bumper,this.gamepad1.right_bumper,this.gamepad1.dpad_up,this.gamepad1.dpad_down,this.gamepad1.dpad_left,this.gamepad1.dpad_right,this.gamepad1.a,this.gamepad1.b,this.gamepad1.x,this.gamepad1.y};
     //private boolean[] bF={true,true,true,true,true,true,true,true,true,true};
 
+
+    @Override
+    public void internalPreInit() {
+        super.internalPreInit();
+        msStuckDetectInit = 30000;
+    }
+
     @Override public void init() {
-        msStuckDetectInit = 10000;
         msStuckDetectLoop = 30000;
         initDrivetrain();
     }
