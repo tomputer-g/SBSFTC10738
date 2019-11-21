@@ -226,7 +226,7 @@ public class BaseAuto extends BaseOpMode {
 
     protected void setAllDrivePowerG(double a, double b, double c, double d,double pc){
         getHeading();
-        double p=pc*((imuHeading)*0.1/9);
+        double p=pc*((imuHeading-imuOffset)*0.1/9);
         setAllDrivePower(a-p,b-p,c-p,d-p);
     }
 }
