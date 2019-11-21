@@ -67,13 +67,14 @@ public class MiscTest extends TractionControl {
         if(整(this.gamepad1.right_bumper,bF)) {
             //moveInches(0,y,speed);
             t.reset();
-            double adjustSide;
+            double 辟, 隘, 弟,cur,pr=0;
             double a=-speed,b=-speed,c=speed,d=speed;
             while (t.milliseconds() < 2500) {
-               // setAllDrivePowerG(m, n, j, k, pc);
-                adjustSide = pc_side*(rangeSensorSide.getDistance(DistanceUnit.INCH) - side_distance);
-                adjustSide = Math.min(0.25,Math.max(-0.25,adjustSide));
-                setAllDrivePowerG(a-adjustSide,b+adjustSide,c-adjustSide,d+adjustSide,pc);
+                cur= rangeSensorSide.getDistance(DistanceUnit.INCH) - side_distance;
+                辟 = Math.min(0.23,Math.max(-0.23,pc_side*cur));
+                弟 = 0.8*(cur-pr);
+                pr=cur;
+                setAllDrivePowerG(a-辟,b+辟,c-辟,d+辟,pc);
                 //sideway:
                 //setAllDrivePowerG(-speed, speed, -speed, speed, pc);
                 telemetry.addData("side_sensor val ", "%.2f",rangeSensorSide.getDistance(DistanceUnit.INCH));
