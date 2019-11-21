@@ -29,7 +29,7 @@ public class MiscTest extends TractionControl {
         initDrivetrain();
         rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
 
-        speed=0.35;
+        speed=0.25;
         y = 0;
         x = 12;
         pc = .8;
@@ -59,7 +59,7 @@ public class MiscTest extends TractionControl {
         //telemetry.addData("RB",RB.getCurrentPosition());
         telemetry.addData("side_sensor val ", "%.2f",rangeSensorSide.getDistance(DistanceUnit.INCH));
         telemetry.addData("side_dis", side_distance);
-        telemetry.addData("Heading",imuHeading);
+        telemetry.addData("Heading","%.2f",imuHeading);
         telemetry.addData("pc",pc);
         if(整(this.gamepad1.back,jk)){
             setNewGyro0();
@@ -72,7 +72,7 @@ public class MiscTest extends TractionControl {
             while (t.milliseconds() < 2500) {
                // setAllDrivePowerG(m, n, j, k, pc);
                 adjustSide = pc_side*(rangeSensorSide.getDistance(DistanceUnit.INCH) - side_distance);
-                adjustSide = Math.min(0.15,Math.max(-0.15,adjustSide));
+                adjustSide = Math.min(0.25,Math.max(-0.25,adjustSide));
                 setAllDrivePowerG(a-adjustSide,b+adjustSide,c-adjustSide,d+adjustSide,pc);
                 //sideway:
                 //setAllDrivePowerG(-speed, speed, -speed, speed, pc);
