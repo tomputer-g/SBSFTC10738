@@ -32,7 +32,7 @@ public class BrakeTest extends TractionControl {
             brakeSpeed -=0.05;
         if(整(this.gamepad1.right_bumper,c))
             brakeSpeed +=0.05;
-        telemetry.addData("MULT: ", runSpeed);
+        telemetry.addData("MULT: ",n);
         telemetry.addData("BRAKE SPEED: ", brakeSpeed);
         telemetry.update();
     }

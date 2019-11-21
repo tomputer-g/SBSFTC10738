@@ -21,7 +21,7 @@ public class TractionControl extends BaseAuto{
     //the initial motor counts(one time variable) not used
     private static double icLF,icLB,icRF,icRB;
 
-    private static double mult = 0.2;
+    private static double mult = 0.001;
 
     /*
     //the old TD power
@@ -47,10 +47,12 @@ public class TractionControl extends BaseAuto{
 
     protected void moveTD(double motorCount,double speed){
         reset();
-        deltaMCUpdate();
+        moveMCUpdate();
         while(!moveDone(motorCount)){
             setAllDrivePower1(speed,speed+getPID(pcLB),speed+getPID(pcRF),speed+getPID(pcRB));
+            moveMCUpdate();
         }
+        setAllDrivePower(0);
         brakeTD(1);
     }
 
