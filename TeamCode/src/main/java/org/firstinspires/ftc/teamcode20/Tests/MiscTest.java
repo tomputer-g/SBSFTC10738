@@ -33,7 +33,7 @@ public class MiscTest extends TractionControl {
         y = 0;
         x = 12;
         pc = .8;
-        pc_side = 1;
+        pc_side = .6;
         side_distance = 6;
        // 三天之内刹了你();
     }
@@ -44,8 +44,8 @@ public class MiscTest extends TractionControl {
         getHeading();
         if(整(this.gamepad1.y,e))speed-=0.05;
         if(整(this.gamepad1.a,f))speed+=0.05;
-        if(整(this.gamepad1.dpad_up,ee))y++;
-        if(整(this.gamepad1.dpad_down,ff))y--;
+        if(整(this.gamepad1.dpad_up,ee))pc_side-=0.1;
+        if(整(this.gamepad1.dpad_down,ff))pc_side+=0.1;
         if(整(this.gamepad1.dpad_left,eee))x++;
         if(整(this.gamepad1.dpad_right,fff))x--;
         if(整(this.gamepad1.x,mm))side_distance++;
@@ -69,7 +69,7 @@ public class MiscTest extends TractionControl {
             t.reset();
             double adjustSide;
             double a=-speed,b=-speed,c=speed,d=speed;
-            while (t.milliseconds() < 2500) {
+            while (t.milliseconds() < 2000) {
                // setAllDrivePowerG(m, n, j, k, pc);
                 adjustSide = pc_side*(rangeSensorSide.getDistance(DistanceUnit.INCH) - side_distance);
                 adjustSide = Math.min(0.25,Math.max(-0.25,adjustSide));
@@ -82,9 +82,7 @@ public class MiscTest extends TractionControl {
                 telemetry.update();
             }
 
-            setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
-            wait(70);
-            setAllDrivePower(0);
+            brakeTD(.5);
         }
         if(整(this.gamepad1.left_bumper,lF))
             speed*=-1;
