@@ -12,7 +12,8 @@ public class TeleOp_RocketLeague extends BaseOpMode {
     private boolean isStrafeCtrl = true;
     private final double ctrl_deadzone = 0.2;
     private ElapsedTime t;
-    private double value = 0, a = 1;
+    private double value = 0, a_up = 1.2, a_down = 0.8;
+    private int slideLimit = 1800;
 
     private boolean yPrimed = false, dpadLPrimed = false, dpadRPrimed = false, BPrimed = false, RBPrimed = false;
     private boolean movingExtender = false;
@@ -94,7 +95,7 @@ public class TeleOp_RocketLeague extends BaseOpMode {
 
         if(isStrafeCtrl){
             telemetry.addLine("STRAFE mode");
-            scaledMove(-this.gamepad1.left_stick_x,-this.gamepad1.left_stick_y, -this.gamepad1.right_stick_x);
+            scaledMove(-this.gamepad1.left_stick_x,-this.gamepad1.left_stick_y, (this.gamepad1.right_bumper?0:-this.gamepad1.right_stick_x));
 
         }else {
             telemetry.addLine("TANK mode");
@@ -203,7 +204,16 @@ public class TeleOp_RocketLeague extends BaseOpMode {
         }
         if(this.gamepad1.left_bumper){
             telemetry.addLine("CHANGING SLIDE");
-            value += a * (joystick_quad(-this.gamepad1.right_stick_y)) * t.milliseconds();
+            if(this.gamepad1.right_stick_y > 0){
+                value += a_down * (joystick_quad(-this.gamepad1.right_stick_y)) * t.milliseconds();
+            }else{
+                value += a_up * (joystick_quad(-this.gamepad1.right_stick_y)) * t.milliseconds();
+            }
+
+            if(value > slideLimit)
+                value = slideLimit;
+            if(value < 0)
+                value = 0;
         }
         t.reset();
 
@@ -211,14 +221,14 @@ public class TeleOp_RocketLeague extends BaseOpMode {
         L2.setTargetPosition(-(int)value);
         telemetry.addData("target",value);
         telemetry.addData("actual",L1.getCurrentPosition());
-        telemetry.addData("a", a);
+        telemetry.addData("a", a_up+", "+a_down);
         telemetry.addData("input", to3d(-this.gamepad1.right_stick_y) + " -> " + to3d(joystick_quad(-this.gamepad1.right_stick_y)));
         telemetry.addData("position", value);
         telemetry.update();
 
     }
 
-    private double joystick_quad(double input){
+    private double joystick_quad(double input){//up 1.2, down 0.5
         if(input < 0)
             return - (input * input);
         return input * input;

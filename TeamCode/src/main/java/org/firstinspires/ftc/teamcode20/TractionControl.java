@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode20;
+import android.graphics.Path;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.teamcode19.Tests.WallVUMarkTesting;
 
 public class TractionControl extends BaseAuto{
     //previous motor counts
@@ -15,8 +19,9 @@ public class TractionControl extends BaseAuto{
     private static double pLF,pLB,pRF,pRB;
 
     //the initial motor counts(one time variable) not used
-    private static double iVLF,iVLB,iVRF,iVRB;
+    private static double icLF,icLB,icRF,icRB;
 
+    private static double mult = 0.001;
 
     /*
     //the old TD power
@@ -40,6 +45,17 @@ public class TractionControl extends BaseAuto{
         setAllDrivePower(deltaLF /min>pLF/minp?0:ipLF, deltaLB /min>pLB/minp?0:ipLB, deltaRF /min>pRF/minp?0:ipRF, deltaRB /min>pRB/minp?0:ipRB);
     }
 
+    protected void moveTD(double motorCount,double speed){
+        reset();
+        moveMCUpdate();
+        while(!moveDone(motorCount)){
+            setAllDrivePower1(speed,speed+getPID(pcLB),speed+getPID(pcRF),speed+getPID(pcRB));
+            moveMCUpdate();
+        }
+        setAllDrivePower(0);
+        brakeTD(1,1);
+    }
+
     //get the Motor Count(Left Motors positive forward, Right Motors negative forward)
     protected static double getMC(DcMotor i){
         return i.getCurrentPosition();
@@ -60,11 +76,12 @@ public class TractionControl extends BaseAuto{
         setAllDrivePower(0);
     }
     */
-    protected void brakeTD(double brakespeed, double target){
+    protected void brakeTD(double brakespeed,double tolerance){
         reset();
-        while(!brakeDone(target)){
-            setAllDrivePower1(-brakespeed,-brakespeed,-brakespeed,-brakespeed);
+        pLF=LF.getPower(); pLB=LF.getPower(); pRF=RF.getPower(); pRB=RB.getPower();
+        while(!brakeDone(tolerance)){
             deltaMCUpdate();
+            setAllDrivePower(check(pLF)*brakespeed,check(pLB)*brakespeed,check(pRF)*brakespeed,check(pRB)*brakespeed);
         }
         setAllDrivePower(0);
 
@@ -74,7 +91,8 @@ public class TractionControl extends BaseAuto{
     private void reset(){
         pcLF=0;pcLB=0;pcRF=0;pcRB=0;
         deltaLF =getMC(LF); deltaLB =getMC(LB); deltaRB =getMC(RB); deltaRF =getMC(RF);
-        iVLF=0;iVLB=0;iVRF=0;iVRB=0;
+        icLF=0;icLB=0;icRF=0;icRB=0;
+        pLF=0;pLB=0;pRF=0;pRB=0;
     }
 
     //update the motor counts(Negate the right motor encoder count changes to positive forward) for the brake
@@ -90,9 +108,22 @@ public class TractionControl extends BaseAuto{
         min=Math.min(deltaLF,Math.min(deltaLB,Math.min(deltaRF, deltaRB)));
     }
 
+    //update for the moveTD
+    private void moveMCUpdate(){
+        pcLF = icLF-getMC(LF); pcLB =icLB-getMC(LB); pcRF = getMC(RF)-icRF; pcRB = getMC(RB)-icRB;
+    }
+
     //check if the delta motor counts are at expected values
-    private boolean brakeDone(double target){
-        return (deltaLB<target && deltaLF<target && deltaLB<target && deltaLF<target);
+    private boolean brakeDone(double tolerance){
+        return (near(deltaLB,0,tolerance) && near(deltaLF,0,tolerance) && near(deltaLB,0,tolerance) && near(deltaLF,0,tolerance));
+    }
+
+    private boolean moveDone(double target,double tolerance){
+        return near(pcLF,target,tolerance)&&near(pcLB,target,tolerance)&&near(pcRF,target,tolerance)&&near(pcRB,target,tolerance);
+    }
+
+    private boolean moveDone(double target){
+        return pcLF>=target&&pcLB>=target&&pcRB>=target&&pcRF>=target;
     }
 
     //called beginning each setTDpower to initialize the power ad
@@ -102,4 +133,26 @@ public class TractionControl extends BaseAuto{
         reset();
     }
 
+    private double check(double power){
+        if(power>0)
+            return -1;
+        else if(power<0)
+            return 1;
+        return 0;
+    }
+
+    //
+    private double getSpeed(double i){
+        if((i-pcLF)>0) return -0.1;
+        else if (i-pcLF==0) return 0;
+        return 0.1;
+    }
+
+    //get the pid adjustment value
+    private double getPID(double i){
+        return (pcLF-i)*mult;
+    }
+
+    //set the multiplier of pid move
+    protected void setTDMult(double i){mult=i;}
 }
