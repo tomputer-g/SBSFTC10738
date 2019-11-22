@@ -53,7 +53,7 @@ public class TractionControl extends BaseAuto{
             moveMCUpdate();
         }
         setAllDrivePower(0);
-        brakeTD(1);
+        brakeTD(1,1);
     }
 
     //get the Motor Count(Left Motors positive forward, Right Motors negative forward)
@@ -76,13 +76,12 @@ public class TractionControl extends BaseAuto{
         setAllDrivePower(0);
     }
     */
-    protected void brakeTD(double brakespeed){
+    protected void brakeTD(double brakespeed,double tolerance){
         reset();
-        wait(50);
-        while(!brakeDone()){
+        pLF=LF.getPower(); pLB=LF.getPower(); pRF=RF.getPower(); pRB=RB.getPower();
+        while(!brakeDone(tolerance)){
             deltaMCUpdate();
-            setAllDrivePower1(check(deltaLF)*brakespeed,check(deltaLB)*brakespeed,check(deltaRF)*brakespeed,-check(deltaRB)*brakespeed);
-            deltaMCUpdate();
+            setAllDrivePower(check(pLF)*brakespeed,check(pLB)*brakespeed,check(pRF)*brakespeed,check(pRB)*brakespeed);
         }
         setAllDrivePower(0);
 
@@ -93,6 +92,7 @@ public class TractionControl extends BaseAuto{
         pcLF=0;pcLB=0;pcRF=0;pcRB=0;
         deltaLF =getMC(LF); deltaLB =getMC(LB); deltaRB =getMC(RB); deltaRF =getMC(RF);
         icLF=0;icLB=0;icRF=0;icRB=0;
+        pLF=0;pLB=0;pRF=0;pRB=0;
     }
 
     //update the motor counts(Negate the right motor encoder count changes to positive forward) for the brake
@@ -114,8 +114,8 @@ public class TractionControl extends BaseAuto{
     }
 
     //check if the delta motor counts are at expected values
-    private boolean brakeDone(){
-        return (deltaLB==0 && deltaLF==0 && deltaLB==0 && deltaLF==0);
+    private boolean brakeDone(double tolerance){
+        return (near(deltaLB,0,tolerance) && near(deltaLF,0,tolerance) && near(deltaLB,0,tolerance) && near(deltaLF,0,tolerance));
     }
 
     private boolean moveDone(double target,double tolerance){
@@ -133,10 +133,10 @@ public class TractionControl extends BaseAuto{
         reset();
     }
 
-    private double check(double deltaMC){
-        if(deltaMC>0)
+    private double check(double power){
+        if(power>0)
             return -1;
-        else if(deltaMC<0)
+        else if(power<0)
             return 1;
         return 0;
     }
