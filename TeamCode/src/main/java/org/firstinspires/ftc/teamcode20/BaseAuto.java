@@ -235,13 +235,6 @@ public class BaseAuto extends BaseOpMode {
         while(!onHeading(speed, angle, p_TURN, threshold));
     }
 
-    protected void turny(double angle, double speed, double threshold) {
-        setMode_RUN_WITHOUT_ENCODER();
-        setNewGyro0();
-        double p_TURN = 0.05;
-        //while(!onHeading(speed, angle, p_TURN, threshold));
-    }
-
     private boolean onHeading(double turnSpeed, double angle, double PCoeff, double threshold) {
         double   error = getError(angle)/180, steer, speed;
         boolean  onTarget = false;
@@ -261,15 +254,14 @@ public class BaseAuto extends BaseOpMode {
     }
 
     private double getError(double targetAngle) {
-        getHeading();
-        double robotError = imuHeading-targetAngle;
+        double robotError = getHeading()-targetAngle;
         while (robotError > 180)  robotError -= 360;
         while (robotError <= -180) robotError += 360;
         return robotError;
     }
 
     protected void setAllDrivePowerG(double a, double b, double c, double d){
-        double p=0.8*(imuHeading*0.1/9);
+        double p=0.8*(getHeading()*0.1/9);
         //Kp = 0.8
         setAllDrivePower(a-p,b-p,c-p,d-p);
     }
@@ -286,6 +278,7 @@ public class BaseAuto extends BaseOpMode {
         double vy=  yInch/Math.abs(yInch)*Math.cos(theta)*speed ,  vx=Math.sin(theta)*speed;
         double fgt=1;
         while(Math.abs(-encoder_x-encoder_y)>Math.abs(-LF.getCurrentPosition())||Math.abs(encoder_x-encoder_y)>Math.abs(-LB.getCurrentPosition())||Math.abs(-encoder_x+encoder_y)>Math.abs(-RF.getCurrentPosition())||Math.abs(encoder_x+encoder_y)>Math.abs(-RB.getCurrentPosition())){
+            telemetry.addData("GYRO", getHeading());
             telemetry.addData("LF",-LF.getCurrentPosition());
             telemetry.addData("target",encoder_x-encoder_y);
             telemetry.addData("LB",-LB.getCurrentPosition());
