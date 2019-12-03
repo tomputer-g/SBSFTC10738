@@ -8,8 +8,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 
-@TeleOp
-
 public class LogTest extends BaseAuto {
     ModernRoboticsI2cRangeSensor rangeSensorFront, rangeSensorSide;
     Rev2mDistanceSensor left,right;

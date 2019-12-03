@@ -46,7 +46,7 @@ import org.firstinspires.ftc.teamcode20.BaseAuto;
  * Fuccccccccccck
  * @see <a href="http://modernroboticsinc.com/range-sensor">MR Range Sensor</a>
  */
-@TeleOp(name = "干就完了", group = "Sensor")
+@TeleOp
 public class LaserTest extends BaseAuto {
     Rev2mDistanceSensor left,right;
     @Override

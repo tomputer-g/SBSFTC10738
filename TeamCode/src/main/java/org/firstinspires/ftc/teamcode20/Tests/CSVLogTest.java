@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode20.BaseOpMode;
 
-@Autonomous
 public class CSVLogTest extends BaseOpMode{
 
 
