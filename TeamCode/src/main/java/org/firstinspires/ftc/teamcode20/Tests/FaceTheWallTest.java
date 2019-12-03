@@ -18,7 +18,7 @@ public class FaceTheWallTest extends TractionControl {
     Rev2mDistanceSensor left,right;
     ElapsedTime t;
     double distFront, distSide, diff,distLeft,distRight,speed;
-    double 操,x;
+    double все,x;
     int 三天=100; // 0.15 = 50
     String logName = "FaceWallLog"+System.currentTimeMillis()+".csv";
     boolean[] a={true},b={true},c = {true}, d ={true},e={true},f={true};
@@ -58,13 +58,14 @@ public class FaceTheWallTest extends TractionControl {
             //distRight = right.getDistance(DistanceUnit.INCH);
             while(distFront > x){
                 //操 = ((1/(1+Math.pow(Math.E,-(distLeft-18))))-0.5)*2;
-                操 = 1;
-                setAllDrivePower(操 *(-speed), 操 *(-speed), 操 *speed, 操 *speed);
+                все = 1;
+                setAllDrivePower(все *(-speed), все *(-speed), все *speed, все *speed);
                 distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
                 //distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
                 //distLeft = left.getDistance(DistanceUnit.INCH);
                 //distRight = right.getDistance(DistanceUnit.INCH);
                 //telemetry.addData("sensor",distFront);
+
                 //telemetry.addData("sensorside", distSide);
                 //telemetry.addData("x: ",x);
                 //telemetry.update();
