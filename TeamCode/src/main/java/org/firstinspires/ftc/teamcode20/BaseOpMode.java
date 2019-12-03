@@ -43,9 +43,7 @@ public class BaseOpMode extends OpMode {
         msStuckDetectInit = 30000;
     }
 
-    @Override public void init() {
-        initDrivetrain();
-    }
+    @Override public void init() {    }
 
     @Override public void loop() {
 
