@@ -13,7 +13,7 @@ public class TeleOp_RocketLeague extends BaseOpMode {
     private final double ctrl_deadzone = 0.2;
     private ElapsedTime t;
     private double value = 0, a_up = 1.2, a_down = 0.8;
-    private int slideLimit = 1800;
+    private int slideLimit = 2000;
 
     private boolean yPrimed = false, dpadLPrimed = false, dpadRPrimed = false, BPrimed = false, RBPrimed = false;
     private boolean movingExtender = false;
@@ -57,8 +57,8 @@ public class TeleOp_RocketLeague extends BaseOpMode {
         if(this.gamepad1.right_bumper){RBPrimed = true;}if(!this.gamepad1.right_bumper && RBPrimed){RBPrimed = false;
             movingExtender = true;
             grabber_extender.setPower(1);
-            if(grabber_extender.getCurrentPosition() < 110){
-                grabber_extender.setTargetPosition(230);
+            if(grabber_extender.getCurrentPosition() > -110){
+                grabber_extender.setTargetPosition(-230);
             }else{
                 grabber_extender.setTargetPosition(0);
             }

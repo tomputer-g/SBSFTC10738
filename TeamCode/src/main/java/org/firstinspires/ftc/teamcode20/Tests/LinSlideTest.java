@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode20.BaseOpMode;
 
+@TeleOp
 public class LinSlideTest extends BaseOpMode {
     private boolean DPDPrimed, DPUPrimed;
     private ElapsedTime t;
@@ -32,8 +33,8 @@ public class LinSlideTest extends BaseOpMode {
         if(this.gamepad1.left_bumper){
             telemetry.addLine("CHANGING SLIDE");
             value += a * (joystick_quad(-this.gamepad1.right_stick_y)) * t.milliseconds();
-            if(value > 1800)
-                value = 1800;
+            if(value > 2000)
+                value = 2000;
             if(value < 0)
                 value = 0;
         }
@@ -71,7 +72,7 @@ public class LinSlideTest extends BaseOpMode {
 
     private void runPos(int position){
         int currentPos = L1.getCurrentPosition();
-        if(near(position, currentPos, 20)){//keep position
+        if(near(position, currentPos, 40)){//keep position
             L1.setTargetPosition(position);
             L2.setTargetPosition(position);
             L1.setPower(1);
@@ -85,8 +86,8 @@ public class LinSlideTest extends BaseOpMode {
                 L1.setPower(1);
                 L2.setPower(-1);
             }else{
-                L1.setPower(-1);
-                L2.setPower(1);
+                L1.setPower(-0.6);
+                L2.setPower(0.6);
             }
         }
     }
