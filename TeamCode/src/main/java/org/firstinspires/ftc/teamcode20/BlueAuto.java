@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
-@Autonomous(group = "синий")
+@Autonomous(name = "синий")
 
 public class BlueAuto extends BaseAuto {
     private double speed;
@@ -28,13 +28,14 @@ public class BlueAuto extends BaseAuto {
         //move to platform, drag into position, release
         //repeat until run out of time; first on other skystones
         while (4<left.getDistance(DistanceUnit.INCH)&&4<right.getDistance(DistanceUnit.INCH)){
+            telemetry.addData("IMU",imuHeading);
             setAllDrivePowerG(-speed,-speed,speed,speed);
         }
         setAllDrivePower(0);
         moveInchesG(0,-2.5,speed);
         setAllDrivePower(0);
-        turn(90,0.25,3);
-        imuOffset=-90;
+        turn(-90,0.25,3);
+        setNewGyro0();
         moveInchesG(0,50,0.3);
         requestOpModeStop();
     }
