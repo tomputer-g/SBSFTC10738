@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
-@Autonomous(name = "синий")
+@Autonomous(name = "blue")
 
 public class BlueAuto extends BaseAuto {
     private double speed;
@@ -18,7 +18,20 @@ public class BlueAuto extends BaseAuto {
         initVuforiaWebcam();
         initSensors();
         speed=0.2;
+        telemetry.addLine("6/6 INIT FINISHED");
     }
+
+    @Override
+    public void init_loop() {
+
+    }
+
+    @Override
+    public void internalPostInitLoop() {
+
+    }
+
+
 
     @Override
     public void loop() {
@@ -27,8 +40,8 @@ public class BlueAuto extends BaseAuto {
         //after pickup: turn 90 deg. move to platform, drop off
         //move to platform, drag into position, release
         //repeat until run out of time; first on other skystones
+
         while (4<left.getDistance(DistanceUnit.INCH)&&4<right.getDistance(DistanceUnit.INCH)){
-            telemetry.addData("IMU",imuHeading);
             setAllDrivePowerG(-speed,-speed,speed,speed);
         }
         setAllDrivePower(0);
