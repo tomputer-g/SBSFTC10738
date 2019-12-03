@@ -255,7 +255,7 @@ public class BaseAuto extends BaseOpMode {
     }
 
     private double getError(double targetAngle) {
-        double robotError = getHeading()-targetAngle;
+        double robotError =getHeading()-targetAngle;
         while (robotError > 180) robotError -= 360;
         while (robotError <= -180) robotError += 360;
         return robotError;
