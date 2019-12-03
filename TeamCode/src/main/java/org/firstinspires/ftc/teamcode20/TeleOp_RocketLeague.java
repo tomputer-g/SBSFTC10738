@@ -87,7 +87,6 @@ public class TeleOp_RocketLeague extends BaseOpMode {
                 }
             }
         }
-
         if(this.gamepad1.a){
             grabber_extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
