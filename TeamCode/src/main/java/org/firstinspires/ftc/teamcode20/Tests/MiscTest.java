@@ -73,7 +73,7 @@ public class MiscTest extends TractionControl {
                 dd = kd*(cur-pre);
                 error = p+dd;
                 pre = cur;
-                setAllDrivePowerG(a-error,b+error,c-error,d+error, GYRO_kp);
+                setAllDrivePowerG(a-error,b+error,c-error,d+error);
                 //sideway:
                 //setAllDrivePowerG(-speed, speed, -speed, speed, GYRO_kp);
                 telemetry.addData("side_sensor val ", "%.2f",rangeSensorSide.getDistance(DistanceUnit.INCH));

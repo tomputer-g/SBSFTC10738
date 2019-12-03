@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode20;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -19,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static java.lang.Math.sqrt;
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
@@ -41,6 +45,9 @@ public class BaseAuto extends BaseOpMode {
 
     //TFOD
     protected TFObjectDetector tfod;
+    //Sensors
+    protected ModernRoboticsI2cRangeSensor rangeSensorFront, rangeSensorSide;
+    protected Rev2mDistanceSensor left,right;
 
     //IMU
     protected static BNO055IMU imu;
@@ -188,6 +195,14 @@ public class BaseAuto extends BaseOpMode {
         }
     }
 
+    //daxie sensers
+    protected void initSensors(){
+        rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
+        rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "front");
+        left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
+        right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
+    }
+
     //IMU
     protected void initIMU(){
         BNO055IMU.Parameters BNOParameters = new BNO055IMU.Parameters();
@@ -252,8 +267,43 @@ public class BaseAuto extends BaseOpMode {
         return robotError;
     }
 
-    protected void setAllDrivePowerG(double a, double b, double c, double d,double pc){
-        double p=pc*(getError(imuOffset)*0.1/9);
+    protected void setAllDrivePowerG(double a, double b, double c, double d){
+        double p=0.8*(imuHeading*0.1/9);
+        //Kp = 0.8
         setAllDrivePower(a-p,b-p,c-p,d-p);
+    }
+
+    protected void moveInchesG(double xInch, double yInch, double speed){
+        reset_ENCODER();
+        setMode_RUN_WITHOUT_ENCODER();
+        ElapsedTime t = new ElapsedTime();
+        speed=Math.abs(speed);
+        int p_time = (int) (sqrt(xInch*xInch + yInch*yInch)*100);
+        double xmult = 232.5088/12, ymult = 232.7551/12;
+        int encoder_x=(int)(xInch*xmult),encoder_y=(int)(yInch*ymult);
+        double theta=Math.atan(xInch/yInch);
+        double vy=  yInch/Math.abs(yInch)*Math.cos(theta)*speed ,  vx=Math.sin(theta)*speed;
+        double fgt=1;
+        while(Math.abs(-encoder_x-encoder_y)>Math.abs(-LF.getCurrentPosition())||Math.abs(encoder_x-encoder_y)>Math.abs(-LB.getCurrentPosition())||Math.abs(-encoder_x+encoder_y)>Math.abs(-RF.getCurrentPosition())||Math.abs(encoder_x+encoder_y)>Math.abs(-RB.getCurrentPosition())){
+            telemetry.addData("LF",-LF.getCurrentPosition());
+            telemetry.addData("target",encoder_x-encoder_y);
+            telemetry.addData("LB",-LB.getCurrentPosition());
+            telemetry.addData("target",-encoder_x-encoder_y);
+            telemetry.addData("RF",-RF.getCurrentPosition());
+            telemetry.addData("target",encoder_x+encoder_y);
+            telemetry.addData("RB",-RB.getCurrentPosition());
+            telemetry.addData("target",-encoder_x+encoder_y);
+            telemetry.update();
+            //if (p_time < t.milliseconds()) break;
+            //fgt+=.1;
+            //fgt=Math.max(fgt,1);
+            setAllDrivePowerG(fgt*(-vx-vy),fgt*(vx-vy),fgt*(-vx+vy),fgt*(vx+vy));
+        }
+        /*
+        setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
+        wait(75);
+         */
+        setAllDrivePower(0);
+        reset_ENCODER();
     }
 }

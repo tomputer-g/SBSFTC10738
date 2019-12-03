@@ -231,10 +231,6 @@ public class BaseOpMode extends OpMode {
         setAllDrivePower(-a,-b,c,d);
     }
 
-    protected void setAllDrivePowerG(double a, double b, double c, double d){
-        
-    }
-
     protected void 好活(double a,double b,double c,double d){
         setAllDrivePower(a,b,-c,-d);
     }
@@ -287,7 +283,7 @@ public class BaseOpMode extends OpMode {
             telemetry.addData("target",-encoder_x+encoder_y);
             telemetry.update();
             //if (p_time < t.milliseconds()) break;
-            setAllDrivePowerG(coe*(-vx-vy),coe*(vx-vy),coe*(-vx+vy),coe*(vx+vy));
+            setAllDrivePower(coe*(-vx-vy),coe*(vx-vy),coe*(-vx+vy),coe*(vx+vy));
             //coe+=.1;
             //coe=Math.max(coe,1);
         }
