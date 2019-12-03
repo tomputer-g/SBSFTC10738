@@ -50,8 +50,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 public class TFODWebcam extends BaseAuto {
     @Override
     public void init() {
-        msStuckDetectInit = 30000;
-        msStuckDetectLoop = 30000;
         initTfod();
         initDrivetrain();
         initIMU();
