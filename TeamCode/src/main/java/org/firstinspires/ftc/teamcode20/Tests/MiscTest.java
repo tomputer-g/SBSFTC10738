@@ -61,7 +61,7 @@ public class MiscTest extends TractionControl {
         telemetry.addData("KP", "%.1f",kp);
         telemetry.addData("KD", "%.1f",kd);
 
-        //if(整(this.gamepad1.back,jk)) setNewGyro0();
+        if(整(this.gamepad1.back,jk)) setNewGyro0();
         if(整(this.gamepad1.right_bumper,bF)) {
             //moveInches(0,y,speed);
             t.reset();

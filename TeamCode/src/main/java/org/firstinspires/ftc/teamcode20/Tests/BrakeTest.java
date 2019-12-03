@@ -55,7 +55,7 @@ public class BrakeTest extends TractionControl {
         else if(phase>1){
             telemetry.addData("BRAKING AT ",brakeSpeed);
             start = t.milliseconds();
-            brakeTD(brakeSpeed);
+            brakeTD(brakeSpeed ,10);
             end=t.milliseconds();
             phase = 0;
         }
