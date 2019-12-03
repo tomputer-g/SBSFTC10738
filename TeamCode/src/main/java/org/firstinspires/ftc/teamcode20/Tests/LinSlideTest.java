@@ -54,8 +54,7 @@ public class LinSlideTest extends BaseOpMode {
             a -= 0.05;
         }
 
-        L1.setTargetPosition((int)value);
-        L2.setTargetPosition(-(int)value);
+        runPos((int)value);
         telemetry.addData("target",value);
         telemetry.addData("actual",L1.getCurrentPosition());
         telemetry.addData("a", a);
@@ -68,5 +67,27 @@ public class LinSlideTest extends BaseOpMode {
         if(input < 0)
             return - (input * input);
         return input * input;
+    }
+
+    private void runPos(int position){
+        int currentPos = L1.getCurrentPosition();
+        if(near(position, currentPos, 20)){//keep position
+            L1.setTargetPosition(position);
+            L2.setTargetPosition(position);
+            L1.setPower(1);
+            L2.setPower(1);
+            L1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            L2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }else{//long-dist
+            L1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            L2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            if(currentPos < position){//up
+                L1.setPower(1);
+                L2.setPower(-1);
+            }else{
+                L1.setPower(-1);
+                L2.setPower(1);
+            }
+        }
     }
 }

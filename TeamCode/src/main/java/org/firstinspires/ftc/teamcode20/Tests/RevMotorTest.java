@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 
+@TeleOp
 public class RevMotorTest extends BaseAuto {
     private boolean bPrimed;
     @Override
