@@ -27,12 +27,14 @@ public class BlueAuto extends BaseAuto {
         //after pickup: turn 90 deg. move to platform, drop off
         //move to platform, drag into position, release
         //repeat until run out of time; first on other skystones
-        while (10<left.getDistance(DistanceUnit.INCH)&&10<right.getDistance(DistanceUnit.INCH)){
+        while (4<left.getDistance(DistanceUnit.INCH)&&4<right.getDistance(DistanceUnit.INCH)){
             setAllDrivePowerG(-speed,-speed,speed,speed);
         }
         setAllDrivePower(0);
-        moveInchesG(0,-6,speed);
+        moveInchesG(0,-2.5,speed);
         setAllDrivePower(0);
+        imuOffset=90;
+        moveInches(-50,0,0.35);
         requestOpModeStop();
     }
 }

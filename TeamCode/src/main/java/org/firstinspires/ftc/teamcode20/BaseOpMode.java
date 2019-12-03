@@ -39,11 +39,11 @@ public class BaseOpMode extends OpMode {
     @Override
     public void internalPreInit() {
         super.internalPreInit();
+        msStuckDetectLoop = 30000;
         msStuckDetectInit = 30000;
     }
 
     @Override public void init() {
-        msStuckDetectLoop = 30000;
         initDrivetrain();
     }
 
