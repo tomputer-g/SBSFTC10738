@@ -54,11 +54,7 @@ public class TeleOp_RocketLeague extends BaseOpMode {
             }
         }
 
-        if(this.gamepad1.right_bumper){
-            RBPrimed = true;
-        }
-        if(!this.gamepad1.right_bumper && RBPrimed){
-            RBPrimed = false;
+        if(this.gamepad1.right_bumper){RBPrimed = true;}if(!this.gamepad1.right_bumper && RBPrimed){RBPrimed = false;
             movingExtender = true;
             grabber_extender.setPower(1);
             if(grabber_extender.getCurrentPosition() < 110){
@@ -67,15 +63,15 @@ public class TeleOp_RocketLeague extends BaseOpMode {
                 grabber_extender.setTargetPosition(0);
             }
             grabber_extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
+        }//if RB toggle positions
 
 
         if(this.gamepad1.dpad_up){
             movingExtender = false;
-            grabber_extender.setPower(0.6);
+            grabber_extender.setPower(1);
         }else if(this.gamepad1.dpad_down){
             movingExtender = false;
-            grabber_extender.setPower(-0.6);
+            grabber_extender.setPower(-1);
         }else{
             if(!movingExtender){
                 grabber_extender.setPower(0);
@@ -87,10 +83,12 @@ public class TeleOp_RocketLeague extends BaseOpMode {
                 }
             }
         }
+
         if(this.gamepad1.a){
             grabber_extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+
 
         if(isStrafeCtrl){
             telemetry.addLine("STRAFE mode");
