@@ -11,7 +11,7 @@ public class BlueAuto extends BaseAuto {
         initIMU();
         initGrabber();
         initLinSlide();
-        initVuforiaWebcam();
+        //initVuforiaWebcam();
     }
 
     @Override
@@ -21,6 +21,9 @@ public class BlueAuto extends BaseAuto {
         //after pickup: turn 90 deg. move to platform, drop off
         //move to platform, drag into position, release
         //repeat until run out of time; first on other skystones
+
+        moveInches(0, 48, 0.2);
+
 
     }
 }

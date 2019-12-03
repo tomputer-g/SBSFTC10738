@@ -200,9 +200,10 @@ public class BaseAuto extends BaseOpMode {
         imu.initialize(BNOParameters);
     }
 
-    protected void getHeading(){
+    protected double getHeading(){
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, ZYX, AngleUnit.DEGREES);
         imuHeading = Double.parseDouble(String.format(Locale.getDefault(), "%.2f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle)))) - imuOffset;
+        return imuHeading;
     }
 
     protected void setNewGyro0(){

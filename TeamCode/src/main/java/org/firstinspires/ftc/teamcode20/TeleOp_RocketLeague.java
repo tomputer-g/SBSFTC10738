@@ -95,7 +95,7 @@ public class TeleOp_RocketLeague extends BaseOpMode {
 
         if(isStrafeCtrl){
             telemetry.addLine("STRAFE mode");
-            scaledMove(-this.gamepad1.left_stick_x,-this.gamepad1.left_stick_y, (this.gamepad1.right_bumper?0:-this.gamepad1.right_stick_x));
+            scaledMove(-this.gamepad1.left_stick_x,-this.gamepad1.left_stick_y, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x));
 
         }else {
             telemetry.addLine("TANK mode");
