@@ -33,7 +33,7 @@ public class BlueAuto extends BaseAuto {
         setAllDrivePower(0);
         moveInchesG(0,-2.5,speed);
         setAllDrivePower(0);
-        turn(-90,0.25,0.15);
+        turn(90,0.25,3);
         imuOffset=-90;
         moveInchesG(0,50,0.3);
         requestOpModeStop();
