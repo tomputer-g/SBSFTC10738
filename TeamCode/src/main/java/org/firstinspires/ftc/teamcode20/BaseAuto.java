@@ -217,8 +217,7 @@ public class BaseAuto extends BaseOpMode {
 
     protected double getHeading(){
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, ZYX, AngleUnit.DEGREES);
-        imuHeading = Double.parseDouble(String.format(Locale.getDefault(), "%.2f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle))));
-        imuHeading=getError(imuOffset);
+        imuHeading = Double.parseDouble(String.format(Locale.getDefault(), "%.2f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle))))-imuOffset;
         return imuHeading;
     }
 
@@ -231,7 +230,7 @@ public class BaseAuto extends BaseOpMode {
     protected void turn(double angle, double speed, double threshold) {
         setMode_RUN_WITHOUT_ENCODER();
         setNewGyro0();
-        double p_TURN = 2;
+        double p_TURN = 5.3;
         while(!onHeading(speed, angle, p_TURN, threshold));
     }
 
@@ -255,7 +254,7 @@ public class BaseAuto extends BaseOpMode {
     }
 
     private double getError(double targetAngle) {
-        double robotError =getHeading()-targetAngle;
+        double robotError =targetAngle-getHeading();
         while (robotError > 180) robotError -= 360;
         while (robotError <= -180) robotError += 360;
         return robotError;
@@ -263,6 +262,8 @@ public class BaseAuto extends BaseOpMode {
 
     protected void setAllDrivePowerG(double a, double b, double c, double d){
         double p=0.8*(getHeading()*0.1/9);
+        telemetry.addData("imu",imuHeading);
+        telemetry.update();
         //Kp = 0.8
         setAllDrivePower(a-p,b-p,c-p,d-p);
     }
