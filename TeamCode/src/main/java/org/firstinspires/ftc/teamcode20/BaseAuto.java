@@ -230,7 +230,7 @@ public class BaseAuto extends BaseOpMode {
     protected void turn(double angle, double speed, double threshold) {
         setMode_RUN_WITHOUT_ENCODER();
         setNewGyro0();
-        double p_TURN = 5.3;
+        double p_TURN = 5.5;
         while(!onHeading(speed, angle, p_TURN, threshold));
     }
 
