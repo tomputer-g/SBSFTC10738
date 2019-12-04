@@ -85,7 +85,7 @@ public class LinSlideTest extends BaseOpMode {
             if(currentPos < position){//up
                 L1.setPower(1);
                 L2.setPower(-1);
-            }else{
+            }else{//down
                 L1.setPower(-0.6);
                 L2.setPower(0.6);
             }

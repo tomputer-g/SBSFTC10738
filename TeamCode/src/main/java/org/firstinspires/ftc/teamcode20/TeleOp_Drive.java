@@ -4,18 +4,17 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp()
-public class TeleOp_RocketLeague extends BaseOpMode {
+@TeleOp(group = "Final")
+public class TeleOp_Drive extends BaseOpMode {
 
     private double v = 0, x = 0;
     private double limit = 0.5;
-    private boolean isStrafeCtrl = true;
     private final double ctrl_deadzone = 0.2;
     private ElapsedTime t;
     private double value = 0, a_up = 1.2, a_down = 0.8;
     private int slideLimit = 2000;
-
-    private boolean yPrimed = false, dpadLPrimed = false, dpadRPrimed = false, BPrimed = false, RBPrimed = false;
+    private boolean slow = false;
+    private boolean BPrimed = false, RBPrimed = false, YPrimed = false;
     private boolean movingExtender = false;
     @Override
     public void init() {
@@ -33,20 +32,12 @@ public class TeleOp_RocketLeague extends BaseOpMode {
 
     @Override
     public void loop() {
-        //y = switch movement, b = servo toggle, U/D = grab motor,
-        if(this.gamepad1.y){
-            yPrimed = true;
-        }
-        if(!this.gamepad1.y && yPrimed){
-            yPrimed = false;
-            isStrafeCtrl = !isStrafeCtrl;//toggle control scheme
+
+        if(this.gamepad1.y){YPrimed = true;}if(!this.gamepad1.y && YPrimed){YPrimed = false;
+            slow = !slow;
         }
 
-        if(this.gamepad1.b){
-            BPrimed = true;
-        }
-        if(!this.gamepad1.b && BPrimed){
-            BPrimed = false;
+        if(this.gamepad1.b){BPrimed = true;}if(!this.gamepad1.b && BPrimed){BPrimed = false;
             if(grabber.getPosition() < 0.5){
                 grabber.setPosition(.7);
             }else{
@@ -89,120 +80,18 @@ public class TeleOp_RocketLeague extends BaseOpMode {
             grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
-
-        if(isStrafeCtrl){
-            telemetry.addLine("STRAFE mode");
+        if(slow){
+            scaledMove(-this.gamepad1.left_stick_x/2,-this.gamepad1.left_stick_y/2, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x/2));
+        }else{
             scaledMove(-this.gamepad1.left_stick_x,-this.gamepad1.left_stick_y, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x));
-
-        }else {
-            telemetry.addLine("TANK mode");
-            if (this.gamepad1.dpad_left) {
-                dpadLPrimed = true;
-            }
-            if (!this.gamepad1.dpad_left && dpadLPrimed) {
-                dpadLPrimed = false;
-                limit -= 0.01;
-                if (limit < 0) {
-                    limit = 0;
-                }
-            }
-
-            if (this.gamepad1.dpad_right) {
-                dpadRPrimed = true;
-            }
-            if (!this.gamepad1.dpad_right && dpadRPrimed) {
-                dpadRPrimed = false;
-                limit += 0.01;
-                if (limit > 1) {
-                    limit = 1;
-                }
-            }
-            telemetry.addData("limit", limit);
-            if (this.gamepad1.right_trigger > 0.1) {//if triggers don't show, are gamepads set to XBOX?
-                v = 0.5;
-            }else if (this.gamepad1.left_trigger > 0.1){
-                v = -0.5;
-            }else{
-                v = 0;
-            }
-
-            if(this.gamepad1.x)
-                v *= 2;
-
-            x = this.gamepad1.left_stick_x;
-
-            telemetry.addLine("speed: "+to3d(v)+", turn: "+to3d(x));
-            if(v > 0){
-                if(x > 0){//right
-                    if(v+x > 1){
-                        if(x > limit) {
-                            winstonSetPower(1, 1 - limit, 1 - limit, 1 - 2 * limit);
-                            telemetry.addLine("V Comp. limit");
-                        }else {
-                            winstonSetPower(1, 1 - x, 1 - x, 1 - 2 * x);
-                            telemetry.addLine("Compromising V...");
-                        }
-                    }else{
-                        winstonSetPower(v+x, v, v, v-x);
-                    }
-                }else if(x < 0) {
-                    if (v - x > 1) {
-                        if(x < -limit){
-                            winstonSetPower(1-limit, 1-2*limit, 1, 1-limit);
-                            telemetry.addLine("V Comp. limit");
-                        }else{
-                            winstonSetPower(1+x, 1+2*x, 1, 1+x);
-                            telemetry.addLine("Compromising V...");
-                        }
-                    } else {
-                        winstonSetPower(v, v + x, v - x, v);
-                    }
-                }else{//x = 0 (straight line)
-                    winstonSetPower(v,v,v,v);
-                }
-
-            }else if(v < 0){
-                x = -x;
-                if(x > 0){//right
-                    if(v-x < -1){
-                        if(x > limit){
-                            winstonSetPower(-1+limit, -1, -1+2*limit, -1+limit);
-                            telemetry.addLine("V Comp. limit");
-                        }else{
-                            winstonSetPower(-1+x, -1, -1+2*x, -1+x);
-                            telemetry.addLine("Compromising V...");
-                        }
-                    }else{
-                        winstonSetPower(v, v-x, v+x, v);
-                    }
-
-                }else if(x < 0) {
-                    if (v+x < -1) {
-                        if(x < -limit){
-                            winstonSetPower(-1+2*limit, -1+limit, -1+limit, -1);
-                            telemetry.addLine("V Comp. limit");
-                        }else{
-                            winstonSetPower(-1-2*x, -1-x, -1-x, -1);
-                            telemetry.addLine("Compromising V...");
-                        }
-                    } else {
-                        winstonSetPower(v-x, v, v, v+x);
-                    }
-                }else{//x = 0 (straight line)
-                    winstonSetPower(v,v,v,v);
-                }
-            }else{//v = 0 (turn only)
-                winstonSetPower(x,x,-x,-x);
-            }
         }
 
-        if(t == null){
-            t = new ElapsedTime();
-        }
+        if(t == null){t = new ElapsedTime();}
+
         if(this.gamepad1.left_bumper){
             telemetry.addLine("CHANGING SLIDE");
             if(this.gamepad1.right_stick_y > 0){
-                value += a_down * (joystick_quad(-this.gamepad1.right_stick_y)) * t.milliseconds();
+                value += (slow? 0.5 : 1) * a_down * (joystick_quad(-this.gamepad1.right_stick_y)) * t.milliseconds();
             }else{
                 value += a_up * (joystick_quad(-this.gamepad1.right_stick_y)) * t.milliseconds();
             }
@@ -216,11 +105,9 @@ public class TeleOp_RocketLeague extends BaseOpMode {
 
         L1.setTargetPosition((int)value);
         L2.setTargetPosition(-(int)value);
+        if(slow){telemetry.addLine("slide and drivetrain slowed");}
         telemetry.addData("target",value);
         telemetry.addData("actual",L1.getCurrentPosition());
-        telemetry.addData("a", a_up+", "+a_down);
-        telemetry.addData("input", to3d(-this.gamepad1.right_stick_y) + " -> " + to3d(joystick_quad(-this.gamepad1.right_stick_y)));
-        telemetry.addData("position", value);
         telemetry.update();
 
     }
