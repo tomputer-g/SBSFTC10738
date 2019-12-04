@@ -6,61 +6,22 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode20.BaseOpMode;
 
+@TeleOp
 public class LinSlideTest extends BaseOpMode {
-    private boolean DPDPrimed, DPUPrimed;
-    private ElapsedTime t;
 
-    private double value, a = 1;
+    private double slideP = 0.5;
+    private int hold = 0;
+    private boolean holdSet;
 
     @Override
     public void init() {
-        value = 0;
-        initLinSlide();
-        L1.setTargetPosition(0);
-        L2.setTargetPosition(0);
-        L1.setPower(1);
-        L2.setPower(1);
-        L1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        L2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        initLinSlide();//0-2000
     }
 
     @Override
     public void loop() {
-        if(t == null){
-            t = new ElapsedTime();
-        }
-        if(this.gamepad1.left_bumper){
-            telemetry.addLine("CHANGING SLIDE");
-            value += a * (joystick_quad(-this.gamepad1.right_stick_y)) * t.milliseconds();
-            if(value > 1800)
-                value = 1800;
-            if(value < 0)
-                value = 0;
-        }
-        t.reset();
-        if(this.gamepad1.dpad_up){
-            DPUPrimed = true;
-        }
-        if(!this.gamepad1.dpad_up && DPUPrimed){
-            DPUPrimed = false;
-            a += 0.05;
-        }
-
-        if(this.gamepad1.dpad_down){
-            DPDPrimed = true;
-        }
-        if(!this.gamepad1.dpad_down && DPDPrimed){
-            DPDPrimed = false;
-            a -= 0.05;
-        }
-
-        L1.setTargetPosition((int)value);
-        L2.setTargetPosition(-(int)value);
-        telemetry.addData("target",value);
+        runPos();
         telemetry.addData("actual",L1.getCurrentPosition());
-        telemetry.addData("a", a);
-        telemetry.addData("input", to3d(-this.gamepad1.right_stick_y) + " -> " + to3d(joystick_quad(-this.gamepad1.right_stick_y)));
-        telemetry.addData("position", value);
         telemetry.update();
     }
 
@@ -68,5 +29,35 @@ public class LinSlideTest extends BaseOpMode {
         if(input < 0)
             return - (input * input);
         return input * input;
+    }
+
+    private void runPos(){
+        if(near(this.gamepad1.right_stick_y,0,0.05) || !this.gamepad1.left_bumper){//keep position
+
+            if(!holdSet){
+                holdSet = true;
+                L1.setTargetPosition(L1.getCurrentPosition());
+                telemetry.addData("set to",L1.getCurrentPosition());
+                L2.setTargetPosition(-L1.getCurrentPosition());
+                L1.setPower(1);
+                L2.setPower(1);
+                L1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                L2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+
+        }else if(this.gamepad1.left_bumper){//long-dist
+            holdSet = false;
+            telemetry.addLine("CHANGING SLIDE");
+            L1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            L2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            if(-this.gamepad1.right_stick_y > 0){//up
+                L1.setPower(-this.gamepad1.right_stick_y);
+                L2.setPower(this.gamepad1.right_stick_y);
+            }else{
+                L1.setPower(-0.6 * this.gamepad1.right_stick_y);
+                L2.setPower(0.6 * this.gamepad1.right_stick_y);
+            }
+        }
     }
 }

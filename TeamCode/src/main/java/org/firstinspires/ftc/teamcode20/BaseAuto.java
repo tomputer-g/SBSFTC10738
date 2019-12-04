@@ -217,7 +217,7 @@ public class BaseAuto extends BaseOpMode {
 
     protected double getHeading(){
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, ZYX, AngleUnit.DEGREES);
-        imuHeading = Double.parseDouble(String.format(Locale.getDefault(), "%.2f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle)))) - imuOffset;
+        imuHeading = Double.parseDouble(String.format(Locale.getDefault(), "%.2f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle))))-imuOffset;
         return imuHeading;
     }
 
@@ -225,18 +225,17 @@ public class BaseAuto extends BaseOpMode {
         imuOffset = 0;
         getHeading();
         imuOffset = imuHeading;
-
     }
 
     protected void turn(double angle, double speed, double threshold) {
         setMode_RUN_WITHOUT_ENCODER();
         setNewGyro0();
-        double p_TURN = 2;
+        double p_TURN = 5.3;
         while(!onHeading(speed, angle, p_TURN, threshold));
     }
 
     private boolean onHeading(double turnSpeed, double angle, double PCoeff, double threshold) {
-        double   error = getError(angle)/180, steer, speed;
+        double   error = getError(angle), steer, speed;
         boolean  onTarget = false;
         if (Math.abs(error) <= threshold) {
             steer = 0.0;
@@ -245,7 +244,8 @@ public class BaseAuto extends BaseOpMode {
             telemetry.addData("ON TARGET!", error);
         }
         else {
-            steer = Range.clip(error * PCoeff, -1, 1);
+            telemetry.addData("not ON TARGET!", error);
+            steer = Range.clip(error/180 * PCoeff, -1, 1);
             speed  = turnSpeed * steer;
         }
         setAllDrivePower(speed);
@@ -254,14 +254,16 @@ public class BaseAuto extends BaseOpMode {
     }
 
     private double getError(double targetAngle) {
-        double robotError = getHeading()-targetAngle;
-        while (robotError > 180)  robotError -= 360;
+        double robotError =targetAngle-getHeading();
+        while (robotError > 180) robotError -= 360;
         while (robotError <= -180) robotError += 360;
         return robotError;
     }
 
     protected void setAllDrivePowerG(double a, double b, double c, double d){
         double p=0.8*(getHeading()*0.1/9);
+        telemetry.addData("imu",imuHeading);
+        telemetry.update();
         //Kp = 0.8
         setAllDrivePower(a-p,b-p,c-p,d-p);
     }
