@@ -23,7 +23,7 @@ public class BlueAuto extends BaseAuto {
         grabber_extender.setPower(1);
         wait(100);
         grabber_extender.setPower(0);
-        speed=0.25;
+        speed=0.4;
         telemetry.addLine("6/6 INIT FINISHED");
     }
     @Override

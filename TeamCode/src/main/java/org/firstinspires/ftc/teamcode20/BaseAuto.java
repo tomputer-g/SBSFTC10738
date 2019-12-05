@@ -266,12 +266,14 @@ public class BaseAuto extends BaseOpMode {
         return robotError;
     }
 
-    protected void setAllDrivePowerG(double a, double b, double c, double d){
-        double p=0.8*(getHeading()*0.1/9);
-        telemetry.addData("imu",imuHeading);
-        telemetry.update();
+    protected void setAllDrivePowerG(double a, double b, double c, double d,double pc){
+        double p=pc*(getHeading()*0.1/9);
         //Kp = 0.8
         setAllDrivePower(a-p,b-p,c-p,d-p);
+    }
+
+    protected void setAllDrivePowerG(double a, double b, double c, double d){
+        setAllDrivePowerG(a,b,c,d,1);
     }
 
     protected void moveInchesG(double xInch, double yInch, double speed){
@@ -283,7 +285,8 @@ public class BaseAuto extends BaseOpMode {
         double xmult = 232.5088/12, ymult = 232.7551/12;
         int encoder_x=(int)(xInch*xmult),encoder_y=(int)(yInch*ymult);
         double theta=Math.atan(xInch/yInch);
-        double vy=  yInch/Math.abs(yInch)*Math.cos(theta)*speed ,  vx=Math.sin(theta)*speed;
+        double vy =  (yInch==0) ? 0 : (yInch/Math.abs(yInch)*Math.cos(theta)*speed);
+        double vx=  Math.sin(theta)*speed;
         double fgt=1;
         while(Math.abs(-encoder_x-encoder_y)>Math.abs(-LF.getCurrentPosition())||Math.abs(encoder_x-encoder_y)>Math.abs(-LB.getCurrentPosition())||Math.abs(-encoder_x+encoder_y)>Math.abs(-RF.getCurrentPosition())||Math.abs(encoder_x+encoder_y)>Math.abs(-RB.getCurrentPosition())){
             telemetry.addData("GYRO", getHeading());
@@ -297,13 +300,18 @@ public class BaseAuto extends BaseOpMode {
             telemetry.addData("target",-encoder_x+encoder_y);
             telemetry.update();
             //if (p_time < t.milliseconds()) break;
-            //fgt+=.1;
-            //fgt=Math.max(fgt,1);
+            /*
+            if() {
+                fgt -= .1;
+                fgt = Math.max(fgt, 0);
+            }
+
+             */
             setAllDrivePowerG(fgt*(-vx-vy),fgt*(vx-vy),fgt*(-vx+vy),fgt*(vx+vy));
         }
         //brake
-        setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
-        wait(75);
+            //setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
+            //wait(75);
         setAllDrivePower(0);
         reset_ENCODER();
     }

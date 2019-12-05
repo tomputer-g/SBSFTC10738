@@ -26,16 +26,16 @@ public class MoveTest extends TractionControl {
         rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
 
         speed=0.5;
-        y = 8;
-        x = 0;
+        y = 0;
+        x = -72;
 
         // 三天之内刹了你();
     }
 
     @Override
     public void loop(){
-        if(整(this.gamepad1.dpad_left,eee))x-=0.1;
-        if(整(this.gamepad1.dpad_right,fff))x+=0.1;
+        if(整(this.gamepad1.dpad_left,eee))x-=12;
+        if(整(this.gamepad1.dpad_right,fff))x+=12;
         if(整(this.gamepad1.dpad_up,ee))y+=0.1;
         if(整(this.gamepad1.dpad_down,ff))y-=0.1;
         if(整(this.gamepad1.right_bumper,bF))moveInchesG(x,y,speed);
