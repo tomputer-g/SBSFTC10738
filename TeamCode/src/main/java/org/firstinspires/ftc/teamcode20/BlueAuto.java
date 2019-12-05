@@ -35,10 +35,7 @@ public class BlueAuto extends BaseAuto {
         //move to platform, drag into position, release
         //repeat until run out of time; first on other skystones
         //moveInches(-8,0,speed);
-
-        //vuforia
         moveInchesG(0,12,speed);
-
         telemetry.clear();
         int pos = skystonePosition();
         telemetry.addData("pos: ",pos);
@@ -46,6 +43,8 @@ public class BlueAuto extends BaseAuto {
         if(pos == 1);
         else if (pos == 0) moveInchesG(-8,0,speed);
         else{}
+        //vuforia
+
         //move to blocc
         while ((4 < left.getDistance(DistanceUnit.INCH)) && (4 < right.getDistance(DistanceUnit.INCH))) {
             setAllDrivePowerG(-speed, -speed, speed, speed);
