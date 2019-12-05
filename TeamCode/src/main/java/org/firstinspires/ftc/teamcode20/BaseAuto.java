@@ -301,10 +301,9 @@ public class BaseAuto extends BaseOpMode {
             //fgt=Math.max(fgt,1);
             setAllDrivePowerG(fgt*(-vx-vy),fgt*(vx-vy),fgt*(-vx+vy),fgt*(vx+vy));
         }
-
+        //brake
         setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
         wait(75);
-
         setAllDrivePower(0);
         reset_ENCODER();
     }
