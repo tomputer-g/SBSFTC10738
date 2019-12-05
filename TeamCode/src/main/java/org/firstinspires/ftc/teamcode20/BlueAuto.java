@@ -40,11 +40,15 @@ public class BlueAuto extends BaseAuto {
         int pos = skystonePosition();
         telemetry.addData("pos: ",pos);
         telemetry.update();
-        if(pos == 1);
+        if(pos == 1){moveInchesG(0,0,speed);}
         else if (pos == 0) moveInchesG(-8,0,speed);
         //vuforia
 
+        //buffer
+        //turn(1,0.5,1);
+        wait(10);
         //move to blocc
+
         while ((4 < left.getDistance(DistanceUnit.INCH)) && (4 < right.getDistance(DistanceUnit.INCH))) {
             setAllDrivePowerG(-speed, -speed, speed, speed);
             telemetry.addData("L: ", left.getDistance(DistanceUnit.INCH));
@@ -53,7 +57,6 @@ public class BlueAuto extends BaseAuto {
             telemetry.addData("power", LB.getPower());
             telemetry.addData("power", RF.getPower());
             telemetry.addData("power", RB.getPower());
-
             telemetry.update();
         }
         setAllDrivePower(0);
