@@ -77,11 +77,11 @@ public class VuforiaSkystoneChaserWebcam extends BaseAuto {
                 if(trackable.getName().equals("Stone Target")) {
                     Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                     telemetry.addLine("Turn "+(int)Math.abs(rotation.thirdAngle+headingDisplacement)+(rotation.thirdAngle+headingDisplacement>0?"deg. CW":"deg. CCW"));
-                    turn(-(rotation.thirdAngle+headingDisplacement),0.3,2);//+=ccw
+                    //turn(-(rotation.thirdAngle+headingDisplacement),0.3,2);//+=ccw
                     VectorF translation = lastLocation.getTranslation();
                     telemetry.addLine("Move "+Math.abs(translation.get(1)/mmPerInch + displacements[1])+(translation.get(1)+displacements[1]>0?"in. Right":"in. Left"));
                     telemetry.addLine("Forward "+(distGoal - translation.get(0)/mmPerInch + displacements[0])+"in.");
-                    moveInches(translation.get(1)/mmPerInch+displacements[1], translation.get(0)/mmPerInch+displacements[0], 0.4);
+                    //moveInches(translation.get(1)/mmPerInch+displacements[1], translation.get(0)/mmPerInch+displacements[0], 0.4);
                 }
                 break;
             }
