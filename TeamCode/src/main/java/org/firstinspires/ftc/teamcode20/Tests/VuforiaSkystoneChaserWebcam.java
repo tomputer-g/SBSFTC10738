@@ -43,7 +43,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGR
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
-@TeleOp
 public class VuforiaSkystoneChaserWebcam extends BaseAuto {
 
     private static double distGoal = 0;

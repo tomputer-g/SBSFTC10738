@@ -180,11 +180,9 @@ public class BaseAuto extends BaseOpMode {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
     }
 
-    protected int skystonePosition(){
-        if(VuforiaPositionTime == null){
-            VuforiaPositionTime = new ElapsedTime();
-            targetsSkyStone.activate();
-        }
+    protected int skystonePosition(){//MUST move 12in from wall before running. This has a while loop.
+        VuforiaPositionTime = new ElapsedTime();
+        targetsSkyStone.activate();
         while(VuforiaPositionTime.milliseconds() < 500){
             for (VuforiaTrackable trackable : allTrackables) {
                 if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
