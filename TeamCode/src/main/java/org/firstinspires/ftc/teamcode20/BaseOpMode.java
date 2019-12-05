@@ -28,6 +28,7 @@ public class BaseOpMode extends OpMode {
     protected DcMotor LF, LB, RF, RB;
     protected Servo grabber;
     protected DcMotor grabber_extender;
+    protected DcMotor platform_grabber;
     protected DcMotor L1, L2;
     private final String logPrefix = "/sdcard/";
     private BufferedWriter logWriter;
@@ -47,6 +48,12 @@ public class BaseOpMode extends OpMode {
 
     @Override public void loop() {
 
+    }
+
+    protected void initPlatformGrabber(){
+        platform_grabber = hardwareMap.get(DcMotor.class, "platform");
+        platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        platform_grabber.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     protected void initLinSlide(){
