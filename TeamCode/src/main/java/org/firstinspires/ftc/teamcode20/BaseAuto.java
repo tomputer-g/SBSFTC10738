@@ -180,10 +180,11 @@ public class BaseAuto extends BaseOpMode {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
     }
 
-    protected int skystonePosition(){//MUST move 12in from wall before running. This has a while loop.
+
+    protected int skystonePosition(){
         VuforiaPositionTime = new ElapsedTime();
         targetsSkyStone.activate();
-        while(VuforiaPositionTime.milliseconds() < 500){
+        while(VuforiaPositionTime.milliseconds() < 1000){
             for (VuforiaTrackable trackable : allTrackables) {
                 if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                     OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
@@ -199,7 +200,7 @@ public class BaseAuto extends BaseOpMode {
                         if (dist > 5) {
                             telemetry.addData("Capture time", VuforiaPositionTime.milliseconds());
                             return 2;
-                        } else if (dist > -5) {
+                        }else{
                             telemetry.addData("Capture time", VuforiaPositionTime.milliseconds());
                             return 1;
                         }
@@ -208,7 +209,7 @@ public class BaseAuto extends BaseOpMode {
                 }
             }
         }
-        telemetry.addLine("Vuforia exceeded 500ms wait.");
+        telemetry.addLine("Vuforia exceeded 1s wait.");
         return 0;
     }
 
@@ -311,7 +312,7 @@ public class BaseAuto extends BaseOpMode {
     }
 
     protected void setAllDrivePowerG(double a, double b, double c, double d){
-        setAllDrivePowerG(a,b,c,d,1);
+        setAllDrivePowerG(a,b,c,d,0.8);
     }
 
     protected void moveInchesG(double xInch, double yInch, double speed){
