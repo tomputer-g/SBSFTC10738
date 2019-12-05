@@ -4,8 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 @TeleOp(group = "Final")
-public class TeleOp_Drive extends BaseOpMode {
+public class TeleOp_Drive extends BaseAuto {
 
     private final double ctrl_deadzone = 0.2;
     private boolean slow = false;
@@ -25,7 +27,6 @@ public class TeleOp_Drive extends BaseOpMode {
         L1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         L2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         grabber.setPosition(0);
-
     }
 
     @Override
@@ -88,6 +89,19 @@ public class TeleOp_Drive extends BaseOpMode {
             grabber_extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+        /*
+        if(整(this.gamepad1.x,xprime)) {
+            double v = 0;
+            while (left.getDistance(DistanceUnit.INCH) < 8.5 && right.getDistance(DistanceUnit.INCH) < 8.5) {
+                v = (right.getDistance(DistanceUnit.INCH) - left.getDistance(DistanceUnit.INCH)) / 2;
+                v = Math.min(Math.max(v, -0.2), 0.2);
+                setAllDrivePower(-0.2 + v, -0.2 + v, .2 + v, .2 + v);
+
+            }
+
+        }
+
+        */
 
         if(slow){
             scaledMove(-this.gamepad1.left_stick_x*0.4,-this.gamepad1.left_stick_y*0.4, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x*0.4));
