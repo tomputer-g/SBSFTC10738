@@ -23,7 +23,7 @@ public class BlueAuto extends BaseAuto {
         grabber_extender.setPower(1);
         wait(100);
         grabber_extender.setPower(0);
-        speed=0.25;
+        speed=0.4;
         telemetry.addLine("6/6 INIT FINISHED");
     }
     @Override
@@ -39,6 +39,10 @@ public class BlueAuto extends BaseAuto {
         //repeat until run out of time; first on other skystones
         //moveInches(-8,0,speed);
 
+        //vuforia
+        moveInchesG(0,135,speed);
+        wait(600);
+        //move to blocc
         while (6 < left.getDistance(DistanceUnit.INCH) && 6 < right.getDistance(DistanceUnit.INCH)) setAllDrivePowerG(-speed, -speed, speed, speed);
         setAllDrivePower(0);
         wait(250);
