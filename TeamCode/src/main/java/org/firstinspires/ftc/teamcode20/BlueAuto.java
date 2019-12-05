@@ -25,7 +25,7 @@ public class BlueAuto extends BaseAuto {
         wait(100);
         grabber_extender.setPower(0);
         speed=0.4;
-        telemetry.setAutoClear(false);
+        //telemetry.setAutoClear(false);
     }
     @Override
     public void loop() {
@@ -42,7 +42,6 @@ public class BlueAuto extends BaseAuto {
         telemetry.update();
         if(pos == 1);
         else if (pos == 0) moveInchesG(-8,0,speed);
-        else{}
         //vuforia
 
         //move to blocc
@@ -56,7 +55,6 @@ public class BlueAuto extends BaseAuto {
             telemetry.addData("power", RB.getPower());
 
             telemetry.update();
-            wait(400);
         }
         setAllDrivePower(0);
         grabber.setPosition(.25);
