@@ -180,10 +180,11 @@ public class BaseAuto extends BaseOpMode {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
     }
 
-    protected int skystonePosition(){//MUST move 12in from wall before running. This has a while loop.
+
+    protected int skystonePosition(){
         VuforiaPositionTime = new ElapsedTime();
         targetsSkyStone.activate();
-        while(VuforiaPositionTime.milliseconds() < 500){
+        while(VuforiaPositionTime.milliseconds() < 1000){
             for (VuforiaTrackable trackable : allTrackables) {
                 if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                     OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
@@ -199,7 +200,7 @@ public class BaseAuto extends BaseOpMode {
                         if (dist > 5) {
                             telemetry.addData("Capture time", VuforiaPositionTime.milliseconds());
                             return 2;
-                        } else if (dist > -5) {
+                        }else{
                             telemetry.addData("Capture time", VuforiaPositionTime.milliseconds());
                             return 1;
                         }
@@ -208,7 +209,7 @@ public class BaseAuto extends BaseOpMode {
                 }
             }
         }
-        telemetry.addLine("Vuforia exceeded 500ms wait.");
+        telemetry.addLine("Vuforia exceeded 1s wait.");
         return 0;
     }
 
@@ -304,14 +305,14 @@ public class BaseAuto extends BaseOpMode {
         return robotError;
     }
 
-    protected void setAllDrivePowerG(double a, double b, double c, double d,double pc){
-        double p=pc*(getHeading()*0.1/9);
+    protected void setAllDrivePowerG(double a, double b, double c, double d,double Kp){
         //Kp = 0.8
+        double p=Kp*(getHeading()*0.1/9);
         setAllDrivePower(a-p,b-p,c-p,d-p);
     }
 
     protected void setAllDrivePowerG(double a, double b, double c, double d){
-        setAllDrivePowerG(a,b,c,d,1);
+        setAllDrivePowerG(a,b,c,d,0.8);
     }
 
     protected void moveInchesG(double xInch, double yInch, double speed){
@@ -327,6 +328,7 @@ public class BaseAuto extends BaseOpMode {
         double vx=  Math.sin(theta)*speed;
         double fgt=1;
         while(Math.abs(-encoder_x-encoder_y)>Math.abs(-LF.getCurrentPosition())||Math.abs(encoder_x-encoder_y)>Math.abs(-LB.getCurrentPosition())||Math.abs(-encoder_x+encoder_y)>Math.abs(-RF.getCurrentPosition())||Math.abs(encoder_x+encoder_y)>Math.abs(-RB.getCurrentPosition())){
+            /*
             telemetry.addData("GYRO", getHeading());
             telemetry.addData("LF",-LF.getCurrentPosition());
             telemetry.addData("target",encoder_x-encoder_y);
@@ -337,8 +339,6 @@ public class BaseAuto extends BaseOpMode {
             telemetry.addData("RB",-RB.getCurrentPosition());
             telemetry.addData("target",-encoder_x+encoder_y);
             telemetry.update();
-            //if (p_time < t.milliseconds()) break;
-            /*
             if() {
                 fgt -= .1;
                 fgt = Math.max(fgt, 0);
@@ -348,8 +348,8 @@ public class BaseAuto extends BaseOpMode {
             setAllDrivePowerG(fgt*(-vx-vy),fgt*(vx-vy),fgt*(-vx+vy),fgt*(vx+vy));
         }
         //brake
-            //setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
-            //wait(75);
+        //setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
+        //wait(75);
         setAllDrivePower(0);
         reset_ENCODER();
     }
