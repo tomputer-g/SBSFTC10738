@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
@@ -48,42 +49,65 @@ public class VuforiaSkystoneChaserWebcam extends BaseAuto {
     private static double distGoal = 0;
     private double[] displacements = {2, 7};//+ = forward; + = right
     private double headingDisplacement = -90;
+    private ElapsedTime t;
+    private int position = -1;
     //rotate -90 for heading
 
 
     @Override
     public void init() {
+        telemetry.setAutoClear(false);
         initVuforiaWebcam();
         initDrivetrain();
         initIMU();
-        targetsSkyStone.activate();
     }
 
 
     @Override
-    public void loop() {
+    public void loop() {//range 17in
+        if(t == null){
+            moveInchesG(0,12,0.4);
+            telemetry.clear();
+            t = new ElapsedTime();
+            targetsSkyStone.activate();
+        }
         boolean targetVisible = false;
-        for (VuforiaTrackable trackable : allTrackables) {
-            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                telemetry.addData("Visible Target", trackable.getName());
-                targetVisible = true;
+        if(position == -1) {
+            for (VuforiaTrackable trackable : allTrackables) {
+                if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                    //telemetry.addData("Visible Target", trackable.getName());
+                    targetVisible = true;
 
-                // getUpdatedRobotLocation() will return null if no new information is available since
-                // the last time that call was made, or if the trackable is not currently visible.
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
-                if (robotLocationTransform != null) {
-                    lastLocation = robotLocationTransform;
+                    // getUpdatedRobotLocation() will return null if no new information is available since
+                    // the last time that call was made, or if the trackable is not currently visible.
+                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
+                    if (robotLocationTransform != null) {
+                        lastLocation = robotLocationTransform;
+                    }
+                    if (trackable.getName().equals("Stone Target")) {
+                        Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+                        telemetry.addLine("Turn " + (int) Math.abs(rotation.thirdAngle + headingDisplacement) + (rotation.thirdAngle + headingDisplacement > 0 ? "deg. CW" : "deg. CCW"));
+                        VectorF translation = lastLocation.getTranslation();
+                        double dist = translation.get(1) / mmPerInch + displacements[1];
+                        telemetry.addLine("Move " + Math.abs(dist) + (dist > 0 ? "in. Right" : "in. Left"));
+                        if (dist > 5) {
+                            position = 2;
+                            telemetry.addData("Capture time", t.milliseconds());
+                            telemetry.addData("Position", position);
+                        } else if (dist > -5) {
+                            position = 1;
+                            telemetry.addData("Capture time", t.milliseconds());
+                            telemetry.addData("Position", position);
+                        }
+                        telemetry.addLine("Forward " + (distGoal - translation.get(0) / mmPerInch + displacements[0]) + "in.");
+                        //moveInches(translation.get(1)/mmPerInch+displacements[1], translation.get(0)/mmPerInch+displacements[0], 0.4);
+                    }
+                    break;
+                } else if (t.milliseconds() > 500) {
+                    telemetry.addLine("Exceeded 500ms wait.");
+                    position = 0;
+                    telemetry.addData("Position", position);
                 }
-                if(trackable.getName().equals("Stone Target")) {
-                    Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                    telemetry.addLine("Turn "+(int)Math.abs(rotation.thirdAngle+headingDisplacement)+(rotation.thirdAngle+headingDisplacement>0?"deg. CW":"deg. CCW"));
-                    //turn(-(rotation.thirdAngle+headingDisplacement),0.3,2);//+=ccw
-                    VectorF translation = lastLocation.getTranslation();
-                    telemetry.addLine("Move "+Math.abs(translation.get(1)/mmPerInch + displacements[1])+(translation.get(1)+displacements[1]>0?"in. Right":"in. Left"));
-                    telemetry.addLine("Forward "+(distGoal - translation.get(0)/mmPerInch + displacements[0])+"in.");
-                    //moveInches(translation.get(1)/mmPerInch+displacements[1], translation.get(0)/mmPerInch+displacements[0], 0.4);
-                }
-                break;
             }
         }
         telemetry.update();
