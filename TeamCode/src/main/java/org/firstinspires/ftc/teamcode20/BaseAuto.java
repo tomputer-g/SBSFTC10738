@@ -304,9 +304,9 @@ public class BaseAuto extends BaseOpMode {
         return robotError;
     }
 
-    protected void setAllDrivePowerG(double a, double b, double c, double d,double pc){
-        double p=pc*(getHeading()*0.1/9);
+    protected void setAllDrivePowerG(double a, double b, double c, double d,double Kp){
         //Kp = 0.8
+        double p=Kp*(getHeading()*0.1/9);
         setAllDrivePower(a-p,b-p,c-p,d-p);
     }
 
@@ -337,7 +337,6 @@ public class BaseAuto extends BaseOpMode {
             telemetry.addData("RB",-RB.getCurrentPosition());
             telemetry.addData("target",-encoder_x+encoder_y);
             telemetry.update();
-            //if (p_time < t.milliseconds()) break;
             /*
             if() {
                 fgt -= .1;
