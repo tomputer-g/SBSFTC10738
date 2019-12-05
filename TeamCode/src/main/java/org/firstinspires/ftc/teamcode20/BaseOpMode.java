@@ -285,7 +285,7 @@ public class BaseOpMode extends OpMode {
             //coe=Math.max(coe,1);
         }
         setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
-        wait(75);
+        wait(120);
         setAllDrivePower(0);
         reset_ENCODER();
     }

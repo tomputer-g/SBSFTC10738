@@ -89,6 +89,7 @@ public class TeleOp_Drive extends BaseAuto {
             grabber_extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+        /*
         if(整(this.gamepad1.x,xprime)) {
             double v = 0;
             while (left.getDistance(DistanceUnit.INCH) < 8.5 && right.getDistance(DistanceUnit.INCH) < 8.5) {
@@ -99,6 +100,8 @@ public class TeleOp_Drive extends BaseAuto {
             }
 
         }
+
+        */
 
         if(slow){
             scaledMove(-this.gamepad1.left_stick_x*0.4,-this.gamepad1.left_stick_y*0.4, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x*0.4));

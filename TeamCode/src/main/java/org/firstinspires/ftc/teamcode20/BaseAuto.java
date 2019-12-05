@@ -227,10 +227,16 @@ public class BaseAuto extends BaseOpMode {
         imuOffset = imuHeading;
     }
 
+    protected void setNewGyro(double target){
+        imuOffset = 0;
+        getHeading();
+        imuOffset = target;
+    }
+
     protected void turn(double angle, double speed, double threshold) {
         setMode_RUN_WITHOUT_ENCODER();
         setNewGyro0();
-        double p_TURN = 5.5;
+        double p_TURN = 6;
         while(!onHeading(speed, angle, p_TURN, threshold));
     }
 
@@ -295,10 +301,10 @@ public class BaseAuto extends BaseOpMode {
             //fgt=Math.max(fgt,1);
             setAllDrivePowerG(fgt*(-vx-vy),fgt*(vx-vy),fgt*(-vx+vy),fgt*(vx+vy));
         }
-        /*
+
         setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
         wait(75);
-         */
+
         setAllDrivePower(0);
         reset_ENCODER();
     }
