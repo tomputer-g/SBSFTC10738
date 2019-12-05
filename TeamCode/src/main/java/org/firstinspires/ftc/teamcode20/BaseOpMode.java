@@ -80,6 +80,7 @@ public class BaseOpMode extends OpMode {
     }
 
     protected void setMode_RUN_WITH_ENCODER(){
+        reset_ENCODER();
         LF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         LB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -87,6 +88,7 @@ public class BaseOpMode extends OpMode {
     }
 
     protected void setMode_RUN_WITHOUT_ENCODER(){//DO NOT USE ANY OTHER RUNMODES. GoBilda 5202 series motors have weird encoders
+        reset_ENCODER();
         LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         LB.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         RF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -94,10 +96,7 @@ public class BaseOpMode extends OpMode {
     }
 
     protected void setMode_RESET_AND_RUN_TO_POSITION(){
-        LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        LB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        RF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        RB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        reset_ENCODER();
         LF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         LB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         RF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -286,7 +285,7 @@ public class BaseOpMode extends OpMode {
             //coe=Math.max(coe,1);
         }
         setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
-        wait(75);
+        wait(120);
         setAllDrivePower(0);
         reset_ENCODER();
     }

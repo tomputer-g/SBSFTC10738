@@ -4,44 +4,54 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(group = "Final")
-public class TeleOp_Drive extends BaseOpMode {
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-    private double v = 0, x = 0;
-    private double limit = 0.5;
+@TeleOp(group = "Final")
+public class TeleOp_Drive extends BaseAuto {
+
     private final double ctrl_deadzone = 0.2;
-    private ElapsedTime t;
-    private double value = 0, a_up = 1.2, a_down = 0.8;
-    private int slideLimit = 2000;
     private boolean slow = false;
-    private boolean BPrimed = false, RBPrimed = false, YPrimed = false;
+    private boolean BPrimed = false, RBPrimed = false, YPrimed = false, LP, RP;
     private boolean movingExtender = false;
-    @Override
-    public void init() {
+    //slide
+    private int hold = 0;
+    private boolean holdSet;
+    private double a = 0.2;
+
+
+
+    @Override public void init() {
         initDrivetrain();
         initGrabber();
         initLinSlide();
-        grabber.setPosition(1);
-        L1.setTargetPosition(0);
-        L2.setTargetPosition(0);
-        L1.setPower(1);
-        L2.setPower(1);
-        L1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        L2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        L1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        L2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        grabber.setPosition(0);
     }
 
     @Override
     public void loop() {
 
+        runSlide();
+        if(holdSet){telemetry.addData("Hold pos", hold);}
+
         if(this.gamepad1.y){YPrimed = true;}if(!this.gamepad1.y && YPrimed){YPrimed = false;
             slow = !slow;
         }
 
+        if(this.gamepad1.dpad_left){LP = true;}if(!this.gamepad1.dpad_left && LP) { LP = false;
+            a -= 0.01;
+        }
+        if(this.gamepad1.dpad_right){RP = true;}if(!this.gamepad1.dpad_right && RP){ RP = false;
+            a += 0.01;
+            if(a > 0.25)a = 0.25;
+        }
+
         if(this.gamepad1.b){BPrimed = true;}if(!this.gamepad1.b && BPrimed){BPrimed = false;
-            if(grabber.getPosition() < 0.5){
-                grabber.setPosition(.7);
+            if(grabber.getPosition() < 0.1){
+                grabber.setPosition(.25);
             }else{
-                grabber.setPosition(0.2);
+                grabber.setPosition(0);
             }
         }
 
@@ -79,34 +89,28 @@ public class TeleOp_Drive extends BaseOpMode {
             grabber_extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+        /*
+        if(整(this.gamepad1.x,xprime)) {
+            double v = 0;
+            while (left.getDistance(DistanceUnit.INCH) < 8.5 && right.getDistance(DistanceUnit.INCH) < 8.5) {
+                v = (right.getDistance(DistanceUnit.INCH) - left.getDistance(DistanceUnit.INCH)) / 2;
+                v = Math.min(Math.max(v, -0.2), 0.2);
+                setAllDrivePower(-0.2 + v, -0.2 + v, .2 + v, .2 + v);
+
+            }
+
+        }
+
+        */
 
         if(slow){
-            scaledMove(-this.gamepad1.left_stick_x/2,-this.gamepad1.left_stick_y/2, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x/2));
+            scaledMove(-this.gamepad1.left_stick_x*0.4,-this.gamepad1.left_stick_y*0.4, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x*0.4));
         }else{
             scaledMove(-this.gamepad1.left_stick_x,-this.gamepad1.left_stick_y, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x));
         }
 
-        if(t == null){t = new ElapsedTime();}
-
-        if(this.gamepad1.left_bumper){
-            telemetry.addLine("CHANGING SLIDE");
-            if(this.gamepad1.right_stick_y > 0){
-                value += (slow? 0.5 : 1) * a_down * (joystick_quad(-this.gamepad1.right_stick_y)) * t.milliseconds();
-            }else{
-                value += a_up * (joystick_quad(-this.gamepad1.right_stick_y)) * t.milliseconds();
-            }
-
-            if(value > slideLimit)
-                value = slideLimit;
-            if(value < 0)
-                value = 0;
-        }
-        t.reset();
-
-        L1.setTargetPosition((int)value);
-        L2.setTargetPosition(-(int)value);
         if(slow){telemetry.addLine("slide and drivetrain slowed");}
-        telemetry.addData("target",value);
+        telemetry.addData("a",a);
         telemetry.addData("actual",L1.getCurrentPosition());
         telemetry.update();
 
@@ -133,18 +137,63 @@ public class TeleOp_Drive extends BaseOpMode {
             absMax = Math.max(Math.abs(d),absMax);
         if(absMax <= 1){
             setAllDrivePower(speeds[0], speeds[1], speeds[2], speeds[3]);
+            /*
             telemetry.addData("vLF",to3d(speeds[0]));
             telemetry.addData("vLB",to3d(speeds[1]));
             telemetry.addData("vRF",to3d(speeds[2]));
             telemetry.addData("vRB",to3d(speeds[3]));
+            */
         }else{
             telemetry.addLine("SCALED power: max was "+absMax);
+            /*
             telemetry.addLine("vLF: "+to3d(speeds[0])+" -> "+to3d(speeds[0]/absMax));
             telemetry.addLine("vLB: "+to3d(speeds[1])+" -> "+to3d(speeds[1]/absMax));
             telemetry.addLine("vRF: "+to3d(speeds[2])+" -> "+to3d(speeds[2]/absMax));
             telemetry.addLine("vRB: "+to3d(speeds[3])+" -> "+to3d(speeds[3]/absMax));
+             */
             setAllDrivePower(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
         }
+    }
+
+    private void runSlide(){
+        if(this.gamepad1.left_bumper && !near(this.gamepad1.right_stick_y, 0, 0.05)) {//long-dist
+            if (this.gamepad1.right_stick_y < 0 && L1.getCurrentPosition() < 2000) {//up
+                holdSet = false;
+                telemetry.addLine("CHANGING SLIDE");
+                L1.setPower(-this.gamepad1.right_stick_y);
+                L2.setPower(this.gamepad1.right_stick_y);
+            } else if (this.gamepad1.right_stick_y > 0 && L1.getCurrentPosition() > 0) {
+                holdSet = false;
+                telemetry.addLine("CHANGING SLIDE");
+                if(slow){
+                    L1.setPower(-((a+(2000-L1.getCurrentPosition())/2000.0)*(0.2-a) ) * this.gamepad1.right_stick_y);
+                    L2.setPower(((a+(2000-L1.getCurrentPosition())/2000.0)*(0.2-a) )* this.gamepad1.right_stick_y);
+                    telemetry.addData("power",-((a+(2000-L1.getCurrentPosition())/2000.0)*(0.2-a) ) * this.gamepad1.right_stick_y);
+                }else{
+                    L1.setPower(-0.5 * this.gamepad1.right_stick_y);
+                    L2.setPower(0.5 * this.gamepad1.right_stick_y);
+                }
+
+            } else {
+                holdSlide();
+            }
+        }else{
+            holdSlide();
+        }
+    }
+
+    private void holdSlide(){
+        if (!holdSet) {
+            holdSet = true;
+            hold = Math.max(0,Math.min(2000,L1.getCurrentPosition()));
+        }
+        int error = hold - L1.getCurrentPosition();
+        double power = Math.min(1, Math.max(0, error/60.0));
+        if(hold == 0){power = 0;}
+        telemetry.addLine("error: "+hold+" - "+(hold-error) + " = "+error);
+        telemetry.addData("PWR", power);
+        L1.setPower(power);
+        L2.setPower(-power);
     }
 
     private double linear(double input, double minLimit, double maxLimit){
