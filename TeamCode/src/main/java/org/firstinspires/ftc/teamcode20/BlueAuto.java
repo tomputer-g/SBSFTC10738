@@ -52,12 +52,11 @@ public class BlueAuto extends BaseAuto {
             telemetry.addData("R:", right.getDistance(DistanceUnit.INCH));
             telemetry.addData("power", LF.getPower());
             telemetry.addData("power", LB.getPower());
-
             telemetry.addData("power", RF.getPower());
-
             telemetry.addData("power", RB.getPower());
 
             telemetry.update();
+            wait(400);
         }
         setAllDrivePower(0);
         grabber.setPosition(.25);

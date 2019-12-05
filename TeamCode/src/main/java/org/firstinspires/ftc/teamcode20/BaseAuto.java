@@ -328,6 +328,7 @@ public class BaseAuto extends BaseOpMode {
         double vx=  Math.sin(theta)*speed;
         double fgt=1;
         while(Math.abs(-encoder_x-encoder_y)>Math.abs(-LF.getCurrentPosition())||Math.abs(encoder_x-encoder_y)>Math.abs(-LB.getCurrentPosition())||Math.abs(-encoder_x+encoder_y)>Math.abs(-RF.getCurrentPosition())||Math.abs(encoder_x+encoder_y)>Math.abs(-RB.getCurrentPosition())){
+            /*
             telemetry.addData("GYRO", getHeading());
             telemetry.addData("LF",-LF.getCurrentPosition());
             telemetry.addData("target",encoder_x-encoder_y);
@@ -338,7 +339,6 @@ public class BaseAuto extends BaseOpMode {
             telemetry.addData("RB",-RB.getCurrentPosition());
             telemetry.addData("target",-encoder_x+encoder_y);
             telemetry.update();
-            /*
             if() {
                 fgt -= .1;
                 fgt = Math.max(fgt, 0);
@@ -348,8 +348,8 @@ public class BaseAuto extends BaseOpMode {
             setAllDrivePowerG(fgt*(-vx-vy),fgt*(vx-vy),fgt*(-vx+vy),fgt*(vx+vy));
         }
         //brake
-            //setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
-            //wait(75);
+        //setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
+        //wait(75);
         setAllDrivePower(0);
         reset_ENCODER();
     }
