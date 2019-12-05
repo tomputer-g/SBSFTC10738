@@ -17,6 +17,8 @@ public class TeleOp_Drive extends BaseAuto {
     private int hold = 0;
     private boolean holdSet;
     private double a = 0.2;
+    private double encoderPerInch = 2000/58;
+    private int RTState = -1;
 
 
 
@@ -24,6 +26,7 @@ public class TeleOp_Drive extends BaseAuto {
         initDrivetrain();
         initGrabber();
         initLinSlide();
+        initPlatformGrabber();
         L1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         L2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         grabber.setPosition(0);
@@ -39,12 +42,23 @@ public class TeleOp_Drive extends BaseAuto {
             slow = !slow;
         }
 
+        /*
         if(this.gamepad1.dpad_left){LP = true;}if(!this.gamepad1.dpad_left && LP) { LP = false;
             a -= 0.01;
         }
         if(this.gamepad1.dpad_right){RP = true;}if(!this.gamepad1.dpad_right && RP){ RP = false;
             a += 0.01;
             if(a > 0.25)a = 0.25;
+        }
+
+         */
+
+        if(this.gamepad1.dpad_left){//move -130
+            platform_grabber.setPower(-0.2);
+        }else if(this.gamepad1.dpad_right){
+            platform_grabber.setPower(0.2);
+        }else{
+            platform_grabber.setPower(0);
         }
 
         if(this.gamepad1.b){BPrimed = true;}if(!this.gamepad1.b && BPrimed){BPrimed = false;
@@ -55,11 +69,29 @@ public class TeleOp_Drive extends BaseAuto {
             }
         }
 
+        if(this.gamepad1.dpad_up
+                ||this.gamepad1.dpad_down
+                ||this.gamepad1.right_bumper
+                ||(this.gamepad1.left_bumper && !near(this.gamepad1.right_stick_y, 0, 0.05))){
+
+            RTState = -1; //driver interrupt auto movement
+        }
+
+        if(this.gamepad1.right_trigger > 0.3
+                && L1.getCurrentPosition() < (2000 - 12 * encoderPerInch)
+                && grabber_extender.getCurrentPosition() < -200
+                && RTState == -1){
+            //when can go 12in above & extender is extended & not started
+            holdSet = false;
+            RTState = 0;
+        }
+        handleRTState();
+
         if(this.gamepad1.right_bumper){RBPrimed = true;}if(!this.gamepad1.right_bumper && RBPrimed){RBPrimed = false;
             movingExtender = true;
             grabber_extender.setPower(1);
             if(grabber_extender.getCurrentPosition() > -110){
-                grabber_extender.setTargetPosition(-230);
+                grabber_extender.setTargetPosition(-330);
             }else{
                 grabber_extender.setTargetPosition(0);
             }
@@ -74,13 +106,15 @@ public class TeleOp_Drive extends BaseAuto {
             movingExtender = false;
             grabber_extender.setPower(-1);
         }else{
-            if(!movingExtender){
-                grabber_extender.setPower(0);
-            }else{
-                if(!grabber_extender.isBusy()){
-                    movingExtender = false;
+            if(RTState == -1) {
+                if (!movingExtender) {
                     grabber_extender.setPower(0);
-                    grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                } else {
+                    if (!grabber_extender.isBusy()) {
+                        movingExtender = false;
+                        grabber_extender.setPower(0);
+                        grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    }
                 }
             }
         }
@@ -109,11 +143,44 @@ public class TeleOp_Drive extends BaseAuto {
             scaledMove(-this.gamepad1.left_stick_x,-this.gamepad1.left_stick_y, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x));
         }
 
-        if(slow){telemetry.addLine("slide and drivetrain slowed");}
-        telemetry.addData("a",a);
-        telemetry.addData("actual",L1.getCurrentPosition());
-        telemetry.update();
 
+        if(slow)telemetry.addLine("slide and drivetrain slowed");
+        //telemetry.addData("a",a);
+        telemetry.addData("ext pos", grabber_extender.getCurrentPosition());
+        telemetry.addData("slide pos",L1.getCurrentPosition());
+        telemetry.addData("RT state", RTState);
+        telemetry.addData("platform pos", platform_grabber.getCurrentPosition());
+
+        telemetry.update();
+    }
+
+    private void handleRTState(){//call in loop; non-blocking
+        switch (RTState) {
+            case -1: //none
+                break;
+            case 0: //just pressed button / moving upward 12 in
+                holdSlide((int) (L1.getCurrentPosition() + 12 * encoderPerInch));
+                if (near(hold, L1.getCurrentPosition(), 40))//close enough
+                    RTState = 1;
+                break;
+            case 1:
+                grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                grabber_extender.setPower(1);
+                if (near(grabber_extender.getCurrentPosition(), 0, 20)){
+                    grabber_extender.setPower(0);
+                    RTState = 2;
+                }
+                break;
+            case 2://need -.5 power going down, test this
+                L1.setPower(-0.5);
+                L2.setPower(0.5);
+                if(near(L1.getCurrentPosition(), 0, 40)){
+                    RTState = -1;
+                    L1.setPower(0);
+                    L2.setPower(0);
+                }
+                break;
+        }
     }
 
     private double joystick_quad(double input){//up 1.2, down 0.5
@@ -175,22 +242,23 @@ public class TeleOp_Drive extends BaseAuto {
                 }
 
             } else {
-                holdSlide();
+                holdSlide(L1.getCurrentPosition());
             }
         }else{
-            holdSlide();
+            holdSlide(L1.getCurrentPosition());
         }
     }
 
-    private void holdSlide(){
+    private void holdSlide(int position){
         if (!holdSet) {
             holdSet = true;
-            hold = Math.max(0,Math.min(2000,L1.getCurrentPosition()));
+            hold = Math.max(0,Math.min(2000,position));
         }
         int error = hold - L1.getCurrentPosition();
         double power = Math.min(1, Math.max(0, error/60.0));
         if(hold == 0){power = 0;}
-        telemetry.addLine("error: "+hold+" - "+(hold-error) + " = "+error);
+        telemetry.addData("holding",hold);
+        telemetry.addData("error",error);
         telemetry.addData("PWR", power);
         L1.setPower(power);
         L2.setPower(-power);

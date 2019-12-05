@@ -199,11 +199,10 @@ public class BaseAuto extends BaseOpMode {
                         if (dist > 5) {
                             telemetry.addData("Capture time", VuforiaPositionTime.milliseconds());
                             return 2;
-                        } else if (dist > -5) {
+                        }else if (dist > -5) {
                             telemetry.addData("Capture time", VuforiaPositionTime.milliseconds());
                             return 1;
                         }
-                        //moveInches(translation.get(1)/mmPerInch+displacements[1], translation.get(0)/mmPerInch+displacements[0], 0.4);
                     }
                 }
             }
