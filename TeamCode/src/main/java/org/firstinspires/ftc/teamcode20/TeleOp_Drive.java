@@ -11,7 +11,7 @@ public class TeleOp_Drive extends BaseAuto {
 
     private final double ctrl_deadzone = 0.2;
     private boolean slow = false;
-    private boolean BPrimed = false, RBPrimed = false, YPrimed = false, LP, RP;
+    private boolean BPrimed = false, RBPrimed = false, YPrimed = false, XPrimed = false, LP, RP;
     private boolean movingExtender = false;
     //slide
     private int hold = 0;
@@ -26,7 +26,9 @@ public class TeleOp_Drive extends BaseAuto {
         initDrivetrain();
         initGrabber();
         initLinSlide();
+        initSensors();
         initPlatformGrabber();
+        initIMU();
         L1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         L2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         grabber.setPosition(0.35);
@@ -69,6 +71,16 @@ public class TeleOp_Drive extends BaseAuto {
             }
         }
 
+        if(this.gamepad1.x){XPrimed = true;}if(!this.gamepad1.x && XPrimed){XPrimed = false;
+            setNewGyro(0);
+            while ( !(near(left.getDistance(DistanceUnit.INCH),9.027, 0.6)&&near(right.getDistance(DistanceUnit.INCH),8.125, 0.6)) ){
+                double l = left.getDistance(DistanceUnit.INCH), r = right.getDistance(DistanceUnit.INCH);
+                l = Math.min(1,Math.abs(l-9.027));
+                if     (r > 9.027)setAllDrivePowerG(-0.13*l,-0.13*l,0.13*l,0.13*l);
+                else if(r < 9.027)setAllDrivePowerG(0.13*l,0.13*l,-0.13*l,-0.13*l);
+            }
+            setAllDrivePower(0);
+        }
         if(this.gamepad1.dpad_up
                 ||this.gamepad1.dpad_down
                 ||this.gamepad1.right_bumper
