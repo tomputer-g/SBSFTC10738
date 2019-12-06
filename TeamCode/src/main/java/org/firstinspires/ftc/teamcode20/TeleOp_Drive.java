@@ -29,7 +29,7 @@ public class TeleOp_Drive extends BaseAuto {
         initPlatformGrabber();
         L1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         L2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        grabber.setPosition(0);
+        grabber.setPosition(0.35);
     }
 
     @Override
@@ -62,10 +62,10 @@ public class TeleOp_Drive extends BaseAuto {
         }
 
         if(this.gamepad1.b){BPrimed = true;}if(!this.gamepad1.b && BPrimed){BPrimed = false;
-            if(grabber.getPosition() < 0.1){
-                grabber.setPosition(.25);
+            if(grabber.getPosition() > 0.45){
+                grabber.setPosition(0.35);
             }else{
-                grabber.setPosition(0);
+                grabber.setPosition(0.55);
             }
         }
 
@@ -160,6 +160,7 @@ public class TeleOp_Drive extends BaseAuto {
                 break;
             case 0: //just pressed button / moving upward 12 in
                 holdSlide((int) (L1.getCurrentPosition() + 12 * encoderPerInch));
+                grabber.setPosition(0);
                 if (near(hold, L1.getCurrentPosition(), 40))//close enough
                     RTState = 1;
                 break;
@@ -172,6 +173,7 @@ public class TeleOp_Drive extends BaseAuto {
                 }
                 break;
             case 2://need -.5 power going down, test this
+                holdSet = false;
                 L1.setPower(-0.5);
                 L2.setPower(0.5);
                 if(near(L1.getCurrentPosition(), 0, 40)){
