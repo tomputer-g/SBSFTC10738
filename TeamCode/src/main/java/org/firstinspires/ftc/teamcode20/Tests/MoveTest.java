@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode20.TractionControl;
 
-@TeleOp(group = "Test", name = "MoveTest")
 public class MoveTest extends TractionControl {
     double speed,x,y, GYRO_kp, side_distance, kp,kd;
     boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};

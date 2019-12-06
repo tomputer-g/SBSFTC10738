@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 
-@TeleOp
 public class TouchSensorTest extends BaseAuto {
     ElapsedTime t;
     String logName = "TouchSensorLog"+System.currentTimeMillis()+".csv";

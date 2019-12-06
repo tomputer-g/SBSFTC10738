@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 /**
  * Created by Ziming Gao on 1/16/2018.
  */
-@TeleOp
 public class ServoTest extends OpMode {
     boolean x,l,r;
     boolean[] X = {true}, L = {true}, R = {true};

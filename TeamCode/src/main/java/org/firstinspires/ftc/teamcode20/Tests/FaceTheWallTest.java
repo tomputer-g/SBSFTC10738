@@ -11,7 +11,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 import org.firstinspires.ftc.teamcode20.TractionControl;
 
-@TeleOp
 
 public class FaceTheWallTest extends TractionControl {
     ModernRoboticsI2cRangeSensor rangeSensorFront, rangeSensorSide;

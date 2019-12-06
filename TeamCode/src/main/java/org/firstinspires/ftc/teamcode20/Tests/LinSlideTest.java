@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode20.BaseOpMode;
 
-@TeleOp
 public class LinSlideTest extends BaseOpMode {
 
     private int hold = 0;

@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode19.BaseOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@TeleOp
 public class AutoMoveInchTest extends BaseOpMode {
     ElapsedTime t;
     //private DistanceSensor sensorRange1,sensorRange2;
