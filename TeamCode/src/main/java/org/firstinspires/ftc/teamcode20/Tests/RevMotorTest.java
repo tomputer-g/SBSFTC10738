@@ -34,7 +34,7 @@ public class RevMotorTest extends BaseAuto {
         if(!this.gamepad1.b && bPrimed) {
             bPrimed = false;
             grabber_extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            grabber_extender.setTargetPosition(230);
+            grabber_extender.setTargetPosition(-330);
             grabber_extender.setPower(.7);
             grabber_extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             grabber_extender.setPower(0);

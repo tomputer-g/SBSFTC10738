@@ -204,7 +204,6 @@ public class BaseAuto extends BaseOpMode {
                             telemetry.addData("Capture time", VuforiaPositionTime.milliseconds());
                             return 1;
                         }
-                        //moveInches(translation.get(1)/mmPerInch+displacements[1], translation.get(0)/mmPerInch+displacements[0], 0.4);
                     }
                 }
             }
