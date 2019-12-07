@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode20.TractionControl;
-
+@TeleOp
 public class MoveTest extends TractionControl {
     double speed,x,y, GYRO_kp, side_distance, kp,kd;
     boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
@@ -24,9 +24,9 @@ public class MoveTest extends TractionControl {
         initDrivetrain();
         rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
 
-        speed=0.5;
+        speed=0.3;
         y = 0;
-        x = -72;
+        x = 0;
 
         // 三天之内刹了你();
     }
@@ -35,11 +35,30 @@ public class MoveTest extends TractionControl {
     public void loop(){
         if(整(this.gamepad1.dpad_left,eee))x-=12;
         if(整(this.gamepad1.dpad_right,fff))x+=12;
-        if(整(this.gamepad1.dpad_up,ee))y+=0.1;
-        if(整(this.gamepad1.dpad_down,ff))y-=0.1;
-        if(整(this.gamepad1.right_bumper,bF))moveInchesG(x,y,speed);
+        if(整(this.gamepad1.dpad_up,ee))y+=12;
+        if(整(this.gamepad1.dpad_down,ff))y-=12;
+        if(整(this.gamepad1.y,m))speed+=.1;
+        if(整(this.gamepad1.a,mm))speed-=.1;
+
+        if(整(this.gamepad1.b,f))setNewGyro0();
+        if(整(this.gamepad1.right_bumper,bF)){
+            moveInchesG(x,y,speed);
+            moveInchesG(-x,-y,speed);
+            setNewGyro0();
+            ElapsedTime t=new ElapsedTime();
+            while(t.milliseconds()<5000){
+                setAllDrivePowerG(-speed,-speed,speed,speed);
+                telemetry.addData("imuHeading: ",imuHeading);
+                telemetry.addData("imuOffset: ",imuOffset);
+                telemetry.update();
+            }
+            telemetry.addLine("Done");
+            telemetry.update();
+        }
+
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
+        telemetry.addData("speed: ",speed);
         telemetry.update();
     }
 }

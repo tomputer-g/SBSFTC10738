@@ -266,9 +266,14 @@ public class BaseAuto extends BaseOpMode {
     }
 
     protected void setNewGyro(double target){
-        imuOffset = 0;
-        getHeading();
         imuOffset = target;
+    }
+
+    private double getError(double targetAngle) {
+        double robotError =targetAngle-getHeading();
+        while (robotError > 180) robotError -= 360;
+        while (robotError <= -180) robotError += 360;
+        return robotError;
     }
 
     protected void turn(double angle, double speed, double threshold) {
@@ -297,58 +302,54 @@ public class BaseAuto extends BaseOpMode {
         return onTarget;
     }
 
-    private double getError(double targetAngle) {
-        double robotError =targetAngle-getHeading();
-        while (robotError > 180) robotError -= 360;
-        while (robotError <= -180) robotError += 360;
-        return robotError;
-    }
-
     protected void setAllDrivePowerG(double a, double b, double c, double d,double Kp){
-        //Kp = 0.8
         double p=Kp*(getHeading()*0.1/9);
         setAllDrivePower(a-p,b-p,c-p,d-p);
+    }
+
+    protected void setAllDrivePowerG(double a, double b, double c, double d,long target){
+        setNewGyro(target);
+        setAllDrivePower(a,b,c,d);
     }
 
     protected void setAllDrivePowerG(double a, double b, double c, double d){
         setAllDrivePowerG(a,b,c,d,0.8);
     }
 
+    protected void setAllDrivePowerG(double power){
+        setAllDrivePowerG(power,power,power,power);
+    }
+
     protected void moveInchesG(double xInch, double yInch, double speed){
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
-        ElapsedTime t = new ElapsedTime();
+        //ElapsedTime t = new ElapsedTime();
+        //int p_time = (int) (sqrt(xInch*xInch + yInch*yInch)*100);
         speed=Math.abs(speed);
-        int p_time = (int) (sqrt(xInch*xInch + yInch*yInch)*100);
-        double xmult = 232.5088/12, ymult = 232.7551/12;
+        double xmult = 1430.5/72, ymult = 1305.25/72,fgt=1;//232.5088/12,
         int encoder_x=(int)(xInch*xmult),encoder_y=(int)(yInch*ymult);
-        double theta=Math.atan(xInch/yInch);
-        double vy =  (yInch==0) ? 0 : (yInch/Math.abs(yInch)*Math.cos(theta)*speed);
-        double vx=  Math.sin(theta)*speed;
-        double fgt=1;
-        while(Math.abs(-encoder_x-encoder_y)>Math.abs(-LF.getCurrentPosition())||Math.abs(encoder_x-encoder_y)>Math.abs(-LB.getCurrentPosition())||Math.abs(-encoder_x+encoder_y)>Math.abs(-RF.getCurrentPosition())||Math.abs(encoder_x+encoder_y)>Math.abs(-RB.getCurrentPosition())){
+
+        double theta=(yInch==0)?90:Math.atan(xInch/yInch);
+        double vx=(xInch==0)?0:xInch/Math.abs(xInch)*Math.sin(theta)*speed;
+        double vy=(yInch==0)?0:(yInch/Math.abs(yInch)*Math.cos(theta)*speed);
+
+        boolean elf=Math.abs(-encoder_x-encoder_y)>Math.abs(-LF.getCurrentPosition()),elb=Math.abs(encoder_x-encoder_y)>Math.abs(-LB.getCurrentPosition()),erf=Math.abs(-encoder_x+encoder_y)>Math.abs(-RF.getCurrentPosition()),erb=Math.abs(encoder_x+encoder_y)>Math.abs(-RB.getCurrentPosition());
+        while(elf|| elb|| erf|| erb){
+            elf=Math.abs(-encoder_x-encoder_y)>Math.abs(-LF.getCurrentPosition());
+            elb=Math.abs(encoder_x-encoder_y)>Math.abs(-LB.getCurrentPosition());
+            erf=Math.abs(-encoder_x+encoder_y)>Math.abs(-RF.getCurrentPosition());
+            erb=Math.abs(encoder_x+encoder_y)>Math.abs(-RB.getCurrentPosition());
             /*
-            telemetry.addData("GYRO", getHeading());
-            telemetry.addData("LF",-LF.getCurrentPosition());
-            telemetry.addData("target",encoder_x-encoder_y);
-            telemetry.addData("LB",-LB.getCurrentPosition());
-            telemetry.addData("target",-encoder_x-encoder_y);
-            telemetry.addData("RF",-RF.getCurrentPosition());
-            telemetry.addData("target",encoder_x+encoder_y);
-            telemetry.addData("RB",-RB.getCurrentPosition());
-            telemetry.addData("target",-encoder_x+encoder_y);
-            telemetry.update();
             if() {
                 fgt -= .1;
                 fgt = Math.max(fgt, 0);
             }
-
              */
             setAllDrivePowerG(fgt*(-vx-vy),fgt*(vx-vy),fgt*(-vx+vy),fgt*(vx+vy));
         }
         //brake
-        //setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
-        //wait(75);
+        setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
+        wait(75);
         setAllDrivePower(0);
         reset_ENCODER();
     }

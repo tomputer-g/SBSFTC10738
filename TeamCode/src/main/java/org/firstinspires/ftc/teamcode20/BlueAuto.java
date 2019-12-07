@@ -46,22 +46,11 @@ public class BlueAuto extends BaseAuto {
         if(pos == 1){moveInchesG(0,0,0.3);}
         else if (pos == 0) moveInchesG(-8,0,0.3);
 
-        //buffer
+        //bug fix
         turn(0,0.3,1);
 
         //move to blocc
-        while ((3.5 < left.getDistance(DistanceUnit.INCH)) && (3.5 < right.getDistance(DistanceUnit.INCH))) {
-            setAllDrivePowerG(-speed, -speed, speed, speed);
-            /*
-            telemetry.addData("L: ", left.getDistance(DistanceUnit.INCH));
-            telemetry.addData("R:", right.getDistance(DistanceUnit.INCH));
-            telemetry.addData("power", LF.getPower());
-            telemetry.addData("power", LB.getPower());
-            telemetry.addData("power", RF.getPower());
-            telemetry.addData("power", RB.getPower());
-            telemetry.update();
-             */
-        }
+        while ((3.5 < left.getDistance(DistanceUnit.INCH)) && (3.5 < right.getDistance(DistanceUnit.INCH)))setAllDrivePowerG(-speed, -speed, speed, speed);
         setAllDrivePower(0);
         grabber_extender.setPower(1);
         wait(500);
