@@ -6,12 +6,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import static java.lang.Thread.sleep;
+
 @TeleOp(group = "Final")
 public class TeleOp_Drive extends BaseAuto {
     private boolean BPrimed = false, RBPrimed = false, YPrimed = false, XPrimed = false, LP, RP;
-
     private boolean movingExtender = false;
     //slide
+    private double kickstartSpeed = 0.18, lowSpeed = 0.03, PWMSpeed = 0.09, cycleTimeMS = 20;
 
 
     @Override public void init() {
@@ -23,12 +25,13 @@ public class TeleOp_Drive extends BaseAuto {
         initIMU();
         L1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         L2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        grabber.setPosition(0.35);
+        grabber.setPosition(grabber_open);
         platform_grabber.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         platform_grabber.setPower(1);
         wait(500);
         platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         platform_grabber.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        platform_grabber.setPower(0);
     }
 
     @Override
@@ -41,20 +44,10 @@ public class TeleOp_Drive extends BaseAuto {
             slow = !slow;
         }
 
-        /*
-        if(this.gamepad1.dpad_left){LP = true;}if(!this.gamepad1.dpad_left && LP) { LP = false;
-            a -= 0.01;
-        }
-        if(this.gamepad1.dpad_right){RP = true;}if(!this.gamepad1.dpad_right && RP){ RP = false;
-            a += 0.01;
-            if(a > 0.25)a = 0.25;
-        }
-
-         */
 
         if(this.gamepad1.dpad_left){//move -130
             platform_grabber.setTargetPosition(0);
-            platform_grabber.setPower(1);
+            platform_grabber.setPower(0.1);
             platform_grabber.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }else if(this.gamepad1.dpad_right){
             platform_grabber.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -69,6 +62,7 @@ public class TeleOp_Drive extends BaseAuto {
             }
         }
 
+        /*
         if(this.gamepad1.x){XPrimed = true;}if(!this.gamepad1.x && XPrimed){XPrimed = false;
             setNewGyro(0);
             while ( !(near(left.getDistance(DistanceUnit.INCH),9.027, 0.6)&&near(right.getDistance(DistanceUnit.INCH),8.125, 0.6)) ){
@@ -79,6 +73,9 @@ public class TeleOp_Drive extends BaseAuto {
             }
             setAllDrivePower(0);
         }
+
+         */
+
         if(this.gamepad1.dpad_up
                 ||this.gamepad1.dpad_down
                 ||this.gamepad1.right_bumper
@@ -147,20 +144,37 @@ public class TeleOp_Drive extends BaseAuto {
 
         */
 
-        if(slow){
-            scaledMove(-this.gamepad1.left_stick_x*0.4,-this.gamepad1.left_stick_y*0.4, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x*0.4));
-        }else{
+        if(L1.getCurrentPosition() > 200){
+            telemetry.addLine("Placing block: ultra slow");
+            /*if(-this.gamepad1.left_stick_y > ctrl_deadzone){
+                try {
+                    movePWM(0.09);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }else if(this.gamepad1.left_stick_y > ctrl_deadzone){
+                try {
+                    movePWM(-0.09);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+             */
+            scaledMove(-this.gamepad1.left_stick_x*0.3,-this.gamepad1.left_stick_y*0.15, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x*0.2));//replace with enc-based move
+        }else if(slow){
+            telemetry.addLine("slide and drivetrain slowed");
+            scaledMove(-this.gamepad1.left_stick_x*0.4,-this.gamepad1.left_stick_y*0.4, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x*0.3));
+        } else{
             scaledMove(-this.gamepad1.left_stick_x,-this.gamepad1.left_stick_y, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x));
         }
 
 
-        if(slow)telemetry.addLine("slide and drivetrain slowed");
         //telemetry.addData("a",a);
-        telemetry.addData("ext pos", grabber_extender.getCurrentPosition());
-        telemetry.addData("slide pos",L1.getCurrentPosition());
+        telemetry.addLine("Dist: "+left.getDistance(DistanceUnit.INCH)+", "+right.getDistance(DistanceUnit.INCH));
+        telemetry.addData("ext", grabber_extender.getCurrentPosition());
+        telemetry.addData("slide",L1.getCurrentPosition());
         telemetry.addData("RT state", RTState);
-        telemetry.addData("platform pos", platform_grabber.getCurrentPosition());
-
         telemetry.update();
     }
 
@@ -216,5 +230,24 @@ public class TeleOp_Drive extends BaseAuto {
         if(input < 0)
             return m * input - minLimit;
         return m * input + minLimit;
+    }
+
+    private void movePWM(double vy)throws InterruptedException {//3,9,18
+        if(vy > kickstartSpeed){
+            setAllDrivePower(-vy, -vy, vy, vy);
+        }else if(vy >= lowSpeed){
+            telemetry.addLine("PWM move active");//set 20; change delay between 20 and 0
+            double dutyPercent = (vy - lowSpeed) / (kickstartSpeed-lowSpeed);
+            telemetry.addLine("Duty "+(int)(100*dutyPercent)+"%; high "+to3d(dutyPercent * cycleTimeMS)+", low "+to3d((1-dutyPercent) * cycleTimeMS));
+
+            setAllDrivePower(-kickstartSpeed, -kickstartSpeed, kickstartSpeed, kickstartSpeed);
+            sleep(0,(int)(1000 * dutyPercent * cycleTimeMS));
+            setAllDrivePower(-lowSpeed, -lowSpeed, lowSpeed, lowSpeed);
+            sleep(0, (int)((1-dutyPercent) * cycleTimeMS));
+
+        }else{
+            setAllDrivePower(0);
+            telemetry.addLine("speed is below PWM minimum!");
+        }
     }
 }
