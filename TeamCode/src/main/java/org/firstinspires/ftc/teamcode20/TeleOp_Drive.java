@@ -23,6 +23,11 @@ public class TeleOp_Drive extends BaseAuto {
         L1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         L2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         grabber.setPosition(0.35);
+        platform_grabber.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        platform_grabber.setPower(1);
+        wait(500);
+        platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        platform_grabber.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     @Override
@@ -47,18 +52,19 @@ public class TeleOp_Drive extends BaseAuto {
          */
 
         if(this.gamepad1.dpad_left){//move -130
-            platform_grabber.setPower(-0.2);
+            platform_grabber.setTargetPosition(0);
+            platform_grabber.setPower(1);
+            platform_grabber.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }else if(this.gamepad1.dpad_right){
-            platform_grabber.setPower(0.2);
-        }else{
-            platform_grabber.setPower(0);
+            platform_grabber.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            platform_grabber.setPower(-0.5);
         }
 
         if(this.gamepad1.b){BPrimed = true;}if(!this.gamepad1.b && BPrimed){BPrimed = false;
             if(grabber.getPosition() > 0.45){
-                grabber.setPosition(0.35);
+                grabber.setPosition(grabber_open);
             }else{
-                grabber.setPosition(0.55);
+                grabber.setPosition(grabber_closed);
             }
         }
 

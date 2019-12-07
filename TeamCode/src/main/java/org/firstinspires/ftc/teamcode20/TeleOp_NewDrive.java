@@ -44,27 +44,6 @@ public class TeleOp_NewDrive extends BaseOpMode {
         return m * input * input + b;
     }
 
-    private void scaledMove(double vx, double vy, double vr){
-        telemetry.addLine("vX: "+to3d(vx)+", vY: "+to3d(vy)+", vR: "+to3d(vr));
-        double[] speeds = {vx - vy + vr, -vy - vx + vr, vx + vy + vr, -vx + vy + vr};
-        double absMax = 0;
-        for(double d : speeds)
-            absMax = Math.max(Math.abs(d),absMax);
-        if(absMax <= 1){
-            setAllDrivePower(speeds[0], speeds[1], speeds[2], speeds[3]);
-            telemetry.addData("vLF",to3d(speeds[0]));
-            telemetry.addData("vLB",to3d(speeds[1]));
-            telemetry.addData("vRF",to3d(speeds[2]));
-            telemetry.addData("vRB",to3d(speeds[3]));
-        }else{
-            telemetry.addLine("SCALED power: max was "+absMax);
-            telemetry.addLine("vLF: "+to3d(speeds[0])+" -> "+to3d(speeds[0]/absMax));
-            telemetry.addLine("vLB: "+to3d(speeds[1])+" -> "+to3d(speeds[1]/absMax));
-            telemetry.addLine("vRF: "+to3d(speeds[2])+" -> "+to3d(speeds[2]/absMax));
-            telemetry.addLine("vRB: "+to3d(speeds[3])+" -> "+to3d(speeds[3]/absMax));
-            setAllDrivePower(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
-        }
-    }
 
 
 }

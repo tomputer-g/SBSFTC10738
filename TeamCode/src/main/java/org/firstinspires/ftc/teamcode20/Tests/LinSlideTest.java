@@ -43,26 +43,6 @@ public class LinSlideTest extends BaseOpMode {
         return input * input;
     }
 
-    private void runSlide(){
-        if(this.gamepad1.left_bumper && !near(this.gamepad1.right_stick_y, 0, 0.05)) {//long-dist
-            if (this.gamepad1.right_stick_y < 0 && L1.getCurrentPosition() < 2000) {//up
-                holdSet = false;
-                telemetry.addLine("CHANGING SLIDE");
-                L1.setPower(-this.gamepad1.right_stick_y);
-                L2.setPower(this.gamepad1.right_stick_y);
-            } else if (this.gamepad1.right_stick_y > 0 && L1.getCurrentPosition() > 0) {
-                holdSet = false;
-                telemetry.addLine("CHANGING SLIDE");
-                L1.setPower(-0.5 * this.gamepad1.right_stick_y);
-                L2.setPower(0.5 * this.gamepad1.right_stick_y);
-            } else {
-                holdSlide();
-            }
-        }else{
-            holdSlide();
-        }
-    }
-
     private void holdSlide(){
         if (!holdSet) {
             holdSet = true;
