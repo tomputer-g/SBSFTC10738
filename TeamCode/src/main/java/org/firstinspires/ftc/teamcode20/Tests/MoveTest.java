@@ -23,7 +23,6 @@ public class MoveTest extends TractionControl {
         initIMU();
         initDrivetrain();
         rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
-
         speed=0.3;
         y = 0;
         x = 0;
@@ -44,7 +43,6 @@ public class MoveTest extends TractionControl {
         if(整(this.gamepad1.right_bumper,bF)){
             moveInchesG(x,y,speed);
             moveInchesG(-x,-y,speed);
-            setNewGyro0();
             ElapsedTime t=new ElapsedTime();
             while(t.milliseconds()<5000){
                 setAllDrivePowerG(-speed,-speed,speed,speed);
