@@ -307,11 +307,6 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(a-p,b-p,c-p,d-p);
     }
 
-    protected void setAllDrivePowerG(double a, double b, double c, double d,long target){
-        setNewGyro(target);
-        setAllDrivePower(a,b,c,d);
-    }
-
     protected void setAllDrivePowerG(double a, double b, double c, double d){
         setAllDrivePowerG(a,b,c,d,0.8);
     }
@@ -352,5 +347,6 @@ public class BaseAuto extends BaseOpMode {
         wait(75);
         setAllDrivePower(0);
         reset_ENCODER();
+        setMode_RUN_WITHOUT_ENCODER();
     }
 }
