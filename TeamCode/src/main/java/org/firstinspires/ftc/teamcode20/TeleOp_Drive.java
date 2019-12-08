@@ -10,10 +10,11 @@ import static java.lang.Thread.sleep;
 
 @TeleOp(group = "Final")
 public class TeleOp_Drive extends BaseAuto {
-    private boolean BPrimed = false, RBPrimed = false, YPrimed = false, XPrimed = false, LP, RP;
+    private boolean BPrimed = false, RBPrimed = false, YPrimed = false, XPrimed = false, LP, RP, LTPrimed = false;
     private boolean movingExtender = false;
     //slide
     private double kickstartSpeed = 0.18, lowSpeed = 0.03, PWMSpeed = 0.09, cycleTimeMS = 20;
+    private boolean platformGrabbed = false;
 
 
     @Override public void init() {
@@ -26,11 +27,11 @@ public class TeleOp_Drive extends BaseAuto {
         L1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         L2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         grabber.setPosition(grabber_open);
-        platform_grabber.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         platform_grabber.setPower(1);
-        wait(500);
+        wait(150);
         platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        platform_grabber.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         platform_grabber.setPower(0);
     }
 
@@ -38,21 +39,29 @@ public class TeleOp_Drive extends BaseAuto {
     public void loop() {
 
         runSlide();
-        if(holdSet){telemetry.addData("Hold pos", hold);}
+        if(holdSet){if(telemetryOn)telemetry.addData("Hold pos", hold);}
 
         if(this.gamepad1.y){YPrimed = true;}if(!this.gamepad1.y && YPrimed){YPrimed = false;
             slow = !slow;
         }
 
 
-        if(this.gamepad1.dpad_left){//move -130
-            platform_grabber.setTargetPosition(0);
-            platform_grabber.setPower(0.1);
-            platform_grabber.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }else if(this.gamepad1.dpad_right){
-            platform_grabber.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            platform_grabber.setPower(-0.5);
+        if(this.gamepad1.left_trigger> 0.5) {
+            LTPrimed = true;
         }
+        if(this.gamepad1.left_trigger < 0.5 && LTPrimed){
+            LTPrimed = false;
+            if(platformGrabbed){//already held
+                platformGrabbed = false;
+                platform_grabber.setPower(1);
+                wait(100);
+                platform_grabber.setPower(0);
+            }else{
+                platformGrabbed = true;
+                platform_grabber.setPower(-0.4);
+            }
+        }
+
 
         if(this.gamepad1.b){BPrimed = true;}if(!this.gamepad1.b && BPrimed){BPrimed = false;
             if(grabber.getPosition() > 0.45){
@@ -145,7 +154,7 @@ public class TeleOp_Drive extends BaseAuto {
         */
 
         if(L1.getCurrentPosition() > 200){
-            telemetry.addLine("Placing block: ultra slow");
+            if(telemetryOn)telemetry.addLine("Placing block: ultra slow");
             /*if(-this.gamepad1.left_stick_y > ctrl_deadzone){
                 try {
                     movePWM(0.09);
@@ -163,19 +172,19 @@ public class TeleOp_Drive extends BaseAuto {
              */
             scaledMove(-this.gamepad1.left_stick_x*0.3,-this.gamepad1.left_stick_y*0.15, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x*0.2));//replace with enc-based move
         }else if(slow){
-            telemetry.addLine("slide and drivetrain slowed");
+            if(telemetryOn)telemetry.addLine("slide and drivetrain slowed");
             scaledMove(-this.gamepad1.left_stick_x*0.4,-this.gamepad1.left_stick_y*0.4, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x*0.3));
         } else{
             scaledMove(-this.gamepad1.left_stick_x,-this.gamepad1.left_stick_y, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x));
         }
 
 
-        //telemetry.addData("a",a);
-        telemetry.addLine("Dist: "+left.getDistance(DistanceUnit.INCH)+", "+right.getDistance(DistanceUnit.INCH));
-        telemetry.addData("ext", grabber_extender.getCurrentPosition());
-        telemetry.addData("slide",L1.getCurrentPosition());
-        telemetry.addData("RT state", RTState);
-        telemetry.update();
+        //if(telemetryOn)telemetry.addData("a",a);
+        if(telemetryOn)telemetry.addLine("Dist: "+left.getDistance(DistanceUnit.INCH)+", "+right.getDistance(DistanceUnit.INCH));
+        if(telemetryOn)telemetry.addData("ext", grabber_extender.getCurrentPosition());
+        if(telemetryOn)telemetry.addData("slide",L1.getCurrentPosition());
+        if(telemetryOn)telemetry.addData("RT state", RTState);
+        if(telemetryOn)telemetry.update();
     }
 
     private void handleRTState(){//call in loop; non-blocking
@@ -198,9 +207,9 @@ public class TeleOp_Drive extends BaseAuto {
                 break;
             case 2://need -.5 power going down, test this
                 holdSet = false;
-                L1.setPower(-0.5);
-                L2.setPower(0.5);
-                if(near(L1.getCurrentPosition(), 0, 40)){
+                L1.setPower(-0.4);
+                L2.setPower(0.4);
+                if(L1.getCurrentPosition() < 40){
                     RTState = -1;
                     L1.setPower(0);
                     L2.setPower(0);
@@ -218,8 +227,8 @@ public class TeleOp_Drive extends BaseAuto {
     private void winstonSetPower(double LF, double LB, double RF, double RB){
         setAllDrivePower(-LF, -LB, RF, RB);//L motors reversed because it's winston power
         displayMotorPowers(LF, LB, RF, RB);
-        telemetry.addLine("Result|----X----|----Y----|----R----");
-        telemetry.addLine("           |"+to3dstr(RF-LF-RB+LB)+"|"+to3dstr(RF+RB+LF+LB)+"|"+to3dstr(RF+RB-LF-LB));
+        if(telemetryOn)telemetry.addLine("Result|----X----|----Y----|----R----");
+        if(telemetryOn)telemetry.addLine("           |"+to3dstr(RF-LF-RB+LB)+"|"+to3dstr(RF+RB+LF+LB)+"|"+to3dstr(RF+RB-LF-LB));
     }
 
 
@@ -236,9 +245,9 @@ public class TeleOp_Drive extends BaseAuto {
         if(vy > kickstartSpeed){
             setAllDrivePower(-vy, -vy, vy, vy);
         }else if(vy >= lowSpeed){
-            telemetry.addLine("PWM move active");//set 20; change delay between 20 and 0
+            if(telemetryOn)telemetry.addLine("PWM move active");//set 20; change delay between 20 and 0
             double dutyPercent = (vy - lowSpeed) / (kickstartSpeed-lowSpeed);
-            telemetry.addLine("Duty "+(int)(100*dutyPercent)+"%; high "+to3d(dutyPercent * cycleTimeMS)+", low "+to3d((1-dutyPercent) * cycleTimeMS));
+            if(telemetryOn)telemetry.addLine("Duty "+(int)(100*dutyPercent)+"%; high "+to3d(dutyPercent * cycleTimeMS)+", low "+to3d((1-dutyPercent) * cycleTimeMS));
 
             setAllDrivePower(-kickstartSpeed, -kickstartSpeed, kickstartSpeed, kickstartSpeed);
             sleep(0,(int)(1000 * dutyPercent * cycleTimeMS));
@@ -247,7 +256,7 @@ public class TeleOp_Drive extends BaseAuto {
 
         }else{
             setAllDrivePower(0);
-            telemetry.addLine("speed is below PWM minimum!");
+            if(telemetryOn)telemetry.addLine("speed is below PWM minimum!");
         }
     }
 }

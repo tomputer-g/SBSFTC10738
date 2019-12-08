@@ -26,7 +26,7 @@ public class BlueAuto extends BaseAuto {
         wait(400);
         grabber_extender.setPower(0);
         speed=0.18;
-        //telemetry.setAutoClear(false);
+        //if(telemetryOn)telemetry.setAutoClear(false);
     }
     @Override
     public void loop() {
@@ -39,10 +39,11 @@ public class BlueAuto extends BaseAuto {
 
 
         moveInchesG(0,12,0.3);
-        telemetry.clear();
+        if(telemetryOn)telemetry.clear();
         int pos = skystonePosition();
-        telemetry.addData("pos: ",pos);
-        telemetry.update();
+        shutdownVuforia();
+        if(telemetryOn)telemetry.addData("pos: ",pos);
+        if(telemetryOn)telemetry.update();
         if(pos == 1){moveInchesG(0,0,0.3);}
         else if (pos == 0) moveInchesG(-8,0,0.3);
 

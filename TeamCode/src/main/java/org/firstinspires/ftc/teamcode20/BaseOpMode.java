@@ -25,6 +25,8 @@ Make sure TeleOp2019Trident and BaseAuto can inherit needed stuff by setting the
  */
 public class BaseOpMode extends OpMode {
 
+    protected boolean telemetryOn = false;
+
     protected DcMotor LF, LB, RF, RB;
     protected Servo grabber;
     protected DcMotor grabber_extender;
@@ -53,8 +55,6 @@ public class BaseOpMode extends OpMode {
 
     protected void initPlatformGrabber(){
         platform_grabber = hardwareMap.get(DcMotor.class, "platform");
-        platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        platform_grabber.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     protected void initLinSlide(){
@@ -167,7 +167,7 @@ public class BaseOpMode extends OpMode {
     }
 
     protected void initOdometry(){
-        telemetry.addLine("BaseOpMode -> initOdometry() still a stub!");
+        if(telemetryOn)telemetry.addLine("BaseOpMode -> initOdometry() still a stub!");
     }
 
     protected boolean 整(boolean b,boolean[] f){
@@ -197,10 +197,10 @@ public class BaseOpMode extends OpMode {
     }
 
     protected void displayMotorPowers(double LF, double LB, double RF, double RB){
-        telemetry.addLine();
-        telemetry.addLine(""+to3dstr(LF)+"  |  "+to3dstr(RF));
-        telemetry.addLine("-----------------------");
-        telemetry.addLine(""+to3dstr(LB)+"  |  "+to3dstr(RB));
+        if(telemetryOn)telemetry.addLine();
+        if(telemetryOn)telemetry.addLine(""+to3dstr(LF)+"  |  "+to3dstr(RF));
+        if(telemetryOn)telemetry.addLine("-----------------------");
+        if(telemetryOn)telemetry.addLine(""+to3dstr(LB)+"  |  "+to3dstr(RB));
     }
 
     protected String to3dstr(double d){
@@ -250,17 +250,17 @@ public class BaseOpMode extends OpMode {
         double speed_1 = conversion_fct * encoder_1, speed_2 = conversion_fct * encoder_2;
         setAllDrivePower(speed_2,speed_1,speed_1,speed_2);
         setAllDrivePower(-speed,-speed,speed,speed);
-        telemetry.addData("speed",speed_1+" "+speed_2);
-        telemetry.addData("position",encoder_x+" "+encoder_y);
-        telemetry.update();
+        if(telemetryOn)telemetry.addData("speed",speed_1+" "+speed_2);
+        if(telemetryOn)telemetry.addData("position",encoder_x+" "+encoder_y);
+        if(telemetryOn)telemetry.update();
         LF.setTargetPosition(encoder_x - encoder_y);
         LB.setTargetPosition(-encoder_x - encoder_y);
         RF.setTargetPosition(encoder_x + encoder_y);
         RB.setTargetPosition(-encoder_x + encoder_y);
         setMode_RESET_AND_RUN_TO_POSITION();
         while((LF.isBusy()||LB.isBusy()||RF.isBusy()||RB.isBusy()) && t.milliseconds() < p_time){
-            telemetry.addData("Power", LF.getPower());
-            telemetry.update();
+            if(telemetryOn)telemetry.addData("Power", LF.getPower());
+            if(telemetryOn)telemetry.update();
         };
         setAllDrivePower(0);
         ();
@@ -278,15 +278,15 @@ public class BaseOpMode extends OpMode {
         double vy=Math.cos(theta)*speed,vx=Math.sin(theta)*speed;
         double coe=1;
         while(Math.abs(-encoder_x-encoder_y)>Math.abs(-LF.getCurrentPosition())||Math.abs(encoder_x-encoder_y)>Math.abs(-LB.getCurrentPosition())||Math.abs(-encoder_x+encoder_y)>Math.abs(-RF.getCurrentPosition())||Math.abs(encoder_x+encoder_y)>Math.abs(-RB.getCurrentPosition())){
-            telemetry.addData("LF",-LF.getCurrentPosition());
-            telemetry.addData("target",encoder_x-encoder_y);
-            telemetry.addData("LB",-LB.getCurrentPosition());
-            telemetry.addData("target",-encoder_x-encoder_y);
-            telemetry.addData("RF",-RF.getCurrentPosition());
-            telemetry.addData("target",encoder_x+encoder_y);
-            telemetry.addData("RB",-RB.getCurrentPosition());
-            telemetry.addData("target",-encoder_x+encoder_y);
-            telemetry.update();
+            if(telemetryOn)telemetry.addData("LF",-LF.getCurrentPosition());
+            if(telemetryOn)telemetry.addData("target",encoder_x-encoder_y);
+            if(telemetryOn)telemetry.addData("LB",-LB.getCurrentPosition());
+            if(telemetryOn)telemetry.addData("target",-encoder_x-encoder_y);
+            if(telemetryOn)telemetry.addData("RF",-RF.getCurrentPosition());
+            if(telemetryOn)telemetry.addData("target",encoder_x+encoder_y);
+            if(telemetryOn)telemetry.addData("RB",-RB.getCurrentPosition());
+            if(telemetryOn)telemetry.addData("target",-encoder_x+encoder_y);
+            if(telemetryOn)telemetry.update();
             //if (p_time < t.milliseconds()) break;
             setAllDrivePower(coe*(-vx-vy),coe*(vx-vy),coe*(-vx+vy),coe*(vx+vy));
             //coe+=.1;
@@ -323,9 +323,9 @@ public class BaseOpMode extends OpMode {
         LB.setTargetPosition(-encoder_x - encoder_y);
         RF.setTargetPosition(encoder_x + encoder_y);
         RB.setTargetPosition(-encoder_x + encoder_y);
-        telemetry.addData("target: ", LF.getTargetPosition());
-        telemetry.addData("initial: ", LF.getCurrentPosition());
-        telemetry.update();
+        if(telemetryOn)telemetry.addData("target: ", LF.getTargetPosition());
+        if(telemetryOn)telemetry.addData("initial: ", LF.getCurrentPosition());
+        if(telemetryOn)telemetry.update();
         setMode_RESET_AND_RUN_TO_POSITION();
         for(int i = 1;i<acc_s;++i){
             while(((double)LF.getCurrentPosition() / LF.getTargetPosition()) < (acc_p/(acc_s-1)*i));
@@ -368,9 +368,9 @@ public class BaseOpMode extends OpMode {
         LB.setTargetPosition(-encoder_x - encoder_y);
         RF.setTargetPosition(encoder_x + encoder_y);
         RB.setTargetPosition(-encoder_x + encoder_y);
-        //telemetry.addData("target: ", LF.getTargetPosition());
-        //telemetry.addData("initial: ", LF.getCurrentPosition());
-        //telemetry.update();
+        //if(telemetryOn)telemetry.addData("target: ", LF.getTargetPosition());
+        //if(telemetryOn)telemetry.addData("initial: ", LF.getCurrentPosition());
+        //if(telemetryOn)telemetry.update();
 
         for(int i = 1;i<acc_s;++i){
             while(((double)LF.getCurrentPosition() / LF.getTargetPosition()) < (acc_p/(acc_s-1)*i));
@@ -435,13 +435,13 @@ public class BaseOpMode extends OpMode {
 
     protected void initLogger(String filename){
         String path = logPrefix + filename;
-        telemetry.addLine("Writing log to "+path);
+        if(telemetryOn)telemetry.addLine("Writing log to "+path);
         try {
             logWriter = new BufferedWriter(new FileWriter(path));
             //writer = new FileWriter(filename);
-            telemetry.addLine("writer create success");
+            if(telemetryOn)telemetry.addLine("writer create success");
         } catch (IOException e) {
-            telemetry.addLine(e.toString());
+            if(telemetryOn)telemetry.addLine(e.toString());
         }
     }
 
@@ -453,7 +453,7 @@ public class BaseOpMode extends OpMode {
         try{
             logWriter.write(message+"\n");
         }catch (Exception e){
-            telemetry.addLine(e.toString());
+            if(telemetryOn)telemetry.addLine(e.toString());
         }
     }
 
@@ -462,7 +462,7 @@ public class BaseOpMode extends OpMode {
             try {
                 logWriter.close();
             } catch (IOException e) {
-                telemetry.addLine(e.toString());
+                if(telemetryOn)telemetry.addLine(e.toString());
             }
         }
     }
@@ -470,7 +470,7 @@ public class BaseOpMode extends OpMode {
     //----------------------------------------------------TeleOp--------------------------------------
 
     protected void scaledMove(double vx, double vy, double vr){
-        telemetry.addLine("vX: "+to3d(vx)+", vY: "+to3d(vy)+", vR: "+to3d(vr));
+        if(telemetryOn)telemetry.addLine("vX: "+to3d(vx)+", vY: "+to3d(vy)+", vR: "+to3d(vr));
         double[] speeds = {vx - vy + vr, -vy - vx + vr, vx + vy + vr, -vx + vy + vr};
         double absMax = 0;
         for(double d : speeds)
@@ -478,18 +478,18 @@ public class BaseOpMode extends OpMode {
         if(absMax <= 1){
             setAllDrivePower(speeds[0], speeds[1], speeds[2], speeds[3]);
             /*
-            telemetry.addData("vLF",to3d(speeds[0]));
-            telemetry.addData("vLB",to3d(speeds[1]));
-            telemetry.addData("vRF",to3d(speeds[2]));
-            telemetry.addData("vRB",to3d(speeds[3]));
+            if(telemetryOn)telemetry.addData("vLF",to3d(speeds[0]));
+            if(telemetryOn)telemetry.addData("vLB",to3d(speeds[1]));
+            if(telemetryOn)telemetry.addData("vRF",to3d(speeds[2]));
+            if(telemetryOn)telemetry.addData("vRB",to3d(speeds[3]));
             */
         }else{
-            telemetry.addLine("SCALED power: max was "+absMax);
+            if(telemetryOn)telemetry.addLine("SCALED power: max was "+absMax);
             /*
-            telemetry.addLine("vLF: "+to3d(speeds[0])+" -> "+to3d(speeds[0]/absMax));
-            telemetry.addLine("vLB: "+to3d(speeds[1])+" -> "+to3d(speeds[1]/absMax));
-            telemetry.addLine("vRF: "+to3d(speeds[2])+" -> "+to3d(speeds[2]/absMax));
-            telemetry.addLine("vRB: "+to3d(speeds[3])+" -> "+to3d(speeds[3]/absMax));
+            if(telemetryOn)telemetry.addLine("vLF: "+to3d(speeds[0])+" -> "+to3d(speeds[0]/absMax));
+            if(telemetryOn)telemetry.addLine("vLB: "+to3d(speeds[1])+" -> "+to3d(speeds[1]/absMax));
+            if(telemetryOn)telemetry.addLine("vRF: "+to3d(speeds[2])+" -> "+to3d(speeds[2]/absMax));
+            if(telemetryOn)telemetry.addLine("vRB: "+to3d(speeds[3])+" -> "+to3d(speeds[3]/absMax));
              */
             setAllDrivePower(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
         }
@@ -509,18 +509,18 @@ public class BaseOpMode extends OpMode {
         if(this.gamepad1.left_bumper && !near(this.gamepad1.right_stick_y, 0, 0.05)) {//long-dist
             if (this.gamepad1.right_stick_y < 0 && L1.getCurrentPosition() < 2000) {//up
                 holdSet = false;
-                telemetry.addLine("CHANGING SLIDE");
+                if(telemetryOn)telemetry.addLine("CHANGING SLIDE");
                 L1.setPower(-this.gamepad1.right_stick_y);
                 L2.setPower(this.gamepad1.right_stick_y);
             } else if (this.gamepad1.right_stick_y > 0 && L1.getCurrentPosition() > 0) {
                 holdSet = false;
-                telemetry.addLine("CHANGING SLIDE");
+                if(telemetryOn)telemetry.addLine("CHANGING SLIDE");
                 if(slow){
                     //L1.setPower(-((a+(2000-L1.getCurrentPosition())/2000.0)*(0.2-a) ) * this.gamepad1.right_stick_y);
                     //L2.setPower(((a+(2000-L1.getCurrentPosition())/2000.0)*(0.2-a) )* this.gamepad1.right_stick_y);
                     L1.setPower(-0.3 * this.gamepad1.right_stick_y);
                     L2.setPower(0.3 * this.gamepad1.right_stick_y);
-                    //telemetry.addData("power",-((a+(2000-L1.getCurrentPosition())/2000.0)*(0.2-a) ) * this.gamepad1.right_stick_y);
+                    //if(telemetryOn)telemetry.addData("power",-((a+(2000-L1.getCurrentPosition())/2000.0)*(0.2-a) ) * this.gamepad1.right_stick_y);
                 }else{
                     L1.setPower(-0.5 * this.gamepad1.right_stick_y);
                     L2.setPower(0.5 * this.gamepad1.right_stick_y);
@@ -542,9 +542,9 @@ public class BaseOpMode extends OpMode {
         int error = hold - L1.getCurrentPosition();
         double power = Math.min(1, Math.max(0, error/60.0));
         if(hold == 0){power = 0;}
-        telemetry.addData("holding",hold);
-        telemetry.addData("error",error);
-        telemetry.addData("PWR", power);
+        if(telemetryOn)telemetry.addData("holding",hold);
+        if(telemetryOn)telemetry.addData("error",error);
+        if(telemetryOn)telemetry.addData("PWR", power);
         L1.setPower(power);
         L2.setPower(-power);
     }

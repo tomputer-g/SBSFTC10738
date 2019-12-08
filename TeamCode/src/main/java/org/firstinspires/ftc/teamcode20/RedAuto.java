@@ -22,7 +22,7 @@ public class RedAuto extends BaseAuto {
         wait(100);
         grabber_extender.setPower(0);
         speed=0.4;
-        //telemetry.setAutoClear(false);
+        //if(telemetryOn)telemetry.setAutoClear(false);
     }
 
     //IMPORTANT: position is flipped (0 is robot's left always)
@@ -30,24 +30,25 @@ public class RedAuto extends BaseAuto {
     @Override
     public void loop() {
         moveInchesG(0,12,speed);
-        telemetry.clear();
+        if(telemetryOn)telemetry.clear();
         int pos = skystonePosition();
-        telemetry.addData("pos: ",pos);
-        telemetry.update();
+        if(telemetryOn)telemetry.addData("pos: ",pos);
+        if(telemetryOn)telemetry.update();
         if(pos == 1);
         else if (pos == 0) moveInchesG(-8,0,speed);
+        shutdownVuforia();
         //vuforia
         //move to blocc
         while ((4 < left.getDistance(DistanceUnit.INCH)) && (4 < right.getDistance(DistanceUnit.INCH))) {
             setAllDrivePowerG(-speed, -speed, speed, speed);
-            telemetry.addData("L: ", left.getDistance(DistanceUnit.INCH));
-            telemetry.addData("R:", right.getDistance(DistanceUnit.INCH));
-            telemetry.addData("power", LF.getPower());
-            telemetry.addData("power", LB.getPower());
-            telemetry.addData("power", RF.getPower());
-            telemetry.addData("power", RB.getPower());
+            if(telemetryOn)telemetry.addData("L: ", left.getDistance(DistanceUnit.INCH));
+            if(telemetryOn)telemetry.addData("R:", right.getDistance(DistanceUnit.INCH));
+            if(telemetryOn)telemetry.addData("power", LF.getPower());
+            if(telemetryOn)telemetry.addData("power", LB.getPower());
+            if(telemetryOn)telemetry.addData("power", RF.getPower());
+            if(telemetryOn)telemetry.addData("power", RB.getPower());
 
-            telemetry.update();
+            if(telemetryOn)telemetry.update();
         }
         setAllDrivePower(0);
         grabber.setPosition(grabber_closed);
