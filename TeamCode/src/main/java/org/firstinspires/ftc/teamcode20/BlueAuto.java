@@ -38,12 +38,12 @@ public class BlueAuto extends BaseAuto {
         //moveInches(-8,0,speed);
 
 
-        moveInchesG(0,12,0.3);
+        moveInches(-6,14,0.3);
         if(telemetryOn)telemetry.clear();
         int pos = skystonePosition();
         shutdownVuforia();
-        if(telemetryOn)telemetry.addData("pos: ",pos);
-        if(telemetryOn)telemetry.update();
+        telemetry.addData("pos: ",pos);
+        telemetry.update();
 
         //bug fix
         turn(0,0.3,1);
@@ -51,12 +51,17 @@ public class BlueAuto extends BaseAuto {
 
         //pos = 1;
         int shift=0;
-        if(pos == 1){}
+        if(pos == 1){
+            moveInchesG(3, 0, 0.3);
+        }
         else if (pos == 0){
-            moveInchesG(-8,0,0.4);
+            moveInchesG(-5,0,0.4);
             shift=8;
         }
-        else shift=-8;
+        else {
+            moveInchesG(3, 0, 0.3);
+            shift=-8;
+        }
         //move to blocc
         while ((1.3 < left.getDistance(DistanceUnit.INCH)) && (1.3 < right.getDistance(DistanceUnit.INCH)))setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
         //grabber_extender.setPower(1);

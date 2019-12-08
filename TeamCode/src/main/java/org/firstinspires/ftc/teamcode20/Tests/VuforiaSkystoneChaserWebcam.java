@@ -43,6 +43,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGR
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
+@TeleOp
 public class VuforiaSkystoneChaserWebcam extends BaseAuto {
 
     private static double distGoal = 0;
@@ -59,57 +60,22 @@ public class VuforiaSkystoneChaserWebcam extends BaseAuto {
         initVuforiaWebcam();
         initDrivetrain();
         initIMU();
+        telemetryOn = true;
     }
 
 
     @Override
     public void loop() {//range 17in
         if(t == null){
-            moveInchesG(0,12,0.4);
+            moveInches(-6,14,0.3);
             telemetry.clear();
             t = new ElapsedTime();
             targetsSkyStone.activate();
+            telemetry.addData("position", skystonePosition());
+            telemetry.update();
         }
-        boolean targetVisible = false;
-        if(position == -1) {
-            for (VuforiaTrackable trackable : allTrackables) {
-                if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
-                    //telemetry.addData("Visible Target", trackable.getName());
-                    targetVisible = true;
 
-                    // getUpdatedRobotLocation() will return null if no new information is available since
-                    // the last time that call was made, or if the trackable is not currently visible.
-                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
-                    if (robotLocationTransform != null) {
-                        lastLocation = robotLocationTransform;
-                    }
-                    if (trackable.getName().equals("Stone Target")) {
-                        Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                        telemetry.addLine("Turn " + (int) Math.abs(rotation.thirdAngle + headingDisplacement) + (rotation.thirdAngle + headingDisplacement > 0 ? "deg. CW" : "deg. CCW"));
-                        VectorF translation = lastLocation.getTranslation();
-                        double dist = translation.get(1) / mmPerInch + displacements[1];
-                        telemetry.addLine("Move " + Math.abs(dist) + (dist > 0 ? "in. Right" : "in. Left"));
-                        if (dist > 5) {
-                            position = 2;
-                            telemetry.addData("Capture time", t.milliseconds());
-                            telemetry.addData("Position", position);
-                        } else if (dist > -5) {
-                            position = 1;
-                            telemetry.addData("Capture time", t.milliseconds());
-                            telemetry.addData("Position", position);
-                        }
-                        telemetry.addLine("Forward " + (distGoal - translation.get(0) / mmPerInch + displacements[0]) + "in.");
-                        //moveInches(translation.get(1)/mmPerInch+displacements[1], translation.get(0)/mmPerInch+displacements[0], 0.4);
-                    }
-                    break;
-                } else if (t.milliseconds() > 500) {
-                    telemetry.addLine("Exceeded 500ms wait.");
-                    position = 0;
-                    telemetry.addData("Position", position);
-                }
-            }
-        }
-        telemetry.update();
+
     }
 
     @Override
