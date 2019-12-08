@@ -25,8 +25,8 @@ public class RedAuto extends BaseAuto {
         grabber_extender.setPower(1);
         wait(400);
         grabber_extender.setPower(0);
-        speed=0.18;
-        //telemetry.setAutoClear(false);
+        speed=0.4;
+        //if(telemetryOn)telemetry.setAutoClear(false);
     }
     @Override
     public void loop() {
@@ -39,10 +39,10 @@ public class RedAuto extends BaseAuto {
 
 
         moveInchesG(0,12,0.3);
-        telemetry.clear();
+        if(telemetryOn)telemetry.clear();
         int pos = skystonePosition();
-        telemetry.addData("pos: ",pos);
-        telemetry.update();
+        if(telemetryOn)telemetry.addData("pos: ",pos);
+        if(telemetryOn)telemetry.update();
         //pos = 1;
         int shift=0;
         if(pos == 1){}
