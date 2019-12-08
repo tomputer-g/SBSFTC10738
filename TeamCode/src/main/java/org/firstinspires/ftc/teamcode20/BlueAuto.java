@@ -37,8 +37,7 @@ public class BlueAuto extends BaseAuto {
         //repeat until run out of time; first on other skystones
         //moveInches(-8,0,speed);
 
-
-        moveInches(-6,14,0.3);
+        moveInchesG(0,15,0.3);
         if(telemetryOn)telemetry.clear();
         int pos = skystonePosition();
         shutdownVuforia();
@@ -51,15 +50,13 @@ public class BlueAuto extends BaseAuto {
 
         //pos = 1;
         int shift=0;
-        if(pos == 1){
-            moveInchesG(3, 0, 0.3);
-        }
+        if(pos == 1){ }
         else if (pos == 0){
-            moveInchesG(-5,0,0.4);
-            shift=8;
+            moveInchesG(-8,0,0.4);
+            shift=10;
         }
         else {
-            moveInchesG(3, 0, 0.3);
+            moveInchesG(8, 0, 0.4);
             shift=-8;
         }
         //move to blocc
@@ -69,7 +66,7 @@ public class BlueAuto extends BaseAuto {
         grabber.setPosition(.55);
         wait(300);
         setAllDrivePower(0);
-        moveInchesG(0, -18, 0.3);
+        moveInchesG(0, -15, 0.3);
         setAllDrivePower(0);
         turn(90, 0.4, 4);
         //grabber_extender.setPower(-1);
@@ -86,7 +83,7 @@ public class BlueAuto extends BaseAuto {
         wait(300);
 
         //going bacc for the second blocc
-        moveInchesG(0, -94+shift, 0.33);
+        moveInchesG(0, -92+shift, 0.33);
         turn(-90,0.37,3);
         setNewGyro0();
         //moveInchesG(8,0,0.4);
@@ -113,7 +110,7 @@ public class BlueAuto extends BaseAuto {
         wait(200);
 
         //park
-        moveInchesG(0, -19, 0.5);
+        moveInchesG(0, -21, 0.5);
 
 
         requestOpModeStop();
