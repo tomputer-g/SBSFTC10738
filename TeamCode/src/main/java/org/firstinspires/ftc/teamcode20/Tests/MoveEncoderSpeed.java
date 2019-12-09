@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode20.BaseOpMode;
 import static java.lang.Thread.sleep;
 
 
-@Autonomous
+@Autonomous(group="Test")
 public class MoveEncoderSpeed extends BaseOpMode {
 
     private final double xEncPerInch = 1430.5/72, yEncPerInch =1305.25/72;// 996.75/72;
