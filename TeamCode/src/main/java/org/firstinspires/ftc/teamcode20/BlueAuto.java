@@ -21,7 +21,7 @@ public class BlueAuto extends BaseAuto {
         left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
         right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
         setNewGyro0();
-        grabber.setPosition(grabber_open);
+
         grabber_extender.setPower(1);
         wait(400);
         grabber_extender.setPower(0);
@@ -36,7 +36,7 @@ public class BlueAuto extends BaseAuto {
         //move to platform, drag into position, release
         //repeat until run out of time; first on other skystones
         //moveInches(-8,0,speed);
-
+        grabber.setPosition(grabber_open);
         moveInchesG(0,15,0.3);
         if(telemetryOn)telemetry.clear();
         int pos = skystonePosition();
