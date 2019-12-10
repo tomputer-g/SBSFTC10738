@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 
-@TeleOp
+//@TeleOp
 public class BrickGrabTest extends BaseAuto {
     Rev2mDistanceSensor left,right;
     ElapsedTime t;

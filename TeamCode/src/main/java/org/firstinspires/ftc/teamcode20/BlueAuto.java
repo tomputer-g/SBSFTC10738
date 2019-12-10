@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode20;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.R;
@@ -60,7 +61,10 @@ public class BlueAuto extends BaseAuto {
             shift=-8;
         }
         //move to blocc
-        while ((1.3 < left.getDistance(DistanceUnit.INCH)) && (1.3 < right.getDistance(DistanceUnit.INCH)))setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
+        ElapsedTime p = new ElapsedTime();
+        p.reset();
+        while ((1.3 < left.getDistance(DistanceUnit.INCH)) && (1.3 < right.getDistance(DistanceUnit.INCH))&&p.milliseconds()<2500)setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
+
         //grabber_extender.setPower(1);
         //wait(300);
         grabber.setPosition(.55);
@@ -74,41 +78,41 @@ public class BlueAuto extends BaseAuto {
         //grabber_extender.setPower(0);
         setNewGyro(90);
         moveInchesG(0, 60-shift, 0.4);
-
-        //drop
-        //grabber_extender.setPower(1);
-        //wait(500);
-        //grabber_extender.setPower(0);
+            //drop
+            //grabber_extender.setPower(1);
+            //wait(500);
+            //grabber_extender.setPower(0);
         grabber.setPosition(grabber_open);
         wait(300);
+        if(pos!=2) {
+            //going bacc for the second blocc
+            moveInchesG(0, -88 + shift, 0.33);
+            turn(-90, 0.37, 3);
+            setNewGyro0();
+            //moveInchesG(8,0,0.4);
+            //grab the second blocc
+            p.reset();
+            while (1.3 < left.getDistance(DistanceUnit.INCH) && 1.3 < right.getDistance(DistanceUnit.INCH) && p.milliseconds() < 1500) {
+                setAllDrivePowerG(-.25, -.25, .25, .25);
+            }
+            //grabber_extender.setPower(1);
+            //wait(500);
+            grabber.setPosition(0.55);
+            wait(300);
+            setAllDrivePower(0);
+            moveInchesG(0, -13, 0.3);
+            grabber.setPosition(grabber_closed);
+            turn(90, 0.4, 3);
+            //grabber_extender.setPower(-1);
+            //wait(500);
+            //grabber_extender.setPower(0);
+            setNewGyro(90);
+            moveInchesG(0, 84 - shift, 0.35);
 
-        //going bacc for the second blocc
-        moveInchesG(0, -92+shift, 0.33);
-        turn(-90,0.37,3);
-        setNewGyro0();
-        //moveInchesG(8,0,0.4);
-        //grab the second blocc
-        while (1.3 < left.getDistance(DistanceUnit.INCH) && 1.3 < right.getDistance(DistanceUnit.INCH)){
-            setAllDrivePowerG(-.25, -.25, .25, .25);
+            //drop
+            grabber.setPosition(grabber_open);
+            wait(200);
         }
-        //grabber_extender.setPower(1);
-        //wait(500);
-        grabber.setPosition(0.55);
-        wait(300);
-        setAllDrivePower(0);
-        moveInchesG(0, -18, 0.3);
-        grabber.setPosition(grabber_closed);
-        turn(90, 0.4, 3);
-        //grabber_extender.setPower(-1);
-        //wait(500);
-        //grabber_extender.setPower(0);
-        setNewGyro(90);
-        moveInchesG(0, 84-shift, 0.35);
-
-        //drop
-        grabber.setPosition(grabber_open);
-        wait(200);
-
         //park
         moveInchesG(0, -21, 0.5);
 
