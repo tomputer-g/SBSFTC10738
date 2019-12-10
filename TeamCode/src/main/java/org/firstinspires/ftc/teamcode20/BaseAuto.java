@@ -60,6 +60,9 @@ public class BaseAuto extends BaseOpMode {
     private double[] displacements = {2, 7};//+ = forward; + = right
     private double headingDisplacement = -90;
 
+    //Encoders
+    protected double xmult = 1430.5/72, ymult = 1305.25/72;
+
     protected void initVuforia(){
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
@@ -323,7 +326,7 @@ public class BaseAuto extends BaseOpMode {
         //ElapsedTime t = new ElapsedTime();
         //int p_time = (int) (sqrt(xInch*xInch + yInch*yInch)*100);
         speed=Math.abs(speed);
-        double xmult = 1430.5/72, ymult = 1305.25/72,fgt=1;//232.5088/12,
+        double fgt=1;//232.5088/12,
         int encoder_x=(int)(xInch*xmult),encoder_y=(int)(yInch*ymult);
 
         double theta=(yInch==0)?90:Math.atan(xInch/yInch);

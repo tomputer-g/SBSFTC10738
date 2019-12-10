@@ -45,13 +45,9 @@ public class BlueAuto extends BaseAuto {
         telemetry.addData("pos: ",pos);
         telemetry.update();
 
-        //bug fix
-        turn(0,0.3,1);
-
-
         //pos = 1;
-        int shift=0;
-        if(pos == 1){ }
+        int shift;
+        if(pos == 1){shift = 0;}
         else if (pos == 0){
             moveInchesG(-8,0,0.4);
             shift=10;
@@ -63,7 +59,11 @@ public class BlueAuto extends BaseAuto {
         //move to blocc
         ElapsedTime p = new ElapsedTime();
         p.reset();
-        while ((1.3 < left.getDistance(DistanceUnit.INCH)) && (1.3 < right.getDistance(DistanceUnit.INCH))&&p.milliseconds()<2500)setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
+        reset_ENCODER();
+        setMode_RUN_WITHOUT_ENCODER();
+        while ( (ymult*8>Math.abs(LB.getCurrentPosition())) && 1.3 < (left.getDistance(DistanceUnit.INCH)) && (1.3 < right.getDistance(DistanceUnit.INCH)) && p.milliseconds()<2500){
+            setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
+        }
 
         //grabber_extender.setPower(1);
         //wait(300);
@@ -71,7 +71,6 @@ public class BlueAuto extends BaseAuto {
         wait(300);
         setAllDrivePower(0);
         moveInchesG(0, -15, 0.3);
-        setAllDrivePower(0);
         turn(90, 0.4, 4);
         //grabber_extender.setPower(-1);
         //wait(500);
