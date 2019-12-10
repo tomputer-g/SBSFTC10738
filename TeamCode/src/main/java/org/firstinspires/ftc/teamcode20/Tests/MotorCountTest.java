@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode20.*;
 
 
-@TeleOp(name = "MotorCountTest", group = "Tests")
+//@TeleOp(name = "MotorCountTest", group = "Tests")
 public class MotorCountTest extends TractionControl {
     ElapsedTime t;
     double speed,brakeSpeed;

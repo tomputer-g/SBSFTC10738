@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode20.TractionControl;
 
-@TeleOp
+//@TeleOp
 public class BrakeTest extends TractionControl {
     private boolean[] a={true},b={true},c={true},d={true};
     private double runSpeed =0.5,brakeSpeed=0.2,start,end,n=0.2;
