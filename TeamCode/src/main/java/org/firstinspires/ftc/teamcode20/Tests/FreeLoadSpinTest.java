@@ -30,17 +30,24 @@ public class FreeLoadSpinTest extends OpMode {
     }
 
     @Override
-    public void loop() {//claimed 1150rpm; 36.4 (cycles) or 145.6 (count event) per rev
+    public void loop() {
         if(this.gamepad1.a){
             motor.setPower(1);
             motor2.setPower(-1);
         }else if(this.gamepad1.b){
             motor.setPower(0);
             motor2.setPower(0);
+        }else if(this.gamepad1.y){
+            motor.setPower(-1);
+            motor2.setPower(1);
         }
         if(this.gamepad1.x){
+            motor.setPower(0);
+            motor2.setPower(0);
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
         if(t.milliseconds() > 500){
             int diff = motor.getCurrentPosition() - lastEnc;
@@ -56,6 +63,10 @@ public class FreeLoadSpinTest extends OpMode {
 
     //L1 13.06V 1183 rpm
     //L2 13.00V 1131 rpm
-    //5202: 2880 enc/s
-    //neverest 20: 3000enc/s,
+    //5202: 2880 enc/s 1550 rpm
+    //both 12.93V 1140
+    //both other way 12.74V 1093
+
+    //both one way 12.85 1146
+    //       other 12.82 1146
 }
