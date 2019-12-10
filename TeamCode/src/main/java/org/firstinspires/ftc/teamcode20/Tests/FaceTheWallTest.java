@@ -46,11 +46,11 @@ public class FaceTheWallTest extends TractionControl {
         //telemetry.addData("sensorSD",distSide);
 
         distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
-        if(整(this.gamepad1.dpad_left,e))speed-=0.05;
-        if(整(this.gamepad1.dpad_right,f))speed+=0.05;
-        if(整(this.gamepad1.dpad_up,a))x+=1;
-        if(整(this.gamepad1.dpad_down,b))x-=1;
-        if(整(this.gamepad1.left_bumper,c)){
+        if(zheng(this.gamepad1.dpad_left,e))speed-=0.05;
+        if(zheng(this.gamepad1.dpad_right,f))speed+=0.05;
+        if(zheng(this.gamepad1.dpad_up,a))x+=1;
+        if(zheng(this.gamepad1.dpad_down,b))x-=1;
+        if(zheng(this.gamepad1.left_bumper,c)){
             distFront = rangeSensorFront.getDistance(DistanceUnit.INCH);
             //distSide = rangeSensorSide.getDistance(DistanceUnit.INCH);
             //distLeft = left.getDistance(DistanceUnit.INCH);

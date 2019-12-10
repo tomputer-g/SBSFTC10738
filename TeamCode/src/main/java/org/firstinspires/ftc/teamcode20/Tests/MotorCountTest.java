@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode20.*;
 
@@ -25,17 +24,17 @@ public class MotorCountTest extends TractionControl {
     }
     @Override
     public void init_loop() {
-        if(整(this.gamepad1.dpad_up,primed))
+        if(zheng(this.gamepad1.dpad_up,primed))
             speed+=0.05;
-        if(整(this.gamepad1.dpad_down,primed))
+        if(zheng(this.gamepad1.dpad_down,primed))
             speed-=0.05;
-        if(整(this.gamepad1.dpad_left,primed))
+        if(zheng(this.gamepad1.dpad_left,primed))
             brakeSpeed-=0.05;
-        if(整(this.gamepad1.dpad_right,primed))
+        if(zheng(this.gamepad1.dpad_right,primed))
             brakeSpeed+=0.05;
-        if(整(this.gamepad1.left_bumper,primed))
+        if(zheng(this.gamepad1.left_bumper,primed))
             actionIndex = 1;
-        if(整(this.gamepad1.right_bumper,primed))
+        if(zheng(this.gamepad1.right_bumper,primed))
             actionIndex = 2;
         icLF=getMC(LF);icLB=getMC(LB);icRF=getMC(RF);icRB=getMC(RB);
         telemetry.addLine("vr: "+speed);
@@ -48,7 +47,7 @@ public class MotorCountTest extends TractionControl {
 
     @Override
     public void loop() {
-        if(整(this.gamepad1.left_bumper,primed)) actionIndex = 0;
+        if(zheng(this.gamepad1.left_bumper,primed)) actionIndex = 0;
         if(actionIndex == 1)
             setAllDrivePower(-speed,-speed,speed,speed);
         else{

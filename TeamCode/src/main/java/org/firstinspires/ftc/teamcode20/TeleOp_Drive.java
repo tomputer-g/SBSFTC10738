@@ -140,7 +140,7 @@ public class TeleOp_Drive extends BaseAuto {
             grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
         /*
-        if(整(this.gamepad1.x,xprime)) {
+        if(zheng(this.gamepad1.x,xprime)) {
             double v = 0;
             while (left.getDistance(DistanceUnit.INCH) < 8.5 && right.getDistance(DistanceUnit.INCH) < 8.5) {
                 v = (right.getDistance(DistanceUnit.INCH) - left.getDistance(DistanceUnit.INCH)) / 2;

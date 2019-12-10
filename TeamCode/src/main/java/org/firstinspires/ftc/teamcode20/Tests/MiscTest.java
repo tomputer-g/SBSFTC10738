@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode20.TractionControl;
 
-@TeleOp(group = "Test", name = "三天之内刹了你")
+@TeleOp(group = "Test", name = "druagtest")
 public class MiscTest extends TractionControl {
     double speed,x,y, GYRO_kp, side_distance, kp,kd;
     boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
@@ -24,10 +24,11 @@ public class MiscTest extends TractionControl {
     public void init(){
         initIMU();
         initDrivetrain();
-        rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
+        //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         initPlatformGrabber();
+        initSensors();
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        speed=0.45;
+        speed=0.5;
         y = 15;
         x = 0;
         GYRO_kp = .8;
@@ -41,14 +42,14 @@ public class MiscTest extends TractionControl {
     public void loop(){
         //x+ left x- right y+ forward y- backward
         getHeading();
-        if(整(this.gamepad1.y,e))speed-=0.05;
-        if(整(this.gamepad1.a,f))speed+=0.05;
-        if(整(this.gamepad1.dpad_up,ee))y++;
-        if(整(this.gamepad1.dpad_down,ff))y--;
-        if(整(this.gamepad1.dpad_left,eee))kd+=0.1;
-        if(整(this.gamepad1.dpad_right,fff))kd-=0.1;
-        if(整(this.gamepad1.x,mm))side_distance++;
-        if(整(this.gamepad1.b,mmm))side_distance--;
+        if(zheng(this.gamepad1.y,e))speed-=0.05;
+        if(zheng(this.gamepad1.a,f))speed+=0.05;
+        if(zheng(this.gamepad1.dpad_up,ee))y++;
+        if(zheng(this.gamepad1.dpad_down,ff))y--;
+        if(zheng(this.gamepad1.dpad_left,eee))kd+=0.1;
+        if(zheng(this.gamepad1.dpad_right,fff))kd-=0.1;
+        if(zheng(this.gamepad1.x,mm))side_distance++;
+        if(zheng(this.gamepad1.b,mmm))side_distance--;
         telemetry.addData("speed: ","%.2f",speed);
         //telemetry.addData("x:", x);
         //telemetry.addData("y: ", y);
@@ -63,8 +64,8 @@ public class MiscTest extends TractionControl {
         //telemetry.addData("KP", "%.1f",kp);
         telemetry.addData("y", "%.1f",y);
 
-        if(整(this.gamepad1.back,jk)) setNewGyro0();
-        if(整(this.gamepad1.start,bF)) {
+        if(zheng(this.gamepad1.back,jk)) setNewGyro0();
+        if(zheng(this.gamepad1.start,bF)) {
             //moveInches(0,y,speed);
             t.reset();
             double p, dd,cur=0,pre=0, error;
@@ -88,14 +89,23 @@ public class MiscTest extends TractionControl {
             //wait(70);
             setAllDrivePower(0);
         }
-        if(整(this.gamepad1.left_bumper,lF))
+        if(zheng(this.gamepad1.left_bumper,lF))
             speed*=-1;
             //
-        if (整(this.gamepad1.right_bumper, m)) {
-            platform_grabber.setPower(-1);
-            turn(90, 0.6, 2);
-            setNewGyro(-90);
-            moveInches(0,y,speed);
+        if (zheng(this.gamepad1.right_bumper, m)){
+            platform_grabber.setPower(-.8);
+            turn(90, 0.67, 5);
+            setNewGyro(90);
+            while(9<rangeSensorFront.getDistance(DistanceUnit.INCH)){
+                setAllDrivePowerG(0.35-speed,0.35-speed,0.35+speed,0.35+speed);
+                telemetry.addData("Front",rangeSensorFront.getDistance(DistanceUnit.INCH));
+                telemetry.update();
+            }
+            //setAllDrivePowerG(0);
+            //wait(1000);
+            setAllDrivePower(0);
+            moveInchesG(-15,0,0.72);
+            platform_grabber.setPower(0);
         }
         telemetry.update();
     }

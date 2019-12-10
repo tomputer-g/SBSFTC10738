@@ -20,17 +20,17 @@ public class BrakeTest extends TractionControl {
     }
     @Override
     public void init_loop(){
-        if(整(this.gamepad1.dpad_up,a)) {
+        if(zheng(this.gamepad1.dpad_up,a)) {
             n +=0.01;
             setTDMult(n);
         }
-        if(整(this.gamepad1.dpad_down,b)) {
+        if(zheng(this.gamepad1.dpad_down,b)) {
             n -= 0.01;
             setTDMult(n);
         }
-        if(整(this.gamepad1.left_bumper,d))
+        if(zheng(this.gamepad1.left_bumper,d))
             brakeSpeed -=0.05;
-        if(整(this.gamepad1.right_bumper,c))
+        if(zheng(this.gamepad1.right_bumper,c))
             brakeSpeed +=0.05;
         telemetry.addData("MULT: ",n);
         telemetry.addData("BRAKE SPEED: ", brakeSpeed);
@@ -39,8 +39,8 @@ public class BrakeTest extends TractionControl {
 
     @Override
     public void loop(){
-        if(整(this.gamepad1.right_bumper,c))phase++;
-        if(整(this.gamepad1.left_bumper,d)) phase--;
+        if(zheng(this.gamepad1.right_bumper,c))phase++;
+        if(zheng(this.gamepad1.left_bumper,d)) phase--;
         if(phase==0) {
             telemetry.addLine("IDLE");
             setAllDrivePower(0);
@@ -62,4 +62,5 @@ public class BrakeTest extends TractionControl {
         telemetry.addData("PHASE ",phase);
         telemetry.addData("BRAKE TIME: ",end-start);
     }
+
 }

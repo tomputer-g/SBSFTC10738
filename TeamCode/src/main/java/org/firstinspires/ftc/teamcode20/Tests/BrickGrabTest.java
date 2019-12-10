@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -30,16 +29,16 @@ public class BrickGrabTest extends BaseAuto {
     }
     @Override
     public void loop() {
-        if(整(this.gamepad1.dpad_up,dpadUP)){
+        if(zheng(this.gamepad1.dpad_up,dpadUP)){
             vr +=0.02;
         }
-        if(整(this.gamepad1.dpad_down,dpadDOWN)){
+        if(zheng(this.gamepad1.dpad_down,dpadDOWN)){
             vr -=0.02;
         }
-        if(整(this.gamepad1.dpad_left,dpadLEFT)){
+        if(zheng(this.gamepad1.dpad_left,dpadLEFT)){
             v-=0.02;
         }
-        if(整(this.gamepad1.dpad_right,dpadRIGHT)){
+        if(zheng(this.gamepad1.dpad_right,dpadRIGHT)){
             v+=0.02;
         }
         telemetry.addData("Left", "%.2f", left.getDistance(DistanceUnit.INCH));
@@ -51,7 +50,7 @@ public class BrickGrabTest extends BaseAuto {
         telemetry.addData("WAITING FOR ACTIONS",0);
 
 
-        if(整(this.gamepad1.right_bumper, rB)) {
+        if(zheng(this.gamepad1.right_bumper, rB)) {
             leftDist = left.getDistance(DistanceUnit.INCH);
             rightDist = right.getDistance(DistanceUnit.INCH);
             /*

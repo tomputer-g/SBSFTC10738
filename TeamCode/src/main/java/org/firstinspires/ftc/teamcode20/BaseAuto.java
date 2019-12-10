@@ -329,7 +329,7 @@ public class BaseAuto extends BaseOpMode {
         double fgt=1;//232.5088/12,
         int encoder_x=(int)(xInch*xmult),encoder_y=(int)(yInch*ymult);
 
-        double theta=(yInch==0)?90:Math.atan(xInch/yInch);
+        double theta=(yInch==0)?90:Math.abs(Math.atan(xInch/yInch));
         double vx=(xInch==0)?0:xInch/Math.abs(xInch)*Math.sin(theta)*speed;
         double vy=(yInch==0)?0:(yInch/Math.abs(yInch)*Math.cos(theta)*speed);
 
