@@ -14,11 +14,6 @@ public class MiscTest extends TractionControl {
     boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
     ElapsedTime t=new ElapsedTime();
     ModernRoboticsI2cRangeSensor rangeSensorSide;
-    private void 三天之内刹了你(){
-        setAllDrivePower(1,1,-1,-1);
-        wait(200);
-        setAllDrivePower(0);
-    }
 
     @Override
     public void init(){
@@ -35,7 +30,6 @@ public class MiscTest extends TractionControl {
         kd = 0;
         kp = .6;
         side_distance = 6;
-       // 三天之内刹了你();
     }
 
     @Override
@@ -104,7 +98,7 @@ public class MiscTest extends TractionControl {
             //setAllDrivePowerG(0);
             //wait(1000);
             setAllDrivePower(0);
-            moveInchesG(-15,0,0.72);
+            moveInchesG(-15,0,0.75);
             platform_grabber.setPower(0);
         }
         telemetry.update();
