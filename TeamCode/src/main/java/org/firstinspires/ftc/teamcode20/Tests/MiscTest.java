@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode20.TractionControl;
 
-@TeleOp(group = "Test", name = "druagtest")
+@TeleOp(group = "Test", name = "drugtest")
 public class MiscTest extends TractionControl {
     double speed,x,y, GYRO_kp, side_distance, kp,kd;
     boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
@@ -85,20 +85,27 @@ public class MiscTest extends TractionControl {
         }
         if(zheng(this.gamepad1.left_bumper,lF))
             speed*=-1;
-            //
+
         if (zheng(this.gamepad1.right_bumper, m)){
             platform_grabber.setPower(-.8);
+            wait(300);
             turn(90, 0.67, 5);
+            //while (!near(getHeading(),90,3)) setAllDrivePower(-0.6,0.2,0.8,-0.4);
             setNewGyro(90);
-            while(9<rangeSensorFront.getDistance(DistanceUnit.INCH)){
-                setAllDrivePowerG(0.35-speed,0.35-speed,0.35+speed,0.35+speed);
+            ElapsedTime p = new ElapsedTime();
+            while(17<rangeSensorFront.getDistance(DistanceUnit.INCH)){
+                setAllDrivePowerG(0.25-speed+0.25,0.25-speed-0.25,0.25+speed+0.25,0.25+speed-0.25);
                 telemetry.addData("Front",rangeSensorFront.getDistance(DistanceUnit.INCH));
                 telemetry.update();
             }
             //setAllDrivePowerG(0);
             //wait(1000);
             setAllDrivePower(0);
-            moveInchesG(-15,0,0.75);
+            /*
+            moveInchesG(-12,0,0.75);
+            setAllDrivePower(0.7,0.7,0.7,0.7);
+            wait(200);
+            */
             platform_grabber.setPower(0);
         }
         telemetry.update();

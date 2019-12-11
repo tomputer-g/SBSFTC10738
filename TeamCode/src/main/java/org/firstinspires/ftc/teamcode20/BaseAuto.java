@@ -320,32 +320,24 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePowerG(power,power,power,power);
     }
 
-    protected void moveInchesG(double xInch, double yInch, double speed){
+    protected void moveInchesG(double xInch, double yInch, double speed,double Kp){
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
         //ElapsedTime t = new ElapsedTime();
         //int p_time = (int) (sqrt(xInch*xInch + yInch*yInch)*100);
         speed=Math.abs(speed);
-        double fgt=1;//232.5088/12,
-        int encoder_x=(int)(xInch*xmult),encoder_y=(int)(yInch*ymult);
-
+        double fgt=1;
+        int encoder_x=(int)(xInch*xmult),encoder_y=(int)(yInch*ymult);//232/12,
         double theta=(yInch==0)?90:Math.abs(Math.atan(xInch/yInch));
         double vx=(xInch==0)?0:xInch/Math.abs(xInch)*Math.sin(theta)*speed;
         double vy=(yInch==0)?0:(yInch/Math.abs(yInch)*Math.cos(theta)*speed);
-
         boolean elf=Math.abs(-encoder_x-encoder_y)>Math.abs(-LF.getCurrentPosition()),elb=Math.abs(encoder_x-encoder_y)>Math.abs(-LB.getCurrentPosition()),erf=Math.abs(-encoder_x+encoder_y)>Math.abs(-RF.getCurrentPosition()),erb=Math.abs(encoder_x+encoder_y)>Math.abs(-RB.getCurrentPosition());
         while(elf|| elb|| erf|| erb){
             elf=Math.abs(-encoder_x-encoder_y)>Math.abs(-LF.getCurrentPosition());
             elb=Math.abs(encoder_x-encoder_y)>Math.abs(-LB.getCurrentPosition());
             erf=Math.abs(-encoder_x+encoder_y)>Math.abs(-RF.getCurrentPosition());
             erb=Math.abs(encoder_x+encoder_y)>Math.abs(-RB.getCurrentPosition());
-            /*
-            if() {
-                fgt -= .1;
-                fgt = Math.max(fgt, 0);
-            }
-             */
-            setAllDrivePowerG(fgt*(-vx-vy),fgt*(vx-vy),fgt*(-vx+vy),fgt*(vx+vy));
+            setAllDrivePowerG(fgt*(-vx-vy),fgt*(vx-vy),fgt*(-vx+vy),fgt*(vx+vy),Kp);
         }
         //brake
         setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
@@ -353,5 +345,9 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(0);
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
+    }
+
+    public void moveInchesG(double xInch, double yInch, double speed){
+        moveInchesG(xInch,yInch,speed,.8);
     }
 }
