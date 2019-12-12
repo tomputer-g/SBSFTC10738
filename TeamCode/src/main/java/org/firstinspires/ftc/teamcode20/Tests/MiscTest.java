@@ -46,8 +46,8 @@ public class MiscTest extends TractionControl {
         if(zheng(this.gamepad1.a,f))speed+=0.05;
         if(zheng(this.gamepad1.dpad_up,ee))y++;
         if(zheng(this.gamepad1.dpad_down,ff))y--;
-        if(zheng(this.gamepad1.dpad_left,eee))kd+=0.1;
-        if(zheng(this.gamepad1.dpad_right,fff))kd-=0.1;
+        if(zheng(this.gamepad1.dpad_left,eee))kd+=1;
+        if(zheng(this.gamepad1.dpad_right,fff))kd-=1;
         if(zheng(this.gamepad1.x,mm))side_distance++;
         if(zheng(this.gamepad1.b,mmm))side_distance--;
         telemetry.addData("speed: ","%.2f",speed);
@@ -63,7 +63,7 @@ public class MiscTest extends TractionControl {
         //telemetry.addData("GYRO_kp", GYRO_kp);
         //telemetry.addData("KP", "%.1f",kp);
         telemetry.addData("y", "%.1f",y);
-
+        telemetry.addData("kd", "%.1f",kd);
         if(zheng(this.gamepad1.back,jk)) setNewGyro0();
         if(zheng(this.gamepad1.start,bF)) {
             //moveInches(0,y,speed);
@@ -96,15 +96,35 @@ public class MiscTest extends TractionControl {
             platform_grabber.setPower(-.8);
             turn(90, 0.67, 5);
             setNewGyro(90);
+<<<<<<< Updated upstream
             while(9<rangeSensorFront.getDistance(DistanceUnit.INCH)){
                 setAllDrivePowerG(0.35-speed,0.35-speed,0.35+speed,0.35+speed);
+=======
+            ElapsedTime p = new ElapsedTime();
+            while(18<rangeSensorFront.getDistance(DistanceUnit.INCH)){
+                setAllDrivePowerG(0.25-speed+0.3,0.25-speed-0.3,0.25+speed+0.3,0.25+speed-0.3);
+>>>>>>> Stashed changes
                 telemetry.addData("Front",rangeSensorFront.getDistance(DistanceUnit.INCH));
                 telemetry.update();
             }
             //setAllDrivePowerG(0);
             //wait(1000);
             setAllDrivePower(0);
+<<<<<<< Updated upstream
             moveInchesG(-15,0,0.72);
+=======
+            /*
+            moveInchesG(-12,0,0.75);
+            setAllDrivePower(0.7,0.7,0.7,0.7);
+            wait(200);
+            */
+            while(kd>rangeSensorFront.getDistance(DistanceUnit.INCH)){
+                telemetry.addData("Side",rangeSensorSide.getDistance(DistanceUnit.INCH));
+                telemetry.update();
+                setAllDrivePowerG(0.5,-0.5,0.5,-0.5);
+            }
+            setAllDrivePower(0);
+>>>>>>> Stashed changes
             platform_grabber.setPower(0);
         }
         telemetry.update();
