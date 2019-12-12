@@ -93,8 +93,9 @@ public class MiscTest extends TractionControl {
             //while (!near(getHeading(),90,3)) setAllDrivePower(-0.6,0.2,0.8,-0.4);
             setNewGyro(90);
             ElapsedTime p = new ElapsedTime();
-            while(17<rangeSensorFront.getDistance(DistanceUnit.INCH)){
+            while(18<rangeSensorFront.getDistance(DistanceUnit.INCH)){
                 setAllDrivePowerG(0.25-speed+0.25,0.25-speed-0.25,0.25+speed+0.25,0.25+speed-0.25);
+                
                 telemetry.addData("Front",rangeSensorFront.getDistance(DistanceUnit.INCH));
                 telemetry.update();
             }
@@ -106,7 +107,9 @@ public class MiscTest extends TractionControl {
             setAllDrivePower(0.7,0.7,0.7,0.7);
             wait(200);
             */
+            moveInchesG(-8,0,0.75);
             platform_grabber.setPower(0);
+
         }
         telemetry.update();
     }
