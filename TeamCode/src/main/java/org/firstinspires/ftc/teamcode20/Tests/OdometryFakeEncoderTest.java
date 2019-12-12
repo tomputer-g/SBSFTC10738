@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 import org.firstinspires.ftc.teamcode20.BaseOpMode;
 
-@Autonomous(group = "Test")
 public class OdometryFakeEncoderTest extends OpMode {
     private final double odometryEncPerInch = 2048.0/Math.PI;
     private DigitalChannel encA, encB;
