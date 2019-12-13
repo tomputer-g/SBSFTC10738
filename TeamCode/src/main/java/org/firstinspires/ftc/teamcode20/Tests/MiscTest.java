@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode20.TractionControl;
 
 @TeleOp(group = "Test", name = "drugtest")
 public class MiscTest extends TractionControl {
-    double speed,x,y, GYRO_kp, side_distance, kp,kd;
+    double speed,x,y, GYRO_kp, side_distance, kp,kd,dist_target,koe;
     boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
     ElapsedTime t=new ElapsedTime();
     ModernRoboticsI2cRangeSensor rangeSensorSide;
@@ -30,6 +30,8 @@ public class MiscTest extends TractionControl {
         kd = 0;
         kp = .6;
         side_distance = 6;
+        koe = 0.7;
+        dist_target = 13;
     }
 
     @Override
@@ -38,10 +40,10 @@ public class MiscTest extends TractionControl {
         getHeading();
         if(zheng(this.gamepad1.y,e))speed-=0.05;
         if(zheng(this.gamepad1.a,f))speed+=0.05;
-        if(zheng(this.gamepad1.dpad_up,ee))y++;
-        if(zheng(this.gamepad1.dpad_down,ff))y--;
-        if(zheng(this.gamepad1.dpad_left,eee))kd+=1;
-        if(zheng(this.gamepad1.dpad_right,fff))kd-=1;
+        if(zheng(this.gamepad1.dpad_up,ee))dist_target++;
+        if(zheng(this.gamepad1.dpad_down,ff))dist_target--;
+        if(zheng(this.gamepad1.dpad_left,eee))koe+=0.02;
+        if(zheng(this.gamepad1.dpad_right,fff))koe-=0.02;
         if(zheng(this.gamepad1.x,mm))side_distance++;
         if(zheng(this.gamepad1.b,mmm))side_distance--;
         telemetry.addData("speed: ","%.2f",speed);
@@ -56,8 +58,8 @@ public class MiscTest extends TractionControl {
         //telemetry.addData("Heading","%.2f",imuHeading);
         //telemetry.addData("GYRO_kp", GYRO_kp);
         //telemetry.addData("KP", "%.1f",kp);
-        telemetry.addData("y", "%.1f",y);
-        telemetry.addData("kd", "%.1f",kd);
+        telemetry.addData("koe", "%.1f",koe);
+        telemetry.addData("dis", "%.1f",dist_target);
         if(zheng(this.gamepad1.back,jk)) setNewGyro0();
         if(zheng(this.gamepad1.start,bF)) {
             //moveInches(0,y,speed);
@@ -93,15 +95,15 @@ public class MiscTest extends TractionControl {
             //while (!near(getHeading(),90,3)) setAllDrivePower(-0.6,0.2,0.8,-0.4);
             setNewGyro(90);
             //ElapsedTime p = new ElapsedTime();
-            while(7<rangeSensorFront.getDistance(DistanceUnit.INCH)){
-                setAllDrivePowerG(0.22-speed+0.35,0.22-speed-0.35,0.22+speed+0.35,0.22+speed-0.35);
+            while(dist_target<rangeSensorFront.getDistance(DistanceUnit.INCH)){
+                setAllDrivePowerG(koe*(0.22-0.55+0.37),koe*(0.22-0.55-0.37),koe*(0.22+0.55+0.37),koe*(0.22+0.5-0.37)); //turn+f0rwrd+side
                 telemetry.addData("Front",rangeSensorFront.getDistance(DistanceUnit.INCH));
                 telemetry.update();
             }
             //setAllDrivePowerG(0);
             //wait(1000);
             setAllDrivePower(0);
-            while(kd>rangeSensorFront.getDistance(DistanceUnit.INCH)){
+            while(30>rangeSensorFront.getDistance(DistanceUnit.INCH)){
                 telemetry.addData("Side",rangeSensorSide.getDistance(DistanceUnit.INCH));
                 telemetry.update();
                 setAllDrivePowerG(0.5,-0.5,0.5,-0.5);
