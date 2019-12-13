@@ -4,7 +4,17 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.teamcode20.TractionControl;
+
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
+
 @TeleOp
 public class MoveTest extends TractionControl {
     double speed,x,y, GYRO_kp, side_distance, kp,kd;
@@ -21,6 +31,7 @@ public class MoveTest extends TractionControl {
     public void init(){
         initIMU();
         initDrivetrain();
+        initVuforiaWebcam();
         rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         speed=0.3;
         y = 0;
@@ -40,11 +51,11 @@ public class MoveTest extends TractionControl {
 
         if(zheng(this.gamepad1.b,f))setNewGyro0();
         if(zheng(this.gamepad1.right_bumper,bF)){
+            /*
             moveInchesG(x,y,speed);
             moveInchesG(-x,-y,speed);
             setNewGyro(90);
             setAllDrivePowerG(0);
-            /*
             ElapsedTime t=new ElapsedTime();
             while(t.milliseconds()<5000){
                 setAllDrivePowerG(-speed,-speed,speed,speed);
@@ -53,8 +64,29 @@ public class MoveTest extends TractionControl {
                 telemetry.update();
             }
              */
-            telemetry.addLine("Done");
-            telemetry.update();
+            ElapsedTime t=new ElapsedTime();
+            targetsSkyStone.activate();
+            VuforiaTrackable trackable = allTrackables.get(11);
+            while(t.milliseconds()<5000) {
+                if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
+                    if (robotLocationTransform != null) {
+                        lastLocation = robotLocationTransform;
+                    }
+                    if (trackable.getName().equals("Rear Perimeter 1")) {
+                        Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+                        telemetry.addLine("Turn " + (int) Math.abs(rotation.thirdAngle - 90) + (rotation.thirdAngle - 90 > 0 ? "deg. CW" : "deg. CCW"));
+                        VectorF translation = lastLocation.getTranslation();
+                        double disty = translation.get(1)/mmPerInch;
+                        double distx = translation.get(0)/mmPerInch;
+                        double distz = translation.get(2)/mmPerInch;
+                        telemetry.addData("x: ",distx);
+                        telemetry.addData("y: ",disty);
+                        telemetry.addData("z: ",distz);
+                    }
+                }
+            }
+            shutdownVuforia();
         }
 
         telemetry.addData("x: ",x);

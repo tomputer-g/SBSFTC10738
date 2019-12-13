@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 @Autonomous
-public class BlueAuto extends BaseAuto {
+public class BlueAuto extends TractionControl {
     private double speed = 0.4;
     private boolean[] ca={true},cb={true};
     @Override
@@ -65,22 +65,17 @@ public class BlueAuto extends BaseAuto {
             setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
         }
 
-        //grabber_extender.setPower(1);
-        //wait(300);
         grabber.setPosition(.55);
         wait(300);
         setAllDrivePower(0);
         moveInchesG(0, -15, 0.3);
         turn(90, 0.4, 4);
-        //grabber_extender.setPower(-1);
-        //wait(500);
-        //grabber_extender.setPower(0);
         setNewGyro(90);
-        moveInchesG(0, 60-shift, 0.4);
-            //drop
-            //grabber_extender.setPower(1);
-            //wait(500);
-            //grabber_extender.setPower(0);
+        while(20<rangeSensorFront.getDistance(DistanceUnit.INCH)){
+            setAllDrivePowerG(-speed,-speed,speed,speed);
+        }
+
+        /*
         grabber.setPosition(grabber_open);
         wait(300);
         if(pos!=2) {
@@ -112,10 +107,9 @@ public class BlueAuto extends BaseAuto {
             grabber.setPosition(grabber_open);
             wait(200);
         }
+         */
         //park
         moveInchesG(0, -21, 0.5);
-
-
         requestOpModeStop();
     }
 }

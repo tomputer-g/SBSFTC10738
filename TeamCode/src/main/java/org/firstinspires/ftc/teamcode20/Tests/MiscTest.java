@@ -23,7 +23,7 @@ public class MiscTest extends TractionControl {
         initPlatformGrabber();
         initSensors();
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        speed=0.5;
+        speed=0.55;
         y = 15;
         x = 0;
         GYRO_kp = .8;
@@ -92,9 +92,9 @@ public class MiscTest extends TractionControl {
             turn(90, 0.67, 5);
             //while (!near(getHeading(),90,3)) setAllDrivePower(-0.6,0.2,0.8,-0.4);
             setNewGyro(90);
-            ElapsedTime p = new ElapsedTime();
-            while(18<rangeSensorFront.getDistance(DistanceUnit.INCH)){
-                setAllDrivePowerG(0.25-speed+0.3,0.25-speed-0.3,0.25+speed+0.3,0.25+speed-0.3);
+            //ElapsedTime p = new ElapsedTime();
+            while(7<rangeSensorFront.getDistance(DistanceUnit.INCH)){
+                setAllDrivePowerG(0.22-speed+0.35,0.22-speed-0.35,0.22+speed+0.35,0.22+speed-0.35);
                 telemetry.addData("Front",rangeSensorFront.getDistance(DistanceUnit.INCH));
                 telemetry.update();
             }
