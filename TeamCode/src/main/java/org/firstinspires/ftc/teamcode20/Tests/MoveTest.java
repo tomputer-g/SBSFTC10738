@@ -67,7 +67,7 @@ public class MoveTest extends TractionControl {
             ElapsedTime t=new ElapsedTime();
             targetsSkyStone.activate();
             VuforiaTrackable trackable = allTrackables.get(11);
-            while(t.milliseconds()<5000) {
+            while(t.milliseconds()<50000) {
                 if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                     OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
                     if (robotLocationTransform != null) {
@@ -84,6 +84,7 @@ public class MoveTest extends TractionControl {
                         telemetry.addData("y: ",disty);
                         telemetry.addData("z: ",distz);
                     }
+                    telemetry.update();
                 }
             }
             shutdownVuforia();

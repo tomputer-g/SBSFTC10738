@@ -71,10 +71,10 @@ public class BlueAuto extends TractionControl {
         moveInchesG(0, -15, 0.3);
         turn(90, 0.4, 4);
         setNewGyro(90);
-        while(20<rangeSensorFront.getDistance(DistanceUnit.INCH)){
+        while(9.4<rangeSensorFront.getDistance(DistanceUnit.INCH)){
             setAllDrivePowerG(-speed,-speed,speed,speed);
         }
-
+        moveInchesG(15,0,.35);
         /*
         grabber.setPosition(grabber_open);
         wait(300);
