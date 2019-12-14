@@ -33,7 +33,8 @@ public class LinSlideTest extends BaseOpMode {
             a += 5;
         }
         if(holdSet){telemetry.addData("Hold pos", hold);}
-        telemetry.addData("actual",L1.getCurrentPosition());
+        telemetry.addData("actual 1",L1.getCurrentPosition());
+        telemetry.addData("actual 2",L2.getCurrentPosition());
         telemetry.addData("a", a);
         telemetry.update();
     }
