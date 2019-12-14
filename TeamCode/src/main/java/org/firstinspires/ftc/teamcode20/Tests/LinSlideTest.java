@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode20.BaseOpMode;
 
+@TeleOp(group = "Test")
 public class LinSlideTest extends BaseOpMode {
 
     private int hold = 0;
@@ -35,25 +36,5 @@ public class LinSlideTest extends BaseOpMode {
         telemetry.addData("actual",L1.getCurrentPosition());
         telemetry.addData("a", a);
         telemetry.update();
-    }
-
-    private double joystick_quad(double input){
-        if(input < 0)
-            return - (input * input);
-        return input * input;
-    }
-
-    private void holdSlide(){
-        if (!holdSet) {
-            holdSet = true;
-            hold = Math.max(0,Math.min(2000,L1.getCurrentPosition()));
-        }
-        int error = hold - L1.getCurrentPosition();
-        double power = Math.min(1, Math.max(0, error/a));
-        if(hold == 0){power = 0;}
-        telemetry.addLine("error: "+hold+" - "+(hold-error) + " = "+error);
-        telemetry.addData("PWR", power);
-        L1.setPower(power);
-        L2.setPower(-power);
     }
 }

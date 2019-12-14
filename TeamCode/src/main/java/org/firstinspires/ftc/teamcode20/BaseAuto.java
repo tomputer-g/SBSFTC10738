@@ -48,7 +48,7 @@ public class BaseAuto extends BaseOpMode {
     protected TFObjectDetector tfod;
     //Sensors
     protected ModernRoboticsI2cRangeSensor rangeSensorFront, rangeSensorSide;
-    protected Rev2mDistanceSensor left,right;
+    protected Rev2mDistanceSensor left,right, tower_top;
 
     //IMU
     protected static BNO055IMU imu;
@@ -244,6 +244,8 @@ public class BaseAuto extends BaseOpMode {
         rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "front");
         left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
         right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
+        tower_top = hardwareMap.get(Rev2mDistanceSensor.class, "tower_top");
+
     }
 
     //IMU
