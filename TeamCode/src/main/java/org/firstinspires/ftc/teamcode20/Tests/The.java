@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 
 @Autonomous
-public class ThreeOdometryTest extends BaseAuto {
+public class The extends BaseAuto {
 
     /*
             +-------------------------------------------------------------------+

@@ -507,23 +507,23 @@ public class BaseOpMode extends OpMode {
     //---------------slide-----------------
     protected void runSlide(){
         if(this.gamepad1.left_bumper && !near(this.gamepad1.right_stick_y, 0, 0.05)) {//long-dist
-            if (this.gamepad1.right_stick_y < 0 && L1.getCurrentPosition() < 2000) {//up
+            if (this.gamepad1.right_stick_y < 0 && L1.getCurrentPosition() > -6500) {//up
                 holdSet = false;
                 if(telemetryOn)telemetry.addLine("CHANGING SLIDE");
                 L1.setPower(-this.gamepad1.right_stick_y);
                 L2.setPower(this.gamepad1.right_stick_y);
-            } else if (this.gamepad1.right_stick_y > 0 && L1.getCurrentPosition() > 0) {
+            } else if (this.gamepad1.right_stick_y > 0 && L1.getCurrentPosition() < 0) {
                 holdSet = false;
                 if(telemetryOn)telemetry.addLine("CHANGING SLIDE");
                 if(slow){
                     //L1.setPower(-((a+(2000-L1.getCurrentPosition())/2000.0)*(0.2-a) ) * this.gamepad1.right_stick_y);
                     //L2.setPower(((a+(2000-L1.getCurrentPosition())/2000.0)*(0.2-a) )* this.gamepad1.right_stick_y);
-                    L1.setPower(-0.3 * this.gamepad1.right_stick_y);
-                    L2.setPower(0.3 * this.gamepad1.right_stick_y);
+                    L1.setPower(0.3 * this.gamepad1.right_stick_y);
+                    L2.setPower(-0.3 * this.gamepad1.right_stick_y);
                     //if(telemetryOn)telemetry.addData("power",-((a+(2000-L1.getCurrentPosition())/2000.0)*(0.2-a) ) * this.gamepad1.right_stick_y);
                 }else{
-                    L1.setPower(-0.5 * this.gamepad1.right_stick_y);
-                    L2.setPower(0.5 * this.gamepad1.right_stick_y);
+                    L1.setPower(0.5 * this.gamepad1.right_stick_y);
+                    L2.setPower(-0.5 * this.gamepad1.right_stick_y);
                 }
 
             } else {

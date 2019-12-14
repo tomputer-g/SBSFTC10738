@@ -24,15 +24,18 @@ public class TeleOp_Drive extends BaseAuto {
         initSensors();
         initPlatformGrabber();
         initIMU();
-        L1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        L2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         grabber.setPosition(grabber_open);
+        grabber_extender.setPower(1);
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         platform_grabber.setPower(1);
         wait(150);
         platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         platform_grabber.setPower(0);
+        wait(500);
+        grabber_extender.setPower(0);
+        grabber_extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     @Override
@@ -64,7 +67,7 @@ public class TeleOp_Drive extends BaseAuto {
 
 
         if(this.gamepad1.b){BPrimed = true;}if(!this.gamepad1.b && BPrimed){BPrimed = false;
-            if(grabber.getPosition() > 0.45){
+            if(grabber.getPosition() > (grabber_closed+grabber_open)/2){
                 grabber.setPosition(grabber_open);
             }else{
                 grabber.setPosition(grabber_closed);
@@ -106,8 +109,8 @@ public class TeleOp_Drive extends BaseAuto {
         if(this.gamepad1.right_bumper){RBPrimed = true;}if(!this.gamepad1.right_bumper && RBPrimed){RBPrimed = false;
             movingExtender = true;
             grabber_extender.setPower(1);
-            if(grabber_extender.getCurrentPosition() > -110){
-                grabber_extender.setTargetPosition(-330);
+            if(grabber_extender.getCurrentPosition() > -200){
+                grabber_extender.setTargetPosition(-583);
             }else{
                 grabber_extender.setTargetPosition(0);
             }
@@ -181,10 +184,12 @@ public class TeleOp_Drive extends BaseAuto {
 
         //if(telemetryOn)telemetry.addData("a",a);
         if(telemetryOn)telemetry.addLine("Dist: "+left.getDistance(DistanceUnit.INCH)+", "+right.getDistance(DistanceUnit.INCH));
-        if(telemetryOn)telemetry.addData("ext", grabber_extender.getCurrentPosition());
-        if(telemetryOn)telemetry.addData("slide",L1.getCurrentPosition());
+        telemetry.addData("ext", grabber_extender.getCurrentPosition());
+        telemetry.addData("slide 1",L1.getCurrentPosition());
+        telemetry.addData("slide 2",L2.getCurrentPosition());
         if(telemetryOn)telemetry.addData("RT state", RTState);
-        if(telemetryOn)telemetry.update();
+        telemetry.addData("tower_top dist", tower_top.getDistance(DistanceUnit.INCH)+"in.");
+        telemetry.update();
     }
 
     private void handleRTState(){//call in loop; non-blocking
