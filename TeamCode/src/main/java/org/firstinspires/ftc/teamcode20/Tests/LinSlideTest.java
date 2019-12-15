@@ -13,13 +13,15 @@ public class LinSlideTest extends BaseOpMode {
     private double a = 45;
     private boolean LP, RP;
 
+
     //travel 58 inch in 2000
 
     @Override
     public void init() {
+        telemetryOn = true;
         initLinSlide();//0-2000
         L1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        L2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     }
 

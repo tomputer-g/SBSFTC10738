@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode20.BaseOpMode;
 
+@TeleOp
 public class LinSlideManualTest extends BaseOpMode {
     @Override
     public void init() {
@@ -22,7 +23,8 @@ public class LinSlideManualTest extends BaseOpMode {
             L1.setPower(0);
             L2.setPower(0);
         }
-        telemetry.addData("enc", L1.getCurrentPosition());
+        telemetry.addData("enc 1", L1.getCurrentPosition());
+        telemetry.addData("enc 2",L2.getCurrentPosition());
         telemetry.update();
     }
 }

@@ -18,6 +18,7 @@ public class TeleOp_Drive extends BaseAuto {
 
 
     @Override public void init() {
+        telemetryOn = true;
         initDrivetrain();
         initGrabber();
         initLinSlide();
@@ -40,7 +41,7 @@ public class TeleOp_Drive extends BaseAuto {
 
     @Override
     public void loop() {
-
+        if(telemetryOn)telemetry.addData("RT state", RTState);
         runSlide();
         if(holdSet){if(telemetryOn)telemetry.addData("Hold pos", hold);}
 
@@ -97,7 +98,7 @@ public class TeleOp_Drive extends BaseAuto {
         }
 
         if(this.gamepad1.right_trigger > 0.3
-                && L1.getCurrentPosition() < (2000 - 12 * encoderPerInch)
+                && L1.getCurrentPosition() > (-6500 + 12 * encoderPerInch)
                 && grabber_extender.getCurrentPosition() < -200
                 && RTState == -1){
             //when can go 12in above & extender is extended & not started
@@ -183,11 +184,10 @@ public class TeleOp_Drive extends BaseAuto {
 
 
         //if(telemetryOn)telemetry.addData("a",a);
-        if(telemetryOn)telemetry.addLine("Dist: "+left.getDistance(DistanceUnit.INCH)+", "+right.getDistance(DistanceUnit.INCH));
+        //if(telemetryOn)telemetry.addLine("Dist: "+left.getDistance(DistanceUnit.INCH)+", "+right.getDistance(DistanceUnit.INCH));
         telemetry.addData("ext", grabber_extender.getCurrentPosition());
         telemetry.addData("slide 1",L1.getCurrentPosition());
-        telemetry.addData("slide 2",L2.getCurrentPosition());
-        if(telemetryOn)telemetry.addData("RT state", RTState);
+
         telemetry.addData("tower_top dist", tower_top.getDistance(DistanceUnit.INCH)+"in.");
         telemetry.update();
     }
@@ -197,9 +197,9 @@ public class TeleOp_Drive extends BaseAuto {
             case -1: //none
                 break;
             case 0: //just pressed button / moving upward 12 in
-                holdSlide((int) (L1.getCurrentPosition() + 12 * encoderPerInch));
+                holdSlide((int) (L1.getCurrentPosition() - 12 * encoderPerInch));
                 grabber.setPosition(0);
-                if (near(hold, L1.getCurrentPosition(), 40))//close enough
+                if (near(hold, L1.getCurrentPosition(), 100))//close enough
                     RTState = 1;
                 break;
             case 1:
@@ -212,12 +212,14 @@ public class TeleOp_Drive extends BaseAuto {
                 break;
             case 2://need -.5 power going down, test this
                 holdSet = false;
-                L1.setPower(-0.4);
-                L2.setPower(0.4);
-                if(L1.getCurrentPosition() < 40){
+                L1.setPower(0.8);
+                L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                L2.setPower(0);
+                if(L1.getCurrentPosition() > -40){
                     RTState = -1;
                     L1.setPower(0);
                     L2.setPower(0);
+                    L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 }
                 break;
         }

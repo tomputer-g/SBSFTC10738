@@ -63,7 +63,7 @@ public class BaseOpMode extends OpMode {
         L1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         L2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         L1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        L2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         L1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
@@ -499,7 +499,7 @@ public class BaseOpMode extends OpMode {
     protected int hold = 0;
     protected boolean holdSet;
     //protected double a = 0.2;
-    protected double encoderPerInch = 2000/58;
+    protected double encoderPerInch = 6500/58;
     protected int RTState = -1;
     protected final double ctrl_deadzone = 0.2;
     protected boolean slow = false;
@@ -508,28 +508,37 @@ public class BaseOpMode extends OpMode {
     protected void runSlide(){
         if(this.gamepad1.left_bumper && !near(this.gamepad1.right_stick_y, 0, 0.05)) {//long-dist
             if (this.gamepad1.right_stick_y < 0 && L1.getCurrentPosition() > -6500) {//up
+                telemetry.addLine("L2 ONLINE");
+                L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 holdSet = false;
                 if(telemetryOn)telemetry.addLine("CHANGING SLIDE");
-                L1.setPower(-this.gamepad1.right_stick_y);
-                L2.setPower(this.gamepad1.right_stick_y);
+                L1.setPower(this.gamepad1.right_stick_y);
+                L2.setPower(-this.gamepad1.right_stick_y);
+                telemetry.addData("L1 power",this.gamepad1.right_stick_y);
             } else if (this.gamepad1.right_stick_y > 0 && L1.getCurrentPosition() < 0) {
                 holdSet = false;
                 if(telemetryOn)telemetry.addLine("CHANGING SLIDE");
+                telemetry.addLine("L2 OFFLINE");
+                L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                L2.setPower(0);
                 if(slow){
                     //L1.setPower(-((a+(2000-L1.getCurrentPosition())/2000.0)*(0.2-a) ) * this.gamepad1.right_stick_y);
                     //L2.setPower(((a+(2000-L1.getCurrentPosition())/2000.0)*(0.2-a) )* this.gamepad1.right_stick_y);
-                    L1.setPower(0.3 * this.gamepad1.right_stick_y);
-                    L2.setPower(-0.3 * this.gamepad1.right_stick_y);
+                    telemetry.addData("L1 power", 0.4 * this.gamepad1.right_stick_y);
+                    L1.setPower(0.4 * this.gamepad1.right_stick_y);
+                    //L2.setPower(-0.3 * this.gamepad1.right_stick_y);
                     //if(telemetryOn)telemetry.addData("power",-((a+(2000-L1.getCurrentPosition())/2000.0)*(0.2-a) ) * this.gamepad1.right_stick_y);
                 }else{
-                    L1.setPower(0.5 * this.gamepad1.right_stick_y);
-                    L2.setPower(-0.5 * this.gamepad1.right_stick_y);
+                    telemetry.addData("L1 power",0.8 * this.gamepad1.right_stick_y);
+                    L1.setPower(0.8 * this.gamepad1.right_stick_y);
+                    //L2.setPower(-0.5 * this.gamepad1.right_stick_y);
                 }
 
             } else {
+
                 holdSlide(L1.getCurrentPosition());
             }
-        }else{
+        }else if(RTState == -1){
             holdSlide(L1.getCurrentPosition());
         }
     }
@@ -537,10 +546,10 @@ public class BaseOpMode extends OpMode {
     protected void holdSlide(int position){
         if (!holdSet) {
             holdSet = true;
-            hold = Math.max(0,Math.min(2000,position));
+            hold = Math.min(0,Math.max(-6500,position));
         }
         int error = hold - L1.getCurrentPosition();
-        double power = Math.min(1, Math.max(0, error/60.0));
+        double power = Math.min(0, Math.max(-1, error/60.0));
         if(hold == 0){power = 0;}
         if(telemetryOn)telemetry.addData("holding",hold);
         if(telemetryOn)telemetry.addData("error",error);
