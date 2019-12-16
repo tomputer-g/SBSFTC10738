@@ -68,7 +68,7 @@ public class BlueAuto extends TractionControl {
         while ( (ymult*8>Math.abs(LB.getCurrentPosition())) && 1.3 < (left.getDistance(DistanceUnit.INCH)) && (1.3 < right.getDistance(DistanceUnit.INCH)) && p.milliseconds()<1500){
             setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
         }
-        wait(200);
+        wait(500);
         grabber.setPosition(.55);
         setAllDrivePower(0);
         moveInchesG(0,-10,0.3);
