@@ -81,7 +81,7 @@ public class MoveTest extends TractionControl {
             ElapsedTime t=new ElapsedTime();
             while(t.milliseconds()<10000){
                 setAllDrivePowerG(-x,-x,x,x);
-                wait(200);
+                wait(300);
                 setAllDrivePower(-y,-y,y,y);
                 wait(100);
             }
