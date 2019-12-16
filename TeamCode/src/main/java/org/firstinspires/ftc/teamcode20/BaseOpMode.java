@@ -504,6 +504,7 @@ public class BaseOpMode extends OpMode {
     protected final double ctrl_deadzone = 0.2;
     protected boolean slow = false;
 
+    protected int autoPlaceState = -1;
     //---------------slide-----------------
     protected void runSlide(){
         if(this.gamepad1.left_bumper && !near(this.gamepad1.right_stick_y, 0, 0.05)) {//long-dist
@@ -538,7 +539,7 @@ public class BaseOpMode extends OpMode {
 
                 holdSlide(L1.getCurrentPosition());
             }
-        }else if(RTState == -1){
+        }else if(RTState == -1 && autoPlaceState == -1){
             holdSlide(L1.getCurrentPosition());
         }
     }
