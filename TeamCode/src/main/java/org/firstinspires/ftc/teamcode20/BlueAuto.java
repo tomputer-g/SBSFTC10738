@@ -40,6 +40,9 @@ public class BlueAuto extends TractionControl {
         //repeat until run out of time; first on other skystones
         //moveInches(-8,0,speed);
         grabber.setPosition(grabber_open);
+        platform_grabber.setPower(1);
+        wait(300);
+        platform_grabber.setPower(0);
         moveInchesG(0,15,0.3);
         if(telemetryOn)telemetry.clear();
         int pos = skystonePosition();
@@ -62,13 +65,13 @@ public class BlueAuto extends TractionControl {
         ElapsedTime p = new ElapsedTime();
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
-        while ( (ymult*8>Math.abs(LB.getCurrentPosition())) && 1.3 < (left.getDistance(DistanceUnit.INCH)) && (1.3 < right.getDistance(DistanceUnit.INCH)) && p.milliseconds()<2500){
+        while ( (ymult*8>Math.abs(LB.getCurrentPosition())) && 1.3 < (left.getDistance(DistanceUnit.INCH)) && (1.3 < right.getDistance(DistanceUnit.INCH)) && p.milliseconds()<1500){
             setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
         }
-        wait(500);
+        wait(200);
         grabber.setPosition(.55);
         setAllDrivePower(0);
-        moveInchesG(0, -15, 0.3);
+        moveInchesG(0,-10,0.3);
         turn(90, 0.4, 4);
         setNewGyro(90);
         p.reset();
@@ -76,13 +79,16 @@ public class BlueAuto extends TractionControl {
             setAllDrivePowerG(-speed,-speed,speed,speed);
         }
         setAllDrivePower(0);
-        moveInchesG(18,0,.35);
+        //moveInchesG(18,0,.35)
+        setAllDrivePowerG(-.3,.3,-.3,.3);
+        wait(3000);
         //move foundation
         platform_grabber.setPower(-.8);
-        wait(300);
+        wait(200);
+
         turn(90, 0.67, 5);
         //while (!near(getHeading(),90,3)) setAllDrivePower(-0.6,0.2,0.8,-0.4);
-        setNewGyro(90);
+        setNewGyro(180);
         //ElapsedTime p = new ElapsedTime();
         double koe=.7;
         while(13<rangeSensorFront.getDistance(DistanceUnit.INCH)){

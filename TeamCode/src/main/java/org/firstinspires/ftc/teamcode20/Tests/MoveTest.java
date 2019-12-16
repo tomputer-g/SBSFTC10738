@@ -34,36 +34,23 @@ public class MoveTest extends TractionControl {
         initVuforiaWebcam();
         rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         speed=0.3;
-        y = 0;
-        x = 0;
+        y = .1;
+        x = .2;
 
         // 三天之内刹了你();
     }
 
     @Override
     public void loop(){
-        if(zheng(this.gamepad1.dpad_left,eee))x-=12;
-        if(zheng(this.gamepad1.dpad_right,fff))x+=12;
-        if(zheng(this.gamepad1.dpad_up,ee))y+=12;
-        if(zheng(this.gamepad1.dpad_down,ff))y-=12;
-        if(zheng(this.gamepad1.y,m))speed+=.1;
-        if(zheng(this.gamepad1.a,mm))speed-=.1;
+        if(zheng(this.gamepad1.dpad_left,eee))x-=.01;
+        if(zheng(this.gamepad1.dpad_right,fff))x+=.01;
+        if(zheng(this.gamepad1.dpad_up,ee))y+=.01;
+        if(zheng(this.gamepad1.dpad_down,ff))y-=.01;
+        if(zheng(this.gamepad1.y,m))speed+=1;
+        if(zheng(this.gamepad1.a,mm))speed-=1;
 
         if(zheng(this.gamepad1.b,f))setNewGyro0();
-        if(zheng(this.gamepad1.right_bumper,bF)){
-            /*
-            moveInchesG(x,y,speed);
-            moveInchesG(-x,-y,speed);
-            setNewGyro(90);
-            setAllDrivePowerG(0);
-            ElapsedTime t=new ElapsedTime();
-            while(t.milliseconds()<5000){
-                setAllDrivePowerG(-speed,-speed,speed,speed);
-                telemetry.addData("imuHeading: ",imuHeading);
-                telemetry.addData("imuOffset: ",imuOffset);
-                telemetry.update();
-            }
-             */
+        if(zheng(this.gamepad1.left_bumper,bF)){
             ElapsedTime t=new ElapsedTime();
             targetsSkyStone.activate();
             VuforiaTrackable trackable = allTrackables.get(11);
@@ -88,6 +75,16 @@ public class MoveTest extends TractionControl {
                 }
             }
             shutdownVuforia();
+        }
+
+        if(zheng(this.gamepad1.right_bumper,mmm)){
+            ElapsedTime t=new ElapsedTime();
+            while(t.milliseconds()<10000){
+                setAllDrivePowerG(-x,-x,x,x);
+                wait(200);
+                setAllDrivePower(-y,-y,y,y);
+                wait(100);
+            }
         }
 
         telemetry.addData("x: ",x);
