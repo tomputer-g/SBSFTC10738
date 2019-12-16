@@ -33,7 +33,7 @@ public class MoveTest extends TractionControl {
         initDrivetrain();
         initVuforiaWebcam();
         rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
-        speed=0.3;
+        speed=0;
         y = .1;
         x = .2;
 
@@ -78,12 +78,25 @@ public class MoveTest extends TractionControl {
         }
 
         if(zheng(this.gamepad1.right_bumper,mmm)){
+            /*
             ElapsedTime t=new ElapsedTime();
             while(t.milliseconds()<10000){
                 setAllDrivePowerG(-x,-x,x,x);
                 wait(300);
                 setAllDrivePower(-y,-y,y,y);
                 wait(100);
+            }
+            */
+            int lf=LF.getCurrentPosition(),lb=LB.getCurrentPosition(),rf=RF.getCurrentPosition(),rb=RB.getCurrentPosition();
+            while(LF.getCurrentPosition()-lf==0&&LB.getCurrentPosition()-lb==0&&RF.getCurrentPosition()-rf==0&&RB.getCurrentPosition()-rb==0){
+                lf=LF.getCurrentPosition();
+                lb=LB.getCurrentPosition();
+                rf=RF.getCurrentPosition();
+                rb=RB.getCurrentPosition();
+                speed+=.001;
+                telemetry.addLine("Speed "+speed);
+                telemetry.update();
+                setAllDrivePowerG(-speed,-speed,speed,speed);
             }
         }
 
