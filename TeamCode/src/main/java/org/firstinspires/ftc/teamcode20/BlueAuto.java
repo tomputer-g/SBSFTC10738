@@ -18,7 +18,9 @@ public class BlueAuto extends TractionControl {
         initIMU();
         initGrabber();
         initLinSlide();
+        initPlatformGrabber();
         initVuforiaWebcam();
+        initSensors();
         left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
         right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
         setNewGyro0();
@@ -26,7 +28,7 @@ public class BlueAuto extends TractionControl {
         grabber_extender.setPower(1);
         wait(400);
         grabber_extender.setPower(0);
-        speed=0.18;
+        speed=0.3;
         //if(telemetryOn)telemetry.setAutoClear(false);
     }
     @Override
@@ -58,23 +60,46 @@ public class BlueAuto extends TractionControl {
         }
         //move to blocc
         ElapsedTime p = new ElapsedTime();
-        p.reset();
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
         while ( (ymult*8>Math.abs(LB.getCurrentPosition())) && 1.3 < (left.getDistance(DistanceUnit.INCH)) && (1.3 < right.getDistance(DistanceUnit.INCH)) && p.milliseconds()<2500){
             setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
         }
-
+        wait(500);
         grabber.setPosition(.55);
-        wait(300);
         setAllDrivePower(0);
         moveInchesG(0, -15, 0.3);
         turn(90, 0.4, 4);
         setNewGyro(90);
-        while(9.4<rangeSensorFront.getDistance(DistanceUnit.INCH)){
+        p.reset();
+        while(21.4<rangeSensorFront.getDistance(DistanceUnit.INCH)||p.milliseconds()<3000){
             setAllDrivePowerG(-speed,-speed,speed,speed);
         }
-        moveInchesG(15,0,.35);
+        setAllDrivePower(0);
+        moveInchesG(18,0,.35);
+        //move foundation
+        platform_grabber.setPower(-.8);
+        wait(300);
+        turn(90, 0.67, 5);
+        //while (!near(getHeading(),90,3)) setAllDrivePower(-0.6,0.2,0.8,-0.4);
+        setNewGyro(90);
+        //ElapsedTime p = new ElapsedTime();
+        double koe=.7;
+        while(13<rangeSensorFront.getDistance(DistanceUnit.INCH)){
+            setAllDrivePowerG(koe*(0.22-0.55+0.37),koe*(0.22-0.55-0.37),koe*(0.22+0.55+0.37),koe*(0.22+0.5-0.37)); //turn+f0rwrd+side
+            telemetry.addData("Front",rangeSensorFront.getDistance(DistanceUnit.INCH));
+            telemetry.update();
+        }
+        //setAllDrivePowerG(0);
+        //wait(1000);
+        setAllDrivePower(0);
+        while(30>rangeSensorFront.getDistance(DistanceUnit.INCH)){
+            telemetry.addData("Side",rangeSensorSide.getDistance(DistanceUnit.INCH));
+            telemetry.update();
+            setAllDrivePowerG(0.5,-0.5,0.5,-0.5);
+        }
+        setAllDrivePower(0);
+        platform_grabber.setPower(0);
         /*
         grabber.setPosition(grabber_open);
         wait(300);
@@ -109,7 +134,7 @@ public class BlueAuto extends TractionControl {
         }
          */
         //park
-        moveInchesG(0, -21, 0.5);
+        //moveInchesG(0, -21, 0.5);
         requestOpModeStop();
     }
 }
