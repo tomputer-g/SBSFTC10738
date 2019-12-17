@@ -70,7 +70,6 @@ public class MoveEncoderSpeed extends BaseOpMode {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         cycleTime.reset();
         telemetry.addLine("speeds: ("+lowSpeed+", "+kickstartSpeed+")");
         telemetry.addData("enc timer", encoderTimer.nanoseconds());
@@ -112,8 +111,6 @@ public class MoveEncoderSpeed extends BaseOpMode {
             setAllDrivePower(-lowSpeed, -lowSpeed, lowSpeed, lowSpeed);
             lowCycleTimer.reset();
             lowCycleTimeMS = (1-dutyPercent) * cycleTimeMS;
-
-
         }else{
             setAllDrivePower(0);
             telemetry.addLine("speed is below PWM minimum!");

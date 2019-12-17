@@ -240,30 +240,18 @@ public class BaseOpMode extends OpMode {
         setAllDrivePower(a,b,-c,-d);
     }
 
+    protected void setAllDrivePowerSlow(int dir){
+        dir=dir/Math.abs(dir);
+        double highp=0.03/.18;
+        wait((int)(60*(1-highp)));
+        setAllDrivePower(-.2*dir,-.2*dir,.2*dir,.2*dir);
+        wait((int)(60*highp));
+        setAllDrivePower(-.02*dir,-.02*dir,.02*dir,.02*dir);
+
+    }
+
     protected void moveInches(double xInch, double yInch, double speed){
         /*
-        double xmult = 14./2, ymult = 14./2, p_mult = 80;
-        int encoder_x = (int)(xInch * xmult), encoder_y = (int)(yInch * ymult);
-        int encoder_1 = Math.abs(encoder_x + encoder_y); // LB, RF
-        int encoder_2 = Math.abs(encoder_x - encoder_y); // LF, RB
-        double conversion_fct = speed/((encoder_1 + encoder_2)/2);
-        double speed_1 = conversion_fct * encoder_1, speed_2 = conversion_fct * encoder_2;
-        setAllDrivePower(speed_2,speed_1,speed_1,speed_2);
-        setAllDrivePower(-speed,-speed,speed,speed);
-        if(telemetryOn)telemetry.addData("speed",speed_1+" "+speed_2);
-        if(telemetryOn)telemetry.addData("position",encoder_x+" "+encoder_y);
-        if(telemetryOn)telemetry.update();
-        LF.setTargetPosition(encoder_x - encoder_y);
-        LB.setTargetPosition(-encoder_x - encoder_y);
-        RF.setTargetPosition(encoder_x + encoder_y);
-        RB.setTargetPosition(-encoder_x + encoder_y);
-        setMode_RESET_AND_RUN_TO_POSITION();
-        while((LF.isBusy()||LB.isBusy()||RF.isBusy()||RB.isBusy()) && t.milliseconds() < p_time){
-            if(telemetryOn)telemetry.addData("Power", LF.getPower());
-            if(telemetryOn)telemetry.update();
-        };
-        setAllDrivePower(0);
-        ();
         sup fuckers
         69
         by cole wdnmd-p'
