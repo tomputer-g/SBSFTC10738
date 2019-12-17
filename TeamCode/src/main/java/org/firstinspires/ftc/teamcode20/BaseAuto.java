@@ -355,4 +355,10 @@ public class BaseAuto extends BaseOpMode {
     public void moveInchesG(double xInch, double yInch, double speed){
         moveInchesG(xInch,yInch,speed,.8);
     }
+
+    public void brake(){
+        double speed = LF.getPower();
+        setAllDrivePower(-speed,-speed,speed,speed);
+        wait(40+(int)(400*Math.abs(speed)));
+    }
 }
