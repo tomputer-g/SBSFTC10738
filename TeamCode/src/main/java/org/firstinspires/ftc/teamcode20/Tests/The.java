@@ -110,13 +110,15 @@ public class The extends BaseAuto {
                     holdSet = false;
                     L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                     holdSlide(L1.getCurrentPosition());
-                    grabber.setPosition(grabber_open);
+                    //grabber.setPosition(grabber_open);
                 }
                 break;
-            case 5: //RT - drop
+            /*case 5: //RT - drop
                 holdSet = false;
                 RTState = 0;
                 autoPlaceState = -1;
+
+             */
         }
     }
 
