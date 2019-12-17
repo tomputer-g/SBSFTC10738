@@ -112,8 +112,6 @@ public class MoveEncoderSpeed extends BaseOpMode {
             setAllDrivePower(-lowSpeed, -lowSpeed, lowSpeed, lowSpeed);
             lowCycleTimer.reset();
             lowCycleTimeMS = (1-dutyPercent) * cycleTimeMS;
-
-
         }else{
             setAllDrivePower(0);
             telemetry.addLine("speed is below PWM minimum!");
