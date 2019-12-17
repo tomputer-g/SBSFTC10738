@@ -11,6 +11,7 @@ import static java.lang.Thread.sleep;
 @TeleOp(group = "Final")
 public class TeleOp_Drive extends BaseAuto {
     private boolean BPrimed = false, RBPrimed = false, YPrimed = false, XPrimed = false, LP, RP, LTPrimed = false;
+    private boolean[] xprime={true};
     private boolean movingExtender = false;
     //slide
     private double kickstartSpeed = 0.18, lowSpeed = 0.03, PWMSpeed = 0.09, cycleTimeMS = 20;
@@ -143,19 +144,10 @@ public class TeleOp_Drive extends BaseAuto {
             grabber_extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
-        /*
+
         if(zheng(this.gamepad1.x,xprime)) {
-            double v = 0;
-            while (left.getDistance(DistanceUnit.INCH) < 8.5 && right.getDistance(DistanceUnit.INCH) < 8.5) {
-                v = (right.getDistance(DistanceUnit.INCH) - left.getDistance(DistanceUnit.INCH)) / 2;
-                v = Math.min(Math.max(v, -0.2), 0.2);
-                setAllDrivePower(-0.2 + v, -0.2 + v, .2 + v, .2 + v);
-
-            }
-
+            brake();
         }
-
-        */
 
         if(L1.getCurrentPosition() > 200){
             if(telemetryOn)telemetry.addLine("Placing block: ultra slow");
