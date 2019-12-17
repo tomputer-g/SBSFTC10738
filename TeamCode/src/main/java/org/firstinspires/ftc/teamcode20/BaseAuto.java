@@ -261,7 +261,7 @@ public class BaseAuto extends BaseOpMode {
 
     protected double getHeading(){
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, ZYX, AngleUnit.DEGREES);
-        imuHeading = Double.parseDouble(String.format(Locale.getDefault(), "%.2f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle))))-imuOffset;
+        imuHeading = getError(Double.parseDouble(String.format(Locale.getDefault(), "%.2f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle)))),imuOffset);
         return imuHeading;
     }
 
@@ -276,7 +276,11 @@ public class BaseAuto extends BaseOpMode {
     }
 
     private double getError(double targetAngle) {
-        double robotError =targetAngle-getHeading();
+        return getError(targetAngle,getHeading());
+    }
+
+    private double getError(double target, double cur) {
+        double robotError =target-cur;
         while (robotError > 180) robotError -= 360;
         while (robotError <= -180) robotError += 360;
         return robotError;
