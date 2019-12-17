@@ -79,12 +79,7 @@ public class MoveTest extends TractionControl {
             shutdownVuforia();
         }
 
-        if(zheng(this.gamepad1.right_bumper,mmm)){
-            ElapsedTime t=new ElapsedTime();
-            while(t.milliseconds()<10000){
-                setAllDrivePowerSlow(dir);
-            }
-        }
+        setAllDrivePowerSlow((int)this.gamepad1.left_stick_y,(int) this.gamepad1.right_stick_x);
 
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
