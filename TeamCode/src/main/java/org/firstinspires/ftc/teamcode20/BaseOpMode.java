@@ -240,7 +240,8 @@ public class BaseOpMode extends OpMode {
         setAllDrivePower(a,b,-c,-d);
     }
 
-    protected void setAllDrivePowerSlow(int dir,int w){
+    protected void setAllDrivePowerSlow(int dir,double w){
+        w=w*1.75;
         double highp=0.03/.18;
         try{sleep(0,(int)(60*(1-highp)));} catch(InterruptedException e){}
         setAllDrivePower(-.2*dir+.2*w,-.2*dir+.2*w,.2*dir+.2*w,.2*dir+.2*w);

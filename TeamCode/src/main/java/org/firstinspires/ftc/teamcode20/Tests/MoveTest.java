@@ -37,7 +37,7 @@ public class MoveTest extends TractionControl {
         speed=0;
         dir=1;
         y = .1;
-        x = .2;
+        x = 0;
 
         // 三天之内刹了你();
     }
@@ -79,7 +79,7 @@ public class MoveTest extends TractionControl {
             shutdownVuforia();
         }
 
-        setAllDrivePowerSlow((int)this.gamepad1.left_stick_y,(int) this.gamepad1.right_stick_x);
+        setAllDrivePowerSlow(-1*(int)this.gamepad1.left_stick_y,-1*(int)(this.gamepad1.right_stick_x));
 
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
