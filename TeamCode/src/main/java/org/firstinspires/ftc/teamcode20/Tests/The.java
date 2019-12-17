@@ -32,6 +32,24 @@ public class The extends BaseAuto {
     public void loop() {
         runSlide();
         autoPlace();
+        //handleRTState();
+
+        if(this.gamepad1.dpad_up
+                ||this.gamepad1.dpad_down
+                ||this.gamepad1.right_bumper
+                ||(this.gamepad1.left_bumper && !near(this.gamepad1.right_stick_y, 0, 0.05))){
+
+            RTState = -1; //driver interrupt auto movement
+        }
+
+        if(this.gamepad1.right_trigger > 0.3
+                && L1.getCurrentPosition() > (-6500 + 12 * encoderPerInch)
+                && grabber_extender.getCurrentPosition() < -200
+                && RTState == -1){
+            //when can go 12in above & extender is extended & not started
+            holdSet = false;
+            RTState = 0;
+        }
         handleRTState();
 
 
@@ -72,13 +90,16 @@ public class The extends BaseAuto {
                 break;
             case 1://just started. rise to top of tower
                 setAllDrivePower(0);
-                L1.setPower(-.5);
-                L2.setPower(.5);
+                L1.setPower(-1);
+                L2.setPower(1);
                 if(tower_top.getDistance(DistanceUnit.INCH) > 20.0 || L1.getCurrentPosition() < -5800){
                     autoPlaceState++;
                     ascendTarget = L1.getCurrentPosition() - 800;
-                    L1.setPower(-.4);
-                    L2.setPower(.4);
+                    L1.setPower(-.7);
+                    L2.setPower(.7);
+                    grabber_extender.setPower(1);
+                    grabber_extender.setTargetPosition(-583);
+                    grabber_extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
                 break;
             case 2: //rise a bit more and hold position
@@ -88,9 +109,6 @@ public class The extends BaseAuto {
                     holdSet = false;
                     holdSlide(L1.getCurrentPosition());
                     autoPlaceState++;
-                    grabber_extender.setPower(1);
-                    grabber_extender.setTargetPosition(-583);
-                    grabber_extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
                 break;
             case 3: //extend
@@ -98,7 +116,7 @@ public class The extends BaseAuto {
                 if(near(grabber_extender.getCurrentPosition(), -583, 40)){
                     autoPlaceState++;
                     holdSet = false;
-                    descendTarget = L1.getCurrentPosition() + 1300;
+                    descendTarget = L1.getCurrentPosition() + 1350;
                     L1.setPower(0.7);
                     L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                     L2.setPower(0);
@@ -106,10 +124,11 @@ public class The extends BaseAuto {
                 break;
             case 4: //drop & hold to correct level (descend 1200) & drop
                 if(near(L1.getCurrentPosition(), descendTarget, 50)){
-                    autoPlaceState++;
+                    //autoPlaceState++;
                     holdSet = false;
                     L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                     holdSlide(L1.getCurrentPosition());
+                    autoPlaceState = -1;
                     //grabber.setPosition(grabber_open);
                 }
                 break;
