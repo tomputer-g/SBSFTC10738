@@ -70,7 +70,6 @@ public class MoveEncoderSpeed extends BaseOpMode {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         cycleTime.reset();
         telemetry.addLine("speeds: ("+lowSpeed+", "+kickstartSpeed+")");
         telemetry.addData("enc timer", encoderTimer.nanoseconds());

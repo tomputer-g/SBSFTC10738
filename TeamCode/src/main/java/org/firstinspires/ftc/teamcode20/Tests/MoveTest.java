@@ -21,6 +21,7 @@ public class MoveTest extends TractionControl {
     boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
     ElapsedTime t=new ElapsedTime();
     ModernRoboticsI2cRangeSensor rangeSensorSide;
+    int dir;
     private void 三天之内刹了你(){
         setAllDrivePower(1,1,-1,-1);
         wait(200);
@@ -34,6 +35,7 @@ public class MoveTest extends TractionControl {
         initVuforiaWebcam();
         rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         speed=0;
+        dir=1;
         y = .1;
         x = .2;
 
@@ -46,8 +48,8 @@ public class MoveTest extends TractionControl {
         if(zheng(this.gamepad1.dpad_right,fff))x+=.01;
         if(zheng(this.gamepad1.dpad_up,ee))y+=.01;
         if(zheng(this.gamepad1.dpad_down,ff))y-=.01;
-        if(zheng(this.gamepad1.y,m))speed+=1;
-        if(zheng(this.gamepad1.a,mm))speed-=1;
+        if(zheng(this.gamepad1.y,m))dir+=1;
+        if(zheng(this.gamepad1.a,mm))dir-=1;
 
         if(zheng(this.gamepad1.b,f))setNewGyro0();
         if(zheng(this.gamepad1.left_bumper,bF)){
@@ -78,31 +80,15 @@ public class MoveTest extends TractionControl {
         }
 
         if(zheng(this.gamepad1.right_bumper,mmm)){
-            /*
             ElapsedTime t=new ElapsedTime();
             while(t.milliseconds()<10000){
-                setAllDrivePowerG(-x,-x,x,x);
-                wait(300);
-                setAllDrivePower(-y,-y,y,y);
-                wait(100);
-            }
-            */
-            int lf=LF.getCurrentPosition(),lb=LB.getCurrentPosition(),rf=RF.getCurrentPosition(),rb=RB.getCurrentPosition();
-            while(LF.getCurrentPosition()-lf==0&&LB.getCurrentPosition()-lb==0&&RF.getCurrentPosition()-rf==0&&RB.getCurrentPosition()-rb==0){
-                lf=LF.getCurrentPosition();
-                lb=LB.getCurrentPosition();
-                rf=RF.getCurrentPosition();
-                rb=RB.getCurrentPosition();
-                speed+=.001;
-                telemetry.addLine("Speed "+speed);
-                telemetry.update();
-                setAllDrivePowerG(-speed,-speed,speed,speed);
+                setAllDrivePowerSlow(dir);
             }
         }
 
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
-        telemetry.addData("speed: ",speed);
+        telemetry.addData("dir ",dir);
         telemetry.update();
     }
 }
