@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 
-//@TeleOp
+@TeleOp(group = "Test", name = "brickgrabtest")
 public class BrickGrabTest extends BaseAuto {
     Rev2mDistanceSensor left,right;
     ElapsedTime t;
