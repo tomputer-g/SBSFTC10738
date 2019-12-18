@@ -246,7 +246,7 @@ public class BaseOpMode extends OpMode {
         try{sleep(0,(int)(60*(1-highp)));} catch(InterruptedException e){}
         setAllDrivePower(-.2*dir-.5*x+.2*w,-.2*dir+.5*x+.2*w,.2*dir-.5*x+.2*w,.2*dir+.5*x+.2*w);
         try{sleep(0,(int)(60*highp));} catch(InterruptedException e){}
-        setAllDrivePower(-.02*dir+.02*w,-.02*dir+.02*w,.02*dir+.02*w,.2*dir+.5*x+.2*w);
+        setAllDrivePower(-.02*dir-.05*x+.02*w,-.02*dir+.05*x+.02*w,.02*dir-0.05*x+.02*w,.2*dir+.05*x+.2*w);
 
     }
 

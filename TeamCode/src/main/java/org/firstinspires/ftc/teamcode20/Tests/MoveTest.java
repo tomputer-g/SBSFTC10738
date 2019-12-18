@@ -79,7 +79,7 @@ public class MoveTest extends TractionControl {
             shutdownVuforia();
         }
 
-        setAllDrivePowerSlow(-1*(int)this.gamepad1.left_stick_y,-1*(int)(this.gamepad1.right_stick_x));
+        setAllDrivePowerSlow(-1*(int)this.gamepad1.left_stick_y,(int)(this.gamepad1.left_stick_x),-1*(int)(this.gamepad1.right_stick_x));
 
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
