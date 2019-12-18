@@ -240,13 +240,13 @@ public class BaseOpMode extends OpMode {
         setAllDrivePower(a,b,-c,-d);
     }
 
-    protected void setAllDrivePowerSlow(int dir){
-        dir=dir/Math.abs(dir);
+    protected void setAllDrivePowerSlow(int dir,double w){
+        w=w*1.75;
         double highp=0.03/.18;
-        wait((int)(60*(1-highp)));
-        setAllDrivePower(-.2*dir,-.2*dir,.2*dir,.2*dir);
-        wait((int)(60*highp));
-        setAllDrivePower(-.02*dir,-.02*dir,.02*dir,.02*dir);
+        try{sleep(0,(int)(60*(1-highp)));} catch(InterruptedException e){}
+        setAllDrivePower(-.2*dir+.2*w,-.2*dir+.2*w,.2*dir+.2*w,.2*dir+.2*w);
+        try{sleep(0,(int)(60*highp));} catch(InterruptedException e){}
+        setAllDrivePower(-.02*dir+.02*w,-.02*dir+.02*w,.02*dir+.02*w,.2*dir+.2*w);
 
     }
 
@@ -465,20 +465,8 @@ public class BaseOpMode extends OpMode {
             absMax = Math.max(Math.abs(d),absMax);
         if(absMax <= 1){
             setAllDrivePower(speeds[0], speeds[1], speeds[2], speeds[3]);
-            /*
-            if(telemetryOn)telemetry.addData("vLF",to3d(speeds[0]));
-            if(telemetryOn)telemetry.addData("vLB",to3d(speeds[1]));
-            if(telemetryOn)telemetry.addData("vRF",to3d(speeds[2]));
-            if(telemetryOn)telemetry.addData("vRB",to3d(speeds[3]));
-            */
         }else{
             if(telemetryOn)telemetry.addLine("SCALED power: max was "+absMax);
-            /*
-            if(telemetryOn)telemetry.addLine("vLF: "+to3d(speeds[0])+" -> "+to3d(speeds[0]/absMax));
-            if(telemetryOn)telemetry.addLine("vLB: "+to3d(speeds[1])+" -> "+to3d(speeds[1]/absMax));
-            if(telemetryOn)telemetry.addLine("vRF: "+to3d(speeds[2])+" -> "+to3d(speeds[2]/absMax));
-            if(telemetryOn)telemetry.addLine("vRB: "+to3d(speeds[3])+" -> "+to3d(speeds[3]/absMax));
-             */
             setAllDrivePower(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
         }
     }
