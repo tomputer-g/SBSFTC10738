@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode20.TractionControl;
 
 @TeleOp(group = "Test", name = "drugtest")
 public class MiscTest extends TractionControl {
-    double speed,x,y, GYRO_kp, side_distance, kp,kd,dist_target,koe;
+    double speed,x,y, GYRO_kp, side_distance, kp,kd,dist_target,koe,square_dist;
     boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
     ElapsedTime t=new ElapsedTime();
     ModernRoboticsI2cRangeSensor rangeSensorSide;
@@ -32,6 +32,7 @@ public class MiscTest extends TractionControl {
         side_distance = 6;
         koe = 0.7;
         dist_target = 13;
+        square_dist = 8.2;
     }
 
     @Override
@@ -40,8 +41,8 @@ public class MiscTest extends TractionControl {
         getHeading();
         if(zheng(this.gamepad1.y,e))speed-=0.05;
         if(zheng(this.gamepad1.a,f))speed+=0.05;
-        if(zheng(this.gamepad1.dpad_up,ee))dist_target++;
-        if(zheng(this.gamepad1.dpad_down,ff))dist_target--;
+        if(zheng(this.gamepad1.dpad_up,ee))square_dist+=0.5;
+        if(zheng(this.gamepad1.dpad_down,ff))square_dist-=0.5;
         if(zheng(this.gamepad1.dpad_left,eee))koe+=0.02;
         if(zheng(this.gamepad1.dpad_right,fff))koe-=0.02;
         if(zheng(this.gamepad1.x,mm))side_distance++;
@@ -55,7 +56,7 @@ public class MiscTest extends TractionControl {
         //telemetry.addData("RB",RB.getCurrentPosition());
         //telemetry.addData("side_sensor val ", "%.2f",rangeSensorSide.getDistance(DistanceUnit.INCH));
         //telemetry.addData("side_dis", side_distance);
-        //telemetry.addData("Heading","%.2f",imuHeading);
+        telemetry.addData("square","%.2f",square_dist);
         //telemetry.addData("GYRO_kp", GYRO_kp);
         //telemetry.addData("KP", "%.1f",kp);
         telemetry.addData("koe", "%.1f",koe);
@@ -85,8 +86,44 @@ public class MiscTest extends TractionControl {
             //wait(70);
             setAllDrivePower(0);
         }
-        if(zheng(this.gamepad1.left_bumper,lF))
-            speed*=-1;
+        if(zheng(this.gamepad1.left_bumper,lF)){
+            boolean flag = false ,ll = false,rr = false, far = false;
+            double l,r;
+            int y = 0,w = 0;
+            while(!flag){
+
+
+                l = left.getDistance(DistanceUnit.INCH);
+                r = right.getDistance(DistanceUnit.INCH);
+                telemetry.addData("l", "%.1f",l);
+                telemetry.addData("r", "%.1f",r);
+                telemetry.update();
+                ll = near(l,square_dist,0.5);
+                rr = near(r,square_dist,0.5);
+                far = near(l,r,0.5);
+                if (ll){
+                    flag = true;
+                    break;
+                }
+                /*
+                if(far){
+                    if(l>r)w=-1;
+                    else w = 1;
+                }
+                else w = 0;
+
+
+                 */
+                if(!ll){
+                    if(l<square_dist) y = -1;
+                    else y = 1;
+                }
+                else y = 0;
+
+                setAllDrivePowerSlow(y,0,w);
+            }
+            setAllDrivePower(0);
+        }
 
         if (zheng(this.gamepad1.right_bumper, m)){
             platform_grabber.setPower(-.8);
