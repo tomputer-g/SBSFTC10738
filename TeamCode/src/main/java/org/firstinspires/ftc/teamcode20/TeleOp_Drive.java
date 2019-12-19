@@ -107,7 +107,7 @@ public class TeleOp_Drive extends BaseAuto {
         }
 
         if(this.gamepad1.right_trigger > 0.3
-                && L1.getCurrentPosition() > (-6500 + 12 * encoderPerInch)
+                && L1.getCurrentPosition() > (-5000 + 12 * encoderPerInch)
                 && grabber_extender.getCurrentPosition() < -200
                 && RTState == -1){
             //when can go 12in above & extender is extended & not started

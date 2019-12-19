@@ -465,7 +465,7 @@ public class BaseOpMode extends OpMode {
     protected int hold = 0;
     protected boolean holdSet;
     //protected double a = 0.2;
-    protected double encoderPerInch = 6500/58;
+    protected double encoderPerInch = 5000/72;
     protected int RTState = -1;
     protected final double ctrl_deadzone = 0.2;
     protected boolean slow = false;
@@ -474,7 +474,7 @@ public class BaseOpMode extends OpMode {
     //---------------slide-----------------
     protected void runSlide(){
         if(this.gamepad1.left_bumper && !near(this.gamepad1.right_stick_y, 0, 0.05)) {//long-dist
-            if (this.gamepad1.right_stick_y < 0 && L1.getCurrentPosition() > -6500) {//up
+            if (this.gamepad1.right_stick_y < 0 && L1.getCurrentPosition() > -5000) {//up
                 telemetry.addLine("L2 ONLINE");
                 L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 holdSet = false;
@@ -513,7 +513,7 @@ public class BaseOpMode extends OpMode {
     protected void holdSlide(int position){
         if (!holdSet) {
             holdSet = true;
-            hold = Math.min(0,Math.max(-6500,position));
+            hold = Math.min(0,Math.max(-5000,position));
         }
         int error = hold - L1.getCurrentPosition();
         double power = Math.min(0, Math.max(-1, error/60.0));
