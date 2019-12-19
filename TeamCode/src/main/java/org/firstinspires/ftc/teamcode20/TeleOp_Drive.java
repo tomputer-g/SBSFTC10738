@@ -17,6 +17,9 @@ public class TeleOp_Drive extends BaseAuto {
     private double kickstartSpeed = 0.18, lowSpeed = 0.03, PWMSpeed = 0.09, cycleTimeMS = 20;
     private boolean platformGrabbed = false;
 
+    private int descendTarget = 0, ascendTarget = 0;
+    private double inchApproachTarget = 10.0, approachSpeed = 0.2;
+
 
     @Override public void init() {
         telemetryOn = true;
@@ -44,6 +47,7 @@ public class TeleOp_Drive extends BaseAuto {
     public void loop() {
         if(telemetryOn)telemetry.addData("RT state", RTState);
         runSlide();
+        autoPlace();
         if(holdSet){if(telemetryOn)telemetry.addData("Hold pos", hold);}
 
         if(this.gamepad1.y){YPrimed = true;}if(!this.gamepad1.y && YPrimed){YPrimed = false;
@@ -174,6 +178,11 @@ public class TeleOp_Drive extends BaseAuto {
             scaledMove(-this.gamepad1.left_stick_x,-this.gamepad1.left_stick_y, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x));
         }
 
+        if(this.gamepad1.left_trigger  > .5 && autoPlaceState == -1){
+            autoPlaceState = 0;
+        }
+        telemetry.addData("AutoPlaceState", autoPlaceState);
+        telemetry.addData("target", descendTarget);
 
         //if(telemetryOn)telemetry.addData("a",a);
         //if(telemetryOn)telemetry.addLine("Dist: "+left.getDistance(DistanceUnit.INCH)+", "+right.getDistance(DistanceUnit.INCH));
@@ -214,6 +223,73 @@ public class TeleOp_Drive extends BaseAuto {
                     L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 }
                 break;
+        }
+    }
+
+    private void autoPlace(){
+        switch(autoPlaceState){
+            case -1:
+                break;
+            case 0://approach
+                if(tower_top.getDistance(DistanceUnit.INCH) > inchApproachTarget + 0.5){
+                    setAllDrivePower(-approachSpeed,-approachSpeed,approachSpeed,approachSpeed);
+                }else if(tower_top.getDistance(DistanceUnit.INCH) < inchApproachTarget - 0.5){
+                    setAllDrivePower(approachSpeed, approachSpeed, -approachSpeed, -approachSpeed);
+                }else{
+                    autoPlaceState++;
+                    setAllDrivePower(0);
+                }
+                break;
+            case 1://just started. rise to top of tower
+                setAllDrivePower(0);
+                L1.setPower(-1);
+                L2.setPower(1);
+                if(tower_top.getDistance(DistanceUnit.INCH) > 20.0 || L1.getCurrentPosition() < -5800){
+                    autoPlaceState++;
+                    ascendTarget = L1.getCurrentPosition() - 800;
+                    L1.setPower(-.7);
+                    L2.setPower(.7);
+                    grabber_extender.setPower(1);
+                    grabber_extender.setTargetPosition(-583);
+                    grabber_extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+                break;
+            case 2: //rise a bit more and hold position
+                if(ascendTarget + 50 > L1.getCurrentPosition()){
+                    L1.setPower(0);
+                    L2.setPower(0);
+                    holdSet = false;
+                    holdSlide(L1.getCurrentPosition());
+                    autoPlaceState++;
+                }
+                break;
+            case 3: //extend
+
+                if(near(grabber_extender.getCurrentPosition(), -583, 40)){
+                    autoPlaceState++;
+                    holdSet = false;
+                    descendTarget = L1.getCurrentPosition() + 1350;
+                    L1.setPower(0.7);
+                    L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                    L2.setPower(0);
+                }
+                break;
+            case 4: //drop & hold to correct level (descend 1200) & drop
+                if(near(L1.getCurrentPosition(), descendTarget, 50)){
+                    //autoPlaceState++;
+                    holdSet = false;
+                    L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    holdSlide(L1.getCurrentPosition());
+                    autoPlaceState = -1;
+                    //grabber.setPosition(grabber_open);
+                }
+                break;
+            /*case 5: //RT - drop
+                holdSet = false;
+                RTState = 0;
+                autoPlaceState = -1;
+
+             */
         }
     }
 
