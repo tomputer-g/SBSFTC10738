@@ -243,9 +243,10 @@ public class BaseOpMode extends OpMode {
     protected void setAllDrivePowerSlow(double dir,double x,double w){
         w*=1.75;
         double highp=0.03/.18;
-        try{wait((int)(100*(1-highp)));/*sleep(0,(int)(100*(1-highp)));*/)} catch(InterruptedException e){telemetry.addLine("Error0");}
+        try{sleep(0,(int)(100*(1-highp)));} catch(InterruptedException e){telemetry.addLine("Error0");}
+        wait((int)(60*(1-highp)));
         setAllDrivePower(-.2*dir-.5*x+.2*w,-.2*dir+.5*x+.2*w,.2*dir-.5*x+.2*w,.2*dir+.5*x+.2*w);
-        try{wait((int)(100*highp));/*sleep(0,(int)(100*highp));*/} catch(InterruptedException e){telemetry.addLine("Error1");}
+        try{sleep(0,(int)(100*highp));} catch(InterruptedException e){telemetry.addLine("Error1");}
         setAllDrivePower(-.02*dir-.05*x+.02*w,-.02*dir+.05*x+.02*w,.02*dir-0.05*x+.02*w,.2*dir+.05*x+.2*w);
 
     }
