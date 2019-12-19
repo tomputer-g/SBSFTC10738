@@ -20,6 +20,8 @@ public class TeleOp_Drive extends BaseAuto {
     private int descendTarget = 0, ascendTarget = 0;
     private double inchApproachTarget = 10.0, approachSpeed = 0.2;
 
+    //Timers
+    ElapsedTime t;
 
     @Override public void init() {
         telemetryOn = true;
@@ -41,10 +43,12 @@ public class TeleOp_Drive extends BaseAuto {
         grabber_extender.setPower(0);
         grabber_extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        t=new ElapsedTime();
     }
 
     @Override
     public void loop() {
+        t.reset();
         if(telemetryOn)telemetry.addData("RT state", RTState);
         runSlide();
         autoPlace();
@@ -182,15 +186,16 @@ public class TeleOp_Drive extends BaseAuto {
         if(this.gamepad1.left_trigger  > .5 && autoPlaceState == -1){
             autoPlaceState = 0;
         }
-        telemetry.addData("AutoPlaceState", autoPlaceState);
-        telemetry.addData("target", descendTarget);
+        //telemetry.addData("AutoPlaceState", autoPlaceState);
+        //telemetry.addData("target", descendTarget);
 
         //if(telemetryOn)telemetry.addData("a",a);
         //if(telemetryOn)telemetry.addLine("Dist: "+left.getDistance(DistanceUnit.INCH)+", "+right.getDistance(DistanceUnit.INCH));
-        telemetry.addData("ext", grabber_extender.getCurrentPosition());
-        telemetry.addData("slide 1",L1.getCurrentPosition());
+        //telemetry.addData("ext", grabber_extender.getCurrentPosition());
+        //telemetry.addData("slide 1",L1.getCurrentPosition());
 
-        telemetry.addData("tower_top dist", tower_top.getDistance(DistanceUnit.INCH)+"in.");
+        //telemetry.addData("tower_top dist", tower_top.getDistance(DistanceUnit.INCH)+"in.");
+        telemetry.addData("Time: ",t.milliseconds());
         telemetry.update();
     }
 
@@ -336,3 +341,29 @@ public class TeleOp_Drive extends BaseAuto {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
