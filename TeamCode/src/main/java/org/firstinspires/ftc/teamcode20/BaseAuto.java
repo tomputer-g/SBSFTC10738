@@ -185,6 +185,7 @@ public class BaseAuto extends BaseOpMode {
     protected void shutdownVuforia(){
         targetsSkyStone.deactivate();
     }
+
     protected int skystonePosition(){
         VuforiaPositionTime = new ElapsedTime();
         targetsSkyStone.activate();
@@ -215,6 +216,8 @@ public class BaseAuto extends BaseOpMode {
         if(telemetryOn)telemetry.addLine("Vuforia exceeded 1s wait.");
         return 0;
     }
+
+
 
     //TFOD
     protected void initTfod() {

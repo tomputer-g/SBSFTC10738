@@ -43,7 +43,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGR
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
-//@TeleOp
+@TeleOp
 public class VuforiaSkystoneChaserWebcam extends BaseAuto {
 
     private static double distGoal = 0;
@@ -54,14 +54,27 @@ public class VuforiaSkystoneChaserWebcam extends BaseAuto {
     //rotate -90 for heading
 
 
+
+
+
+
     @Override
     public void init() {
+        ElapsedTime t = new ElapsedTime();
         telemetry.setAutoClear(false);
         initVuforiaWebcam();
         initDrivetrain();
         initIMU();
         telemetryOn = true;
+        telemetry.addData("Init time", t.milliseconds());
+        telemetry.update();
     }
+
+
+
+
+
+
 
 
     @Override

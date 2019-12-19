@@ -53,7 +53,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
     @Override
     public void stop() {
-        pwmThread.interrupt();
+        pwmThread.stopThread();
         super.stop();
     }
 
@@ -167,7 +167,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             brake();
         }
 
-        if(L1.getCurrentPosition() > 200){
+        if(L1.getCurrentPosition() < -200){
             if(telemetryOn)telemetry.addLine("Placing block: ultra slow");
             /*if(-this.gamepad1.left_stick_y > ctrl_deadzone){
                 try {
@@ -209,17 +209,36 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         telemetry.update();
     }
 
+
+    //-----------------------------------------------------------------------------------Multithreading-------------------------------------------------------------------------
     private class PWMThread extends Thread{
+        volatile boolean stop = false;
         @Override
         public void run() {
-            while(!isInterrupted()){
+            while(!isInterrupted()&&!stop){
                 if(slow && L1.getCurrentPosition() < -200){
                     telemetry.addLine("Thread running");
                     setAllDrivePowerSlow(-1*(int)gamepad1.left_stick_y,(int)(gamepad1.left_stick_x),-1*(int)(gamepad1.right_stick_x));
                 }
             }
         }
+        public void stopThread(){
+            stop = true;
+        }
     }
+
+
+    private class AutoPlaceBlockThread extends Thread{
+        @Override
+        public void run(){
+            holdSlide((int) (L1.getCurrentPosition() - 12 * encoderPerInch));
+            grabber.setPosition(0);
+            while (near(hold, L1.getCurrentPosition(), 100));//close enough
+
+        }
+    }
+
+
     private void handleRTState(){//call in loop; non-blocking
         switch (RTState) {
             case -1: //none
@@ -320,45 +339,4 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         }
     }
 
-    private double joystick_quad(double input){//up 1.2, down 0.5
-        if(input < 0)
-            return - (input * input);
-        return input * input;
-    }
-
-    private void winstonSetPower(double LF, double LB, double RF, double RB){
-        setAllDrivePower(-LF, -LB, RF, RB);//L motors reversed because it's winston power
-        displayMotorPowers(LF, LB, RF, RB);
-        if(telemetryOn)telemetry.addLine("Result|----X----|----Y----|----R----");
-        if(telemetryOn)telemetry.addLine("           |"+to3dstr(RF-LF-RB+LB)+"|"+to3dstr(RF+RB+LF+LB)+"|"+to3dstr(RF+RB-LF-LB));
-    }
-
-
-    private double linear(double input, double minLimit, double maxLimit){
-        if(input > -ctrl_deadzone && input < ctrl_deadzone){return 0;}
-
-        double m = (maxLimit - minLimit)/(1-ctrl_deadzone);
-        if(input < 0)
-            return m * input - minLimit;
-        return m * input + minLimit;
-    }
-
-    private void movePWM(double vy)throws InterruptedException {//3,9,18
-        if(vy > kickstartSpeed){
-            setAllDrivePower(-vy, -vy, vy, vy);
-        }else if(vy >= lowSpeed){
-            if(telemetryOn)telemetry.addLine("PWM move active");//set 20; change delay between 20 and 0
-            double dutyPercent = (vy - lowSpeed) / (kickstartSpeed-lowSpeed);
-            if(telemetryOn)telemetry.addLine("Duty "+(int)(100*dutyPercent)+"%; high "+to3d(dutyPercent * cycleTimeMS)+", low "+to3d((1-dutyPercent) * cycleTimeMS));
-
-            setAllDrivePower(-kickstartSpeed, -kickstartSpeed, kickstartSpeed, kickstartSpeed);
-            sleep(0,(int)(1000 * dutyPercent * cycleTimeMS));
-            setAllDrivePower(-lowSpeed, -lowSpeed, lowSpeed, lowSpeed);
-            sleep(0, (int)((1-dutyPercent) * cycleTimeMS));
-
-        }else{
-            setAllDrivePower(0);
-            if(telemetryOn)telemetry.addLine("speed is below PWM minimum!");
-        }
-    }
 }
