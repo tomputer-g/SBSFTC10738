@@ -240,17 +240,6 @@ public class BaseOpMode extends OpMode {
         setAllDrivePower(a,b,-c,-d);
     }
 
-    protected void setAllDrivePowerSlow(double dir,double x,double w){
-        w*=1.75;
-        double highp=0.03/.18;
-        try{sleep(0,(int)(100*(1-highp)));} catch(InterruptedException e){telemetry.addLine("Error0");}
-        wait((int)(60*(1-highp)));
-        setAllDrivePower(-.2*dir-.5*x+.2*w,-.2*dir+.5*x+.2*w,.2*dir-.5*x+.2*w,.2*dir+.5*x+.2*w);
-        try{sleep(0,(int)(100*highp));} catch(InterruptedException e){telemetry.addLine("Error1");}
-        setAllDrivePower(-.02*dir-.05*x+.02*w,-.02*dir+.05*x+.02*w,.02*dir-0.05*x+.02*w,.2*dir+.05*x+.2*w);
-
-    }
-
     protected void moveInches(double xInch, double yInch, double speed){
         /*
         sup fuckers

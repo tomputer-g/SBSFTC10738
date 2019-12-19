@@ -33,6 +33,7 @@ public class MoveTest extends TractionControl {
         initIMU();
         initDrivetrain();
         //initVuforiaWebcam();
+        setNewGyro0();
         rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         speed=0;
         dir=1;
