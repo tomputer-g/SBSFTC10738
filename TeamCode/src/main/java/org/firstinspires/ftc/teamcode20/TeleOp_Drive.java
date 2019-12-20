@@ -10,15 +10,13 @@ import static java.lang.Thread.sleep;
 
 @TeleOp(group = "Final")
 public class TeleOp_Drive extends BaseAuto {
-    private boolean BPrimed = false, RBPrimed = false, YPrimed = false, XPrimed = false, LP, RP, LTPrimed = false;
+    private boolean BPrimed = false, RBPrimed = false, YPrimed = false, XPrimed = false, LP, RP, DPRPrimed = false;
     private boolean[] xprime={true};
     private boolean movingExtender = false;
     //slide
     private double kickstartSpeed = 0.18, lowSpeed = 0.03, PWMSpeed = 0.09, cycleTimeMS = 20;
     private boolean platformGrabbed = false;
 
-    private int descendTarget = 0, ascendTarget = 0;
-    private double inchApproachTarget = 10.0, approachSpeed = 0.2;
 
     //Timers
     ElapsedTime t;
@@ -59,11 +57,11 @@ public class TeleOp_Drive extends BaseAuto {
         }
 
 
-        if(this.gamepad1.left_trigger> 0.5) {
-            LTPrimed = true;
+        if(this.gamepad1.dpad_right) {
+            DPRPrimed = true;
         }
-        if(this.gamepad1.left_trigger < 0.5 && LTPrimed){
-            LTPrimed = false;
+        if(!this.gamepad1.dpad_right && DPRPrimed){
+            DPRPrimed = false;
             if(platformGrabbed){//already held
                 platformGrabbed = false;
                 platform_grabber.setPower(1);
@@ -107,7 +105,7 @@ public class TeleOp_Drive extends BaseAuto {
         }
 
         if(this.gamepad1.right_trigger > 0.3
-                && L1.getCurrentPosition() > (-5000 + 12 * encoderPerInch)
+                && (slideEncoderTravel > 0? L1.getCurrentPosition() < (slideEncoderTravel - 12 * slideEncoderPerInch) : L1.getCurrentPosition() > (slideEncoderTravel - 12 * slideEncoderPerInch))
                 && grabber_extender.getCurrentPosition() < -200
                 && RTState == -1){
             //when can go 12in above & extender is extended & not started
@@ -119,8 +117,8 @@ public class TeleOp_Drive extends BaseAuto {
         if(this.gamepad1.right_bumper){RBPrimed = true;}if(!this.gamepad1.right_bumper && RBPrimed){RBPrimed = false;
             movingExtender = true;
             grabber_extender.setPower(1);
-            if(grabber_extender.getCurrentPosition() > -200){
-                grabber_extender.setTargetPosition(-583);
+            if(grabber_extender.getCurrentPosition() > extenderTravel/2){
+                grabber_extender.setTargetPosition(extenderTravel);
             }else{
                 grabber_extender.setTargetPosition(0);
             }
@@ -199,105 +197,7 @@ public class TeleOp_Drive extends BaseAuto {
         telemetry.update();
     }
 
-    private void handleRTState(){//call in loop; non-blocking
-        switch (RTState) {
-            case -1: //none
-                break;
-            case 0: //just pressed button / moving upward 12 in
-                holdSlide((int) (L1.getCurrentPosition() - 12 * encoderPerInch));
-                grabber.setPosition(0);
-                if (near(hold, L1.getCurrentPosition(), 100))//close enough
-                    RTState = 1;
-                break;
-            case 1:
-                grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                grabber_extender.setPower(1);
-                if (near(grabber_extender.getCurrentPosition(), 0, 20)){
-                    grabber_extender.setPower(0);
-                    RTState = 2;
-                }
-                break;
-            case 2://need -.5 power going down, test this
-                holdSet = false;
-                L1.setPower(0.8);
-                L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                L2.setPower(0);
-                if(L1.getCurrentPosition() > -40){
-                    RTState = -1;
-                    L1.setPower(0);
-                    L2.setPower(0);
-                    L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                }
-                break;
-        }
-    }
 
-    private void autoPlace(){
-        switch(autoPlaceState){
-            case -1:
-                break;
-            case 0://approach
-                if(tower_top.getDistance(DistanceUnit.INCH) > inchApproachTarget + 0.5){
-                    setAllDrivePower(-approachSpeed,-approachSpeed,approachSpeed,approachSpeed);
-                }else if(tower_top.getDistance(DistanceUnit.INCH) < inchApproachTarget - 0.5){
-                    setAllDrivePower(approachSpeed, approachSpeed, -approachSpeed, -approachSpeed);
-                }else{
-                    autoPlaceState++;
-                    setAllDrivePower(0);
-                }
-                break;
-            case 1://just started. rise to top of tower
-                setAllDrivePower(0);
-                L1.setPower(-1);
-                L2.setPower(1);
-                if(tower_top.getDistance(DistanceUnit.INCH) > 20.0 || L1.getCurrentPosition() < -5800){
-                    autoPlaceState++;
-                    ascendTarget = L1.getCurrentPosition() - 800;
-                    L1.setPower(-.7);
-                    L2.setPower(.7);
-                    grabber_extender.setPower(1);
-                    grabber_extender.setTargetPosition(-583);
-                    grabber_extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                }
-                break;
-            case 2: //rise a bit more and hold position
-                if(ascendTarget + 50 > L1.getCurrentPosition()){
-                    L1.setPower(0);
-                    L2.setPower(0);
-                    holdSet = false;
-                    holdSlide(L1.getCurrentPosition());
-                    autoPlaceState++;
-                }
-                break;
-            case 3: //extend
-
-                if(near(grabber_extender.getCurrentPosition(), -583, 40)){
-                    autoPlaceState++;
-                    holdSet = false;
-                    descendTarget = L1.getCurrentPosition() + 1350;
-                    L1.setPower(0.7);
-                    L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                    L2.setPower(0);
-                }
-                break;
-            case 4: //drop & hold to correct level (descend 1200) & drop
-                if(near(L1.getCurrentPosition(), descendTarget, 50)){
-                    //autoPlaceState++;
-                    holdSet = false;
-                    L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                    holdSlide(L1.getCurrentPosition());
-                    autoPlaceState = -1;
-                    //grabber.setPosition(grabber_open);
-                }
-                break;
-            /*case 5: //RT - drop
-                holdSet = false;
-                RTState = 0;
-                autoPlaceState = -1;
-
-             */
-        }
-    }
 
     private double joystick_quad(double input){//up 1.2, down 0.5
         if(input < 0)

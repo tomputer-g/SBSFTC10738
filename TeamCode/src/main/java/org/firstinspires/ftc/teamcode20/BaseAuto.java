@@ -49,7 +49,7 @@ public class BaseAuto extends BaseOpMode {
     protected TFObjectDetector tfod;
     //Sensors
     protected ModernRoboticsI2cRangeSensor rangeSensorFront, rangeSensorSide;
-    protected Rev2mDistanceSensor left,right, tower_top;
+    protected Rev2mDistanceSensor left,right;
 
     //IMU
     protected static BNO055IMU imu;
