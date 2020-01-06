@@ -14,6 +14,7 @@ public class BlueAuto extends TractionControl {
     private boolean[] ca={true},cb={true};
     @Override
     public void init() {
+        telemetryOn = false;
         initDrivetrain();
         initIMU();
         initGrabber();
@@ -120,39 +121,11 @@ public class BlueAuto extends TractionControl {
         L1.setPower(0);
         L2.setPower(0);
         grabber.setPosition(grabber_open);
-        /*
-        grabber.setPosition(grabber_open);
-        wait(300);
-        if(pos!=2) {
-            //going bacc for the second blocc
-            moveInchesG(0, -88 + shift, 0.33);
-            turn(-90, 0.37, 3);
-            setNewGyro0();
-            //moveInchesG(8,0,0.4);
-            //grab the second blocc
-            p.reset();
-            while (1.3 < left.getDistance(DistanceUnit.INCH) && 1.3 < right.getDistance(DistanceUnit.INCH) && p.milliseconds() < 1500) {
-                setAllDrivePowerG(-.25, -.25, .25, .25);
-            }
-            //grabber_extender.setPower(1);
-            //wait(500);
-            grabber.setPosition(0.55);
-            wait(300);
-            setAllDrivePower(0);
-            moveInchesG(0, -13, 0.3);
-            grabber.setPosition(grabber_closed);
-            turn(90, 0.4, 3);
-            //grabber_extender.setPower(-1);
-            //wait(500);
-            //grabber_extender.setPower(0);
-            setNewGyro(90);
-            moveInchesG(0, 84 - shift, 0.35);
-
-            //drop
-            grabber.setPosition(grabber_open);
-            wait(200);
-        }
-         */
+        L1.setPower(0.35);
+        L2.setPower(-0.35);
+        wait(1000);
+        L1.setPower(0);
+        L2.setPower(0);
         //park
         setNewGyro(90);
         moveInchesG(0, -19, 0.5);

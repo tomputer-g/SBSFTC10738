@@ -89,18 +89,17 @@ public class BrickGrabTest extends BaseAuto {
                     else if (leftDist < rightDist){
                         setAllDrivePower(LF.getPower() +0.05, LB.getPower()-0.05, RF.getPower()+0.05, RB.getPower()-0.05);
                     }
-                    else 开倒车(LF.getPower() -0.05, LB.getPower()+0.05, RF.getPower()-0.05, RB.getPower()+0.05);
+                    //else 开倒车(LF.getPower() -0.05, LB.getPower()+0.05, RF.getPower()-0.05, RB.getPower()+0.05);
 
                     wait(80);
                 }
             }
-            开倒车(0);
+            //开倒车(0);
         }
 
         telemetry.update();
     }
     @Override
     public void stop() {
-        开倒车(0);
     }
 }
