@@ -620,7 +620,7 @@ public class BaseOpMode extends OpMode {
             case -1: //none
                 break;
             case 0: //just pressed button / moving upward 12 in
-                holdSlide((int) (L1.getCurrentPosition() + 12 * slideEncoderPerInch));
+                holdSlide((int) (L1.getCurrentPosition() + 8 * slideEncoderPerInch));
                 grabber.setPosition(0);
                 if (near(hold, L1.getCurrentPosition(), 100))//close enough
                     RTState = 1;
