@@ -28,6 +28,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         initLinSlide();
         initSensors();
         initPlatformGrabber();
+        initOdometry();
         initIMU();
         grabber.setPosition(grabber_open);
         grabber_extender.setPower(1);
@@ -52,7 +53,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
     @Override
     public void stop() {
-        pwmThread.interrupt();
+        pwmThread.stopThread();
         super.stop();
     }
 
@@ -155,7 +156,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             brake();
         }
 
-        if(L1.getCurrentPosition() > 200){
+        if(L1.getCurrentPosition() < -200){
             if(telemetryOn)telemetry.addLine("Placing block: ultra slow");
             scaledMove(-this.gamepad1.left_stick_x*0.3,-this.gamepad1.left_stick_y*0.15, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x*0.2));//replace with enc-based move
         }else if(!slow){
@@ -171,20 +172,36 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         //if(telemetryOn)telemetry.addLine("Dist: "+left.getDistance(DistanceUnit.INCH)+", "+right.getDistance(DistanceUnit.INCH));
         telemetry.addData("ext", grabber_extender.getCurrentPosition());
         telemetry.addData("slide 1",L1.getCurrentPosition());
-
+        telemetry.addData("Y",L2.getCurrentPosition());
         telemetry.addData("tower_top dist", tower_top.getDistance(DistanceUnit.INCH)+"in.");
         telemetry.update();
     }
 
+
+    //-----------------------------------------------------------------------------------Multithreading-------------------------------------------------------------------------
     private class PWMThread extends Thread{
+        volatile boolean stop = false;
         @Override
         public void run() {
-            while(!isInterrupted()){
-                if(slow && L1.getCurrentPosition() < -200){
-                    telemetry.addLine("Thread running");
+            while(!isInterrupted()&&!stop){
+                if(slow ){
                     setAllDrivePowerSlow(-1*(int)gamepad1.left_stick_y,(int)(gamepad1.left_stick_x),-1*(int)(gamepad1.right_stick_x));
                 }
             }
+        }
+        public void stopThread(){
+            stop = true;
+        }
+    }
+
+
+    private class AutoPlaceBlockThread extends Thread{
+        @Override
+        public void run(){
+            holdSlide((int) (L1.getCurrentPosition() - 12 * slideEncoderPerInch));
+            grabber.setPosition(0);
+            while (near(hold, L1.getCurrentPosition(), 100));//close enough
+
         }
     }
 
