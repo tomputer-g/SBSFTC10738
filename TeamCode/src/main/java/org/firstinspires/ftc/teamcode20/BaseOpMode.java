@@ -545,7 +545,7 @@ public class BaseOpMode extends OpMode {
     }
 
     private int descendTarget = 0, ascendTarget = 0;
-    private double inchApproachTarget = 7.8, approachSpeed = 0.2;
+    private double inchApproachTarget = 8.1, approachSpeed = 0.2;
     protected Rev2mDistanceSensor tower_top;
 
     protected void autoPlace(){
@@ -590,8 +590,8 @@ public class BaseOpMode extends OpMode {
                 if(near(grabber_extender.getCurrentPosition(), extenderTravel, 40)){
                     autoPlaceState++;
                     holdSet = false;
-                    descendTarget = L1.getCurrentPosition() - (int)( 15 * slideEncoderPerInch);
-                    L1.setPower(0.4);
+                    descendTarget = L1.getCurrentPosition() - (int)( 17 * slideEncoderPerInch);
+                    L1.setPower(0.3);
                     L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                     L2.setPower(0);
                 }
