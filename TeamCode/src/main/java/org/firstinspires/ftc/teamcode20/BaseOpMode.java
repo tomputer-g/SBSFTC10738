@@ -127,7 +127,7 @@ public class BaseOpMode extends OpMode {
         RF.setPower(pRF);
         RB.setPower(pRB);
     }
-
+/*
     protected void 开倒车(double pLF, double pLB, double pRF, double pRB){
         LF.setPower(-pLF);
         LB.setPower(-pLB);
@@ -140,6 +140,8 @@ public class BaseOpMode extends OpMode {
         RF.setPower(-power);
         RB.setPower(-power);
     }
+
+ */
     protected void setAllDrivePower(double pX, double pY){
         if(Math.abs(pX)+Math.abs(pY) > 1)
             throw new IllegalArgumentException("setAllDrivePower(px,py) sets a power beyond 1");

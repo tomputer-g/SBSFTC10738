@@ -43,6 +43,7 @@ import org.firstinspires.ftc.teamcode20.BaseAuto;
 import java.util.List;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.RADIANS;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
@@ -51,7 +52,7 @@ public class TFODWebcam extends BaseAuto {
     @Override
     public void init() {
         initTfod();
-        initDrivetrain();
+        //initDrivetrain();
         initIMU();
     }
     @Override
@@ -64,10 +65,13 @@ public class TFODWebcam extends BaseAuto {
             int i = 0;
             for (Recognition recognition : updatedRecognitions) {
                 telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                telemetry.addData(String.format("  left,top (%d)", i), "%.0f , %.0f",
                         recognition.getLeft(), recognition.getTop());
-                telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                telemetry.addData(String.format("  right,bottom (%d)", i), "%.0f , %.0f",
                         recognition.getRight(), recognition.getBottom());
+                telemetry.addData("distance: %d","%.2f",((recognition.getRight()-recognition.getLeft())-720)/-8);
+                //telemetry.addData("Angle ",recognition.estimateAngleToObject(RADIANS));
+                //recognition.
             }
         }
         telemetry.update();
