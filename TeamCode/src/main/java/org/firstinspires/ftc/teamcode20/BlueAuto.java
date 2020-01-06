@@ -19,7 +19,7 @@ public class BlueAuto extends TractionControl {
         initGrabber();
         initLinSlide();
         initPlatformGrabber();
-        initVuforiaWebcam();
+        initVuforia();
         initSensors();
         left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
         right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
