@@ -489,8 +489,8 @@ public class BaseOpMode extends OpMode {
                     L1.setPower(0.2*this.gamepad1.right_stick_y);
                     L2.setPower(-0.2*this.gamepad1.right_stick_y);
                 }else{//dec
-                    L1.setPower(0.1*this.gamepad1.right_stick_y);
-                    L2.setPower(-0.1*this.gamepad1.right_stick_y);
+                    L1.setPower(0.15*this.gamepad1.right_stick_y);
+                    L2.setPower(-0.15*this.gamepad1.right_stick_y);
                 }
 
             }else if (this.gamepad1.right_stick_y < 0 && (slideEncoderTravel > 0? L1.getCurrentPosition() < slideEncoderTravel-50 : L1.getCurrentPosition() > slideEncoderTravel+50)) {
