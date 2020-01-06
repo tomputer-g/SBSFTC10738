@@ -222,7 +222,7 @@ public class BaseAuto extends BaseOpMode {
 
     //TFOD
     protected void initTfod() {
-        if(!VuforiaInit)initVuforiaWebcam();
+        if(!VuforiaInit)initVuforia();
         if(ClassFactory.getInstance().canCreateTFObjectDetector()){
             int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                     "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
