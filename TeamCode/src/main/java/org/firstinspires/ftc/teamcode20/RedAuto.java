@@ -154,6 +154,7 @@ public class RedAuto extends TractionControl {
         }
          */
         //park
+        setNewGyro(-90);
         moveInchesG(0, -19, 0.5);
         requestOpModeStop();
     }
