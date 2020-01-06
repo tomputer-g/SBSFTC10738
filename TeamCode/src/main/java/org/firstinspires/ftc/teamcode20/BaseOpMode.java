@@ -624,13 +624,13 @@ public class BaseOpMode extends OpMode {
         switch (RTState) {
             case -1: //none
                 break;
-            case 0: //just pressed button / moving upward 12 in
+            case 0: //just pressed button / moving upward 8 in
                 holdSlide((int) (L1.getCurrentPosition() + 8 * slideEncoderPerInch));
                 grabber.setPosition(0);
                 if (near(hold, L1.getCurrentPosition(), 100))//close enough
                     RTState = 1;
                 break;
-            case 1:
+            case 1://stow extender
                 grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 grabber_extender.setPower(1);
                 if (near(grabber_extender.getCurrentPosition(), 0, 20)){
@@ -638,7 +638,7 @@ public class BaseOpMode extends OpMode {
                     RTState = 2;
                 }
                 break;
-            case 2://need -.5 power going down, test this
+            case 2://drop to ground
                 holdSet = false;
                 L1.setPower(0.8);
                 L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
