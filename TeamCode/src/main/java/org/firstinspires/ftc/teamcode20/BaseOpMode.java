@@ -172,7 +172,10 @@ public class BaseOpMode extends OpMode {
     }
 
     protected void initOdometry(){
-        if(telemetryOn)telemetry.addLine("BaseOpMode -> initOdometry() still a stub!");
+        //L2 is Y encoder #1
+        L2 = hardwareMap.get(DcMotor.class, "L2");
+        L2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     protected boolean zheng(boolean b, boolean[] f){
@@ -491,8 +494,8 @@ public class BaseOpMode extends OpMode {
                     L1.setPower(0.2*this.gamepad1.right_stick_y);
                     L2.setPower(-0.2*this.gamepad1.right_stick_y);
                 }else{//dec
-                    L1.setPower(0.1*this.gamepad1.right_stick_y);
-                    L2.setPower(-0.1*this.gamepad1.right_stick_y);
+                    L1.setPower(0.15*this.gamepad1.right_stick_y);
+                    L2.setPower(-0.15*this.gamepad1.right_stick_y);
                 }
 
             }else if (this.gamepad1.right_stick_y < 0 && (slideEncoderTravel > 0? L1.getCurrentPosition() < slideEncoderTravel-50 : L1.getCurrentPosition() > slideEncoderTravel+50)) {
@@ -622,7 +625,7 @@ public class BaseOpMode extends OpMode {
             case -1: //none
                 break;
             case 0: //just pressed button / moving upward 12 in
-                holdSlide((int) (L1.getCurrentPosition() + 12 * slideEncoderPerInch));
+                holdSlide((int) (L1.getCurrentPosition() + 8 * slideEncoderPerInch));
                 grabber.setPosition(0);
                 if (near(hold, L1.getCurrentPosition(), 100))//close enough
                     RTState = 1;
