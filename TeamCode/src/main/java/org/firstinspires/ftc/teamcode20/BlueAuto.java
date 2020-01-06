@@ -109,7 +109,7 @@ public class BlueAuto extends TractionControl {
         wait(300);
         platform_grabber.setPower(0);
         moveInchesG(-2.3,0,0.4);
-        turn(-90,0.4,4);
+        turn(-90,0.5,8);
         L1.setPower(-0.35);
         L2.setPower(0.35);
         wait(500);
@@ -154,7 +154,7 @@ public class BlueAuto extends TractionControl {
         }
          */
         //park
-        //moveInchesG(0, -21, 0.5);
+        moveInchesG(0, -19, 0.5);
         requestOpModeStop();
     }
 }
