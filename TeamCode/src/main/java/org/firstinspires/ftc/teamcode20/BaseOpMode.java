@@ -170,7 +170,10 @@ public class BaseOpMode extends OpMode {
     }
 
     protected void initOdometry(){
-        if(telemetryOn)telemetry.addLine("BaseOpMode -> initOdometry() still a stub!");
+        //L2 is Y encoder #1
+        L2 = hardwareMap.get(DcMotor.class, "L2");
+        L2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     protected boolean zheng(boolean b, boolean[] f){

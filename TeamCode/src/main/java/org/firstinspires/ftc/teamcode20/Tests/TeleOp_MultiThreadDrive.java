@@ -28,6 +28,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         initLinSlide();
         initSensors();
         initPlatformGrabber();
+        initOdometry();
         initIMU();
         grabber.setPosition(grabber_open);
         grabber_extender.setPower(1);
@@ -171,7 +172,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         //if(telemetryOn)telemetry.addLine("Dist: "+left.getDistance(DistanceUnit.INCH)+", "+right.getDistance(DistanceUnit.INCH));
         telemetry.addData("ext", grabber_extender.getCurrentPosition());
         telemetry.addData("slide 1",L1.getCurrentPosition());
-
+        telemetry.addData("Y",L2.getCurrentPosition());
         telemetry.addData("tower_top dist", tower_top.getDistance(DistanceUnit.INCH)+"in.");
         telemetry.update();
     }
@@ -183,8 +184,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         @Override
         public void run() {
             while(!isInterrupted()&&!stop){
-                if(slow && L1.getCurrentPosition() < -200){
-                    telemetry.addLine("Thread running");
+                if(slow ){
                     setAllDrivePowerSlow(-1*(int)gamepad1.left_stick_y,(int)(gamepad1.left_stick_x),-1*(int)(gamepad1.right_stick_x));
                 }
             }
