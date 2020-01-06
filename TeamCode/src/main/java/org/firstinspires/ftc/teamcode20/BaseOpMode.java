@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode20;
 
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -240,16 +243,6 @@ public class BaseOpMode extends OpMode {
         setAllDrivePower(a,b,-c,-d);
     }
 
-    protected void setAllDrivePowerSlow(double dir,double x,double w){
-        w*=1.75;
-        double highp=0.03/.18;
-        try{sleep(0,(int)(100*(1-highp)));} catch(InterruptedException e){telemetry.addLine("Error0");}
-        setAllDrivePower(-.2*dir-.5*x+.2*w,-.2*dir+.5*x+.2*w,.2*dir-.5*x+.2*w,.2*dir+.5*x+.2*w);
-        try{sleep(0,(int)(100*highp));} catch(InterruptedException e){telemetry.addLine("Error1");}
-        setAllDrivePower(-.02*dir-.05*x+.02*w,-.02*dir+.05*x+.02*w,.02*dir-0.05*x+.02*w,.2*dir+.05*x+.2*w);
-
-    }
-
     protected void moveInches(double xInch, double yInch, double speed){
         /*
         sup fuckers
@@ -475,16 +468,32 @@ public class BaseOpMode extends OpMode {
     protected int hold = 0;
     protected boolean holdSet;
     //protected double a = 0.2;
-    protected double encoderPerInch = 6500/58;
+
+    protected final int slideEncoderTravel = -5156;//IMPORTANT: if up is negative, this is negative
+    protected final double slideInchTravel = 72.0;//inch of slide travel
+    protected final double slideEncoderPerInch = slideEncoderTravel / slideInchTravel;
     protected int RTState = -1;
     protected final double ctrl_deadzone = 0.2;
     protected boolean slow = false;
+
+    protected final int extenderTravel = -425;
 
     protected int autoPlaceState = -1;
     //---------------slide-----------------
     protected void runSlide(){
         if(this.gamepad1.left_bumper && !near(this.gamepad1.right_stick_y, 0, 0.05)) {//long-dist
-            if (this.gamepad1.right_stick_y < 0 && L1.getCurrentPosition() > -6500) {//up
+            if(grabber_extender.getCurrentPosition() < -300){//very slow
+                holdSet = false;
+                telemetry.addLine("slide is very slow");
+                if(-this.gamepad1.right_stick_y > 0){//asc
+                    L1.setPower(0.2*this.gamepad1.right_stick_y);
+                    L2.setPower(-0.2*this.gamepad1.right_stick_y);
+                }else{//dec
+                    L1.setPower(0.1*this.gamepad1.right_stick_y);
+                    L2.setPower(-0.1*this.gamepad1.right_stick_y);
+                }
+
+            }else if (this.gamepad1.right_stick_y < 0 && (slideEncoderTravel > 0? L1.getCurrentPosition() < slideEncoderTravel-50 : L1.getCurrentPosition() > slideEncoderTravel+50)) {
                 telemetry.addLine("L2 ONLINE");
                 L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 holdSet = false;
@@ -523,10 +532,10 @@ public class BaseOpMode extends OpMode {
     protected void holdSlide(int position){
         if (!holdSet) {
             holdSet = true;
-            hold = Math.min(0,Math.max(-6500,position));
+            hold = (slideEncoderTravel > 0? Math.max(0,Math.min(slideEncoderTravel, position)) : Math.min(0,Math.max(slideEncoderTravel,position)));
         }
-        int error = hold - L1.getCurrentPosition();
-        double power = Math.min(0, Math.max(-1, error/60.0));
+        int error = hold - L1.getCurrentPosition();//this doesn't change for pos/neg directions
+        double power = (slideEncoderTravel > 0? Math.max(0,Math.min(1,error/60.0)) : Math.min(0, Math.max(-1, error/60.0)));
         if(hold == 0){power = 0;}
         if(telemetryOn)telemetry.addData("holding",hold);
         if(telemetryOn)telemetry.addData("error",error);
@@ -535,4 +544,107 @@ public class BaseOpMode extends OpMode {
         L2.setPower(-power);
     }
 
+    private int descendTarget = 0, ascendTarget = 0;
+    private double inchApproachTarget = 8.1, approachSpeed = 0.2;
+    protected Rev2mDistanceSensor tower_top;
+
+    protected void autoPlace(){
+        switch(autoPlaceState){
+            case -1:
+                break;
+            case 0://approach
+                if(tower_top.getDistance(DistanceUnit.INCH) > inchApproachTarget + 0.5){
+                    setAllDrivePower(-approachSpeed,-approachSpeed,approachSpeed,approachSpeed);
+                }else if(tower_top.getDistance(DistanceUnit.INCH) < inchApproachTarget - 0.5){
+                    setAllDrivePower(approachSpeed, approachSpeed, -approachSpeed, -approachSpeed);
+                }else{
+                    setAllDrivePower(0);
+                    autoPlaceState++;
+                }
+                break;
+            case 1://just started. rise to top of tower
+                setAllDrivePower(0);
+                L1.setPower(-1);
+                L2.setPower(1);
+                if(tower_top.getDistance(DistanceUnit.INCH) > 20.0 || (slideEncoderTravel > 0? L1.getCurrentPosition() > slideEncoderTravel : L1.getCurrentPosition() < slideEncoderTravel)){
+                    ascendTarget = L1.getCurrentPosition() + (int)(10*slideEncoderPerInch);
+                    L1.setPower(-.7);
+                    L2.setPower(.7);
+                    grabber_extender.setPower(1);
+                    grabber_extender.setTargetPosition(extenderTravel);
+                    grabber_extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    autoPlaceState++;
+                }
+                break;
+            case 2: //rise a bit more and hold position
+                if(ascendTarget + 50 > L1.getCurrentPosition()){
+                    L1.setPower(0);
+                    L2.setPower(0);
+                    holdSet = false;
+                    holdSlide(L1.getCurrentPosition());
+                    autoPlaceState++;
+                }
+                break;
+            case 3: //extend
+
+                if(near(grabber_extender.getCurrentPosition(), extenderTravel, 40)){
+                    autoPlaceState++;
+                    holdSet = false;
+                    descendTarget = L1.getCurrentPosition() - (int)( 17 * slideEncoderPerInch);
+                    L1.setPower(0.3);
+                    L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                    L2.setPower(0);
+                }
+                break;
+            case 4: //drop & hold to correct level (descend 1200) & drop
+                if(L1.getCurrentPosition() > descendTarget - 50){
+                    //autoPlaceState++;
+                    holdSet = false;
+                    L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    holdSlide(L1.getCurrentPosition());
+                    autoPlaceState = -1;
+                    //grabber.setPosition(grabber_open);
+                }
+                break;
+            /*case 5: //RT - drop
+                holdSet = false;
+                RTState = 0;
+                autoPlaceState = -1;
+
+             */
+        }
+    }
+
+    protected void handleRTState(){//call in loop; non-blocking
+        switch (RTState) {
+            case -1: //none
+                break;
+            case 0: //just pressed button / moving upward 12 in
+                holdSlide((int) (L1.getCurrentPosition() + 12 * slideEncoderPerInch));
+                grabber.setPosition(0);
+                if (near(hold, L1.getCurrentPosition(), 100))//close enough
+                    RTState = 1;
+                break;
+            case 1:
+                grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                grabber_extender.setPower(1);
+                if (near(grabber_extender.getCurrentPosition(), 0, 20)){
+                    grabber_extender.setPower(0);
+                    RTState = 2;
+                }
+                break;
+            case 2://need -.5 power going down, test this
+                holdSet = false;
+                L1.setPower(0.8);
+                L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                L2.setPower(0);
+                if((slideEncoderTravel > 0? L1.getCurrentPosition() < 40: L1.getCurrentPosition() > -40)){
+                    RTState = -1;
+                    L1.setPower(0);
+                    L2.setPower(0);
+                    L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                }
+                break;
+        }
+    }
 }

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static java.lang.Math.sqrt;
+import static java.lang.Thread.sleep;
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
@@ -48,7 +49,7 @@ public class BaseAuto extends BaseOpMode {
     protected TFObjectDetector tfod;
     //Sensors
     protected ModernRoboticsI2cRangeSensor rangeSensorFront, rangeSensorSide;
-    protected Rev2mDistanceSensor left,right, tower_top;
+    protected Rev2mDistanceSensor left,right;
 
     //IMU
     protected static BNO055IMU imu;
@@ -326,6 +327,16 @@ public class BaseAuto extends BaseOpMode {
 
     protected void setAllDrivePowerG(double power){
         setAllDrivePowerG(power,power,power,power);
+    }
+
+    protected void setAllDrivePowerSlow(double dir,double x,double w){
+        w*=1.75;
+        double highp=0.03/.18;
+        try{sleep(0,(int)(100*(1-highp)));} catch(InterruptedException e){telemetry.addLine("Error0");}
+        setAllDrivePowerG(-.2*dir-.5*x+.2*w,-.2*dir+.5*x+.2*w,.2*dir-.5*x+.2*w,.2*dir+.5*x+.2*w);
+        try{sleep(0,(int)(100*highp));} catch(InterruptedException e){telemetry.addLine("Error1");}
+        setAllDrivePowerG(-.02*dir-.05*x+.02*w,-.02*dir+.05*x+.02*w,.02*dir-0.05*x+.02*w,.2*dir+.05*x+.2*w);
+
     }
 
     protected void moveInchesG(double xInch, double yInch, double speed,double Kp){
