@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode20.Tests;
+package org.firstinspires.ftc.teamcode20;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,11 +10,10 @@ import static java.lang.Thread.sleep;
 
 @TeleOp(group = "Final")
 public class TeleOp_MultiThreadDrive extends BaseAuto {
-    private boolean BPrimed = false, RBPrimed = false, YPrimed = false, XPrimed = false, LP, RP, DPRPrimed = false;
+    private boolean BPrimed = false, RBPrimed = false, YPrimed = false, DPRPrimed = false;
     private boolean[] xprime={true};
     private boolean movingExtender = false;
     //slide
-    private double kickstartSpeed = 0.18, lowSpeed = 0.03, PWMSpeed = 0.09, cycleTimeMS = 20;
     private boolean platformGrabbed = false;
 
 
@@ -22,7 +21,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
 
     @Override public void init() {
-        telemetryOn = true;
+        telemetryOn = false;
         initDrivetrain();
         initGrabber();
         initLinSlide();
@@ -59,7 +58,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
     @Override
     public void loop() {
-        if(telemetryOn)telemetry.addData("RT state", RTState);
         runSlide();
         autoPlace();
         if(holdSet){if(telemetryOn)telemetry.addData("Hold pos", hold);}
@@ -166,15 +164,19 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         if(this.gamepad1.left_trigger  > .5 && autoPlaceState == -1){
             autoPlaceState = 0;
         }
-        telemetry.addData("AutoPlaceState", autoPlaceState);
 
-        //if(telemetryOn)telemetry.addData("a",a);
-        //if(telemetryOn)telemetry.addLine("Dist: "+left.getDistance(DistanceUnit.INCH)+", "+right.getDistance(DistanceUnit.INCH));
-        telemetry.addData("ext", grabber_extender.getCurrentPosition());
-        telemetry.addData("slide 1",L1.getCurrentPosition());
-        telemetry.addData("Y",L2.getCurrentPosition());
-        telemetry.addData("tower_top dist", tower_top.getDistance(DistanceUnit.INCH)+"in.");
-        telemetry.update();
+        if(telemetryOn) {
+            telemetry.addData("RT state", RTState);
+            telemetry.addData("AutoPlaceState", autoPlaceState);
+
+            //if(telemetryOn)telemetry.addData("a",a);
+            //if(telemetryOn)telemetry.addLine("Dist: "+left.getDistance(DistanceUnit.INCH)+", "+right.getDistance(DistanceUnit.INCH));
+            telemetry.addData("ext", grabber_extender.getCurrentPosition());
+            telemetry.addData("slide 1", L1.getCurrentPosition());
+            telemetry.addData("Y", L2.getCurrentPosition());
+            telemetry.addData("tower_top dist", tower_top.getDistance(DistanceUnit.INCH) + "in.");
+            telemetry.update();
+        }
     }
 
 
@@ -184,7 +186,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         @Override
         public void run() {
             while(!isInterrupted()&&!stop){
-                if(slow ){
+                if(slow){
                     setAllDrivePowerSlow(-1*(int)gamepad1.left_stick_y,(int)(gamepad1.left_stick_x),-1*(int)(gamepad1.right_stick_x));
                 }
             }

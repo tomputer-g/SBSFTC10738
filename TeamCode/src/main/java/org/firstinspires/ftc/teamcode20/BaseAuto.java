@@ -330,7 +330,7 @@ public class BaseAuto extends BaseOpMode {
     }
 
     protected void setAllDrivePowerSlow(double dir,double x,double w){
-        w*=1.75;
+        w*=1.5;
         double highp=0.03/.18;
         try{sleep(0,(int)(100*(1-highp)));} catch(InterruptedException e){telemetry.addLine("Error0");}
         setAllDrivePower(-.2*dir-.5*x+.2*w,-.2*dir+.5*x+.2*w,.2*dir-.5*x+.2*w,.2*dir+.5*x+.2*w);
