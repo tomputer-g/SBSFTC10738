@@ -45,10 +45,10 @@ public class MoveTest extends TractionControl {
 
     @Override
     public void loop(){
-        if(zheng(this.gamepad1.dpad_left,eee))x-=.01;
-        if(zheng(this.gamepad1.dpad_right,fff))x+=.01;
-        if(zheng(this.gamepad1.dpad_up,ee))y+=.01;
-        if(zheng(this.gamepad1.dpad_down,ff))y-=.01;
+        if(zheng(this.gamepad1.dpad_left,eee))x-=.1;
+        if(zheng(this.gamepad1.dpad_right,fff))x+=.1;
+        if(zheng(this.gamepad1.dpad_up,ee))y+=.1;
+        if(zheng(this.gamepad1.dpad_down,ff))y-=.1;
         if(zheng(this.gamepad1.y,m))dir+=1;
         if(zheng(this.gamepad1.a,mm))dir-=1;
 
@@ -78,6 +78,13 @@ public class MoveTest extends TractionControl {
                 }
             }
             shutdownVuforia();
+        }
+
+        if(zheng(this.gamepad1.right_bumper,lF)){
+            LF.setPower(-1*x);
+            RF.setPower(x);
+            wait(1000);
+            setAllDrivePower(0);
         }
 
         setAllDrivePowerSlow(-1*(int)this.gamepad1.left_stick_y,(int)(this.gamepad1.left_stick_x),-1*(int)(this.gamepad1.right_stick_x));
