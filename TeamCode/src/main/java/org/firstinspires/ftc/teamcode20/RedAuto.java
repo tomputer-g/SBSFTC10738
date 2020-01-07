@@ -21,8 +21,6 @@ public class RedAuto extends TractionControl {
         initPlatformGrabber();
         initVuforia();
         initSensors();
-        left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
-        right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
         setNewGyro0();
         speed=0.3;
         //if(telemetryOn)telemetry.setAutoClear(false);
