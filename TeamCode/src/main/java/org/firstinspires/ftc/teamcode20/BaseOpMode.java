@@ -58,6 +58,7 @@ public class BaseOpMode extends OpMode {
 
     protected void initPlatformGrabber(){
         platform_grabber = hardwareMap.get(DcMotor.class, "platform");
+        platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     protected void initLinSlide(){
@@ -80,7 +81,7 @@ public class BaseOpMode extends OpMode {
         grabber = hardwareMap.get(Servo.class, "grabber");
         grabber_extender = hardwareMap.get(DcMotor.class, "grabber_extender");
         grabber_extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        grabber_extender.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        grabber_extender.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);//?
     }
 
     protected void reset_ENCODER(){
@@ -169,6 +170,7 @@ public class BaseOpMode extends OpMode {
         LB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         RF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         RB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        setMode_RUN_WITHOUT_ENCODER();
     }
 
     protected void initOdometry(){
@@ -503,17 +505,13 @@ public class BaseOpMode extends OpMode {
                 }
 
             }else if (this.gamepad1.right_stick_y < 0 && (slideEncoderTravel > 0? L1.getCurrentPosition() < slideEncoderTravel-50 : L1.getCurrentPosition() > slideEncoderTravel+50)) {
-                telemetry.addLine("L2 ONLINE");
                 L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 holdSet = false;
-                if(telemetryOn)telemetry.addLine("CHANGING SLIDE");
                 L1.setPower(this.gamepad1.right_stick_y);
                 L2.setPower(-this.gamepad1.right_stick_y);
                 telemetry.addData("L1 power",this.gamepad1.right_stick_y);
             } else if (this.gamepad1.right_stick_y > 0 && L1.getCurrentPosition() < 0) {
                 holdSet = false;
-                if(telemetryOn)telemetry.addLine("CHANGING SLIDE");
-                telemetry.addLine("L2 OFFLINE");
                 L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                 L2.setPower(0);
                 if(slow){
@@ -572,7 +570,6 @@ public class BaseOpMode extends OpMode {
                 }
                 break;
             case 1://just started. rise to top of tower
-                setAllDrivePower(0);
                 L1.setPower(-1);
                 L2.setPower(1);
                 if(tower_top.getDistance(DistanceUnit.INCH) > 20.0 || (slideEncoderTravel > 0? L1.getCurrentPosition() > slideEncoderTravel : L1.getCurrentPosition() < slideEncoderTravel)){
