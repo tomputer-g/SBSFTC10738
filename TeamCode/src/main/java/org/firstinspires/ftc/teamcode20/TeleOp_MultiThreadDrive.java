@@ -27,11 +27,10 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         initLinSlide();
         initSensors();
         initPlatformGrabber();
-        initOdometry();
+        //initOdometry();
         initIMU();
         grabber.setPosition(grabber_open);
         grabber_extender.setPower(1);
-        platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         platform_grabber.setPower(1);
         wait(150);
         platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -44,24 +43,20 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         pwmThread = new PWMThread();
     }
 
-    @Override
-    public void start() {
+    @Override public void start() {
         super.start();
         pwmThread.start();
     }
 
-    @Override
-    public void stop() {
+    @Override public void stop() {
         pwmThread.stopThread();
         super.stop();
     }
 
     @Override
     public void loop() {
-        runSlide();
-        autoPlace();
-        if(holdSet){if(telemetryOn)telemetry.addData("Hold pos", hold);}
 
+        //toggle slow
         if(this.gamepad1.y){YPrimed = true;}if(!this.gamepad1.y && YPrimed){YPrimed = false;
             slow = !slow;
         }
@@ -75,7 +70,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             if(platformGrabbed){//already held
                 platformGrabbed = false;
                 platform_grabber.setPower(1);
-                wait(100);
+                wait(100);//TODO: blocks thread?
                 platform_grabber.setPower(0);
             }else{
                 platformGrabbed = true;
@@ -109,6 +104,8 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             holdSet = false;
             RTState = 0;
         }
+        runSlide();
+        autoPlace();
         handleRTState();
 
         if(this.gamepad1.right_bumper){RBPrimed = true;}if(!this.gamepad1.right_bumper && RBPrimed){RBPrimed = false;
@@ -151,26 +148,21 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         }
 
         if(zheng(this.gamepad1.x,xprime)) {
-            brake();
+            brake();//TODO: blocks thread up to 440 ms
         }
 
-        if(L1.getCurrentPosition() < -200){
-            if(telemetryOn)telemetry.addLine("Placing block: ultra slow");
-            scaledMove(-this.gamepad1.left_stick_x*0.3,-this.gamepad1.left_stick_y*0.15, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x*0.2));//replace with enc-based move
-        }else if(!slow){
+        if(!slow){
             scaledMove(-this.gamepad1.left_stick_x,-this.gamepad1.left_stick_y, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x));
         }
 
-        if(this.gamepad1.left_trigger  > .5 && autoPlaceState == -1){
+        if(this.gamepad1.left_trigger  > .5 && autoPlaceState == -1){//dependent on other things?
             autoPlaceState = 0;
         }
 
         if(telemetryOn) {
             telemetry.addData("RT state", RTState);
             telemetry.addData("AutoPlaceState", autoPlaceState);
-
-            //if(telemetryOn)telemetry.addData("a",a);
-            //if(telemetryOn)telemetry.addLine("Dist: "+left.getDistance(DistanceUnit.INCH)+", "+right.getDistance(DistanceUnit.INCH));
+            if(holdSet)telemetry.addData("Hold pos", hold);
             telemetry.addData("ext", grabber_extender.getCurrentPosition());
             telemetry.addData("slide 1", L1.getCurrentPosition());
             telemetry.addData("Y", L2.getCurrentPosition());
@@ -186,24 +178,13 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         @Override
         public void run() {
             while(!isInterrupted()&&!stop){
-                if(slow){
+                if(slow){//what about slide?
                     setAllDrivePowerSlow(-1*(int)gamepad1.left_stick_y,(int)(gamepad1.left_stick_x),-1*(int)(gamepad1.right_stick_x));
                 }
             }
         }
         public void stopThread(){
             stop = true;
-        }
-    }
-
-
-    private class AutoPlaceBlockThread extends Thread{
-        @Override
-        public void run(){
-            holdSlide((int) (L1.getCurrentPosition() - 12 * slideEncoderPerInch));
-            grabber.setPosition(0);
-            while (near(hold, L1.getCurrentPosition(), 100));//close enough
-
         }
     }
 

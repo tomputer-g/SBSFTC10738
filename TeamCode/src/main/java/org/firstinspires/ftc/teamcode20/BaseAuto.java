@@ -248,7 +248,6 @@ public class BaseAuto extends BaseOpMode {
         left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
         right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
         tower_top = hardwareMap.get(Rev2mDistanceSensor.class, "tower_top");
-
     }
 
     //IMU
