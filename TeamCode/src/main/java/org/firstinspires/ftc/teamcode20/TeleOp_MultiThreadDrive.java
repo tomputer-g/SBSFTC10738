@@ -142,7 +142,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
         //If not PWM: run full speed
         if(!slow){
-            scaledMove(-this.gamepad1.left_stick_x,-this.gamepad1.left_stick_y, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x));
+            joystickScaledMove(-this.gamepad1.left_stick_x,-this.gamepad1.left_stick_y, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x));
         }
 
         //LT
@@ -182,6 +182,21 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         }
         public void stopThread(){
             stop = true;
+        }
+    }
+
+    protected void joystickScaledMove(double vx, double vy, double vr){
+        if(Math.abs(vx) > 0.2 || Math.abs(vy) > 0.2 || Math.abs(vr) > 0.2){//deadzone
+            double[] speeds = {vx - vy + vr, -vy - vx + vr, vx + vy + vr, -vx + vy + vr};
+            double absMax = 0;
+            for(double d : speeds)
+                absMax = Math.max(Math.abs(d),absMax);
+            if(absMax <= 1){
+                setAllDrivePower(speeds[0], speeds[1], speeds[2], speeds[3]);
+            }else{
+                if(telemetryOn)telemetry.addLine("SCALED power: max was "+absMax);
+                setAllDrivePower(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
+            }
         }
     }
 
