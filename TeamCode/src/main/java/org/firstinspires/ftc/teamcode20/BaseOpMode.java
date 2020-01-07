@@ -611,12 +611,6 @@ public class BaseOpMode extends OpMode {
                     //grabber.setPosition(grabber_open);
                 }
                 break;
-            /*case 5: //RT - drop
-                holdSet = false;
-                RTState = 0;
-                autoPlaceState = -1;
-
-             */
         }
     }
 
