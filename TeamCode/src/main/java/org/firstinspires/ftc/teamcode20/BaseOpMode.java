@@ -264,15 +264,17 @@ public class BaseOpMode extends OpMode {
         double vy=Math.cos(theta)*speed,vx=Math.sin(theta)*speed;
         double coe=1;
         while(Math.abs(-encoder_x-encoder_y)>Math.abs(-LF.getCurrentPosition())||Math.abs(encoder_x-encoder_y)>Math.abs(-LB.getCurrentPosition())||Math.abs(-encoder_x+encoder_y)>Math.abs(-RF.getCurrentPosition())||Math.abs(encoder_x+encoder_y)>Math.abs(-RB.getCurrentPosition())){
-            if(telemetryOn)telemetry.addData("LF",-LF.getCurrentPosition());
-            if(telemetryOn)telemetry.addData("target",encoder_x-encoder_y);
-            if(telemetryOn)telemetry.addData("LB",-LB.getCurrentPosition());
-            if(telemetryOn)telemetry.addData("target",-encoder_x-encoder_y);
-            if(telemetryOn)telemetry.addData("RF",-RF.getCurrentPosition());
-            if(telemetryOn)telemetry.addData("target",encoder_x+encoder_y);
-            if(telemetryOn)telemetry.addData("RB",-RB.getCurrentPosition());
-            if(telemetryOn)telemetry.addData("target",-encoder_x+encoder_y);
-            if(telemetryOn)telemetry.update();
+            if(telemetryOn) {
+                telemetry.addData("LF", -LF.getCurrentPosition());
+                telemetry.addData("target", encoder_x - encoder_y);
+                telemetry.addData("LB", -LB.getCurrentPosition());
+                telemetry.addData("target", -encoder_x - encoder_y);
+                telemetry.addData("RF", -RF.getCurrentPosition());
+                telemetry.addData("target", encoder_x + encoder_y);
+                telemetry.addData("RB", -RB.getCurrentPosition());
+                telemetry.addData("target", -encoder_x + encoder_y);
+                telemetry.update();
+            }
             //if (p_time < t.milliseconds()) break;
             setAllDrivePower(coe*(-vx-vy),coe*(vx-vy),coe*(-vx+vy),coe*(vx+vy));
             //coe+=.1;
@@ -309,9 +311,11 @@ public class BaseOpMode extends OpMode {
         LB.setTargetPosition(-encoder_x - encoder_y);
         RF.setTargetPosition(encoder_x + encoder_y);
         RB.setTargetPosition(-encoder_x + encoder_y);
-        if(telemetryOn)telemetry.addData("target: ", LF.getTargetPosition());
-        if(telemetryOn)telemetry.addData("initial: ", LF.getCurrentPosition());
-        if(telemetryOn)telemetry.update();
+        if(telemetryOn){
+            telemetry.addData("target: ", LF.getTargetPosition());
+            telemetry.addData("initial: ", LF.getCurrentPosition());
+            telemetry.update();
+        }
         setMode_RESET_AND_RUN_TO_POSITION();
         for(int i = 1;i<acc_s;++i){
             while(((double)LF.getCurrentPosition() / LF.getTargetPosition()) < (acc_p/(acc_s-1)*i));
