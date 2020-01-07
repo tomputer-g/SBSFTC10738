@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode20.Tests;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.teamcode20.BaseAuto;
 import org.firstinspires.ftc.teamcode20.TractionControl;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
@@ -16,11 +18,11 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
 @TeleOp
-public class MoveTest extends TractionControl {
+public class MoveTest extends BaseAuto {
     double speed,x,y, GYRO_kp, side_distance, kp,kd;
     boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
     ElapsedTime t=new ElapsedTime();
-    ModernRoboticsI2cRangeSensor rangeSensorSide;
+    //ModernRoboticsI2cRangeSensor rangeSensorSide;
     int dir;
     private void 三天之内刹了你(){
         setAllDrivePower(1,1,-1,-1);
@@ -81,6 +83,10 @@ public class MoveTest extends TractionControl {
         }
 
         if(zheng(this.gamepad1.right_bumper,lF)){
+            LF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            LB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            RF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            RB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             LF.setPower(-1*x);
             RF.setPower(x);
             wait(1000);
