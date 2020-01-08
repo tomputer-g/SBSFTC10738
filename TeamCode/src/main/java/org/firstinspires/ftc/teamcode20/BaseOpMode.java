@@ -174,10 +174,14 @@ public class BaseOpMode extends OpMode {
     }
 
     protected void initOdometry(){
-        //L2 is Y encoder #1
+        //L2 is Y encoder
+        //platform grabber is X encoder
         L2 = hardwareMap.get(DcMotor.class, "L2");
         L2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        platform_grabber = hardwareMap.get(DcMotor.class, "platform");
+        platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     protected boolean zheng(boolean b, boolean[] f){
