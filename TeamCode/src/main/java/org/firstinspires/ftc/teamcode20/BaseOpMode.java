@@ -32,7 +32,7 @@ public class BaseOpMode extends OpMode {
 
     protected DcMotor LF, LB, RF, RB;
     protected Servo grabber;
-    protected DcMotor grabber_extender;
+    protected Servo grabber_extend;
     protected DcMotor platform_grabber;
     protected DcMotor L1, L2;
     protected final double grabber_open = 0.35, grabber_closed = 0.6;
@@ -79,9 +79,7 @@ public class BaseOpMode extends OpMode {
 
     protected void initGrabber(){
         grabber = hardwareMap.get(Servo.class, "grabber");
-        grabber_extender = hardwareMap.get(DcMotor.class, "grabber_extender");
-        grabber_extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        grabber_extender.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);//?
+        grabber_extend = hardwareMap.get(Servo.class, "grabber_extender");
     }
 
     protected void reset_ENCODER(){
@@ -248,10 +246,6 @@ public class BaseOpMode extends OpMode {
 
     protected void setAllDrivePower1(double a, double b, double c, double d){
         setAllDrivePower(-a,-b,c,d);
-    }
-
-    protected void 好活(double a,double b,double c,double d){
-        setAllDrivePower(a,b,-c,-d);
     }
 
     protected void moveInches(double xInch, double yInch, double speed){
@@ -497,7 +491,7 @@ public class BaseOpMode extends OpMode {
     //---------------slide-----------------
     protected void runSlide(){
         if(this.gamepad1.left_bumper && !near(this.gamepad1.right_stick_y, 0, 0.05)) {//long-dist
-            if(grabber_extender.getCurrentPosition() < -300){//very slow
+            if(grabber_extend.getPosition() < -300){//very slow
                 holdSet = false;
                 telemetry.addLine("slide is very slow");
                 if(-this.gamepad1.right_stick_y > 0){//asc
@@ -581,8 +575,7 @@ public class BaseOpMode extends OpMode {
                     L1.setPower(-.7);
                     L2.setPower(.7);
                     grabber_extender.setPower(1);
-                    grabber_extender.setTargetPosition(extenderTravel);
-                    grabber_extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    grabber_extender.setPosition(extenderTravel);
                     autoPlaceState++;
                 }
                 break;
