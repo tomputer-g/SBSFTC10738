@@ -43,7 +43,6 @@ public class OdometryMoveInchesTest extends BaseAuto {
         telemetry.addData("speed", speed);
         telemetry.addData("kP", moveInches_kP);
         telemetry.update();
-
     }
 
     protected final double odometryEncPerInch = 4096.0/Math.PI;
@@ -52,12 +51,10 @@ public class OdometryMoveInchesTest extends BaseAuto {
     protected void moveInchesGO(double xInch, double yInch, double speed){
         offsetX = platform_grabber.getCurrentPosition();
         offsetY = L2.getCurrentPosition();
-
         speed=Math.abs(speed);
         double multiply_factor=1;
         ElapsedTime stable_timer = null;
         int stable_timer_time = 1500;
-
         int odometryXGoal = offsetX + (int)(xInch * odometryEncPerInch), odometryYGoal = offsetY + (int)(yInch * odometryEncPerInch);
         double theta=(yInch==0)?90:Math.abs(Math.atan(xInch/yInch));
         double vx=(xInch==0)?0:(xInch/Math.abs(xInch)*Math.sin(theta)*speed);
@@ -73,9 +70,6 @@ public class OdometryMoveInchesTest extends BaseAuto {
             telemetry.addData("Y goal",odometryYGoal);
             telemetry.update();
         }
-        //brake
-        //setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
-        //wait(75);
         setAllDrivePower(0);
     }
 
