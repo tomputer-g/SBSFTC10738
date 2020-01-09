@@ -78,7 +78,6 @@ public class RedAuto extends TractionControl {
         setAllDrivePowerG(-.35,.35,-.35,.35);
         wait(1500);
 
-
         //move foundation
         platform_grabber.setPower(-.8);
         wait(200);
