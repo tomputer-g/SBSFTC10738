@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode20.Tests;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * Created by Ziming Gao on 1/16/2018.
@@ -27,27 +28,26 @@ public class ServoTest extends OpMode{
     @Override
     public void init() {
         servo = hardwareMap.get(Servo.class,"servo");
-        servo.setPosition(0.5);
+        servo.setPosition(0);
     }
 
     @Override
     public void loop() {
         if(checkButton(this.gamepad1.x,X)){
-            for(double i=servo.getPosition();i>=0;i-=0.01){
+            servo.setPosition(0.5);
+            for(double i=0.5;i>=0;i-=0.0005){
                 servo.setPosition(i);
-                try {
-                    wait(100);
-                }
-                catch(Exception e){}
+                //try {
+                //    wait(200);
+               // /}lucien eats grass
+                //catch(Exception e){}
             }
         }
         if(checkButton(this.gamepad1.right_bumper,R)){
-            servo.setPosition(0);
-            try{wait(600);}
-            catch(Exception e){}
-            for(double i=0;i<=.5;i+=0.01){
-                servo.setPosition(i);
-                //wait(50);
+            ElapsedTime t=new ElapsedTime();
+            while(true){
+                servo.setPosition(0.5/500*t.milliseconds());
+                if(t.milliseconds()>500)break;
             }
         }
         if(checkButton(this.gamepad1.y,L)){
