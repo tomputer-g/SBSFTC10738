@@ -63,6 +63,8 @@ public class BaseAuto extends BaseOpMode {
 
     //Encoders
     protected double xmult = 1430.5/72, ymult = 1305.25/72;
+    protected double[] coo={0,0};
+    private double xpre=0,ypre=0,theta=0;
 
     protected void initVuforia(){
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -289,13 +291,6 @@ public class BaseAuto extends BaseOpMode {
         return robotError;
     }
 
-    protected void turn(double angle, double speed, double threshold) {
-        setMode_RUN_WITHOUT_ENCODER();
-        setNewGyro0();
-        double p_TURN = 6;
-        while(!onHeading(speed, angle, p_TURN, threshold));
-    }
-
     private boolean onHeading(double turnSpeed, double angle, double PCoeff, double threshold) {
         double   error = getError(angle), steer, speed;
         boolean  onTarget = false;
@@ -313,6 +308,25 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(speed);
         if(telemetryOn)telemetry.update();
         return onTarget;
+    }
+
+    protected void turn(double angle, double speed, double threshold) {
+        setMode_RUN_WITHOUT_ENCODER();
+        setNewGyro0();
+        double p_TURN = 6;
+        while(!onHeading(speed, angle, p_TURN, threshold));
+    }
+
+    protected void updateCoo(){
+        getHeading();
+        double dtheta=imuHeading-theta;
+        double dx=platform_grabber.getCurrentPosition()-xpre;
+        double dy=L2.getCurrentPosition()-ypre;
+        coo[0]+=dx*Math.cos(imuHeading)+dy*Math.sin(imuHeading);
+        coo[1]+=dx*Math.sin(imuHeading)+dy*Math.cos(imuHeading);
+        xpre=platform_grabber.getCurrentPosition();
+        ypre=L2.getCurrentPosition();
+        theta=imuHeading;
     }
 
     protected void setAllDrivePowerG(double a, double b, double c, double d,double Kp){
