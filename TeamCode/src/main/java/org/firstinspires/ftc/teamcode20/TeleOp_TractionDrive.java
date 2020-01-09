@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode20;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
+//4096.0/Math.PI
+//L2 Y
+//
 public class TeleOp_TractionDrive extends TractionControl {
 
     private final double ctrl_deadzone = 0.2;
