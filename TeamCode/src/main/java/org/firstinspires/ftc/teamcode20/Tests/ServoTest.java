@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Created by Ziming Gao on 1/16/2018.
  */
 @TeleOp
-public class ServoTest extends OpMode {
+public class ServoTest extends OpMode{
     boolean x,l,r;
     boolean[] X = {true}, L = {true}, R = {true};
     double p=0.5;
@@ -34,9 +34,18 @@ public class ServoTest extends OpMode {
     public void loop() {
 
         if(checkButton(this.gamepad1.x,X)){
-            p+=1/60;
-            if(p>1)p=1;
-            servo.setPosition(p);
+            for(double i=servo.getPosition();i>=0;i-=0.01){
+                servo.setPosition(i);
+                try {
+                    wait(50);
+                }
+                catch(Exception e){}
+            }
+            servo.setPosition(.5);
+            try {
+                wait(2000);
+            }
+            catch(Exception e){}
         }
         if(checkButton(this.gamepad1.y,R)){
             p-=1/60;
