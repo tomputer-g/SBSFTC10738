@@ -11,6 +11,7 @@ public class TeleOp_DriveOnly extends BaseAuto {
     @Override
     public void init() {
         initDrivetrain();
+        initOdometry();
         LF.setPower(1);
     }
 
@@ -19,7 +20,7 @@ public class TeleOp_DriveOnly extends BaseAuto {
         //for old bot only
         //move(-this.gamepad1.left_stick_x, this.gamepad1.left_stick_y, -this.gamepad1.right_stick_x);
         //new bot
-        move(-this.gamepad1.left_stick_x,-this.gamepad1.left_stick_y, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x));
+        scaledMove(-1*(int)gamepad1.left_stick_y,(int)(gamepad1.left_stick_x),-1*(int)(gamepad1.right_stick_x));
     }
 
     @Override public void start() {
