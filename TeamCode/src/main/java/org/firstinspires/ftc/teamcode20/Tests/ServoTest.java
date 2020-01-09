@@ -34,7 +34,6 @@ public class ServoTest extends OpMode{
     @Override
     public void loop() {
         if(checkButton(this.gamepad1.x,X)){
-            servo.setPosition(0.5);
             for(double i=0.5;i>=0;i-=0.0005){
                 servo.setPosition(i);
                 //try {
@@ -42,6 +41,18 @@ public class ServoTest extends OpMode{
                // /}lucien eats grass
                 //catch(Exception e){}
             }
+            ElapsedTime t = new ElapsedTime();
+            while(t.milliseconds()<4000){
+                if(t.milliseconds()/4000.0<=servo.getPosition()/0.5)
+                    servo.setPosition(servo.getPosition());
+                else
+                    servo.setPosition(0.5);
+            }
+        }
+        if(checkButton(this.gamepad1.y,R)){
+            p-=1/60;
+            if(p<0)p=0;
+            servo.setPosition(p);
         }
         if(checkButton(this.gamepad1.right_bumper,R)){
             ElapsedTime t=new ElapsedTime();
