@@ -33,9 +33,8 @@ public class BlueAuto extends TractionControl {
         //repeat until run out of time; first on other skystones
 
         //initialization
-        grabber_extender.setPower(1);
-        wait(400);
-        grabber_extender.setPower(0.0);
+        grabber_extend1.setPosition(1);
+        grabber_extend2.setPosition(0);
         grabber.setPosition(grabber_open);
         platform_grabber.setPower(1);
         wait(300);
@@ -118,10 +117,9 @@ public class BlueAuto extends TractionControl {
         L1.setPower(-0.35);
         L2.setPower(0.35);
         wait(500);
-        grabber_extender.setPower(-1);
-        wait(800);
+        grabber_extend1.setPosition(0);
+        grabber_extend2.setPosition(1);
         setAllDrivePower(0.0);
-        grabber_extender.setPower(0.0);
         L1.setPower(0.0);
         L2.setPower(0.0);
         grabber.setPosition(grabber_open);
