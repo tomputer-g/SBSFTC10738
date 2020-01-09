@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 
 import static java.lang.Math.pow;
+import static java.lang.Math.round;
 import static java.lang.Math.sqrt;
 import static java.lang.Thread.sleep;
 
@@ -28,7 +29,9 @@ Make sure TeleOp2019Trident and BaseAuto can inherit needed stuff by setting the
  */
 public class BaseOpMode extends OpMode {
 
-    protected boolean telemetryOn = false;
+    protected boolean showTelemetry = false;
+
+    protected ServoThread servoThread = new ServoThread();
     protected DcMotor LF, LB, RF, RB;
     protected Servo grabber;
     protected Servo grabber_extend1, grabber_extend2;
@@ -49,7 +52,7 @@ public class BaseOpMode extends OpMode {
         msStuckDetectInit = 30000;
     }
 
-    @Override public void init() {    }
+    @Override public void init() {}
 
     @Override public void loop() {
 
@@ -80,6 +83,8 @@ public class BaseOpMode extends OpMode {
         grabber = hardwareMap.get(Servo.class, "grabber");
         grabber_extend1 = hardwareMap.get(Servo.class, "servo1");
         grabber_extend2 = hardwareMap.get(Servo.class, "servo2");
+        servoThread = new ServoThread();
+        servoThread.start();
     }
 
     protected void reset_ENCODER(){
@@ -195,10 +200,10 @@ public class BaseOpMode extends OpMode {
     }
 
     protected void displayMotorPowers(double LF, double LB, double RF, double RB){
-        if(telemetryOn)telemetry.addLine();
-        if(telemetryOn)telemetry.addLine(""+to3dstr(LF)+"  |  "+to3dstr(RF));
-        if(telemetryOn)telemetry.addLine("-----------------------");
-        if(telemetryOn)telemetry.addLine(""+to3dstr(LB)+"  |  "+to3dstr(RB));
+        if(showTelemetry)telemetry.addLine();
+        if(showTelemetry)telemetry.addLine(""+to3dstr(LF)+"  |  "+to3dstr(RF));
+        if(showTelemetry)telemetry.addLine("-----------------------");
+        if(showTelemetry)telemetry.addLine(""+to3dstr(LB)+"  |  "+to3dstr(RB));
     }
 
     protected String to3dstr(double d){
@@ -250,7 +255,7 @@ public class BaseOpMode extends OpMode {
         double vy=Math.cos(theta)*speed,vx=Math.sin(theta)*speed;
         double coe=1;
         while(Math.abs(-encoder_x-encoder_y)>Math.abs(-LF.getCurrentPosition())||Math.abs(encoder_x-encoder_y)>Math.abs(-LB.getCurrentPosition())||Math.abs(-encoder_x+encoder_y)>Math.abs(-RF.getCurrentPosition())||Math.abs(encoder_x+encoder_y)>Math.abs(-RB.getCurrentPosition())){
-            if(telemetryOn) {
+            if(showTelemetry) {
                 telemetry.addData("LF", -LF.getCurrentPosition());
                 telemetry.addData("target", encoder_x - encoder_y);
                 telemetry.addData("LB", -LB.getCurrentPosition());
@@ -297,7 +302,7 @@ public class BaseOpMode extends OpMode {
         LB.setTargetPosition(-encoder_x - encoder_y);
         RF.setTargetPosition(encoder_x + encoder_y);
         RB.setTargetPosition(-encoder_x + encoder_y);
-        if(telemetryOn){
+        if(showTelemetry){
             telemetry.addData("target: ", LF.getTargetPosition());
             telemetry.addData("initial: ", LF.getCurrentPosition());
             telemetry.update();
@@ -344,9 +349,9 @@ public class BaseOpMode extends OpMode {
         LB.setTargetPosition(-encoder_x - encoder_y);
         RF.setTargetPosition(encoder_x + encoder_y);
         RB.setTargetPosition(-encoder_x + encoder_y);
-        //if(telemetryOn)telemetry.addData("target: ", LF.getTargetPosition());
-        //if(telemetryOn)telemetry.addData("initial: ", LF.getCurrentPosition());
-        //if(telemetryOn)telemetry.update();
+        //if(showTelemetry)telemetry.addData("target: ", LF.getTargetPosition());
+        //if(showTelemetry)telemetry.addData("initial: ", LF.getCurrentPosition());
+        //if(showTelemetry)telemetry.update();
 
         for(int i = 1;i<acc_s;++i){
             while(((double)LF.getCurrentPosition() / LF.getTargetPosition()) < (acc_p/(acc_s-1)*i));
@@ -411,13 +416,13 @@ public class BaseOpMode extends OpMode {
 
     protected void initLogger(String filename){
         String path = logPrefix + filename;
-        if(telemetryOn)telemetry.addLine("Writing log to "+path);
+        if(showTelemetry)telemetry.addLine("Writing log to "+path);
         try {
             logWriter = new BufferedWriter(new FileWriter(path));
             //writer = new FileWriter(filename);
-            if(telemetryOn)telemetry.addLine("writer create success");
+            if(showTelemetry)telemetry.addLine("writer create success");
         } catch (IOException e) {
-            if(telemetryOn)telemetry.addLine(e.toString());
+            if(showTelemetry)telemetry.addLine(e.toString());
         }
     }
 
@@ -429,7 +434,7 @@ public class BaseOpMode extends OpMode {
         try{
             logWriter.write(message+"\n");
         }catch (Exception e){
-            if(telemetryOn)telemetry.addLine(e.toString());
+            if(showTelemetry)telemetry.addLine(e.toString());
         }
     }
 
@@ -438,7 +443,7 @@ public class BaseOpMode extends OpMode {
             try {
                 logWriter.close();
             } catch (IOException e) {
-                if(telemetryOn)telemetry.addLine(e.toString());
+                if(showTelemetry)telemetry.addLine(e.toString());
             }
         }
     }
@@ -446,7 +451,7 @@ public class BaseOpMode extends OpMode {
     //----------------------------------------------------TeleOp--------------------------------------
 
     protected void scaledMove(double vx, double vy, double vr){
-        if(telemetryOn)telemetry.addLine("vX: "+to3d(vx)+", vY: "+to3d(vy)+", vR: "+to3d(vr));
+        if(showTelemetry)telemetry.addLine("vX: "+to3d(vx)+", vY: "+to3d(vy)+", vR: "+to3d(vr));
         double[] speeds = {vx - vy + vr, -vy - vx + vr, vx + vy + vr, -vx + vy + vr};
         double absMax = 0;
         for(double d : speeds)
@@ -454,7 +459,7 @@ public class BaseOpMode extends OpMode {
         if(absMax <= 1){
             setAllDrivePower(speeds[0], speeds[1], speeds[2], speeds[3]);
         }else{
-            if(telemetryOn)telemetry.addLine("SCALED power: max was "+absMax);
+            if(showTelemetry)telemetry.addLine("SCALED power: max was "+absMax);
             setAllDrivePower(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
         }
     }
@@ -474,10 +479,15 @@ public class BaseOpMode extends OpMode {
     protected final int extenderTravel = -425;
 
     protected int autoPlaceState = -1;
+
+    protected void setExtenderServoPosition(double position){
+        grabber_extend1.setPosition(position);
+        grabber_extend2.setPosition(1-position);
+    }
     //---------------slide-----------------
     protected void runSlide(){
         if(this.gamepad1.left_bumper && !near(this.gamepad1.right_stick_y, 0, 0.05)) {//long-dist
-            if(grabber_extend.getPosition() < -300){//very slow
+            if(servoThread.lastPosition < 0.75){//very slow?
                 holdSet = false;
                 telemetry.addLine("slide is very slow");
                 if(-this.gamepad1.right_stick_y > 0){//asc
@@ -504,7 +514,7 @@ public class BaseOpMode extends OpMode {
                     telemetry.addData("L1 power", 0.4 * this.gamepad1.right_stick_y);
                     L1.setPower(0.4 * this.gamepad1.right_stick_y);
                     //L2.setPower(-0.3 * this.gamepad1.right_stick_y);
-                    //if(telemetryOn)telemetry.addData("power",-((a+(2000-L1.getCurrentPosition())/2000.0)*(0.2-a) ) * this.gamepad1.right_stick_y);
+                    //if(showTelemetry)telemetry.addData("power",-((a+(2000-L1.getCurrentPosition())/2000.0)*(0.2-a) ) * this.gamepad1.right_stick_y);
                 }else{
                     telemetry.addData("L1 power",0.8 * this.gamepad1.right_stick_y);
                     L1.setPower(0.8 * this.gamepad1.right_stick_y);
@@ -528,9 +538,9 @@ public class BaseOpMode extends OpMode {
         int error = hold - L1.getCurrentPosition();//this doesn't change for pos/neg directions
         double power = (slideEncoderTravel > 0? Math.max(0,Math.min(1,error/60.0)) : Math.min(0, Math.max(-1, error/60.0)));
         if(hold == 0){power = 0;}
-        if(telemetryOn)telemetry.addData("holding",hold);
-        if(telemetryOn)telemetry.addData("error",error);
-        if(telemetryOn)telemetry.addData("PWR", power);
+        if(showTelemetry)telemetry.addData("holding",hold);
+        if(showTelemetry)telemetry.addData("error",error);
+        if(showTelemetry)telemetry.addData("PWR", power);
         L1.setPower(power);
         L2.setPower(-power);
     }
@@ -538,6 +548,8 @@ public class BaseOpMode extends OpMode {
     private int descendTarget = 0, ascendTarget = 0;
     private double inchApproachTarget = 8.1, approachSpeed = 0.2;
     protected Rev2mDistanceSensor tower_top;
+
+    protected final double grabberServoOut = 0.5, grabberServoIn = 1;
 
     protected void autoPlace(){
         switch(autoPlaceState){
@@ -560,8 +572,7 @@ public class BaseOpMode extends OpMode {
                     ascendTarget = L1.getCurrentPosition() + (int)(10*slideEncoderPerInch);
                     L1.setPower(-.7);
                     L2.setPower(.7);
-                    grabber_extender.setPower(1);
-                    grabber_extender.setPosition(extenderTravel);
+                    servoThread.setTarget(grabberServoOut);
                     autoPlaceState++;
                 }
                 break;
@@ -576,7 +587,7 @@ public class BaseOpMode extends OpMode {
                 break;
             case 3: //extend
 
-                if(near(grabber_extender.getCurrentPosition(), extenderTravel, 40)){
+                if(near(servoThread.lastPosition, grabberServoOut, 0.05)){
                     autoPlaceState++;
                     holdSet = false;
                     descendTarget = L1.getCurrentPosition() - (int)( 17 * slideEncoderPerInch);
@@ -609,10 +620,8 @@ public class BaseOpMode extends OpMode {
                     RTState = 1;
                 break;
             case 1://stow extender
-                grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                grabber_extender.setPower(1);
-                if (near(grabber_extender.getCurrentPosition(), 0, 20)){
-                    grabber_extender.setPower(0);
+                servoThread.setTarget(grabberServoIn);
+                if (near(servoThread.lastPosition, grabberServoIn, 0.05)){
                     RTState = 2;
                 }
                 break;
@@ -629,5 +638,86 @@ public class BaseOpMode extends OpMode {
                 }
                 break;
         }
+    }
+
+    protected class ServoThread extends Thread{
+        volatile public double targetPosition = 1;
+        volatile public int delayStep = 10;
+        volatile public boolean stop = false;
+        public double lastPosition = 1;
+        private boolean upHeld, downHeld, upWasHeld, downWasHeld;
+
+        //getPosition does not actually read position. We'll have to keep track using a double
+        @Override
+        public void run() {
+            while(!isInterrupted() && !stop){
+                if(gamepad1.dpad_up){upWasHeld = true;}else{upWasHeld = false;}
+                if(gamepad1.dpad_down){downWasHeld = true;}else{downWasHeld = false;}
+
+                try {
+                    sleep(delayStep);
+                } catch (InterruptedException e) {
+                    stop = true;
+                }
+
+                if(gamepad1.dpad_up){upHeld = true;}else{upHeld = false;}
+                if(gamepad1.dpad_down){downHeld = true;}else{downHeld = false;}
+
+
+                //set target if manual input
+
+                if(upHeld && upWasHeld){
+                    setTarget(lastPosition - 0.01);
+                    autoPlaceState = -1;
+                    RTState = -1;
+                }else if(downHeld && downWasHeld){
+                    setTarget(lastPosition + 0.01);
+                    autoPlaceState = -1;
+                    RTState = -1;
+                }
+
+                //execute target
+                if(lastPosition != targetPosition) {
+                    if (targetPosition < 0 || targetPosition > 1) {
+                        throw new IllegalArgumentException("targetPosition is out of range");
+                    }
+                    if (lastPosition < targetPosition) {
+                        setExtenderServoPosition(lastPosition + 0.01);
+                        lastPosition += 0.01;
+                    } else {
+                        setExtenderServoPosition(lastPosition - 0.01);
+                        lastPosition -= 0.01;
+                    }
+                }
+            }
+            lastPosition = roundTo2Dec(lastPosition);
+
+
+        }
+
+
+
+        public void setTargetAndSpeed(int delayPerStep, double target){
+            delayStep = delayPerStep;
+            targetPosition = target;
+        }
+
+        public void setTarget(double target){
+            if(target > 1){target = 1;}
+            if(target < 0){target = 0;}
+            targetPosition = roundTo2Dec(target);
+        }
+
+        public void setDelay(int delayPerStep){
+            delayStep = delayPerStep;
+        }
+
+        public void stopThread(){
+            stop = true;
+        }
+    }
+
+    private double roundTo2Dec(double d){
+        return Math.round(100*d) / 100.0;
     }
 }

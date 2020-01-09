@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode20.BaseAuto;
 
 import static java.lang.Thread.sleep;
 
@@ -12,7 +11,6 @@ import static java.lang.Thread.sleep;
 public class TeleOp_MultiThreadDrive extends BaseAuto {
     private boolean BPrimed = false, RBPrimed = false, YPrimed = false, DPRPrimed = false;
     private boolean[] xprime={true};
-    private boolean movingExtender = false;
     //slide
     private boolean platformGrabbed = false;
 
@@ -21,7 +19,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
 
     @Override public void init() {
-        telemetryOn = false;
+        showTelemetry = false;
         initDrivetrain();
         initGrabber();
         initLinSlide();
@@ -30,16 +28,12 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         //initOdometry();
         initIMU();
         grabber.setPosition(grabber_open);
-        grabber_extender.setPower(1);
+        setExtenderServoPosition(1);//lower the servos
         platform_grabber.setPower(1);
         wait(150);
         platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         platform_grabber.setPower(0);
-        wait(500);
-        grabber_extender.setPower(0);
-        grabber_extender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pwmThread = new PWMThread();
     }
 
@@ -50,6 +44,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
     @Override public void stop() {
         pwmThread.stopThread();
+        servoThread.stopThread();
         super.stop();
     }
 
@@ -93,47 +88,24 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         }
 
         //RT if RT not started - cancels LT
-        if(this.gamepad1.right_trigger > 0.3 && (slideEncoderTravel > 0? L1.getCurrentPosition() < (slideEncoderTravel - 12 * slideEncoderPerInch) : L1.getCurrentPosition() > (slideEncoderTravel - 12 * slideEncoderPerInch)) && grabber_extender.getCurrentPosition() < extenderTravel/2 && RTState == -1){
+        if(this.gamepad1.right_trigger > 0.3 && (slideEncoderTravel > 0? L1.getCurrentPosition() < (slideEncoderTravel - 12 * slideEncoderPerInch) : L1.getCurrentPosition() > (slideEncoderTravel - 12 * slideEncoderPerInch)) && RTState == -1){
             //when can go 12in above & extender is extended & not started
             holdSet = false;
             autoPlaceState = -1;
             RTState = 0;
         }
 
-        //RB toggle extender positions
+        //RB toggle extender positions (not instant!)
         if(this.gamepad1.right_bumper){RBPrimed = true;}if(!this.gamepad1.right_bumper && RBPrimed){RBPrimed = false;
-            movingExtender = true;
-            grabber_extender.setPower(1);
-            if(grabber_extender.getCurrentPosition() > extenderTravel/2){
-                grabber_extender.setTargetPosition(extenderTravel);
+         if(servoThread.lastPosition > 0.75){
+                servoThread.setTarget(grabberServoOut);
             }else{
-                grabber_extender.setTargetPosition(0);
+                servoThread.setTarget(grabberServoIn);
             }
-            grabber_extender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
         //DUP/DDOWN manual extender movement
-        if(this.gamepad1.dpad_up){
-            movingExtender = false;
-            grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            grabber_extender.setPower(-1);
-        }else if(this.gamepad1.dpad_down){
-            movingExtender = false;
-            grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            grabber_extender.setPower(1);
-        }else{
-            if(RTState == -1 && autoPlaceState == -1) {
-                if (!movingExtender) {
-                    grabber_extender.setPower(0);
-                } else {
-                    if (!grabber_extender.isBusy()) {
-                        movingExtender = false;
-                        grabber_extender.setPower(0);
-                        grabber_extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    }
-                }
-            }
-        }
+        //manual extender movement is now in servoThread.
 
         //X brake (nobody cares)
         if(zheng(this.gamepad1.x,xprime)) {
@@ -156,11 +128,11 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         autoPlace();
         handleRTState();
 
-        if(telemetryOn) {
+        if(showTelemetry) {
             telemetry.addData("RT state", RTState);
             telemetry.addData("AutoPlaceState", autoPlaceState);
             if(holdSet)telemetry.addData("Hold pos", hold);
-            telemetry.addData("ext", grabber_extender.getCurrentPosition());
+            telemetry.addData("ext", grabber_extend1.getPosition());
             telemetry.addData("slide 1", L1.getCurrentPosition());
             telemetry.addData("Y", L2.getCurrentPosition());
             telemetry.addData("tower_top dist", tower_top.getDistance(DistanceUnit.INCH) + "in.");
@@ -185,6 +157,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         }
     }
 
+
     protected void joystickScaledMove(double vx, double vy, double vr){
         if(Math.abs(vx) > 0.2 || Math.abs(vy) > 0.2 || Math.abs(vr) > 0.2){//deadzone
             double[] speeds = {vx - vy + vr, -vy - vx + vr, vx + vy + vr, -vx + vy + vr};
@@ -194,7 +167,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             if(absMax <= 1){
                 setAllDrivePower(speeds[0], speeds[1], speeds[2], speeds[3]);
             }else{
-                if(telemetryOn)telemetry.addLine("SCALED power: max was "+absMax);
+                if(showTelemetry)telemetry.addLine("SCALED power: max was "+absMax);
                 setAllDrivePower(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
             }
         }

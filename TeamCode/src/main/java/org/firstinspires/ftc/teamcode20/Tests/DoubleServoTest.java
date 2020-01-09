@@ -20,5 +20,7 @@ public class DoubleServoTest extends OpMode {
     public void loop() {
         servo1.setPosition((1.0-this.gamepad1.left_stick_y)/2.0);
         servo2.setPosition(1.0-((1.0-this.gamepad1.left_stick_y)/2.0));
+        telemetry.addData("pos", (1.0-this.gamepad1.left_stick_y)/2.0);
+        telemetry.update();
     }
 }

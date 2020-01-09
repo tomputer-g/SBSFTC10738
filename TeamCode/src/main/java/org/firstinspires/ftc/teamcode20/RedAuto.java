@@ -1,13 +1,10 @@
 package org.firstinspires.ftc.teamcode20;
 
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.R;
-import org.firstinspires.ftc.teamcode20.BaseAuto;
+
 @Autonomous
 public class RedAuto extends TractionControl {
     private double speed = 0.4;
@@ -23,7 +20,7 @@ public class RedAuto extends TractionControl {
         initSensors();
         setNewGyro0();
         speed=0.3;
-        //if(telemetryOn)telemetry.setAutoClear(false);
+        //if(showTelemetry)telemetry.setAutoClear(false);
     }
     @Override
     public void loop() {
@@ -39,7 +36,7 @@ public class RedAuto extends TractionControl {
         wait(300);
         platform_grabber.setPower(0);
         moveInchesG(0,15,0.3);
-        if(telemetryOn)telemetry.clear();
+        if(showTelemetry)telemetry.clear();
         int pos = skystonePosition();
         shutdownVuforia();
         telemetry.addData("pos: ",pos);

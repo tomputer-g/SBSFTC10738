@@ -38,7 +38,7 @@ public class TeleOp_DriveOnly extends BaseAuto {
         public void run() {
             while(!isInterrupted()&&!stop){
                 updateCoo();
-                if(telemetryOn)telemetry.addLine("(x,y): ("+coo[0]+","+coo[1]+")");
+                if(showTelemetry)telemetry.addLine("(x,y): ("+coo[0]+","+coo[1]+")");
             }
         }
         public void stopThread(){
