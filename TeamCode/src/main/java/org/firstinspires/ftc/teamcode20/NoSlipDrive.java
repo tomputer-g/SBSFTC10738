@@ -58,7 +58,7 @@ public class NoSlipDrive extends BaseAuto {
     }
 
     protected void noslippower(double lf,double lb, double rf, double rb){
-        setAllDrivePowerG(lfdc>odc?lf:lf/2,lbdc>odc?lb:lb/2,rfdc>odc?rf:rf/2,rbdc>odc?rb:rb/2);
+        setAllDrivePowerG(lfdc>odc?lf:0,lbdc>odc?lb:0,rfdc>odc?rf:0,rbdc>odc?rb:0);
     }
 
     private void updateMC(){
