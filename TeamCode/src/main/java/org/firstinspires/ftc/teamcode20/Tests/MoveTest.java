@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 import org.firstinspires.ftc.teamcode20.TractionControl;
 
@@ -19,7 +20,8 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 
 @TeleOp
 public class MoveTest extends BaseAuto {
-    double speed,x,y, GYRO_kp, side_distance, kp,kd;
+    double speed,y, GYRO_kp, side_distance, kp,kd;
+    int x;
     boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
     ElapsedTime t=new ElapsedTime();
     //ModernRoboticsI2cRangeSensor rangeSensorSide;
@@ -47,8 +49,8 @@ public class MoveTest extends BaseAuto {
 
     @Override
     public void loop(){
-        if(zheng(this.gamepad1.dpad_left,eee))x-=.1;
-        if(zheng(this.gamepad1.dpad_right,fff))x+=.1;
+        if(zheng(this.gamepad1.dpad_left,eee))x-=1;
+        if(zheng(this.gamepad1.dpad_right,fff))x+= 1;
         if(zheng(this.gamepad1.dpad_up,ee))y+=.1;
         if(zheng(this.gamepad1.dpad_down,ff))y-=.1;
         if(zheng(this.gamepad1.y,m))dir+=1;
@@ -82,13 +84,33 @@ public class MoveTest extends BaseAuto {
             shutdownVuforia();
         }
 
+
         if(zheng(this.gamepad1.right_bumper,lF)){
+            /*
             LF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             LB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             RF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             RB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             LF.setPower(-1*x);
             RF.setPower(x);
+            wait(1000);
+            setAllDrivePower(0);
+
+             */
+            switch (x){
+                case 0:
+                    LF.setPower(0.5);
+                    break;
+                case 1:
+                    RF.setPower(0.5);
+                    break;
+                case 2:
+                    LB.setPower(0.5);
+                    break;
+                case 3:
+                    RB.setPower(0.5);
+                    break;
+            }
             wait(1000);
             setAllDrivePower(0);
         }

@@ -198,6 +198,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                 setAllDrivePower(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
             }
         }
+        else setAllDrivePower(0);
     }
 
 }

@@ -329,8 +329,7 @@ public class BaseAuto extends BaseOpMode {
     }
 
     protected void setAllDrivePowerSlow(double dir,double x,double w){
-        if(Math.abs(dir)>0.1 || Math.abs(x)>0.1 || Math.abs(w)>0.1) {
-            w *= 1.5;
+            w *= 1.6;
             double highp = 0.03 / .18;
             try {
                 sleep(0, (int) (100 * (1 - highp)));
@@ -344,7 +343,6 @@ public class BaseAuto extends BaseOpMode {
                 telemetry.addLine("Error1");
             }
             setAllDrivePower(-.02 * dir - .05 * x + .02 * w, -.02 * dir + .05 * x + .02 * w, .02 * dir - 0.05 * x + .02 * w, .2 * dir + .05 * x + .2 * w);
-        }
     }
 
     protected void moveInchesG(double xInch, double yInch, double speed,double Kp){
