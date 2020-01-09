@@ -17,12 +17,14 @@ public class MiscTest extends TractionControl {
 
     @Override
     public void init(){
+        /*
         initIMU();
         initDrivetrain();
         //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         initPlatformGrabber();
         initSensors();
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+         */
         speed=0.55;
         y = 15;
         x = 0;
@@ -38,7 +40,7 @@ public class MiscTest extends TractionControl {
     @Override
     public void loop(){
         //x+ left x- right y+ forward y- backward
-        getHeading();
+        //getHeading();
         if(zheng(this.gamepad1.y,e))speed-=0.05;
         if(zheng(this.gamepad1.a,f))speed+=0.05;
         if(zheng(this.gamepad1.dpad_up,ee))square_dist+=0.5;
@@ -126,6 +128,7 @@ public class MiscTest extends TractionControl {
         }
 
         if (zheng(this.gamepad1.right_bumper, m)){
+            /*
             platform_grabber.setPower(-.8);
             wait(300);
             turn(90, 0.67, 5);
@@ -147,6 +150,8 @@ public class MiscTest extends TractionControl {
             }
             setAllDrivePower(0);
             platform_grabber.setPower(0);
+             */
+
         }
         telemetry.update();
     }
