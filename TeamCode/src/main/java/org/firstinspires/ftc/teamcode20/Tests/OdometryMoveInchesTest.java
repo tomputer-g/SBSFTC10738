@@ -43,7 +43,6 @@ public class OdometryMoveInchesTest extends BaseAuto {
         telemetry.addData("speed", speed);
         telemetry.addData("kP", moveInches_kP);
         telemetry.update();
-
     }
 
     protected final double odometryEncPerInch = 4096.0/Math.PI;
@@ -73,9 +72,6 @@ public class OdometryMoveInchesTest extends BaseAuto {
             telemetry.addData("Y goal",odometryYGoal);
             telemetry.update();
         }
-        //brake
-        //setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
-        //wait(75);
         setAllDrivePower(0);
     }
 
