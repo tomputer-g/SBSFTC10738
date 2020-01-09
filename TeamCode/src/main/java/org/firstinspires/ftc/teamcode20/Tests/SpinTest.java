@@ -29,6 +29,7 @@ public class SpinTest extends BaseAuto {
                 grabber_extend1.setPosition(1);
                 grabber_extend2.setPosition(0);
             }
+            last_imu = getHeading();
         }
         if(zheng(this.gamepad1.x, a)){
             speed +=0.05;
@@ -36,6 +37,5 @@ public class SpinTest extends BaseAuto {
         if (zheng(this.gamepad1.y,b)){
             speed-=0.05;
         }
-        last_imu = getHeading();
     }
 }
