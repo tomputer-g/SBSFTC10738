@@ -1,19 +1,16 @@
 package org.firstinspires.ftc.teamcode20;
 
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.R;
-import org.firstinspires.ftc.teamcode20.BaseAuto;
+
 @Autonomous
 public class BlueAuto extends TractionControl {
     private double speed = 0.4;
     @Override
     public void init() {
-        telemetryOn = false;
+        showTelemetry = false;
         initDrivetrain();
         initIMU();
         initGrabber();
@@ -33,15 +30,15 @@ public class BlueAuto extends TractionControl {
         //repeat until run out of time; first on other skystones
 
         //initialization
-        grabber_extender.setPower(1);
+        //grabber_extender.setPower(1);
         wait(400);
-        grabber_extender.setPower(0.0);
+        //grabber_extender.setPower(0.0);
         grabber.setPosition(grabber_open);
         platform_grabber.setPower(1);
         wait(300);
         platform_grabber.setPower(0.0);
         moveInchesG(0,15,0.3);
-        if(telemetryOn)telemetry.clear();
+        if(showTelemetry)telemetry.clear();
         int pos = skystonePosition();
         shutdownVuforia();
 
@@ -118,10 +115,10 @@ public class BlueAuto extends TractionControl {
         L1.setPower(-0.35);
         L2.setPower(0.35);
         wait(500);
-        grabber_extender.setPower(-1);
+        //grabber_extender.setPower(-1);
         wait(800);
         setAllDrivePower(0.0);
-        grabber_extender.setPower(0.0);
+        //grabber_extender.setPower(0.0);
         L1.setPower(0.0);
         L2.setPower(0.0);
         grabber.setPosition(grabber_open);
