@@ -35,14 +35,16 @@ public class ServoTest extends OpMode{
         if(checkButton(this.gamepad1.x,X)){
             for(double i=servo.getPosition();i>=0;i-=0.01){
                 servo.setPosition(i);
-                //try {
-                //    wait(50);
-                //}
-                //catch(Exception e){}
+                try {
+                    wait(100);
+                }
+                catch(Exception e){}
             }
         }
         if(checkButton(this.gamepad1.right_bumper,R)){
             servo.setPosition(0);
+            try{wait(600);}
+            catch(Exception e){}
             for(double i=0;i<=.5;i+=0.01){
                 servo.setPosition(i);
                 //wait(50);
