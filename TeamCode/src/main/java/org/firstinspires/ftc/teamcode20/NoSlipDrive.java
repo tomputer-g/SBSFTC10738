@@ -22,10 +22,10 @@ public class NoSlipDrive extends BaseAuto {
 
     @Override
     public void init() {
-        telemetryOn = true;
         initDrivetrain();
         initPlatformGrabber();
         initIMU();
+        initOdometry();
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         platform_grabber.setPower(1);
         wait(150);
@@ -63,14 +63,14 @@ public class NoSlipDrive extends BaseAuto {
 
     private void updateMC(){
         //update the delta MC
-        lfdc=(double)(LF.getCurrentPosition()-lfmc)/ymult;lbdc=(double)(LB.getCurrentPosition()-lbmc)/ymult;rfdc=(double)(RF.getCurrentPosition()-rfmc)/ymult;rbdc=(double)(RB.getCurrentPosition()-rbmc)/ymult;
+        lfdc=(double)(lfmc-LF.getCurrentPosition())/ymult;lbdc=(double)(lbmc-LB.getCurrentPosition())/ymult;rfdc=(double)(RF.getCurrentPosition()-rfmc)/ymult;rbdc=(double)(RB.getCurrentPosition()-rbmc)/ymult;
         //update the previous MC
         lfmc=LF.getCurrentPosition();lbmc=LB.getCurrentPosition();rfmc=RF.getCurrentPosition();rbmc=RB.getCurrentPosition();
     }
 
     private void updateOC(){
-        odc=(double)(L2.getCurrentPosition()-omc)/odomult);
-        omc=L2.getCurrentPosition();
+            odc = (double) (L2.getCurrentPosition() - omc) / odomult;
+            omc = L2.getCurrentPosition();
     }
 
 
