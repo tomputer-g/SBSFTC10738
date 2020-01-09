@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class ServoTest extends OpMode {
     boolean x,l,r;
     boolean[] X = {true}, L = {true}, R = {true};
+    double p=0.5;
     private Servo servo;
     protected static boolean checkButton(boolean b, boolean[] f){
         //chzch butt on press
@@ -33,22 +34,17 @@ public class ServoTest extends OpMode {
     public void loop() {
 
         if(checkButton(this.gamepad1.x,X)){
-            servo.setPosition(0.5);
+            p+=1/60;
+            if(p>1)p=1;
+            servo.setPosition(p);
+        }
+        if(checkButton(this.gamepad1.y,R)){
+            p-=1/60;
+            if(p<0)p=0;
+            servo.setPosition(p);
         }
 
-        if(checkButton(this.gamepad1.dpad_left,L)){
-            if (servo.getPosition() >= 0.05)
-                servo.setPosition(servo.getPosition() - 0.05);
-            if (servo.getPosition() < 0.05)
-                servo.setPosition(0);
 
-        }
-        else if(checkButton(this.gamepad1.dpad_right,R)){
-            if (servo.getPosition() <= 0.95)
-                servo.setPosition(servo.getPosition() + 0.05);
-            if (servo.getPosition() > 0.95)
-                servo.setPosition(1);
-        }
         telemetry.addData("servo: ",servo.getPosition());
         telemetry.update();
     }
