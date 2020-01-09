@@ -32,7 +32,7 @@ public class BaseOpMode extends OpMode {
 
     protected DcMotor LF, LB, RF, RB;
     protected Servo grabber;
-    protected Servo grabber_extend;
+    protected Servo grabber_extend1, grabber_extend2;
     protected DcMotor platform_grabber;
     protected DcMotor L1, L2;
     protected final double grabber_open = 0.35, grabber_closed = 0.6;
@@ -79,7 +79,8 @@ public class BaseOpMode extends OpMode {
 
     protected void initGrabber(){
         grabber = hardwareMap.get(Servo.class, "grabber");
-        grabber_extend = hardwareMap.get(Servo.class, "grabber_extender");
+        grabber_extend1 = hardwareMap.get(Servo.class, "servo1");
+        grabber_extend2 = hardwareMap.get(Servo.class, "servo2");
     }
 
     protected void reset_ENCODER(){
