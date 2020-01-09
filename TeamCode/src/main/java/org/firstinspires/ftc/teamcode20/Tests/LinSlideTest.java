@@ -18,7 +18,7 @@ public class LinSlideTest extends BaseOpMode {
 
     @Override
     public void init() {
-        telemetryOn = true;
+        showTelemetry = true;
         initLinSlide();//0-2000
         L1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

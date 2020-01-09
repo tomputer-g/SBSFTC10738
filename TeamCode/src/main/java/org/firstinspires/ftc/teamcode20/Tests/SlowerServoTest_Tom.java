@@ -5,8 +5,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode20.BaseOpMode;
+
 @TeleOp
-public class SlowerServoTest_Tom extends OpMode {
+public class SlowerServoTest_Tom extends BaseOpMode {
     private Servo servo1, servo2;
     private boolean xP = false, yP = false, mxbRunning = false;
     private int delayMS = 1000;
@@ -52,6 +54,19 @@ public class SlowerServoTest_Tom extends OpMode {
         }
         if(t.milliseconds() / delayMS >= 1.0){
             mxbRunning = false;
+        }
+    }
+
+
+    ElapsedTime ServoRunTime;
+    private void runExtenderServos(double to, double timePerStep){
+        if(to != grabber_extend1.getPosition()){
+            //move by 0.01 until reached
+            if(to > grabber_extend1.getPosition()){
+                //down
+                setDoubleServoPosition(grabber_extend1.getPosition() + 0.01);
+                
+            }
         }
     }
 

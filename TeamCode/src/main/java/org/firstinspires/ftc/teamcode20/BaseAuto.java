@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static java.lang.Math.sqrt;
 import static java.lang.Thread.sleep;
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
@@ -199,22 +198,22 @@ public class BaseAuto extends BaseOpMode {
                     }
                     if (trackable.getName().equals("Stone Target")) {
                         Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                        if(telemetryOn)telemetry.addLine("Turn " + (int) Math.abs(rotation.thirdAngle + headingDisplacement) + (rotation.thirdAngle + headingDisplacement > 0 ? "deg. CW" : "deg. CCW"));
+                        if(showTelemetry)telemetry.addLine("Turn " + (int) Math.abs(rotation.thirdAngle + headingDisplacement) + (rotation.thirdAngle + headingDisplacement > 0 ? "deg. CW" : "deg. CCW"));
                         VectorF translation = lastLocation.getTranslation();
                         double dist = translation.get(1) / mmPerInch + displacements[1];
-                        if(telemetryOn)telemetry.addLine("Move " + Math.abs(dist) + (dist > 0 ? "in. Right" : "in. Left"));
+                        if(showTelemetry)telemetry.addLine("Move " + Math.abs(dist) + (dist > 0 ? "in. Right" : "in. Left"));
                         if (dist > 5) {
-                            if(telemetryOn)telemetry.addData("Capture time", VuforiaPositionTime.milliseconds());
+                            if(showTelemetry)telemetry.addData("Capture time", VuforiaPositionTime.milliseconds());
                             return 2;
                         }else{
-                            if(telemetryOn)telemetry.addData("Capture time", VuforiaPositionTime.milliseconds());
+                            if(showTelemetry)telemetry.addData("Capture time", VuforiaPositionTime.milliseconds());
                             return 1;
                         }
                     }
                 }
             }
         }
-        if(telemetryOn)telemetry.addLine("Vuforia exceeded 1s wait.");
+        if(showTelemetry)telemetry.addLine("Vuforia exceeded 1s wait.");
         return 0;
     }
 
@@ -303,15 +302,15 @@ public class BaseAuto extends BaseOpMode {
             steer = 0.0;
             speed = 0.0;
             onTarget = true;
-            if(telemetryOn)telemetry.addData("ON TARGET!", error);
+            if(showTelemetry)telemetry.addData("ON TARGET!", error);
         }
         else {
-            if(telemetryOn)telemetry.addData("not ON TARGET!", error);
+            if(showTelemetry)telemetry.addData("not ON TARGET!", error);
             steer = Range.clip(error/180 * PCoeff, -1, 1);
             speed  = turnSpeed * steer;
         }
         setAllDrivePower(speed);
-        if(telemetryOn)telemetry.update();
+        if(showTelemetry)telemetry.update();
         return onTarget;
     }
 

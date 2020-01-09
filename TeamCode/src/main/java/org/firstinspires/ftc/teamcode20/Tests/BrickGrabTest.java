@@ -80,7 +80,7 @@ public class BrickGrabTest extends BaseAuto {
                     setAllDrivePower(-0.2, 0.2, -0.2, 0.2);
                 }
                 else{
-                    好活(v,v,v,v);
+                    //好活(v,v,v,v);
                     vt = ((leftDist + rightDist)/2) / 10 * vr + 0.08;
                     if(near(leftDist, rightDist,8)){
                         if (leftDist < rightDist) setAllDrivePower(v/2 + vr - vt, v/2 + vr + vt, -v/2 + vr - vt, -v/2 + vr + vt);
