@@ -30,7 +30,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
             speed -= 0.05;
         }
         if(this.gamepad1.dpad_right){rightP = true;}if(rightP && !this.gamepad1.dpad_right){ rightP = false;
-            speed += 0.05;
+            speed += 0.05;2
         }
         if(this.gamepad1.dpad_down){downP = true;}if(downP && !this.gamepad1.dpad_down){ downP = false;
             moveInches_kP -= 0.01;
