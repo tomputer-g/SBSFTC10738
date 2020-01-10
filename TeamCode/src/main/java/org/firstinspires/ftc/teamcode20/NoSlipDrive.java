@@ -8,6 +8,7 @@ public class NoSlipDrive extends BaseAuto {
     ElapsedTime t;
     final double ymult = 232.7551/12;
     final double odomult = 4096/Math.PI;
+    int phase =0;
     //button press booleans
     boolean[] rb={true},lb={true};
 
@@ -44,26 +45,35 @@ public class NoSlipDrive extends BaseAuto {
         t.reset();
         //scaledMove(-this.gamepad1.left_stick_x * 0.3, -this.gamepad1.left_stick_y * 0.15, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x * 0.2));
         if(zheng(this.gamepad1.right_bumper,rb)){
-            platform_grabber.setPower(-.8);
-            wait(200);
+            phase = 1;
         }
+        telemetry.addLine("Odo: "+L2.getCurrentPosition());
+        telemetry.addLine("LF: "+LF.getCurrentPosition());
+        telemetry.addLine("LB: "+LB.getCurrentPosition());
+        telemetry.addLine("RF: "+RF.getCurrentPosition());
+        telemetry.addLine("RB: "+RB.getCurrentPosition());
         if(zheng(this.gamepad1.left_bumper,lb)){
+            t = new ElapsedTime();
             for(int i=0;i<1000000;i++) {
-                noslippower(-0.5, -0.5, 0.5, 0.5);
-                updateMC();
-                updateOC();
-                wait(20);
+                if(phase==1)noslippower(-0.5, -0.5, 0.5, 0.5);
+                if(true){
+                    updateMC();
+                    updateOC();
+                    telemetry.addLine("dLF: "+lfdc+" dRF: "+rfdc);
+                    telemetry.addLine("odc: "+odc);
+                    telemetry.update();
+                }
             }
         }
     }
 
     protected void noslippower(double lf,double lb, double rf, double rb){
-        setAllDrivePowerG(lfdc>odc?lf:0,lbdc>odc?lb:0,rfdc>odc?rf:0,rbdc>odc?rb:0);
+        setAllDrivePower(lfdc>=odc?0.1:lf,lbdc>=odc?0.1:lb,rfdc>=odc?0.1:rf,rbdc>=odc?0.1:rb);
     }
 
     private void updateMC(){
         //update the delta MC
-        lfdc=(double)(lfmc-LF.getCurrentPosition())/ymult;lbdc=(double)(lbmc-LB.getCurrentPosition())/ymult;rfdc=(double)(RF.getCurrentPosition()-rfmc)/ymult;rbdc=(double)(RB.getCurrentPosition()-rbmc)/ymult;
+        lfdc=(double)(-lfmc+LF.getCurrentPosition())/ymult;lbdc=(double)(-lbmc+LB.getCurrentPosition())/ymult;rfdc=(double)(-RF.getCurrentPosition()+rfmc)/ymult;rbdc=(double)(-RB.getCurrentPosition()+rbmc)/ymult;
         //update the previous MC
         lfmc=LF.getCurrentPosition();lbmc=LB.getCurrentPosition();rfmc=RF.getCurrentPosition();rbmc=RB.getCurrentPosition();
     }
