@@ -141,7 +141,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     }
 
 
-    //-----------------------------------------------------------------------------------Multithreading-------------------------------------------------------------------------
+    //-------------------------------------Multithreading---------------------------------/
     private class PWMThread extends Thread{
         volatile boolean stop = false;
         @Override
