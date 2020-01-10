@@ -39,8 +39,10 @@ public class RedAuto extends TractionControl {
         if(showTelemetry)telemetry.clear();
         int pos = skystonePosition();
         shutdownVuforia();
-        telemetry.addData("pos: ",pos);
+        if(showTelemetry)
+        { telemetry.addData("pos: ",pos);
         telemetry.update();
+        }
 
         //pos = 1;
         int shift;
