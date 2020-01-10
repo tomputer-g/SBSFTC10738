@@ -63,7 +63,7 @@ public class BlueAuto extends TractionControl {
         wait(300);
         grabber.setPosition(.55);
         setAllDrivePower(0.0);
-
+        wait(600);
         //move back
         moveInchesG(0,-8,0.3);
 
@@ -91,7 +91,7 @@ public class BlueAuto extends TractionControl {
         //drag foundation
         setNewGyro(180);
         double koe=0.7;
-        while(13<rangeSensorFront.getDistance(DistanceUnit.INCH)){
+        while(10<rangeSensorFront.getDistance(DistanceUnit.INCH)){
             setAllDrivePowerG(koe*(0.25-0.55+0.37),koe*(0.25-0.55-0.37),koe*(0.25+0.55+0.37),koe*(0.22+0.5-0.37)); //turn+f0rwrd+side
         }
         setAllDrivePower(0.0);
