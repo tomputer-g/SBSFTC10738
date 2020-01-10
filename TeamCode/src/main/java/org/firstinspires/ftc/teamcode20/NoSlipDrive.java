@@ -2,12 +2,16 @@ package org.firstinspires.ftc.teamcode20;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 @TeleOp
 
 public class NoSlipDrive extends BaseAuto {
     ElapsedTime t;
     final double ymult = 232.7551/12;
     final double odomult = 4096/Math.PI;
+    final double maxodc = 1000;
     int phase =0;
     //button press booleans
     boolean[] rb={true},lb={true};
@@ -20,6 +24,7 @@ public class NoSlipDrive extends BaseAuto {
 
     //delta odometry count, previoud odometry count
     double odc=0; int omc;
+    double od2c=0; int om2c;
 
     @Override
     public void init() {
@@ -27,6 +32,7 @@ public class NoSlipDrive extends BaseAuto {
         initPlatformGrabber();
         initIMU();
         initOdometry();
+        initSensors();
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         platform_grabber.setPower(1);
         wait(150);
@@ -42,8 +48,12 @@ public class NoSlipDrive extends BaseAuto {
 
     @Override
     public void loop() {
-        t.reset();
+        if(zheng(this.gamepad1.left_bumper,lb)){odobrakee();phase=1;}
+        if(phase==0)
+            setAllDrivePower(0.5);
+        //t.reset();
         //scaledMove(-this.gamepad1.left_stick_x * 0.3, -this.gamepad1.left_stick_y * 0.15, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x * 0.2));
+        /*
         if(zheng(this.gamepad1.right_bumper,rb)){
             phase = 1;
         }
@@ -65,6 +75,39 @@ public class NoSlipDrive extends BaseAuto {
                 }
             }
         }
+
+        if(zheng(this.gamepad1.right_bumper,rb)) {
+            platform_grabber.setPower(-.8);
+            wait(200);
+            turn(90, 0.60, 5);
+            /*
+            //winston attempt
+            while (!near(getHeading(),90,3)) setAllDrivePower(-0.6,0.2,0.8,-0.4);
+
+
+            //drag foundation
+            setNewGyro(180);
+            double koe = 1;
+            while (13 < rangeSensorFront.getDistance(DistanceUnit.INCH)) {
+                setAllDrivePowerG(koe * (0.25 - 0.55 + 0.37), koe * (0.25 - 0.55 - 0.37), koe * (0.25 + 0.55 + 0.37), koe * (0.22 + 0.5 - 0.37)); //turn+f0rwrd+side
+                koe=Math.abs(koe-1)<0.2?0.7:1;
+            }
+            setAllDrivePower(0.0);
+
+            //align to the right wall
+            while (30 > rangeSensorFront.getDistance(DistanceUnit.INCH)) {
+                //telemetry.addData("Side",rangeSensorSide.getDistance(DistanceUnit.INCH));
+                //telemetry.update();
+                setAllDrivePowerG(0.5, -0.5, 0.5, -0.5);
+            }
+            setAllDrivePower(0.0);
+
+            //turn and drop the block
+            platform_grabber.setPower(1);
+            wait(300);
+            platform_grabber.setPower(0.0);
+        }
+        */
     }
 
     protected void noslippower(double lf,double lb, double rf, double rb){
@@ -81,6 +124,24 @@ public class NoSlipDrive extends BaseAuto {
     private void updateOC(){
             odc = (double) (L2.getCurrentPosition() - omc) / odomult;
             omc = L2.getCurrentPosition();
+            od2c = (double)(L2.getCurrentPosition() - omc) / odomult;
+            omc = platform_grabber.getCurrentPosition();
+    }
+
+    protected void odobrakee(){
+        while(odc>0){
+            updateOC();
+            setAllDrivePowerG(1,1,-1,-1);
+        }
+        setAllDrivePower(0.0);
+    }
+
+    protected void odobrake(){
+        updateOC();
+        wait(10);
+        updateOC();
+        double power = Math.abs(odc)/odc;
+        setAllDrivePowerG(power,power,-power,-power);
     }
 
 
