@@ -30,10 +30,9 @@ public class BlueAuto extends TractionControl {
         //repeat until run out of time; first on other skystones
 
         //initialization
-        //grabber_extender.setPower(1);
-        wait(400);
-        //grabber_extender.setPower(0.0);
-        grabber.setPosition(grabber_open);
+        grabber_extend1.setPosition(1);
+        grabber_extend2.setPosition(0);
+        grabber.setPosition(1);
         platform_grabber.setPower(1);
         wait(300);
         platform_grabber.setPower(0.0);
@@ -60,12 +59,11 @@ public class BlueAuto extends TractionControl {
         while ( (ymult*8>Math.abs(LB.getCurrentPosition())) && 1.3 < (left.getDistance(DistanceUnit.INCH)) && (1.3 < right.getDistance(DistanceUnit.INCH)) && p.milliseconds()<1500){
             setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
         }
-        wait(600);
-
         //grab 1st block
+        wait(300);
         grabber.setPosition(.55);
         setAllDrivePower(0.0);
-
+        wait(600);
         //move back
         moveInchesG(0,-8,0.3);
 
@@ -92,8 +90,8 @@ public class BlueAuto extends TractionControl {
 
         //drag foundation
         setNewGyro(180);
-        double koe=1;
-        while(13<rangeSensorFront.getDistance(DistanceUnit.INCH)){
+        double koe=0.7;
+        while(10<rangeSensorFront.getDistance(DistanceUnit.INCH)){
             setAllDrivePowerG(koe*(0.25-0.55+0.37),koe*(0.25-0.55-0.37),koe*(0.25+0.55+0.37),koe*(0.22+0.5-0.37)); //turn+f0rwrd+side
         }
         setAllDrivePower(0.0);
@@ -115,10 +113,9 @@ public class BlueAuto extends TractionControl {
         L1.setPower(-0.35);
         L2.setPower(0.35);
         wait(500);
-        //grabber_extender.setPower(-1);
-        wait(800);
+        grabber_extend1.setPosition(0);
+        grabber_extend2.setPosition(1);
         setAllDrivePower(0.0);
-        //grabber_extender.setPower(0.0);
         L1.setPower(0.0);
         L2.setPower(0.0);
         grabber.setPosition(grabber_open);
