@@ -24,7 +24,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
             moveInchesGO(0,12,speed);
         }
         if(this.gamepad1.b){BPrimed = true;}if(BPrimed && !this.gamepad1.b){ BPrimed = false;
-            moveInchesGO(0, -12, speed);
+            moveInchesGO(12, 0, speed);
         }
         if(this.gamepad1.dpad_left){leftP = true;}if(leftP && !this.gamepad1.dpad_left){ leftP = false;
             speed -= 0.05;
