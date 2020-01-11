@@ -141,7 +141,15 @@ public class NoSlipDrive extends BaseAuto {
         wait(10);
         updateOC();
         double power = Math.abs(odc)/odc;
-        setAllDrivePowerG(power,power,-power,-power);
+        if(power>0)
+            while(odc>power){
+                setAllDrivePowerG(power,power,-power,-power);
+            }
+        else
+            while(odc<power){
+                setAllDrivePowerG(power,power,-power,-power);
+            }
+        setAllDrivePower(0.0);
     }
 
 
