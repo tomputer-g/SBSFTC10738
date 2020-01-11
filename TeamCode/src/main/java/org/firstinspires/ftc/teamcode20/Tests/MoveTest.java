@@ -20,7 +20,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 
 @TeleOp
 public class MoveTest extends BaseAuto {
-    private double speed,x,y, GYRO_kp, side_distance, kp,kd,moveInches_kP = 0.3,odometryEncPerInch = 4096.0/Math.PI;
+    private double speed,x,y, GYRO_kp, side_distance, kp,kd,moveInches_kP = 0.3,odometryEncPerInch = 1313.09088;
     private int offsetX = 0, offsetY = 0;
     private boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
     private ElapsedTime t=new ElapsedTime();

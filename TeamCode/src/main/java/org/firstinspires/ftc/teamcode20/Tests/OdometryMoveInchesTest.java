@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode20.BaseOpMode;
 
 @TeleOp
 public class OdometryMoveInchesTest extends BaseAuto {
-    private boolean APrimed = false,BPrimed = false, upP = false, downP = false, leftP = false, rightP = false;
+    private boolean APrimed = false,BPrimed = false, upP = false, downP = false, leftP = false, rightP = false, x = false;
     private double speed = 0.4, moveInches_kP = 0.3;
 
     @Override
@@ -17,9 +17,13 @@ public class OdometryMoveInchesTest extends BaseAuto {
         initDrivetrain();
         initOdometry();
     }
-
+//uh oh
+    //stinky
     @Override
     public void loop() {
+        if(this.gamepad1.x){x = true;}if(x && !this.gamepad1.x){ x = false;
+            turn(90,speed,3);
+        }
         if(this.gamepad1.a){APrimed = true;}if(APrimed && !this.gamepad1.a){ APrimed = false;
             moveInchesGO(0,12,speed);
         }
@@ -44,7 +48,6 @@ public class OdometryMoveInchesTest extends BaseAuto {
         telemetry.addData("kP", moveInches_kP);
         telemetry.update();
     }
-
     protected final double odometryEncPerInch = 1313.13;//4096.0/Math.PI;
     protected int offsetX = 0, offsetY = 0;
 
