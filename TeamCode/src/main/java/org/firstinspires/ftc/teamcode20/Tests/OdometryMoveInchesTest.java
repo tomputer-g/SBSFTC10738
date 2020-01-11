@@ -45,7 +45,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
         telemetry.update();
     }
 
-    protected final double odometryEncPerInch = 4096.0/Math.PI;
+    protected final double odometryEncPerInch = 1313.13;//4096.0/Math.PI;
     protected int offsetX = 0, offsetY = 0;
 
     protected void moveInchesGO(double xInch, double yInch, double speed){
