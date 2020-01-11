@@ -30,7 +30,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
             speed -= 0.05;
         }
         if(this.gamepad1.dpad_right){rightP = true;}if(rightP && !this.gamepad1.dpad_right){ rightP = false;
-            speed += 0.05;2
+            speed += 0.05;
         }
         if(this.gamepad1.dpad_down){downP = true;}if(downP && !this.gamepad1.dpad_down){ downP = false;
             moveInches_kP -= 0.01;
@@ -38,7 +38,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
         if(this.gamepad1.dpad_up){upP = true;}if(upP && !this.gamepad1.dpad_up){ upP = false;
             moveInches_kP += 0.01;
         }
-        //telemetry.addData("enc X", platform_grabber.getCurrentPosition());
+        telemetry.addData("enc X", platform_grabber.getCurrentPosition());
         telemetry.addData("enc Y", L2.getCurrentPosition());
         telemetry.addData("speed", speed);
         telemetry.addData("kP", moveInches_kP);
@@ -60,8 +60,8 @@ public class OdometryMoveInchesTest extends BaseAuto {
         double vx=(xInch==0)?0:(xInch/Math.abs(xInch)*Math.sin(theta)*speed);
         double vy=(yInch==0)?0:(yInch/Math.abs(yInch)*Math.cos(theta)*speed);
         while( stable_timer == null || stable_timer.milliseconds() < stable_timer_time){//!near(odometryYGoal, L2.getCurrentPosition(), 0.5*odometryEncPerInch) && !near(odometryXGoal, platform_grabber.getCurrentPosition(), 0.5*odometryEncPerInch)
-            multiply_factor = Math.min(1, Math.max(-1, moveInches_kP * (L2.getCurrentPosition() - odometryYGoal)/odometryEncPerInch));
-            setAllDrivePowerG(multiply_factor*(-vx+vy),multiply_factor*(vx+vy),multiply_factor*(-vx-vy),multiply_factor*(vx-vy),0.8);
+            multiply_factor = -1*Math.min(1, Math.max(-1, moveInches_kP * (L2.getCurrentPosition() - odometryYGoal)/odometryEncPerInch));
+            setAllDrivePowerG(multiply_factor*(-vx-vy),multiply_factor*(vx-vy),multiply_factor*(-vx+vy),multiply_factor*(vx+vy),0.8);
             if(near(multiply_factor, 0, 0.1) && stable_timer == null){
                 stable_timer = new ElapsedTime();
             }
