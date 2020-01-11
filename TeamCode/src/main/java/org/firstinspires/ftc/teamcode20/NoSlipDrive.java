@@ -129,9 +129,9 @@ public class NoSlipDrive extends BaseAuto {
     }
 
     protected void odobrakee(){
-        while(odc>0){
+        setAllDrivePowerG(1,1,-1,-1);
+        while(odc>2){
             updateOC();
-            setAllDrivePowerG(1,1,-1,-1);
         }
         setAllDrivePower(0.0);
     }
