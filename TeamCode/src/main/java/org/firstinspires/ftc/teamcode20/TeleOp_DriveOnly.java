@@ -10,6 +10,7 @@ public class TeleOp_DriveOnly extends BaseAuto {
 
     @Override
     public void init() {
+        initIMU();
         initDrivetrain();
         initOdometry();
         //LF.setPower(1);
@@ -20,13 +21,16 @@ public class TeleOp_DriveOnly extends BaseAuto {
         //for old bot only
         //move(-this.gamepad1.left_stick_x, this.gamepad1.left_stick_y, -this.gamepad1.right_stick_x);
         //new bot
+        updateCoo();
+        telemetry.addLine("(x,y): (" + (int)(coo[0]) + "," + (int)(coo[1]) + ")");
+        telemetry.update();
         joystickScaledMove(-this.gamepad1.left_stick_x, -this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x));
     }
 
     @Override
     public void start() {
         super.start();
-        thread.start();
+        //thread.start();
     }
 
     @Override
@@ -41,9 +45,7 @@ public class TeleOp_DriveOnly extends BaseAuto {
         @Override
         public void run() {
             while (!isInterrupted() && !stop) {
-                updateCoo();
-                telemetry.addLine("(x,y): (" + coo[0] + "," + coo[1] + ")");
-                telemetry.update();
+
             }
         }
 
@@ -76,3 +78,4 @@ public class TeleOp_DriveOnly extends BaseAuto {
         } else setAllDrivePower(0);
     }
 }
+//have you heARD OF RAID SHADOW LEGENDS?

@@ -23,11 +23,11 @@ public class SpinTest extends BaseAuto {
     @Override
     public void loop() {
         setAllDrivePower(speed);
-        d = (p.milliseconds()/500);
-        if(d - (int) d  < 0.01){
+
+        if(p.milliseconds() >1000){
+            p.reset();
             if(!near(last_imu,getHeading(),10)){
-                grabber_extend1.setPosition(1);
-                grabber_extend2.setPosition(0);
+                servoThread.setTarget(0.99);
             }
             last_imu = getHeading();
         }
