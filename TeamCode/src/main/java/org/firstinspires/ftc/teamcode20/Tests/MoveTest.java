@@ -20,10 +20,10 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 
 @TeleOp
 public class MoveTest extends BaseAuto {
-    double speed,y, GYRO_kp, side_distance, kp,kd;
-    int x;
-    boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
-    ElapsedTime t=new ElapsedTime();
+    private double speed,x,y, GYRO_kp, side_distance, kp,kd,moveInches_kP = 0.3,odometryEncPerInch = 4096.0/Math.PI;
+    private int offsetX = 0, offsetY = 0;
+    private boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
+    private ElapsedTime t=new ElapsedTime();
     //ModernRoboticsI2cRangeSensor rangeSensorSide;
     int dir;
     private void 三天之内刹了你(){
@@ -36,12 +36,13 @@ public class MoveTest extends BaseAuto {
     public void init(){
         initIMU();
         initDrivetrain();
+        initOdometry();
         //initVuforiaWebcam();
         setNewGyro0();
         rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
-        speed=0;
+        speed=0.3;
         dir=1;
-        y = .1;
+        y = 110;
         x = 0;
 
         // 三天之内刹了你();
@@ -50,13 +51,13 @@ public class MoveTest extends BaseAuto {
     @Override
     public void loop(){
         if(zheng(this.gamepad1.dpad_left,eee))x-=1;
-        if(zheng(this.gamepad1.dpad_right,fff))x+= 1;
-        if(zheng(this.gamepad1.dpad_up,ee))y+=.1;
-        if(zheng(this.gamepad1.dpad_down,ff))y-=.1;
-        if(zheng(this.gamepad1.y,m))dir+=1;
-        if(zheng(this.gamepad1.a,mm))dir-=1;
-
+        if(zheng(this.gamepad1.dpad_right,fff))x+=1;
+        if(zheng(this.gamepad1.dpad_up,ee))y+=1;
+        if(zheng(this.gamepad1.dpad_down,ff))y-=1;
+        if(zheng(this.gamepad1.y,m))speed+=.1;
+        if(zheng(this.gamepad1.a,mm))speed-=.1;
         if(zheng(this.gamepad1.b,f))setNewGyro0();
+        /*
         if(zheng(this.gamepad1.left_bumper,bF)){
             ElapsedTime t=new ElapsedTime();
             targetsSkyStone.activate();
@@ -83,43 +84,45 @@ public class MoveTest extends BaseAuto {
             }
             shutdownVuforia();
         }
-
-
-        if(zheng(this.gamepad1.right_bumper,lF)){
-            /*
-            LF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            LB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            RF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            RB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            LF.setPower(-1*x);
-            RF.setPower(x);
-            wait(1000);
-            setAllDrivePower(0);
-
-             */
-            switch (x){
-                case 0:
-                    LF.setPower(0.5);
-                    break;
-                case 1:
-                    RF.setPower(0.5);
-                    break;
-                case 2:
-                    LB.setPower(0.5);
-                    break;
-                case 3:
-                    RB.setPower(0.5);
-                    break;
-            }
+        */
+        if(zheng(this.gamepad1.left_bumper,lF)){
+            setAllDrivePower(-speed,-speed,speed,speed);
             wait(1000);
             setAllDrivePower(0);
         }
-
-        setAllDrivePowerSlow(-1*(int)this.gamepad1.left_stick_y,(int)(this.gamepad1.left_stick_x),-1*(int)(this.gamepad1.right_stick_x));
-
+        if(zheng(this.gamepad1.right_bumper,bF)){
+            moveInchesGO(x,y,speed);
+        }
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
-        telemetry.addData("dir ",dir);
+        telemetry.addData("Speed: ", speed);
+        telemetry.addData("enc X", platform_grabber.getCurrentPosition());
+        telemetry.addData("enc Y", L2.getCurrentPosition());
         telemetry.update();
+    }
+
+    private void moveInchesGO(double xInch, double yInch, double speed){
+        offsetX = platform_grabber.getCurrentPosition();
+        offsetY = L2.getCurrentPosition();
+        speed=Math.abs(speed);
+        double multiply_factor=1;
+        ElapsedTime stable_timer = null;
+        int stable_timer_time = 1500;
+        int odometryXGoal = offsetX + (int)(xInch * odometryEncPerInch), odometryYGoal = offsetY + (int)(yInch * odometryEncPerInch);
+        double theta=(yInch==0)?90:Math.abs(Math.atan(xInch/yInch));
+        double vx=(xInch==0)?0:(xInch/Math.abs(xInch)*Math.sin(theta)*speed);
+        double vy=(yInch==0)?0:(yInch/Math.abs(yInch)*Math.cos(theta)*speed);
+        while( stable_timer == null || stable_timer.milliseconds() < stable_timer_time){//!near(odometryYGoal, L2.getCurrentPosition(), 0.5*odometryEncPerInch) && !near(odometryXGoal, platform_grabber.getCurrentPosition(), 0.5*odometryEncPerInch)
+            multiply_factor = Math.min(1, Math.max(-1, moveInches_kP * (L2.getCurrentPosition() - odometryYGoal)/odometryEncPerInch));
+            setAllDrivePowerG(multiply_factor*(-vx+vy),multiply_factor*(vx+vy),multiply_factor*(-vx-vy),multiply_factor*(vx-vy),0.8);
+            if(near(multiply_factor, 0, 0.1) && stable_timer == null){
+                stable_timer = new ElapsedTime();
+            }
+            if(stable_timer != null)telemetry.addData("stable timer", stable_timer.milliseconds());
+            telemetry.addData("current",L2.getCurrentPosition());
+            telemetry.addData("Y goal",odometryYGoal);
+            telemetry.update();
+        }
+        setAllDrivePower(0);
     }
 }
