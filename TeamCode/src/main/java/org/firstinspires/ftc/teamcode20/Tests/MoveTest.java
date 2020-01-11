@@ -20,7 +20,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 
 @TeleOp
 public class MoveTest extends BaseAuto {
-    private double speed,x,y, GYRO_kp, side_distance, kp,kd,moveInches_kP = 0.3,odometryEncPerInch = 1313.09088;
+    private double speed,x,y, GYRO_kp, side_distance, kp,kd,moveInches_kP = 0.5,odometryEncPerInch =1313.13;
     private int offsetX = 0, offsetY = 0;
     private boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
     private ElapsedTime t=new ElapsedTime();
@@ -50,8 +50,8 @@ public class MoveTest extends BaseAuto {
 
     @Override
     public void loop(){
-        if(zheng(this.gamepad1.dpad_left,eee))x-=1;
-        if(zheng(this.gamepad1.dpad_right,fff))x+=1;
+        if(zheng(this.gamepad1.dpad_left,eee))x-=10;
+        if(zheng(this.gamepad1.dpad_right,fff))x+=10;
         if(zheng(this.gamepad1.dpad_up,ee))y+=1;
         if(zheng(this.gamepad1.dpad_down,ff))y-=1;
         if(zheng(this.gamepad1.y,m))speed+=.1;
@@ -86,9 +86,11 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.left_bumper,lF)){
+            /*
             setAllDrivePower(-speed,-speed,speed,speed);
             wait(1000);
             setAllDrivePower(0);
+             */
         }
         if(zheng(this.gamepad1.right_bumper,bF)){
             moveInchesGO(x,y,speed);
@@ -101,7 +103,7 @@ public class MoveTest extends BaseAuto {
         telemetry.update();
     }
 
-    private void moveInchesGO(double xInch, double yInch, double speed){
+    protected void moveInchesGO(double xInch, double yInch, double speed){
         offsetX = platform_grabber.getCurrentPosition();
         offsetY = L2.getCurrentPosition();
         speed=Math.abs(speed);
@@ -113,8 +115,8 @@ public class MoveTest extends BaseAuto {
         double vx=(xInch==0)?0:(xInch/Math.abs(xInch)*Math.sin(theta)*speed);
         double vy=(yInch==0)?0:(yInch/Math.abs(yInch)*Math.cos(theta)*speed);
         while( stable_timer == null || stable_timer.milliseconds() < stable_timer_time){//!near(odometryYGoal, L2.getCurrentPosition(), 0.5*odometryEncPerInch) && !near(odometryXGoal, platform_grabber.getCurrentPosition(), 0.5*odometryEncPerInch)
-            multiply_factor = Math.min(1, Math.max(-1, moveInches_kP * (L2.getCurrentPosition() - odometryYGoal)/odometryEncPerInch));
-            setAllDrivePowerG(multiply_factor*(-vx+vy),multiply_factor*(vx+vy),multiply_factor*(-vx-vy),multiply_factor*(vx-vy),0.8);
+            multiply_factor = -1*Math.min(1, Math.max(-1, moveInches_kP * (L2.getCurrentPosition() - odometryYGoal)/odometryEncPerInch));
+            setAllDrivePowerG(multiply_factor*(-vx-vy),multiply_factor*(vx-vy),multiply_factor*(-vx+vy),multiply_factor*(vx+vy),0.8);
             if(near(multiply_factor, 0, 0.1) && stable_timer == null){
                 stable_timer = new ElapsedTime();
             }
