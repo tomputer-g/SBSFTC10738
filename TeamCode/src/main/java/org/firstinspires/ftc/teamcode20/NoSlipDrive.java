@@ -12,6 +12,7 @@ public class NoSlipDrive extends BaseAuto {
     final double ymult = 232.7551/12;
     final double odomult = 4096/Math.PI;
     final double maxodc = 1000;
+    double mili = 0;
     int phase =0;
     //button press booleans
     boolean[] rb={true},lb={true};
@@ -48,7 +49,12 @@ public class NoSlipDrive extends BaseAuto {
 
     @Override
     public void loop() {
+<<<<<<< Updated upstream
         if(zheng(this.gamepad1.left_bumper,lb)){odobrakee();phase=1;}
+=======
+        if(zheng(this.gamepad1.left_bumper,lb)){odobrake();phase=1;}
+        telemetry.addLine(mili+" ");
+>>>>>>> Stashed changes
         if(phase==0)
             setAllDrivePower(0.5);
         //t.reset();
@@ -128,12 +134,36 @@ public class NoSlipDrive extends BaseAuto {
             omc = platform_grabber.getCurrentPosition();
     }
 
+<<<<<<< Updated upstream
     protected void odobrakee(){
         setAllDrivePowerG(1,1,-1,-1);
         while(odc>2){
             updateOC();
         }
+=======
+    protected void odobrake(){
+        t = new ElapsedTime();
+        double angle = getHeading();
+        setAllDrivePower(0);
+        wait(10);
+        setAllDrivePower(1,1,-1,-1);
+        while(odc>0){
+            updateOC();
+        }
+        while(odc>0){
+            updateOC();
+        }
+        for(int i=0;i<5;i++){
+            double koe=1+(10-i)/15;
+            setAllDrivePower(speed/koe,speed/koe,-speed/koe,-speed/koe);
+            wait(20);
+            setAllDrivePower(0);
+        }
+>>>>>>> Stashed changes
         setAllDrivePower(0.0);
+
+        turn(-getHeading()+angle,.5,2);
+        mili=t.milliseconds();
     }
 
     protected void odobrake(){

@@ -86,7 +86,42 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.left_bumper,lF)){
+<<<<<<< Updated upstream
             /*
+=======
+            ElapsedTime t=new ElapsedTime();
+            setAllDrivePower(-speed,-speed,speed,speed);
+            wait(1200);
+            t.reset();
+            //setAllDrivePower(-.25,-.25,.25,.25);
+            setAllDrivePower(0);
+            int a=1000;
+            while(!near(a,0,50)){
+                a=L2.getCurrentPosition();
+                wait(10);
+                a=L2.getCurrentPosition()-a;
+                if(a<307){
+                    x=t.milliseconds();
+                    setAllDrivePower(0);
+                    setAllDrivePower(.03,.03,-.03,-.03);
+                    t.reset();
+                    break;
+                }
+            }
+            while(!near(a,0,50)){
+                a=L2.getCurrentPosition();
+                wait(10);
+                a=L2.getCurrentPosition()-a;
+            }
+            y=t.milliseconds();
+            setAllDrivePower(0);
+        }
+
+        if(zheng(this.gamepad1.right_bumper,bF)){
+            //moveInchesGO(x,y,speed);
+            //setAllDrivePower(0);
+            //setAllDrivePower(speeed,speeed,-speeed,-speeed);
+>>>>>>> Stashed changes
             setAllDrivePower(-speed,-speed,speed,speed);
             wait(1000);
             setAllDrivePower(0);
