@@ -38,7 +38,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
         if(this.gamepad1.dpad_up){upP = true;}if(upP && !this.gamepad1.dpad_up){ upP = false;
             moveInches_kP += 0.01;
         }
-        //telemetry.addData("enc X", platform_grabber.getCurrentPosition());
+        telemetry.addData("enc X", platform_grabber.getCurrentPosition());
         telemetry.addData("enc Y", L2.getCurrentPosition());
         telemetry.addData("speed", speed);
         telemetry.addData("kP", moveInches_kP);
