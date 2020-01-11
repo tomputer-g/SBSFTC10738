@@ -19,13 +19,12 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
 
     @Override public void init() {
-        showTelemetry = false;
+        showTelemetry = true;
         initDrivetrain();
         initGrabber();
         initLinSlide();
         initSensors();
         initPlatformGrabber();
-        //initOdometry();
         initIMU();
         grabber.setPosition(grabber_open);
         setExtenderServoPosition(1);//lower the servos
@@ -46,6 +45,13 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         pwmThread.stopThread();
         servoThread.stopThread();
         super.stop();
+    }
+
+    @Override
+    public void init_loop() {
+        super.init_loop();
+        telemetry.addData("servoThread is",servoThread.getState());
+        telemetry.update();
     }
 
     @Override
@@ -129,6 +135,9 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         handleRTState();
 
         if(showTelemetry) {
+            telemetry.addData("servoThread is",servoThread.getState());
+            telemetry.addData("target",servoThread.targetPosition);
+            telemetry.addData("actual",servoThread.lastPosition);
             telemetry.addData("RT state", RTState);
             telemetry.addData("AutoPlaceState", autoPlaceState);
             if(holdSet)telemetry.addData("Hold pos", hold);
