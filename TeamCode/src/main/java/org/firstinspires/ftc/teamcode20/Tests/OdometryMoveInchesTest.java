@@ -24,7 +24,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
             moveInchesGO(0,12,speed);
         }
         if(this.gamepad1.b){BPrimed = true;}if(BPrimed && !this.gamepad1.b){ BPrimed = false;
-            moveInchesGO(0, -12, speed);
+            moveInchesGO(12, 0, speed);
         }
         if(this.gamepad1.dpad_left){leftP = true;}if(leftP && !this.gamepad1.dpad_left){ leftP = false;
             speed -= 0.05;
@@ -38,7 +38,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
         if(this.gamepad1.dpad_up){upP = true;}if(upP && !this.gamepad1.dpad_up){ upP = false;
             moveInches_kP += 0.01;
         }
-        //telemetry.addData("enc X", platform_grabber.getCurrentPosition());
+        telemetry.addData("enc X", platform_grabber.getCurrentPosition());
         telemetry.addData("enc Y", L2.getCurrentPosition());
         telemetry.addData("speed", speed);
         telemetry.addData("kP", moveInches_kP);

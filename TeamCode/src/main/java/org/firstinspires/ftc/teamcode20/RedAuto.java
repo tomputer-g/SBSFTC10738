@@ -29,10 +29,9 @@ public class RedAuto extends TractionControl {
         //after pickup: turn 90 deg. move to platform, drop off
         //move to platform, drag into position, release
         //repeat until run out of time; first on other skystones
-        //grabber_extender.setPower(1);
-        wait(400);
-        //grabber_extender.setPower(0);
-        grabber.setPosition(grabber_open);
+        grabber_extend1.setPosition(1);
+        grabber_extend2.setPosition(0);
+        grabber.setPosition(0);
         platform_grabber.setPower(1);
         wait(300);
         platform_grabber.setPower(0);
@@ -40,8 +39,10 @@ public class RedAuto extends TractionControl {
         if(showTelemetry)telemetry.clear();
         int pos = skystonePosition();
         shutdownVuforia();
-        telemetry.addData("pos: ",pos);
+        if(showTelemetry)
+        { telemetry.addData("pos: ",pos);
         telemetry.update();
+        }
 
         //pos = 1;
         int shift;
@@ -61,7 +62,7 @@ public class RedAuto extends TractionControl {
         while ( (ymult*8>Math.abs(LB.getCurrentPosition())) && 1.3 < (left.getDistance(DistanceUnit.INCH)) && (1.3 < right.getDistance(DistanceUnit.INCH)) && p.milliseconds()<1500){
             setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
         }
-        wait(600);
+        wait(1000);
         grabber.setPosition(.55);
         setAllDrivePower(0);
         moveInchesG(0,-8,0.3);
@@ -75,7 +76,6 @@ public class RedAuto extends TractionControl {
         //moveInchesG(18,0,.35)
         setAllDrivePowerG(-.35,.35,-.35,.35);
         wait(1500);
-
 
         //move foundation
         platform_grabber.setPower(-.8);
@@ -108,10 +108,9 @@ public class RedAuto extends TractionControl {
         L1.setPower(-0.35);
         L2.setPower(0.35);
         wait(500);
-        //grabber_extender.setPower(-1);
-        wait(800);
+        grabber_extend1.setPosition(0);
+        grabber_extend2.setPosition(1);
         setAllDrivePower(0);
-        //grabber_extender.setPower(0);
         L1.setPower(0);
         L2.setPower(0);
         grabber.setPosition(grabber_open);

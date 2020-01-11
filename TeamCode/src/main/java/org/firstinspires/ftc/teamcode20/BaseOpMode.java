@@ -37,7 +37,7 @@ public class BaseOpMode extends OpMode {
     protected Servo grabber_extend1, grabber_extend2;
     protected DcMotor platform_grabber;
     protected DcMotor L1, L2;
-    protected final double grabber_open = 0.35, grabber_closed = 0.6;
+    protected final double grabber_open = 0.3, grabber_closed = 0.6;
     private final String logPrefix = "/sdcard/";
     private BufferedWriter logWriter;
     //private String[] bFN={"this.gamepad1.left_bumper","this.gamepad1.right_bumper","this.gamepad1.dpad_up","this.gamepad1.dpad_down","this.gamepad1.dpad_left","this.gamepad1.dpad_right","this.gamepad1.a","this.gamepad1.b","this.gamepad1.x","this.gamepad1.y"};
@@ -481,8 +481,8 @@ public class BaseOpMode extends OpMode {
     protected int autoPlaceState = -1;
 
     protected void setExtenderServoPosition(double position){
-        grabber_extend1.setPosition(position);
-        grabber_extend2.setPosition(1-position);
+        grabber_extend1.setPosition(roundTo2Dec(position));
+        grabber_extend2.setPosition(roundTo2Dec(1-position));
     }
     //---------------slide-----------------
     protected void runSlide(){
@@ -546,7 +546,7 @@ public class BaseOpMode extends OpMode {
     }
 
     private int descendTarget = 0, ascendTarget = 0;
-    private double inchApproachTarget = 8.1, approachSpeed = 0.2;
+    private double inchApproachTarget = 10.6, approachSpeed = 0.2;
     protected Rev2mDistanceSensor tower_top;
 
     protected final double grabberServoOut = 0.5, grabberServoIn = 1;
@@ -641,7 +641,7 @@ public class BaseOpMode extends OpMode {
     }
 
     protected class ServoThread extends Thread{
-        volatile public double targetPosition = 1;
+        public double targetPosition = 1;
         volatile public int delayStep = 10;
         volatile public boolean stop = false;
         public double lastPosition = 1;
@@ -678,9 +678,6 @@ public class BaseOpMode extends OpMode {
 
                 //execute target
                 if(lastPosition != targetPosition) {
-                    if (targetPosition < 0 || targetPosition > 1) {
-                        throw new IllegalArgumentException("targetPosition is out of range");
-                    }
                     if (lastPosition < targetPosition) {
                         setExtenderServoPosition(lastPosition + 0.01);
                         lastPosition += 0.01;
@@ -691,10 +688,9 @@ public class BaseOpMode extends OpMode {
                 }
             }
             lastPosition = roundTo2Dec(lastPosition);
-
+            targetPosition = roundTo2Dec(targetPosition);
 
         }
-
 
 
         public void setTargetAndSpeed(int delayPerStep, double target){
@@ -703,8 +699,8 @@ public class BaseOpMode extends OpMode {
         }
 
         public void setTarget(double target){
-            if(target > 1){target = 1;}
-            if(target < 0){target = 0;}
+            if(target > 0.99){target = 0.99;}
+            if(target < 0.3){target = 0.3;}
             targetPosition = roundTo2Dec(target);
         }
 
@@ -718,6 +714,6 @@ public class BaseOpMode extends OpMode {
     }
 
     private double roundTo2Dec(double d){
-        return Math.round(100*d) / 100.0;
+        return (Math.round(100*d) / 100.0);
     }
 }
