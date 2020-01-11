@@ -20,7 +20,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 
 @TeleOp
 public class MoveTest extends BaseAuto {
-    private double speed,x,y, GYRO_kp, side_distance, kp,kd,moveInches_kP = 0.5,odometryEncPerInch =1313.13;
+    private double speeed, speed,x,y, GYRO_kp, side_distance, kp,kd,moveInches_kP = 0.5,odometryEncPerInch =1313.13;
     private int offsetX = 0, offsetY = 0;
     private boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
     private ElapsedTime t=new ElapsedTime();
@@ -40,9 +40,10 @@ public class MoveTest extends BaseAuto {
         //initVuforiaWebcam();
         setNewGyro0();
         rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
-        speed=0.3;
+        speed=0.25;
+        speeed = 0.03;
         dir=1;
-        y = 110;
+        y = 0;
         x = 0;
 
         // 三天之内刹了你();
@@ -50,12 +51,12 @@ public class MoveTest extends BaseAuto {
 
     @Override
     public void loop(){
-        if(zheng(this.gamepad1.dpad_left,eee))x-=10;
+        if(zheng(this.gamepad1.dpad_left,eee))speeed*=-1;
         if(zheng(this.gamepad1.dpad_right,fff))x+=10;
-        if(zheng(this.gamepad1.dpad_up,ee))y+=1;
-        if(zheng(this.gamepad1.dpad_down,ff))y-=1;
-        if(zheng(this.gamepad1.y,m))speed+=.1;
-        if(zheng(this.gamepad1.a,mm))speed-=.1;
+        if(zheng(this.gamepad1.dpad_up,ee))speeed+=0.01;
+        if(zheng(this.gamepad1.dpad_down,ff))speeed-=0.01;
+        if(zheng(this.gamepad1.y,m))speed+=.01;
+        if(zheng(this.gamepad1.a,mm))speed-=.01;
         if(zheng(this.gamepad1.b,f))setNewGyro0();
         /*
         if(zheng(this.gamepad1.left_bumper,bF)){
@@ -86,18 +87,25 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.left_bumper,lF)){
-            /*
+            setAllDrivePower(-speed,-speed,speed,speed);
+        }
+
+        if(zheng(this.gamepad1.right_bumper,bF)){
+            //moveInchesGO(x,y,speed);
+            //setAllDrivePower(0);
+            //setAllDrivePower(speeed,speeed,-speeed,-speeed);
             setAllDrivePower(-speed,-speed,speed,speed);
             wait(1000);
+            int a=L2.getCurrentPosition();
+            wait(2000);
+            a=L2.getCurrentPosition()-a;
             setAllDrivePower(0);
-             */
-        }
-        if(zheng(this.gamepad1.right_bumper,bF)){
-            moveInchesGO(x,y,speed);
+            y=a/2;
         }
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
         telemetry.addData("Speed: ", speed);
+        telemetry.addData("Speeed: ", speeed);
         telemetry.addData("enc X", platform_grabber.getCurrentPosition());
         telemetry.addData("enc Y", L2.getCurrentPosition());
         telemetry.update();
