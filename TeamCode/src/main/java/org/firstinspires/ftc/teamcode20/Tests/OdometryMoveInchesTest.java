@@ -64,8 +64,8 @@ public class OdometryMoveInchesTest extends BaseAuto {
         double vx=(xInch==0)?0:(xInch/Math.abs(xInch)*Math.sin(theta)*speed);
         double vy=(yInch==0)?0:(yInch/Math.abs(yInch)*Math.cos(theta)*speed);
         while( stable_timer == null || stable_timer.milliseconds() < stable_timer_time){//!near(odometryYGoal, L2.getCurrentPosition(), 0.5*odometryEncPerInch) && !near(odometryXGoal, platform_grabber.getCurrentPosition(), 0.5*odometryEncPerInch)
-            multiply_factor = Math.min(1, Math.max(-1, moveInches_kP * (L2.getCurrentPosition() - odometryYGoal)/odometryEncPerInch));
-            setAllDrivePowerG(multiply_factor*(-vx+vy),multiply_factor*(vx+vy),multiply_factor*(-vx-vy),multiply_factor*(vx-vy),0.8);
+            multiply_factor = -1*Math.min(1, Math.max(-1, moveInches_kP * (L2.getCurrentPosition() - odometryYGoal)/odometryEncPerInch));
+            setAllDrivePowerG(multiply_factor*(-vx-vy),multiply_factor*(vx-vy),multiply_factor*(-vx+vy),multiply_factor*(vx+vy),0.8);
             if(near(multiply_factor, 0, 0.1) && stable_timer == null){
                 stable_timer = new ElapsedTime();
             }
