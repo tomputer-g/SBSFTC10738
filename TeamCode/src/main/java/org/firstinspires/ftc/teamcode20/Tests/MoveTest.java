@@ -86,7 +86,7 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.left_bumper,lF)){
-            setAllDrivePower(speed);
+            setAllDrivePower(-speed,-speed,speed,speed);
             wait(1000);
             setAllDrivePower(0);
         }
