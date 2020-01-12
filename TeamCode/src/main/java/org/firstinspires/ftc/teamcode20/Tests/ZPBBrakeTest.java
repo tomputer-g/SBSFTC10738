@@ -36,12 +36,14 @@ public class ZPBBrakeTest extends OpMode {
     @Override
     public void loop() {
         if(this.gamepad1.a){
+            LF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            LB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            RF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            RB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             setAllDrivePower(0,start);
             wait(2000);
             brakeStart = L2.getCurrentPosition();
         }
-
-        setAllDrivePower(0,-0.03);
         if(this.gamepad1.b){
             moveInches025(110);
         }
@@ -67,10 +69,26 @@ public class ZPBBrakeTest extends OpMode {
     }
 
     protected void moveInches025(double yInch){
+        LF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         int offsetY = L2.getCurrentPosition(), odometryYGoal = offsetY + (int)(yInch * 1313);
         setAllDrivePower(0,0.25);
         while(L2.getCurrentPosition() < (odometryYGoal-6000));
         brakeStart = L2.getCurrentPosition() - offsetY;
+        LF.setTargetPosition(LF.getCurrentPosition());
+        LF.setPower(.5);
+        LF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        LB.setTargetPosition(LB.getCurrentPosition());
+        LB.setPower(.5);
+        LB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        RF.setTargetPosition(RF.getCurrentPosition());
+        RF.setPower(.5);
+        RF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        RB.setTargetPosition(RB.getCurrentPosition());
+        RB.setPower(.5);
+        RB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
     protected void setAllDrivePower(double pX, double pY){
         if(Math.abs(pX)+Math.abs(pY) > 1)
