@@ -54,8 +54,8 @@ public class MoveTest extends BaseAuto {
     public void loop(){
         if(zheng(this.gamepad1.dpad_left,eee))speeed*=-1;
         if(zheng(this.gamepad1.dpad_right,fff))x+=10;
-        if(zheng(this.gamepad1.dpad_up,ee))speeed+=0.01;
-        if(zheng(this.gamepad1.dpad_down,ff))speeed-=0.01;
+        if(zheng(this.gamepad1.dpad_up,ee))y+=4;
+        if(zheng(this.gamepad1.dpad_down,ff))y-=4;
         if(zheng(this.gamepad1.y,m))speed+=.01;
         if(zheng(this.gamepad1.a,mm))speed-=.01;
         if(zheng(this.gamepad1.b,f))setNewGyro0();
@@ -90,12 +90,11 @@ public class MoveTest extends BaseAuto {
         if(zheng(this.gamepad1.left_bumper,lF)) {
             reset_ENCODER();
             setMode_RUN_WITHOUT_ENCODER();
+            ElapsedTime t=new ElapsedTime();
             LF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            LF.setTargetPosition(-1305);
-            setAllDrivePowerG(-0.3,-0.3,0.3,0.3);
-            while(LF.isBusy()){}
+            LF.setTargetPosition((int)y*-1313);
+            while(LF.isBusy()||t.milliseconds()<2000){setAllDrivePowerG(-speed,-speed,speed,speed);}
             setAllDrivePower(0.0);
-
         }
             /*
             ElapsedTime t=new ElapsedTime();
@@ -126,7 +125,7 @@ public class MoveTest extends BaseAuto {
             setAllDrivePower(0);
         }
         */
-        }
+
         if(zheng(this.gamepad1.right_bumper,bF)){
             //moveInchesGO(x,y,speed);
             //setAllDrivePower(0);
@@ -149,6 +148,7 @@ public class MoveTest extends BaseAuto {
 
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
+        telemetry.addData("Imu: ",imuHeading);
         telemetry.addData("Speed: ", speed);
         telemetry.addData("Speeed: ", speeed);
         telemetry.addData("enc X", platform_grabber.getCurrentPosition());
