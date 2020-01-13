@@ -169,7 +169,7 @@ public class BaseOpMode extends OpMode {
     protected void initOdometry(){
         //L2 is Y encoder
         //platform grabber is X encoder
-        platform_grabber = hardwareMap.get(DcMotor.class, "RF");
+        platform_grabber = hardwareMap.get(DcMotor.class, "platform");
         platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         xOdometry = hardwareMap.get(DcMotor.class, "xOdo");
@@ -178,11 +178,11 @@ public class BaseOpMode extends OpMode {
     }
 
     protected int getXOdometry(){
-        return LF.getCurrentPosition();
+        return xOdometry.getCurrentPosition();
     }
 
     protected int getYOdometry(){
-        return xOdometry.getCurrentPosition();
+        return platform_grabber.getCurrentPosition();
     }
 
     protected boolean zheng(boolean b, boolean[] f){

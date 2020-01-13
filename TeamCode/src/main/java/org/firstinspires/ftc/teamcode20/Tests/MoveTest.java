@@ -4,7 +4,8 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+import org.w3c.dom.Element.*;
+import com.google.ftcresearch.tfod.tracking.ObjectTracker;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -23,7 +24,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 public class MoveTest extends BaseAuto {
     private double speeed, speed,x,y, GYRO_kp, side_distance, kp,kd,moveInches_kP = 0.5,odometryEncPerInch =1313.13;
     private int offsetX = 0, offsetY = 0;
-    private boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
+    private boolean[] qq = {true}, bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
     private ElapsedTime t=new ElapsedTime();
     //ModernRoboticsI2cRangeSensor rangeSensorSide;
     int dir;
@@ -57,7 +58,7 @@ public class MoveTest extends BaseAuto {
         if(zheng(this.gamepad1.dpad_up,ee))y+=4;
         if(zheng(this.gamepad1.dpad_down,ff))y-=4;
         if(zheng(this.gamepad1.y,m))speed+=.01;
-        if(zheng(this.gamepad1.a,mm))speed-=.01;
+        //if(zheng(this.gamepad1.a,mm))speed-=.01;
         if(zheng(this.gamepad1.b,f))setNewGyro0();
         /*
         if(zheng(this.gamepad1.left_bumper,bF)){
@@ -88,15 +89,17 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.left_bumper,lF)) {
-            reset_ENCODER();
-            setMode_RUN_WITHOUT_ENCODER();
-            ElapsedTime t=new ElapsedTime();
+            LF.setTargetPosition((int)(y*-ymult));
             LF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            LF.setTargetPosition((int)y*1313);
-            while(LF.isBusy()&&t.milliseconds()<3000){
+            setAllDrivePowerG(-speed,-speed,speed,speed);
+            while(LF.isBusy()){
+                setAllDrivePowerG(-speed,-speed,speed,speed);
                 telemetry.update();
-                setAllDrivePowerG(-speed,-speed,speed,speed);}
-            setAllDrivePower(0.0);
+                if(LF.getCurrentPosition()/1305 > 24){
+                    LF.setTargetPosition((int)(72*-ymult));
+                }
+            }
+            setAllDrivePower(0);
         }
             /*
             ElapsedTime t=new ElapsedTime();
@@ -148,13 +151,13 @@ public class MoveTest extends BaseAuto {
             y=a/2;
         }
 
-        telemetry.addData("x: ",x);
+        //telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
         telemetry.addData("Imu: ",imuHeading);
         telemetry.addData("Speed: ", speed);
-        telemetry.addData("Speeed: ", speeed);
+        //telemetry.addData("Speeed: ", speeed);
         //telemetry.addData("enc X", xOdometry.getCurrentPosition());
-        telemetry.addData("enc Y", RF.getCurrentPosition());
+        telemetry.addData("enc Y", LF.getCurrentPosition()/1305);
         telemetry.update();
     }
 
