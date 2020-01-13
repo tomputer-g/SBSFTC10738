@@ -12,15 +12,16 @@ public class NoSlipDrive extends BaseAuto {
     final double ymult = 232.7551/12;
     final double odomult = 4096/Math.PI;
     final double maxodc = 1000;
+    double mili = 0;
     int phase =0;
     //button press booleans
-    boolean[] rb={true},lb={true};
+    boolean[] rb={true},lb={true},xx={true},yy={true};
 
     //previous motor counts
     int lfmc=0,lbmc=0,rfmc=0,rbmc=0;
 
     //delta motor counts
-    double lfdc,lbdc,rfdc,rbdc;
+    double lfdc,lbdc,rfdc,rbdc,speed;
 
     //delta odometry count, previoud odometry count
     double odc=0; int omc;
@@ -44,13 +45,21 @@ public class NoSlipDrive extends BaseAuto {
         platform_grabber.setPower(1);
         wait(300);
         platform_grabber.setPower(0.0);
+        speed=.5;
     }
-
+    @Override
+    public  void init_loop(){
+        if(zheng(this.gamepad1.y,xx)){speed+=.1;}
+        if(zheng(this.gamepad1.a,yy)){speed-=.1;}
+        telemetry.addData("speed: ",speed);
+        telemetry.update();
+    }
     @Override
     public void loop() {
-        if(zheng(this.gamepad1.left_bumper,lb)){odobrakee();phase=1;}
+        if(zheng(this.gamepad1.left_bumper,lb)){odobrake();phase=1;}
+        telemetry.addLine(mili+" ");
         if(phase==0)
-            setAllDrivePower(0.5);
+            setAllDrivePower(-speed,-speed,speed,speed);
         //t.reset();
         //scaledMove(-this.gamepad1.left_stick_x * 0.3, -this.gamepad1.left_stick_y * 0.15, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x * 0.2));
         /*
@@ -128,15 +137,29 @@ public class NoSlipDrive extends BaseAuto {
             omc = platform_grabber.getCurrentPosition();
     }
 
-    protected void odobrakee(){
+    protected void odobrake(){
+        t = new ElapsedTime();
+        double angle = getHeading();
+        setAllDrivePower(0);
+        wait(10);
+        setAllDrivePower(1,1,-1,-1);
         while(odc>0){
             updateOC();
-            setAllDrivePowerG(1,1,-1,-1);
         }
-        setAllDrivePower(0.0);
+        while(odc>0){
+            updateOC();
+        }
+        for(int i=0;i<5;i++){
+            double koe=1+(10-i)/15;
+            setAllDrivePower(speed/koe,speed/koe,-speed/koe,-speed/koe);
+            wait(20);
+            setAllDrivePower(0.0);
+        }
+        turn(-getHeading()+angle,.5,2);
+        mili=t.milliseconds();
     }
 
-    protected void odobrake(){
+    protected void odobrakeduo(){
         updateOC();
         wait(10);
         updateOC();

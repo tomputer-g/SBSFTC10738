@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode20;
 
+import com.qualcomm.hardware.motors.GoBILDA5202Series;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -37,7 +39,7 @@ public class BaseOpMode extends OpMode {
     protected Servo grabber_extend1, grabber_extend2;
     protected DcMotor platform_grabber;
     protected DcMotor L1, L2;
-    protected final double grabber_open = 0.3, grabber_closed = 0.6;
+    protected final double grabber_open = 0.5, grabber_closed = 0.7;
     private final String logPrefix = "/sdcard/";
     private BufferedWriter logWriter;
     //private String[] bFN={"this.gamepad1.left_bumper","this.gamepad1.right_bumper","this.gamepad1.dpad_up","this.gamepad1.dpad_down","this.gamepad1.dpad_left","this.gamepad1.dpad_right","this.gamepad1.a","this.gamepad1.b","this.gamepad1.x","this.gamepad1.y"};
@@ -119,27 +121,27 @@ public class BaseOpMode extends OpMode {
     }
 
     protected void setAllDrivePower(double power){
-        LF.setPower(power);
-        LB.setPower(power);
-        RF.setPower(power);
-        RB.setPower(power);
+        LF.setPower(-power);
+        LB.setPower(-power);
+        RF.setPower(-power);
+        RB.setPower(-power);
     }
 
     protected void setAllDrivePower(double pLF, double pLB, double pRF, double pRB){
-        LF.setPower(pLF);
-        LB.setPower(pLB);
-        RF.setPower(pRF);
-        RB.setPower(pRB);
+        LF.setPower(-pLF);
+        LB.setPower(-pLB);
+        RF.setPower(-pRF);
+        RB.setPower(-pRB);
     }
 
     protected void setAllDrivePower(double pX, double pY){
         if(Math.abs(pX)+Math.abs(pY) > 1)
             throw new IllegalArgumentException("setAllDrivePower(px,py) sets a power beyond 1");
         setMode_RUN_WITHOUT_ENCODER();
-        LF.setPower(pX-pY);
-        LB.setPower(-pX-pY);
-        RF.setPower(pX+pY);
-        RB.setPower(-pX+pY);
+        LF.setPower(-pX+pY);
+        LB.setPower(pX+pY);
+        RF.setPower(-pX-pY);
+        RB.setPower(pX-pY);
     }
 
     protected void wait(int time){
@@ -159,6 +161,10 @@ public class BaseOpMode extends OpMode {
         LB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         RF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         RB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        LF.setMotorType(MotorConfigurationType.getMotorType(GoBILDA5202Series.class));
+        LB.setMotorType(MotorConfigurationType.getMotorType(GoBILDA5202Series.class));
+        RF.setMotorType(MotorConfigurationType.getMotorType(GoBILDA5202Series.class));
+        RB.setMotorType(MotorConfigurationType.getMotorType(GoBILDA5202Series.class));
         setMode_RUN_WITHOUT_ENCODER();
     }
 
@@ -189,10 +195,10 @@ public class BaseOpMode extends OpMode {
     }
 
     protected void move(double vx, double vy, double vr){
-        LF.setPower(0.5 * (vx - vy + vr));
-        LB.setPower(0.5 * (-vy - vx + vr));
-        RF.setPower(0.5 * (vx + vy + vr));
-        RB.setPower(0.5 * (-vx + vy + vr));
+        LF.setPower(-0.5 * (vx - vy + vr));
+        LB.setPower(-0.5 * (-vy - vx + vr));
+        RF.setPower(-0.5 * (vx + vy + vr));
+        RB.setPower(-0.5 * (-vx + vy + vr));
     }
 
     private double sigmoid(double x){
