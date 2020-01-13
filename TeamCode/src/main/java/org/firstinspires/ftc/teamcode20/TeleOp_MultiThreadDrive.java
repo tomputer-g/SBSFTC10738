@@ -120,7 +120,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
         //If not PWM: run full speed
         if(!slow){
-            joystickScaledMove(-this.gamepad1.left_stick_x,-this.gamepad1.left_stick_y, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x));
+            joystickScaledMove(this.gamepad1.left_stick_x,this.gamepad1.left_stick_y, (this.gamepad1.left_bumper?0:this.gamepad1.right_stick_x));
         }
 
         //LT

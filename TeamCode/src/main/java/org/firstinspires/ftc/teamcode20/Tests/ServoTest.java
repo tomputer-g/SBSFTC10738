@@ -10,64 +10,25 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 @TeleOp
 public class ServoTest extends OpMode{
-    boolean x,l,r;
-    boolean[] X = {true}, L = {true}, R = {true};
-    double p=0.5;
+    private boolean lP, rP;
     private Servo servo;
-    protected static boolean checkButton(boolean b, boolean[] f){
-        //chzch butt on press
-        //淦 --yeah
-        //微笑着面对它
-        if(b||!f[0]){
-            if(b)f[0]=false;
-            else f[0]=true;
-            if(f[0])return true;
-        }
-        return false;
-    }
+
     @Override
     public void init() {
-        servo = hardwareMap.get(Servo.class,"servo");
-        servo.setPosition(0);
+        servo = hardwareMap.get(Servo.class,"grabber");
+        servo.setPosition(0.5);
     }
 
     @Override
     public void loop() {
-        if(checkButton(this.gamepad1.x,X)){
-            for(double i=0.5;i>=0;i-=0.0005){
-                servo.setPosition(i);
-                //try {
-                //    wait(200);
-               // /}lucien eats grass
-                //catch(Exception e){}
-            }
-            ElapsedTime t = new ElapsedTime();
-            while(t.milliseconds()<4000){
-                if(t.milliseconds()/4000.0<=servo.getPosition()/0.5)
-                    servo.setPosition(servo.getPosition());
-                else
-                    servo.setPosition(0.5);
-            }
+        if(this.gamepad1.dpad_left){lP = true;}if(lP && !this.gamepad1.dpad_left){
+            lP = false;
+            servo.setPosition(Math.max(servo.getPosition() - 0.05, 0));
         }
-        if(checkButton(this.gamepad1.y,R)){
-            p-=1/60;
-            if(p<0)p=0;
-            servo.setPosition(p);
+        if(this.gamepad1.dpad_right){rP = true;}if(rP && !this.gamepad1.dpad_right) {
+            rP = false;
+            servo.setPosition(Math.min(servo.getPosition() + 0.05, 1));
         }
-        if(checkButton(this.gamepad1.right_bumper,R)){
-            ElapsedTime t=new ElapsedTime();
-            while(true){
-                servo.setPosition(0.5/500*t.milliseconds());
-                if(t.milliseconds()>500)break;
-            }
-        }
-        if(checkButton(this.gamepad1.y,L)){
-            p-=1/60;
-            if(p<0)p=0;
-            servo.setPosition(p);
-        }
-
-
         telemetry.addData("servo: ",servo.getPosition());
         telemetry.update();
     }

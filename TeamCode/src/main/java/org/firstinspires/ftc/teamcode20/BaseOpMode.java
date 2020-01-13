@@ -39,7 +39,7 @@ public class BaseOpMode extends OpMode {
     protected Servo grabber_extend1, grabber_extend2;
     protected DcMotor platform_grabber;
     protected DcMotor L1, L2;
-    protected final double grabber_open = 0.3, grabber_closed = 0.6;
+    protected final double grabber_open = 0.5, grabber_closed = 0.7;
     private final String logPrefix = "/sdcard/";
     private BufferedWriter logWriter;
     //private String[] bFN={"this.gamepad1.left_bumper","this.gamepad1.right_bumper","this.gamepad1.dpad_up","this.gamepad1.dpad_down","this.gamepad1.dpad_left","this.gamepad1.dpad_right","this.gamepad1.a","this.gamepad1.b","this.gamepad1.x","this.gamepad1.y"};
