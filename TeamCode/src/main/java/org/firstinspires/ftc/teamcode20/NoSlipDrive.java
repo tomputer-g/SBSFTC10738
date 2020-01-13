@@ -138,11 +138,12 @@ public class NoSlipDrive extends BaseAuto {
     }
 
     protected void odobrake(){
+        setNewGyro0();
         t = new ElapsedTime();
         double angle = getHeading();
         setAllDrivePower(0);
         wait(10);
-        setAllDrivePower(1,1,-1,-1);
+        setAllDrivePowerG(1,1,-1,-1);
         while(odc>0){
             updateOC();
         }
