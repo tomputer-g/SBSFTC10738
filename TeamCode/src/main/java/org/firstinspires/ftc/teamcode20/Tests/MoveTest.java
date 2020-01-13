@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 import org.firstinspires.ftc.teamcode20.TractionControl;
 
+import static java.lang.Math.sqrt;
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
@@ -168,5 +169,23 @@ public class MoveTest extends BaseAuto {
             telemetry.update();
         }
         setAllDrivePower(0);
+    }
+    protected void moveInches(double xInch, double yInch, double speed){
+        setMode_RESET_AND_RUN_TO_POSITION();
+        double p_mult = 80;
+        double xmult = 232.5088/12, ymult = 232.7551/12;
+        int p_time = (int) (sqrt(xInch*xInch + yInch*yInch)*p_mult);
+        ElapsedTime t = new ElapsedTime();
+        int encoder_x = (int)(xInch * xmult), encoder_y = (int)(yInch * ymult);
+        int encoder_1 = Math.abs(encoder_x + encoder_y); // LB, RF
+        int encoder_2 = Math.abs(encoder_x - encoder_y); // LF, RB
+        double conversion_fct = speed/((encoder_1 + encoder_2)/2);
+        double speed_1 = conversion_fct * encoder_1, speed_2 = conversion_fct * encoder_2;
+        setAllDrivePower(speed_2,speed_1,speed_1,speed_2);
+        LF.setTargetPosition(encoder_x - encoder_y);
+        LB.setTargetPosition(-encoder_x - encoder_y);
+        RF.setTargetPosition(encoder_x + encoder_y);
+        RB.setTargetPosition(-encoder_x + encoder_y);
+        while((LF.isBusy()||LB.isBusy()||RF.isBusy()||RB.isBusy()) && t.milliseconds() < p_time);
     }
 }
