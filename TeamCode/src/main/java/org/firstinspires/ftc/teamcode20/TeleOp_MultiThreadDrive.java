@@ -15,7 +15,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     private boolean platformGrabbed = false;
 
 
-    private PWMThread pwmThread;
+    //private PWMThread pwmThread;
 
 
     @Override public void init() {
@@ -33,16 +33,16 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         platform_grabber.setPower(0);
-        pwmThread = new PWMThread();
+        //pwmThread = new PWMThread();
     }
 
     @Override public void start() {
         super.start();
-        pwmThread.start();
+        //pwmThread.start();
     }
 
     @Override public void stop() {
-        pwmThread.stopThread();
+        //pwmThread.stopThread();
         servoThread.stopThread();
         super.stop();
     }
@@ -121,6 +121,8 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         //If not PWM: run full speed
         if(!slow){
             joystickScaledMove(-this.gamepad1.left_stick_x,-this.gamepad1.left_stick_y, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x));
+        }else{
+            joystickScaledMove(-0.3*this.gamepad1.left_stick_x,-0.13*this.gamepad1.left_stick_y, (this.gamepad1.left_bumper?0:-0.1*this.gamepad1.right_stick_x));
         }
 
         //LT
@@ -143,8 +145,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             if(holdSet)telemetry.addData("Hold pos", hold);
             telemetry.addData("ext", grabber_extend1.getPosition());
             telemetry.addData("slide 1", L1.getCurrentPosition());
-            telemetry.addData("Y", getYOdometry());
-            telemetry.addData("X", getXOdometry());
             telemetry.addData("tower_top dist", tower_top.getDistance(DistanceUnit.INCH) + "in.");
             telemetry.update();
         }
@@ -152,7 +152,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
 
     //-------------------------------------Multithreading---------------------------------/
-    private class PWMThread extends Thread{
+    /*private class PWMThread extends Thread{
         volatile boolean stop = false;
         @Override
         public void run() {
@@ -167,10 +167,10 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             stop = true;
         }
     }
-
+*/
 
     protected void joystickScaledMove(double vx, double vy, double vr){
-        if(Math.abs(vx) > 0.2 || Math.abs(vy) > 0.2 || Math.abs(vr) > 0.2){//deadzone
+        if(Math.abs(vx) > 0.05 || Math.abs(vy) > 0.05 || Math.abs(vr) > 0.05){//deadzone
             double[] speeds = {vx - vy + vr, -vy - vx + vr, vx + vy + vr, -vx + vy + vr};
             double absMax = 0;
             for(double d : speeds)
