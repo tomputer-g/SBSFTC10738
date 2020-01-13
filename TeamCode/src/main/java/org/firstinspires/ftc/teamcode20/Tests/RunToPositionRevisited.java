@@ -19,12 +19,14 @@ public class RunToPositionRevisited extends BaseOpMode{
         Log.d("RunToPositionRevisited","Log starts here");
         LF = hardwareMap.get(DcMotor.class, "LF");
         LF.setMotorType(MotorConfigurationType.getMotorType(GoBILDA5202Series.class));
-        LB = hardwareMap.get(DcMotor.class, "LB");
+        /*LB = hardwareMap.get(DcMotor.class, "LB");
         LB.setMotorType(MotorConfigurationType.getMotorType(GoBILDA5202Series.class));
         RF = hardwareMap.get(DcMotor.class, "RF");
         RF.setMotorType(MotorConfigurationType.getMotorType(GoBILDA5202Series.class));
         RB = hardwareMap.get(DcMotor.class, "RB");
         RB.setMotorType(MotorConfigurationType.getMotorType(GoBILDA5202Series.class));
+
+         */
 
         //if(LB == null) {Log.d("RunToPositionRevisited", "LB is null on type");}
         //Log.d("RunToPositionRevisited","Name: "+LB.getMotorType().getName());//"GoBILDA 5202 series"
@@ -37,7 +39,8 @@ public class RunToPositionRevisited extends BaseOpMode{
         LF.setTargetPosition(1000);
         LF.setPower(.1);
         LF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        LB.setTargetPosition(1000);
+
+        /*LB.setTargetPosition(1000);
         LB.setPower(.1);
         LB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         RF.setTargetPosition(1000);
@@ -46,11 +49,17 @@ public class RunToPositionRevisited extends BaseOpMode{
         RB.setTargetPosition(1000);
         RB.setPower(.1);
         RB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+         */
     }
 
     @Override
     public void loop() {
-        telemetry.addData("LB enc", LB.getCurrentPosition());
+        telemetry.addData("LF enc", LF.getCurrentPosition());
+        telemetry.addData("LF pwr", LF.getPower());
         telemetry.update();
+        if(this.gamepad1.a){
+
+        }
     }
 }
