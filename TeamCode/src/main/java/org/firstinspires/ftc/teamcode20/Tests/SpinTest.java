@@ -43,8 +43,8 @@ public class SpinTest extends BaseAuto {
         }
         if(zheng(this.gamepad1.a,aa)){
             setAllDrivePower(-speed,-speed,speed,speed);
-            LF.setTargetPosition((int) xmult*48);
-            LB.setTargetPosition((int) xmult*48);
+            LF.setTargetPosition(-(int) xmult*48);
+            LB.setTargetPosition(-(int) xmult*48);
             RF.setTargetPosition((int) xmult*48);
             RB.setTargetPosition((int) xmult*48);
             LF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
