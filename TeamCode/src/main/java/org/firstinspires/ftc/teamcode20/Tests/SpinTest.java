@@ -42,7 +42,7 @@ public class SpinTest extends BaseAuto {
             speed-=0.05;
         }
         if(zheng(this.gamepad1.a,aa)){
-            setAllDrivePower(-speed,-speed,speed,speed);
+            setAllDrivePowerG(-speed,-speed,speed,speed);
             LF.setTargetPosition(-(int) xmult*48);
             LB.setTargetPosition(-(int) xmult*48);
             RF.setTargetPosition((int) xmult*48);
@@ -55,6 +55,5 @@ public class SpinTest extends BaseAuto {
             setAllDrivePower(0);
         }
         telemetry.update();
-
     }
 }
