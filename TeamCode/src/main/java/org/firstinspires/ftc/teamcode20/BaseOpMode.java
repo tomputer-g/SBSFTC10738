@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.R;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -168,9 +169,9 @@ public class BaseOpMode extends OpMode {
     protected void initOdometry(){
         //L2 is Y encoder
         //platform grabber is X encoder
-        LF = hardwareMap.get(DcMotor.class, "LF");
-        LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        platform_grabber = hardwareMap.get(DcMotor.class, "RF");
+        platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         xOdometry = hardwareMap.get(DcMotor.class, "xOdo");
         xOdometry.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         xOdometry.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

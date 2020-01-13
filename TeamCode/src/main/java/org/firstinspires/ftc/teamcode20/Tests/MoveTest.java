@@ -92,8 +92,10 @@ public class MoveTest extends BaseAuto {
             setMode_RUN_WITHOUT_ENCODER();
             ElapsedTime t=new ElapsedTime();
             LF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            LF.setTargetPosition((int)y*-1313);
-            while(LF.isBusy()||t.milliseconds()<2000){setAllDrivePowerG(-speed,-speed,speed,speed);}
+            LF.setTargetPosition((int)y*1313);
+            while(LF.isBusy()&&t.milliseconds()<3000){
+                telemetry.update();
+                setAllDrivePowerG(-speed,-speed,speed,speed);}
             setAllDrivePower(0.0);
         }
             /*
@@ -151,8 +153,8 @@ public class MoveTest extends BaseAuto {
         telemetry.addData("Imu: ",imuHeading);
         telemetry.addData("Speed: ", speed);
         telemetry.addData("Speeed: ", speeed);
-        telemetry.addData("enc X", platform_grabber.getCurrentPosition());
-        telemetry.addData("enc Y", L2.getCurrentPosition());
+        //telemetry.addData("enc X", xOdometry.getCurrentPosition());
+        telemetry.addData("enc Y", RF.getCurrentPosition());
         telemetry.update();
     }
 
