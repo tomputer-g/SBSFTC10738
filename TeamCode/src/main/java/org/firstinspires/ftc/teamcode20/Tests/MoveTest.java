@@ -86,7 +86,7 @@ public class MoveTest extends BaseAuto {
             shutdownVuforia();
         }
         */
-        if(zheng(this.gamepad1.left_bumper,lF)){
+        if(zheng(this.gamepad1.left_bumper,lF)) {
             /*
             ElapsedTime t=new ElapsedTime();
             setAllDrivePower(-speed,-speed,speed,speed);
@@ -115,7 +115,8 @@ public class MoveTest extends BaseAuto {
             y=t.milliseconds();
             setAllDrivePower(0);
         }
-
+        */
+        }
         if(zheng(this.gamepad1.right_bumper,bF)){
             //moveInchesGO(x,y,speed);
             //setAllDrivePower(0);
@@ -135,14 +136,14 @@ public class MoveTest extends BaseAuto {
             setAllDrivePower(0);
             y=a/2;
         }
-        */
+
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
         telemetry.addData("Speed: ", speed);
         telemetry.addData("Speeed: ", speeed);
         telemetry.addData("enc X", platform_grabber.getCurrentPosition());
         telemetry.addData("enc Y", L2.getCurrentPosition());
-        telemetry.update();}
+        telemetry.update();
     }
 
     protected void moveInchesGO(double xInch, double yInch, double speed){
