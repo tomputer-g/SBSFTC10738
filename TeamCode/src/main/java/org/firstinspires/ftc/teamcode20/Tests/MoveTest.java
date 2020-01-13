@@ -126,7 +126,7 @@ public class MoveTest extends BaseAuto {
             setAllDrivePower(0);
         }
         */
-        }
+
         if(zheng(this.gamepad1.right_bumper,bF)){
             //moveInchesGO(x,y,speed);
             //setAllDrivePower(0);

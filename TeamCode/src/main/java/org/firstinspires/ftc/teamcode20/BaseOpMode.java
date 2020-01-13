@@ -37,7 +37,7 @@ public class BaseOpMode extends OpMode {
     protected DcMotor LF, LB, RF, RB;
     protected Servo grabber;
     protected Servo grabber_extend1, grabber_extend2;
-    protected DcMotor platform_grabber;
+    protected DcMotor platform_grabber, xOdometry;
     protected DcMotor L1, L2;
     protected final double grabber_open = 0.5, grabber_closed = 0.7;
     private final String logPrefix = "/sdcard/";
@@ -168,12 +168,20 @@ public class BaseOpMode extends OpMode {
     protected void initOdometry(){
         //L2 is Y encoder
         //platform grabber is X encoder
-        L2 = hardwareMap.get(DcMotor.class, "L2");
-        L2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        platform_grabber = hardwareMap.get(DcMotor.class, "platform");
-        platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        LF = hardwareMap.get(DcMotor.class, "LF");
+        LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        xOdometry = hardwareMap.get(DcMotor.class, "xOdo");
+        xOdometry.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        xOdometry.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    protected int getXOdometry(){
+        return LF.getCurrentPosition();
+    }
+
+    protected int getYOdometry(){
+        return xOdometry.getCurrentPosition();
     }
 
     protected boolean zheng(boolean b, boolean[] f){

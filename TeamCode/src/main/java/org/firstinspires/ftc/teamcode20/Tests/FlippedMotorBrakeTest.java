@@ -31,12 +31,18 @@ public class FlippedMotorBrakeTest extends OpMode {
     public void loop() {
         if(this.gamepad1.a){
             setAllDrivePower(0,0,0,0);
+        }else if(this.gamepad1.b){
+            setAllDrivePower(0.13,0.13,-0.13,-0.13);
         }else{
             joystickScaledMove(this.gamepad1.left_stick_x,this.gamepad1.left_stick_y, (this.gamepad1.left_bumper?0:this.gamepad1.right_stick_x));
         }
+
     }
 
     protected void joystickScaledMove(double vx, double vy, double vr){
+        telemetry.addData("x",vx);
+        telemetry.addData("y",vy);
+        telemetry.update();
             double[] speeds = {vx - vy + vr, -vy - vx + vr, vx + vy + vr, -vx + vy + vr};
             double absMax = 0;
             for(double d : speeds)

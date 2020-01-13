@@ -319,8 +319,8 @@ public class BaseAuto extends BaseOpMode {
     protected void updateCoo(){
         getHeading();
         double dtheta=imuHeading-theta;
-        double dx=platform_grabber.getCurrentPosition()-xpre;
-        double dy=L2.getCurrentPosition()-ypre;
+        double dx=getXOdometry()-xpre;
+        double dy=getYOdometry()-ypre;
         telemetry.addLine(""+dx);
         telemetry.addLine(""+dy);
         telemetry.addLine(""+imuHeading);
@@ -331,8 +331,8 @@ public class BaseAuto extends BaseOpMode {
             coo[0] += (dx * Math.cos(imuHeading) + dy * Math.sin(imuHeading)) * Math.PI / 4096;
             coo[1] += (dx * Math.sin(imuHeading) + dy * Math.cos(imuHeading)) * Math.PI / 4096;
         }
-        xpre=platform_grabber.getCurrentPosition();
-        ypre=L2.getCurrentPosition();
+        xpre=getXOdometry();
+        ypre=getYOdometry();
         theta=imuHeading;
     }
 

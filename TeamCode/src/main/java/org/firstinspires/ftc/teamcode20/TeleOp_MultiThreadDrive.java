@@ -143,7 +143,8 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             if(holdSet)telemetry.addData("Hold pos", hold);
             telemetry.addData("ext", grabber_extend1.getPosition());
             telemetry.addData("slide 1", L1.getCurrentPosition());
-            telemetry.addData("Y", L2.getCurrentPosition());
+            telemetry.addData("Y", getYOdometry());
+            telemetry.addData("X", getXOdometry());
             telemetry.addData("tower_top dist", tower_top.getDistance(DistanceUnit.INCH) + "in.");
             telemetry.update();
         }
@@ -157,7 +158,8 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         public void run() {
             while(!isInterrupted()&&!stop){
                 if(slow){
-                    setAllDrivePowerSlow(-1*(int)gamepad1.left_stick_y,(int)(gamepad1.left_stick_x),-1*(int)(gamepad1.right_stick_x));
+                    //setAllDrivePowerSlow(-1*(int)gamepad1.left_stick_y,(int)(gamepad1.left_stick_x),-1*(int)(gamepad1.right_stick_x));
+                    joystickScaledMove(-0.4*gamepad1.left_stick_x,-0.13*gamepad1.left_stick_y, (gamepad1.left_bumper?0:-0.25*gamepad1.right_stick_x));
                 }
             }
         }
@@ -173,10 +175,12 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             double absMax = 0;
             for(double d : speeds)
                 absMax = Math.max(Math.abs(d),absMax);
-            if(absMax <= 1){
-                setAllDrivePower(speeds[0], speeds[1], speeds[2], speeds[3]);
-            }else{
+            if(absMax <= 1 && vr == 0){
+                setAllDrivePowerG(speeds[0], speeds[1], speeds[2], speeds[3]);
+            }else if(vr == 0){
                 if(showTelemetry)telemetry.addLine("SCALED power: max was "+absMax);
+                setAllDrivePowerG(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
+            }else{
                 setAllDrivePower(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
             }
         }
