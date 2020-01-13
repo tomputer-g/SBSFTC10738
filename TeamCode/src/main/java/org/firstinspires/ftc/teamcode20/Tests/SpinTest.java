@@ -38,7 +38,7 @@ public class SpinTest extends BaseAuto {
         if(zheng(this.gamepad1.x, a)){
             speed +=0.05;
         }
-        if (zheng(this.gamepad1.y,b)){
+        if(zheng(this.gamepad1.y,b)){
             speed-=0.05;
         }
         if(zheng(this.gamepad1.a,aa)){
