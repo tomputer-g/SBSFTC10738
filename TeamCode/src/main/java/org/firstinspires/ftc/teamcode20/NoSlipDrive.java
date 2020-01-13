@@ -151,7 +151,8 @@ public class NoSlipDrive extends BaseAuto {
         }
         for(int i=0;i<5;i++){
             double koe=1+(10-i)/15;
-            setAllDrivePower(speed/koe,speed/koe,-speed/koe-0.1,-speed/koe-0.1);
+            
+            setAllDrivePowerG(speed/koe,speed/koe,-speed/koe-0.1,-speed/koe-0.1);
             wait(20);
             setAllDrivePower(0.0);
         }
