@@ -121,17 +121,14 @@ public class BaseOpMode extends OpMode {
     }
 
     protected void setAllDrivePower(double power){
-        LF.setPower(-power);
-        LB.setPower(-power);
-        RF.setPower(-power);
-        RB.setPower(-power);
+        setAllDrivePower(power,power,power,power);
     }
 
     protected void setAllDrivePower(double pLF, double pLB, double pRF, double pRB){
-        LF.setPower(-pLF);
-        LB.setPower(-pLB);
-        RF.setPower(-pRF);
-        RB.setPower(-pRB);
+        LF.setPower(pLF);
+        LB.setPower(pLB);
+        RF.setPower(pRF);
+        RB.setPower(pRB);
     }
 
     protected void setAllDrivePower(double pX, double pY){

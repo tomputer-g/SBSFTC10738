@@ -87,7 +87,16 @@ public class MoveTest extends BaseAuto {
             shutdownVuforia();
         }
         */
-        if(zheng(this.gamepad1.left_bumper,lF)){
+        if(zheng(this.gamepad1.left_bumper,lF)) {
+            reset_ENCODER();
+            setMode_RUN_WITHOUT_ENCODER();
+            LF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            LF.setTargetPosition(-1305);
+            setAllDrivePowerG(-0.3,-0.3,0.3,0.3);
+            while(LF.isBusy()){}
+            setAllDrivePower(0.0);
+
+        }
             /*
             ElapsedTime t=new ElapsedTime();
             setAllDrivePower(-speed,-speed,speed,speed);
@@ -143,8 +152,9 @@ public class MoveTest extends BaseAuto {
         telemetry.addData("Speeed: ", speeed);
         telemetry.addData("enc X", platform_grabber.getCurrentPosition());
         telemetry.addData("enc Y", L2.getCurrentPosition());
-        telemetry.update();}
+        telemetry.update();
     }
+
 
     protected void moveInchesGO(double xInch, double yInch, double speed){
         offsetX = platform_grabber.getCurrentPosition();
