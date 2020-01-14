@@ -121,6 +121,13 @@ public class BaseOpMode extends OpMode {
         RB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
+    protected void RUN_TO_POSITION(){
+        LF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        LB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        RF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        RB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
     protected void setAllDrivePower(double power){
         setAllDrivePower(power,power,power,power);
     }

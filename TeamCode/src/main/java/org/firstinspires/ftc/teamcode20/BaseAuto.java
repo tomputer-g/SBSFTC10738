@@ -61,7 +61,7 @@ public class BaseAuto extends BaseOpMode {
     private double headingDisplacement = -90;
 
     //Encoders
-    protected double xmult = 1430.5/72, ymult = 1305.25/72;
+    protected double xmult = 1430.5/72, ymult = 18.65;
     protected double[] coo={0,0};
     private double xpre=0,ypre=0,theta=0;
 

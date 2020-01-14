@@ -22,7 +22,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 
 @TeleOp
 public class MoveTest extends BaseAuto {
-    private double speeed, speed,x,y, GYRO_kp, side_distance, kp,kd,moveInches_kP = 0.5,odometryEncPerInch =1313.13;
+    private double speeed, speed,x,y, GYRO_kp, side_distance, kp,kd,moveInches_kP = 0.5,odometryEncPerInch =1316;
     private int offsetX = 0, offsetY = 0;
     private boolean[] qq = {true}, bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
     private ElapsedTime t=new ElapsedTime();
@@ -45,7 +45,7 @@ public class MoveTest extends BaseAuto {
         speed=0.25;
         speeed = 0.03;
         dir=1;
-        y = 0;
+        y = 72;
         x = 0;
 
         // 三天之内刹了你();
@@ -58,7 +58,7 @@ public class MoveTest extends BaseAuto {
         if(zheng(this.gamepad1.dpad_up,ee))y+=4;
         if(zheng(this.gamepad1.dpad_down,ff))y-=4;
         if(zheng(this.gamepad1.y,m))speed+=.01;
-        //if(zheng(this.gamepad1.a,mm))speed-=.01;
+        if(zheng(this.gamepad1.a,mm))speed-=.01;
         if(zheng(this.gamepad1.b,f))setNewGyro0();
         /*
         if(zheng(this.gamepad1.left_bumper,bF)){
@@ -91,21 +91,37 @@ public class MoveTest extends BaseAuto {
         if(zheng(this.gamepad1.left_bumper,lF)) {
             ElapsedTime p = new ElapsedTime();
             LF.setTargetPosition((int)(y*-ymult));
+            //LB.setTargetPosition((int)(y*-ymult));
+            //RF.setTargetPosition((int)(y*ymult));
+            //RB.setTargetPosition((int)(y*ymult));
+
             LF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            setAllDrivePowerG(-speed,-speed,speed,speed);
+            //LB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //RF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //RB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            setAllDrivePower(-speed,-speed,speed,speed);
             while(LF.isBusy()){
                 setAllDrivePowerG(-speed,-speed,speed,speed);
-                telemetry.addData("ss", -platform_grabber.getCurrentPosition()/1316);
-                telemetry.update();
-                if(y*1316+platform_grabber.getCurrentPosition() < 8000){
-                    if(p.milliseconds()>100){
-                        LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                        LF.setTargetPosition((int) (y*1313+platform_grabber.getCurrentPosition()*18.125/1316));
+                //telemetry.addData("ss", -platform_grabber.getCurrentPosition());
+                //telemetry.addData("Power: ",LF.getPower());
+                //telemetry.addData("flag: ",LF.isBusy());
+                //telemetry.update();
+                /*
+                    if(p.milliseconds()>500){
+                        reset_ENCODER();
+
+                        LF.setTargetPosition((int) (-((y*1316+platform_grabber.getCurrentPosition())*18.6/1316)));
+                        LB.setTargetPosition((int) (-((y*1316+platform_grabber.getCurrentPosition())*18.6/1316)));
+                        RF.setTargetPosition((int) ((y*1316+platform_grabber.getCurrentPosition())*18.6/1316));
+                        RB.setTargetPosition((int) ((y*1316+platform_grabber.getCurrentPosition())*18.6/1316));
+
+
                         //setMode_RUN_WITHOUT_ENCODER();
-                        LF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        RUN_TO_POSITION();
                         p.reset();
                     }
-                }
+                 */
             }
             setMode_RUN_WITHOUT_ENCODER();
             setAllDrivePower(0);
@@ -144,7 +160,7 @@ public class MoveTest extends BaseAuto {
             //moveInchesGO(x,y,speed);
             //setAllDrivePower(0);
             //setAllDrivePower(speeed,speeed,-speeed,-speeed);
-            setAllDrivePower(-speed,-speed,speed,speed);
+            moveInchesGO(0,y,speed);
         }
 
         if(zheng(this.gamepad1.right_bumper,bF)){
@@ -167,6 +183,7 @@ public class MoveTest extends BaseAuto {
         //telemetry.addData("Speeed: ", speeed);
         //telemetry.addData("enc X", xOdometry.getCurrentPosition());
         telemetry.addData("enc Y", LF.getCurrentPosition()/1305);
+        telemetry.addData("ss", -platform_grabber.getCurrentPosition());
         telemetry.update();
     }
 
