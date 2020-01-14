@@ -89,11 +89,13 @@ public class BlueAuto extends TractionControl {
 
         //drag foundation
         setNewGyro(180);
+        /*
         double koe=0.75;
         p.reset();
         while(10<rangeSensorFront.getDistance(DistanceUnit.INCH) || p.milliseconds() < 3400){
             setAllDrivePowerG(koe*(0.25-0.55+0.37),koe*(0.25-0.55-0.37),koe*(0.25+0.55+0.37),koe*(0.22+0.5-0.37)); //turn+f0rwrd+side
         }
+        */
         setAllDrivePower(0.0);
 
         //align to the right wall
