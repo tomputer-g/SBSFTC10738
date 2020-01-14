@@ -52,10 +52,10 @@ public class NoSlipDrive extends BaseAuto {
     public  void init_loop(){
         if(zheng(this.gamepad1.y,xx)){speed+=.1;}
         if(zheng(this.gamepad1.a,yy)){speed-=.1;}
-        //if(zheng(this.gamepad1.left_bumper,lb)){dist+=4;}
-        //if(zheng(this.gamepad1.right_bumper,rb)){speed-=1;}
+        if(zheng(this.gamepad1.left_bumper,lb)){dist+=4;}
+        if(zheng(this.gamepad1.right_bumper,rb)){dist-=1;}
         telemetry.addData("speed: ",speed);
-        //telemetry.addData("dist: ",dist);
+        telemetry.addData("dist: ",dist);
         telemetry.update();
     }
     @Override
@@ -67,15 +67,17 @@ public class NoSlipDrive extends BaseAuto {
         if(phase==1){
             //setNewGyro0();
             //reset_ENCODER();
-            while(platform_grabber.getCurrentPosition()<1313*dist)
+            while(platform_grabber.getCurrentPosition()>-1313*(dist-10))
                 setAllDrivePowerG(-speed,-speed,speed,speed);
+            while(platform_grabber.getCurrentPosition()>-1313*dist-1)
+                setAllDrivePowerG(0,0,0,0);
             odobrake();
             phase=0;
         }
         telemetry.addLine("haha");
         //t.reset();
         //scaledMove(-this.gamepad1.left_stick_x * 0.3, -this.gamepad1.left_stick_y * 0.15, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x * 0.2));
-        /*
+        /*3
         if(zheng(this.gamepad1.right_bumper,rb)){
             phase = 1;
         }
@@ -144,10 +146,10 @@ public class NoSlipDrive extends BaseAuto {
     }
 
     private void updateOC(){
-            odc = (double) (L2.getCurrentPosition() - omc) / odomult;
-            omc = L2.getCurrentPosition();
-            od2c = (double)(L2.getCurrentPosition() - omc) / odomult;
-            omc = platform_grabber.getCurrentPosition();
+            odc = (double) (-platform_grabber.getCurrentPosition()-omc) / odomult;
+            omc = -platform_grabber.getCurrentPosition();
+            od2c = (double)(-platform_grabber.getCurrentPosition()-omc) / odomult;
+            omc = -platform_grabber.getCurrentPosition();
     }
 
     protected void odobrake(){
@@ -157,16 +159,16 @@ public class NoSlipDrive extends BaseAuto {
         setAllDrivePower(0);
         wait(10);
         setAllDrivePowerG(1,1,-1,-1);
-        while(odc>0){
-            updateOC();
-        }
-        while(odc>0){
-            updateOC();
-        }
+        //while(odc>0){
+        //    updateOC();
+        //}
+        //while(odc>0){
+        //    updateOC();
+        //}
         for(int i=0;i<5;i++){
             double koe=1+(10-i)/15;
             
-            setAllDrivePowerG(speed/koe,speed/koe,-speed/koe-0.1,-speed/koe-0.1);
+            setAllDrivePowerG(speed/koe/2,speed/koe/2,speed/2/koe-0.15,speed/koe/2-0.15);
             wait(20);
             setAllDrivePower(0.0);
         }
