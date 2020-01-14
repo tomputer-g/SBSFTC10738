@@ -95,11 +95,14 @@ public class MoveTest extends BaseAuto {
             setAllDrivePowerG(-speed,-speed,speed,speed);
             while(LF.isBusy()){
                 setAllDrivePowerG(-speed,-speed,speed,speed);
-                telemetry.addData("ss", platform_grabber.getCurrentPosition()/1313);
+                telemetry.addData("ss", -platform_grabber.getCurrentPosition()/1316);
                 telemetry.update();
-                if(-platform_grabber.getCurrentPosition()/1313 > 24){
-                    if(p.milliseconds()%100>90){
-                        LF.setTargetPosition((int)(72*-ymult));
+                if(y*1316+platform_grabber.getCurrentPosition() < 8000){
+                    if(p.milliseconds()>100){
+                        LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                        LF.setTargetPosition((int) (y*1313+platform_grabber.getCurrentPosition()*18.125/1316));
+                        //setMode_RUN_WITHOUT_ENCODER();
+                        LF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         p.reset();
                     }
                 }
