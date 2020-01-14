@@ -158,7 +158,7 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.right_bumper,bF)) {
-            turn(y, speed, 3);
+            turn(y, speed, 1);
         }
         //telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
@@ -180,10 +180,9 @@ public class MoveTest extends BaseAuto {
     private double getError(double targetAngle) {
         return getError(targetAngle,getHeading());
     }
-    private boolean onHeading(double turnSpeed, double angle, double PCoeff, double Ie, double threshold) {
+    private boolean onHeading(double turnSpeed, double angle, double PCoeff, double threshold) {
         double   error = getError(angle), steer, speed;
         boolean  onTarget = false;
-        telemetry.update();
         if (Math.abs(error) <= threshold) {
             steer = 0.0;
             speed = 0.0;
@@ -193,7 +192,7 @@ public class MoveTest extends BaseAuto {
             //Ie+=
             steer = Range.clip(error/180 * PCoeff, -1, 1);
             speed  = turnSpeed * steer;
-            speed=(0<speed&&speed<.25)?.25:(0>speed&&speed>-.25)?-.25:speed;
+            speed=(0<speed&&speed<.2)?.2:(0>speed&&speed>-.2)?-.2:speed;
         }
         setAllDrivePower(speed);
         if(showTelemetry)telemetry.update();
@@ -203,8 +202,9 @@ public class MoveTest extends BaseAuto {
         setMode_RUN_WITHOUT_ENCODER();
         setNewGyro0();
         double p_TURN = 6;
-        double Ie=0;
-        while(!onHeading(speed, angle, p_TURN,Ie, threshold));
+        //double Ie=0;
+        double rangle = (angle>25)?angle-2:angle;
+        while(!onHeading(speed, rangle, p_TURN, threshold));
     }
 
     //move
@@ -232,6 +232,7 @@ public class MoveTest extends BaseAuto {
         }
         setAllDrivePower(0);
     }
+
     protected void moveInches(double xInch, double yInch, double speed){
         setMode_RESET_AND_RUN_TO_POSITION();
         double p_mult = 80;
