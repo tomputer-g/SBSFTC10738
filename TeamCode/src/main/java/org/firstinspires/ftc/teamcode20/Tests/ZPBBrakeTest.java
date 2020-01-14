@@ -9,7 +9,6 @@ import org.firstinspires.ftc.teamcode20.BaseOpMode;
 
 import static java.lang.Thread.sleep;
 
-@TeleOp
 public class ZPBBrakeTest extends OpMode {
     private boolean upP = false, downP = false, leftP = false, rightP = false;
     private double brakePwr = -0.03, start = 0.25;

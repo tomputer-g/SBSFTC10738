@@ -10,25 +10,17 @@ import org.firstinspires.ftc.teamcode20.BaseOpMode;
 @TeleOp
 public class OdometryMoveInchesTest extends BaseAuto {
     private boolean APrimed = false,BPrimed = false, upP = false, downP = false, leftP = false, rightP = false, x = false;
-    private double speed = 0.4, moveInches_kP = 0.3;
+    private double speed = 0.4, moveInches_kP = 0.1, moveInches_kI = 0;
 
     @Override
     public void init() {
         initDrivetrain();
         initOdometry();
     }
-//uh oh
-    //stinky
     @Override
     public void loop() {
-        if(this.gamepad1.x){x = true;}if(x && !this.gamepad1.x){ x = false;
-            turn(90,speed,3);
-        }
         if(this.gamepad1.a){APrimed = true;}if(APrimed && !this.gamepad1.a){ APrimed = false;
-            moveInchesGO(0,12,speed);
-        }
-        if(this.gamepad1.b){BPrimed = true;}if(BPrimed && !this.gamepad1.b){ BPrimed = false;
-            moveInchesGO(12, 0, speed);
+            moveInchesGO(-48,speed);
         }
         if(this.gamepad1.dpad_left){leftP = true;}if(leftP && !this.gamepad1.dpad_left){ leftP = false;
             speed -= 0.05;
@@ -37,43 +29,63 @@ public class OdometryMoveInchesTest extends BaseAuto {
             speed += 0.05;
         }
         if(this.gamepad1.dpad_down){downP = true;}if(downP && !this.gamepad1.dpad_down){ downP = false;
-            moveInches_kP -= 0.01;
+
+            if(this.gamepad1.left_bumper){
+                moveInches_kP -= 0.001;
+            }else if(this.gamepad1.right_bumper){
+                moveInches_kI -= 0.00001;
+            }
         }
         if(this.gamepad1.dpad_up){upP = true;}if(upP && !this.gamepad1.dpad_up){ upP = false;
-            moveInches_kP += 0.01;
+            if(this.gamepad1.left_bumper){
+                moveInches_kP += 0.001;
+            }else if(this.gamepad1.right_bumper){
+                moveInches_kI += 0.00001;
+            }
         }
-        telemetry.addData("enc X", platform_grabber.getCurrentPosition());
-        telemetry.addData("enc Y", L2.getCurrentPosition());
+        moveInches_kP = Math.round(moveInches_kP * 1000) / 1000.0;
+        moveInches_kI = Math.round(moveInches_kI * 100000) / 100000.0;
+        telemetry.addData("enc Y", getYOdometry());
         telemetry.addData("speed", speed);
         telemetry.addData("kP", moveInches_kP);
+        telemetry.addData("kI", moveInches_kI);
         telemetry.update();
     }
-    protected final double odometryEncPerInch = 1313.13;//4096.0/Math.PI;
-    protected int offsetX = 0, offsetY = 0;
+    protected final double odometryEncPerInch = 1316;//4096.0/Math.PI;
+    protected int offsetY = 0;
 
-    protected void moveInchesGO(double xInch, double yInch, double speed){
-        offsetX = platform_grabber.getCurrentPosition();
-        offsetY = L2.getCurrentPosition();
+    protected void moveInchesGO(double yInch, double speed){
+        offsetY = getYOdometry();
         speed=Math.abs(speed);
         double multiply_factor=1;
         ElapsedTime stable_timer = null;
-        int stable_timer_time = 1500;
-        int odometryXGoal = offsetX + (int)(xInch * odometryEncPerInch), odometryYGoal = offsetY + (int)(yInch * odometryEncPerInch);
-        double theta=(yInch==0)?90:Math.abs(Math.atan(xInch/yInch));
-        double vx=(xInch==0)?0:(xInch/Math.abs(xInch)*Math.sin(theta)*speed);
-        double vy=(yInch==0)?0:(yInch/Math.abs(yInch)*Math.cos(theta)*speed);
-        while( stable_timer == null || stable_timer.milliseconds() < stable_timer_time){//!near(odometryYGoal, L2.getCurrentPosition(), 0.5*odometryEncPerInch) && !near(odometryXGoal, platform_grabber.getCurrentPosition(), 0.5*odometryEncPerInch)
-            multiply_factor = -1*Math.min(1, Math.max(-1, moveInches_kP * (L2.getCurrentPosition() - odometryYGoal)/odometryEncPerInch));
-            setAllDrivePowerG(multiply_factor*(-vx-vy),multiply_factor*(vx-vy),multiply_factor*(-vx+vy),multiply_factor*(vx+vy),0.8);
-            if(near(multiply_factor, 0, 0.1) && stable_timer == null){
+        int stable_timer_time = 5000;
+        int odometryYGoal = offsetY + (int)(yInch * odometryEncPerInch);
+        double vx = 0;
+        double vy=(yInch==0)?0:(yInch/Math.abs(yInch)*speed);
+        long IError = 0;
+        setAllDrivePower((vy),(vy),(-vy),(-vy));
+        while(Math.abs((getYOdometry() - odometryYGoal)/odometryEncPerInch) > 6);
+        while(!this.gamepad1.b){
+            IError += (getYOdometry() - odometryYGoal)/odometryEncPerInch;
+            multiply_factor = -Math.min(1, Math.max(-1, (-moveInches_kP * (getYOdometry() - odometryYGoal)/odometryEncPerInch) + (moveInches_kI * IError )));
+
+            setAllDrivePower(multiply_factor*(-vx-vy),multiply_factor*(vx-vy),multiply_factor*(-vx+vy),multiply_factor*(vx+vy));
+            /*if(near(multiply_factor, 0, 0.1) && stable_timer == null){
                 stable_timer = new ElapsedTime();
             }
             if(stable_timer != null)telemetry.addData("stable timer", stable_timer.milliseconds());
-            telemetry.addData("current",L2.getCurrentPosition());
+
+             */
+            telemetry.addData("speed", speed);
+            telemetry.addData("kP", moveInches_kP);
+            telemetry.addData("P term", (getYOdometry() - odometryYGoal)/odometryEncPerInch);
+            telemetry.addData("kI", moveInches_kI);
+            telemetry.addData("I term", IError);
+            telemetry.addData("current",getYOdometry());
             telemetry.addData("Y goal",odometryYGoal);
             telemetry.update();
         }
         setAllDrivePower(0);
     }
-
 }

@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 
 import org.firstinspires.ftc.teamcode20.BaseOpMode;
 
-@Autonomous
 public class RunToPositionRevisited extends BaseOpMode{
 
     protected DcMotor LF, LB, RF, RB;//all four are backwards?
