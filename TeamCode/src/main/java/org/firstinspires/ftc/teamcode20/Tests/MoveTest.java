@@ -89,16 +89,22 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.left_bumper,lF)) {
+            ElapsedTime p = new ElapsedTime();
             LF.setTargetPosition((int)(y*-ymult));
             LF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             setAllDrivePowerG(-speed,-speed,speed,speed);
             while(LF.isBusy()){
                 setAllDrivePowerG(-speed,-speed,speed,speed);
+                telemetry.addData("ss", platform_grabber.getCurrentPosition()/1313);
                 telemetry.update();
-                if(LF.getCurrentPosition()/1305 > 24){
-                    LF.setTargetPosition((int)(72*-ymult));
+                if(-platform_grabber.getCurrentPosition()/1313 > 24){
+                    if(p.milliseconds()%100>90){
+                        LF.setTargetPosition((int)(72*-ymult));
+                        p.reset();
+                    }
                 }
             }
+            setMode_RUN_WITHOUT_ENCODER();
             setAllDrivePower(0);
         }
             /*
