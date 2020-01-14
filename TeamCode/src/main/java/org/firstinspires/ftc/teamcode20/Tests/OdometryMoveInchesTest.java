@@ -1,16 +1,15 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode20.BaseAuto;
-import org.firstinspires.ftc.teamcode20.BaseOpMode;
 
 @TeleOp
 public class OdometryMoveInchesTest extends BaseAuto {
     private boolean APrimed = false, upP = false, downP = false, leftP = false, rightP = false, x = false;
-    private double speed = 0.3, moveInches_kP = 0.11, moveInches_kI = 0.000003;
+    private double speed = 0.4, kP = 0.5, kI = 0, kD = 0.0025;
+
+    //FOR 0.3: use P = 0.7, D = 0.003
 
     @Override
     public void init() {
@@ -21,7 +20,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
     @Override
     public void loop() {
         if(this.gamepad1.a){APrimed = true;}if(APrimed && !this.gamepad1.a){ APrimed = false;
-            moveInchesGO(-48,speed);
+            moveInchesGO(-72,speed);
         }
         if(this.gamepad1.dpad_left){leftP = true;}if(leftP && !this.gamepad1.dpad_left){ leftP = false;
             speed -= 0.05;
@@ -32,24 +31,30 @@ public class OdometryMoveInchesTest extends BaseAuto {
         if(this.gamepad1.dpad_down){downP = true;}if(downP && !this.gamepad1.dpad_down){ downP = false;
 
             if(this.gamepad1.left_bumper){
-                moveInches_kP -= 0.001;
+                kP -= 0.01;
             }else if(this.gamepad1.right_bumper){
-                moveInches_kI -= 0.000001;
+                kI -= 0.00001;
+            }else{
+                kD -= 0.0001;
             }
         }
         if(this.gamepad1.dpad_up){upP = true;}if(upP && !this.gamepad1.dpad_up){ upP = false;
             if(this.gamepad1.left_bumper){
-                moveInches_kP += 0.001;
+                kP += 0.01;
             }else if(this.gamepad1.right_bumper){
-                moveInches_kI += 0.000001;
+                kI += 0.00001;
+            }else{
+                kD += 0.0001;
             }
         }
-        moveInches_kP = Math.round(moveInches_kP * 1000) / 1000.0;
-        moveInches_kI = Math.round(moveInches_kI * 1000000) / 1000000.0;
+        kP = Math.round(kP * 1000) / 1000.0;
+        kI = Math.round(kI * 100000) / 100000.0;
+        kD = Math.round(kD * 10000) / 10000.0;
         telemetry.addData("enc Y", getYOdometry());
         telemetry.addData("speed", speed);
-        telemetry.addData("kP", moveInches_kP);
-        telemetry.addData("kI", moveInches_kI);
+        telemetry.addData("kP", kP);
+        telemetry.addData("kI", kI);
+        telemetry.addData("kD", kD);
         telemetry.update();
     }
     protected final double odometryEncPerInch = 1320;//4096.0/Math.PI;
@@ -64,19 +69,21 @@ public class OdometryMoveInchesTest extends BaseAuto {
         double vy=(yInch==0)?0:(yInch/Math.abs(yInch)*speed);
         long IError = 0;
         setAllDrivePower((vy),(vy),(-vy),(-vy));
-        while(Math.abs((getYOdometry() - odometryYGoal)/odometryEncPerInch) > 6){
-            IError += (getYOdometry() - odometryYGoal)/odometryEncPerInch;
-        }
+        int previousPos = getYOdometry();
+        int Dterm;
         while(!this.gamepad1.b){
+            multiply_factor = -Math.min(1, Math.max(-1, (kP * (getYOdometry() - odometryYGoal)/odometryEncPerInch) + (kI * IError ) + (kD * (getYOdometry() - previousPos))));
+            Dterm = getYOdometry() - previousPos;
+            previousPos = getYOdometry();
             IError += (getYOdometry() - odometryYGoal)/odometryEncPerInch;
-            multiply_factor = -Math.min(1, Math.max(-1, (-moveInches_kP * (getYOdometry() - odometryYGoal)/odometryEncPerInch) + (moveInches_kI * IError )));
+            setAllDrivePower(multiply_factor*(-vx-vy),multiply_factor*(vx-vy),multiply_factor*(-vx+vy),multiply_factor*(vx+vy));
 
-            setAllDrivePowerG(multiply_factor*(-vx-vy),multiply_factor*(vx-vy),multiply_factor*(-vx+vy),multiply_factor*(vx+vy));
-
-            telemetry.addData("kP", moveInches_kP);
+            telemetry.addData("kP", kP);
             telemetry.addData("P term", (getYOdometry() - odometryYGoal)/odometryEncPerInch);
-            telemetry.addData("kI", moveInches_kI);
+            telemetry.addData("kI", kI);
             telemetry.addData("I term", IError);
+            telemetry.addData("kD", kD);
+            telemetry.addData("D term",Dterm);
             telemetry.addData("current",getYOdometry());
             telemetry.addData("Y goal",odometryYGoal);
             telemetry.update();
