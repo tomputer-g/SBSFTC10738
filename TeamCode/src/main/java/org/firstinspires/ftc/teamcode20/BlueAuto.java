@@ -7,7 +7,40 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous
 public class BlueAuto extends TractionControl {
-    private double speed = 0.4;
+    protected final double odometryEncPerInch = 1316;//4096.0/Math.PI;
+    protected int offsetY = 0;
+    private double speed = 0.3, kP = 0.5, kI = 0, kD = 0.0025;
+
+    protected void moveInchesGO(double yInch, double speed) {
+        offsetY = getYOdometry();
+        speed = Math.abs(speed);
+        double multiply_factor = 1;
+        int odometryYGoal = offsetY + (int) (yInch * odometryEncPerInch);
+        double vx = 0;
+        double vy = (yInch == 0) ? 0 : (yInch / Math.abs(yInch) * speed);
+        long IError = 0;
+        setAllDrivePower((vy), (vy), (-vy), (-vy));
+        int previousPos = getYOdometry();
+        int Dterm;
+        while (!this.gamepad1.b) {
+            multiply_factor = -Math.min(1, Math.max(-1, (kP * (getYOdometry() - odometryYGoal) / odometryEncPerInch) + (kI * IError) + (kD * (getYOdometry() - previousPos))));
+            Dterm = getYOdometry() - previousPos;
+            previousPos = getYOdometry();
+            IError += (getYOdometry() - odometryYGoal) / odometryEncPerInch;
+            setAllDrivePower(multiply_factor * (-vx - vy), multiply_factor * (vx - vy), multiply_factor * (-vx + vy), multiply_factor * (vx + vy));
+
+            telemetry.addData("kP", kP);
+            telemetry.addData("P term", (getYOdometry() - odometryYGoal) / odometryEncPerInch);
+            telemetry.addData("kI", kI);
+            telemetry.addData("I term", IError);
+            telemetry.addData("kD", kD);
+            telemetry.addData("D term", Dterm);
+            telemetry.addData("current", getYOdometry());
+            telemetry.addData("Y goal", odometryYGoal);
+            telemetry.update();
+        }
+        setAllDrivePower(0);
+    }
     @Override
     public void init() {
         showTelemetry = false;
@@ -66,13 +99,13 @@ public class BlueAuto extends TractionControl {
         setAllDrivePower(0.0);
         wait(300);
         //move back
-        moveInchesG(0,-15,0.3);
+        moveInchesGO(-15,0.3);
 
         //move forward & approach foundation
-        turn(90, 0.4, 4);
+        turn(90, 0.4, 3);
         setNewGyro(90);
         p.reset();
-        moveInchesG(0,90+shift,0.4);
+        moveInchesGO(90+shift,0.3);
         /*
         while(21.4<rangeSensorFront.getDistance(DistanceUnit.INCH)||p.milliseconds()<2500){
             setAllDrivePowerG(-speed,-speed,speed,speed);
@@ -85,7 +118,7 @@ public class BlueAuto extends TractionControl {
         //move foundation
         platform_grabber.setPower(-.8);
         wait(200);
-        turn(90, 0.67, 5);
+        turn(90, 0.67, 3);
 
         //drag foundation
         setNewGyro(180);
@@ -135,7 +168,7 @@ public class BlueAuto extends TractionControl {
 
         //park
         setNewGyro(90);
-        moveInchesG(0, -19, 0.4);
+        moveInchesGO( -19, 0.4);
         requestOpModeStop();
     }
 }
