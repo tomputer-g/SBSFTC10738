@@ -13,6 +13,7 @@ public class NoSlipDrive extends BaseAuto {
     final double odomult = 4096/Math.PI;
     final double maxodc = 1000;
     double mili = 0;
+    int dist=72;
     int phase =0;
     //button press booleans
     boolean[] rb={true},lb={true},xx={true},yy={true};
@@ -51,15 +52,27 @@ public class NoSlipDrive extends BaseAuto {
     public  void init_loop(){
         if(zheng(this.gamepad1.y,xx)){speed+=.1;}
         if(zheng(this.gamepad1.a,yy)){speed-=.1;}
+        //if(zheng(this.gamepad1.left_bumper,lb)){dist+=4;}
+        //if(zheng(this.gamepad1.right_bumper,rb)){speed-=1;}
         telemetry.addData("speed: ",speed);
+        //telemetry.addData("dist: ",dist);
         telemetry.update();
     }
     @Override
     public void loop() {
-        if(zheng(this.gamepad1.left_bumper,lb)){odobrake();phase=1;}
-        telemetry.addLine(mili+" ");
-        if(phase==0)
-            setAllDrivePower(-speed,-speed,speed,speed);
+        if(zheng(this.gamepad1.left_bumper,lb)){//odobrake();
+            phase=1;
+        }
+        //telemetry.addLine(LF.getCurrentPosition()+" "+RF.getCurrentPosition()+" "+LB.getCurrentPosition()+" "+RB.getCurrentPosition()+" "+L2.getCurrentPosition());
+        if(phase==1){
+            //setNewGyro0();
+            //reset_ENCODER();
+            while(platform_grabber.getCurrentPosition()<1313*dist)
+                setAllDrivePowerG(-speed,-speed,speed,speed);
+            odobrake();
+            phase=0;
+        }
+        telemetry.addLine("haha");
         //t.reset();
         //scaledMove(-this.gamepad1.left_stick_x * 0.3, -this.gamepad1.left_stick_y * 0.15, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x * 0.2));
         /*
