@@ -28,6 +28,8 @@ public class MoveTest extends BaseAuto {
     private int offsetX = 0, offsetY = 0;
     private boolean[] qq = {true}, bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
     private ElapsedTime t=new ElapsedTime();
+    private double  kP = 0.5, kI = 0, kD = 0.0025;
+
     //ModernRoboticsI2cRangeSensor rangeSensorSide;
     int dir;
     private void 三天之内刹了你(){
@@ -158,7 +160,8 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.right_bumper,bF)) {
-            turn(y, speed, 1);
+            moveInchesGO(y,speed);
+            //turn(y, speed, 1);
         }
         //telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
@@ -208,27 +211,36 @@ public class MoveTest extends BaseAuto {
     }
 
     //move
-    protected void moveInchesGO(double xInch, double yInch, double speed){
-        offsetX = platform_grabber.getCurrentPosition();
-        offsetY = L2.getCurrentPosition();
-        speed=Math.abs(speed);
-        double multiply_factor=1;
-        ElapsedTime stable_timer = null;
-        int stable_timer_time = 1500;
-        int odometryXGoal = offsetX + (int)(xInch * odometryEncPerInch), odometryYGoal = offsetY + (int)(yInch * odometryEncPerInch);
-        double theta=(yInch==0)?90:Math.abs(Math.atan(xInch/yInch));
-        double vx=(xInch==0)?0:(xInch/Math.abs(xInch)*Math.sin(theta)*speed);
-        double vy=(yInch==0)?0:(yInch/Math.abs(yInch)*Math.cos(theta)*speed);
-        while( stable_timer == null || stable_timer.milliseconds() < stable_timer_time){//!near(odometryYGoal, L2.getCurrentPosition(), 0.5*odometryEncPerInch) && !near(odometryXGoal, platform_grabber.getCurrentPosition(), 0.5*odometryEncPerInch)
-            multiply_factor = -1*Math.min(1, Math.max(-1, moveInches_kP * (L2.getCurrentPosition() - odometryYGoal)/odometryEncPerInch));
-            setAllDrivePowerG(multiply_factor*(-vx-vy),multiply_factor*(vx-vy),multiply_factor*(-vx+vy),multiply_factor*(vx+vy),0.8);
-            if(near(multiply_factor, 0, 0.1) && stable_timer == null){
-                stable_timer = new ElapsedTime();
-            }
-            if(stable_timer != null)telemetry.addData("stable timer", stable_timer.milliseconds());
-            telemetry.addData("current",L2.getCurrentPosition());
-            telemetry.addData("Y goal",odometryYGoal);
+    protected void moveInchesGO(double yInch, double speed) {
+        offsetY = getYOdometry();
+        speed = Math.abs(speed);
+        double multiply_factor = 1;
+        int odometryYGoal = offsetY + (int) (yInch * odometryEncPerInch);
+        double vx = 0;
+        double vy = (yInch == 0) ? 0 : (yInch / Math.abs(yInch) * speed);
+        long IError = 0;
+        setAllDrivePowerG((vy), (vy), (-vy), (-vy));
+        int previousPos = getYOdometry();
+        int Dterm;
+        //platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        while (near(getYOdometry()-offsetY,odometryEncPerInch*yInch,500)) {
+            multiply_factor = -Math.min(1, Math.max(-1, (kP * (getYOdometry() - odometryYGoal) / odometryEncPerInch) + (kI * IError) + (kD * (getYOdometry() - previousPos))));
+            Dterm = getYOdometry() - previousPos;
+            previousPos = getYOdometry();
+            IError += (getYOdometry() - odometryYGoal) / odometryEncPerInch;
+            setAllDrivePowerG(multiply_factor * (-vx - vy), multiply_factor * (vx - vy), multiply_factor * (-vx + vy), multiply_factor * (vx + vy));
+/*
+            telemetry.addData("kP", kP);
+            telemetry.addData("P term", (getYOdometry() - odometryYGoal) / odometryEncPerInch);
+            telemetry.addData("kI", kI);
+            telemetry.addData("I term", IError);
+            telemetry.addData("kD", kD);
+            telemetry.addData("D term", Dterm);
+            telemetry.addData("current", getYOdometry());
+            telemetry.addData("Y goal", odometryYGoal);
             telemetry.update();
+
+ */
         }
         setAllDrivePower(0);
     }

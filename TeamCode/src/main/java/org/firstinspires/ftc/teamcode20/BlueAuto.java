@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode20;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -19,15 +20,16 @@ public class BlueAuto extends TractionControl {
         double vx = 0;
         double vy = (yInch == 0) ? 0 : (yInch / Math.abs(yInch) * speed);
         long IError = 0;
-        setAllDrivePower((vy), (vy), (-vy), (-vy));
+        setAllDrivePowerG((vy), (vy), (-vy), (-vy));
         int previousPos = getYOdometry();
         int Dterm;
-        while (!this.gamepad1.b) {
+        //platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        while (near(getYOdometry()-offsetY,odometryEncPerInch*yInch,500)) {
             multiply_factor = -Math.min(1, Math.max(-1, (kP * (getYOdometry() - odometryYGoal) / odometryEncPerInch) + (kI * IError) + (kD * (getYOdometry() - previousPos))));
             Dterm = getYOdometry() - previousPos;
             previousPos = getYOdometry();
             IError += (getYOdometry() - odometryYGoal) / odometryEncPerInch;
-            setAllDrivePower(multiply_factor * (-vx - vy), multiply_factor * (vx - vy), multiply_factor * (-vx + vy), multiply_factor * (vx + vy));
+            setAllDrivePowerG(multiply_factor * (-vx - vy), multiply_factor * (vx - vy), multiply_factor * (-vx + vy), multiply_factor * (vx + vy));
 /*
             telemetry.addData("kP", kP);
             telemetry.addData("P term", (getYOdometry() - odometryYGoal) / odometryEncPerInch);
