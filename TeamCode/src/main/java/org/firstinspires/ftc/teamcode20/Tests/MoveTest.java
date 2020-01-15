@@ -64,7 +64,7 @@ public class MoveTest extends BaseAuto {
         if(zheng(this.gamepad1.y,m))speed+=.01;
         if(zheng(this.gamepad1.a,mm))speed-=.01;
         if(zheng(this.gamepad1.b,f))setNewGyro0();
-        /*
+            /*
         if(zheng(this.gamepad1.left_bumper,bF)){
             ElapsedTime t=new ElapsedTime();
             targetsSkyStone.activate();
@@ -93,6 +93,8 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.left_bumper,lF)) {
+            turn(y, speed, 1);
+            /*
             ElapsedTime p = new ElapsedTime();
             LF.setTargetPosition((int)(y*-ymult));
             //LB.setTargetPosition((int)(y*-ymult));
@@ -111,7 +113,7 @@ public class MoveTest extends BaseAuto {
                 //telemetry.addData("Power: ",LF.getPower());
                 //telemetry.addData("flag: ",LF.isBusy());
                 //telemetry.update();
-                /*
+
                     if(p.milliseconds()>500){
                         reset_ENCODER();
 
@@ -125,10 +127,11 @@ public class MoveTest extends BaseAuto {
                         RUN_TO_POSITION();
                         p.reset();
                     }
-                 */
-            }
+
+
             setMode_RUN_WITHOUT_ENCODER();
             setAllDrivePower(0);
+            */
         }
             /*
             ElapsedTime t=new ElapsedTime();
@@ -161,53 +164,15 @@ public class MoveTest extends BaseAuto {
         */
         if(zheng(this.gamepad1.right_bumper,bF)) {
             moveInchesGO(y,speed);
-            //turn(y, speed, 1);
         }
         //telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
-        telemetry.addData("Imu: ",getHeading());
-        telemetry.addData("Speed: ", speed);
+        telemetry.addData("Imu: ","%.2f",getHeading());
+        telemetry.addData("Speed: ","%.2f" ,speed);
         //telemetry.addData("enc X", xOdometry.getCurrentPosition());
         telemetry.addData("enc Y", LF.getCurrentPosition()/1305);
         telemetry.addData("ss", -platform_grabber.getCurrentPosition());
         telemetry.update();
-    }
-
-    //turn
-    private double getError(double target, double cur) {
-        double robotError =target-cur;
-        while (robotError > 180) robotError -= 360;
-        while (robotError <= -180) robotError += 360;
-        return robotError;
-    }
-    private double getError(double targetAngle) {
-        return getError(targetAngle,getHeading());
-    }
-    private boolean onHeading(double turnSpeed, double angle, double PCoeff, double threshold) {
-        double   error = getError(angle), steer, speed;
-        boolean  onTarget = false;
-        if (Math.abs(error) <= threshold) {
-            steer = 0.0;
-            speed = 0.0;
-            onTarget = true;
-        }
-        else {
-            //Ie+=
-            steer = Range.clip(error/180 * PCoeff, -1, 1);
-            speed  = turnSpeed * steer;
-            speed=(0<speed&&speed<.2)?.2:(0>speed&&speed>-.2)?-.2:speed;
-        }
-        setAllDrivePower(speed);
-        if(showTelemetry)telemetry.update();
-        return onTarget;
-    }
-    protected void turn(double angle, double speed, double threshold) {
-        setMode_RUN_WITHOUT_ENCODER();
-        setNewGyro0();
-        double p_TURN = 6;
-        //double Ie=0;
-        double rangle = (angle>25)?angle-2:angle;
-        while(!onHeading(speed, rangle, p_TURN, threshold));
     }
 
     //move
@@ -223,7 +188,7 @@ public class MoveTest extends BaseAuto {
         int previousPos = getYOdometry();
         int Dterm;
         //platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        while (near(getYOdometry()-offsetY,odometryEncPerInch*yInch,500)) {
+        while (multiply_factor>0.1) {
             multiply_factor = -Math.min(1, Math.max(-1, (kP * (getYOdometry() - odometryYGoal) / odometryEncPerInch) + (kI * IError) + (kD * (getYOdometry() - previousPos))));
             Dterm = getYOdometry() - previousPos;
             previousPos = getYOdometry();
