@@ -76,7 +76,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
             Dterm = getYOdometry() - previousPos;
             previousPos = getYOdometry();
             IError += (getYOdometry() - odometryYGoal)/odometryEncPerInch;
-            setAllDrivePower(multiply_factor*(-vx-vy),multiply_factor*(vx-vy),multiply_factor*(-vx+vy),multiply_factor*(vx+vy));
+            setAllDrivePowerG(multiply_factor*(-vx-vy),multiply_factor*(vx-vy),multiply_factor*(-vx+vy),multiply_factor*(vx+vy));
 
             telemetry.addData("kP", kP);
             telemetry.addData("P term", (getYOdometry() - odometryYGoal)/odometryEncPerInch);
