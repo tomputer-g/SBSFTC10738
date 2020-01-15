@@ -132,7 +132,13 @@ public class MoveTest extends BaseAuto {
             //moveInchesGO(x,y,speed);
             //setAllDrivePower(0);
             //setAllDrivePower(speeed,speeed,-speeed,-speeed);
+            LF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            LB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            RF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            RB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             setAllDrivePower(-speed,-speed,speed,speed);
+            wait(1200);
+            setAllDrivePower(0.0);
         }
 
         if(zheng(this.gamepad1.right_bumper,bF)){
