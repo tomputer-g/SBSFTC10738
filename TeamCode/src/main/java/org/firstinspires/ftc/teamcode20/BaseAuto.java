@@ -317,22 +317,14 @@ public class BaseAuto extends BaseOpMode {
     }
 
     protected void updateCoo(){
-        getHeading();
-        double dtheta=imuHeading-theta;
-        double dx=getXOdometry()-xpre;
-        double dy=getYOdometry()-ypre;
-        telemetry.addLine(""+dx);
-        telemetry.addLine(""+dy);
-        telemetry.addLine(""+imuHeading);
-        if(near(imuHeading,theta,4)){
-
-        }
-        else{
-            coo[0] += (dx * Math.cos(imuHeading) + dy * Math.sin(imuHeading)) * Math.PI / 4096;
-            coo[1] += (dx * Math.sin(imuHeading) + dy * Math.cos(imuHeading)) * Math.PI / 4096;
-        }
-        xpre=getXOdometry();
-        ypre=getYOdometry();
+        double dtheta=getHeading()-theta;
+        double xcur=getXOdometry(),ycur=-getYOdometry(),thetacur=imuHeading/180*Math.PI;
+        double dx=xcur-xpre;
+        double dy=ycur-ypre;
+        coo[0] += (dx * Math.cos(thetacur) + dy * Math.sin(thetacur)) * Math.PI / 4096;
+        coo[1] += (dx * Math.sin(thetacur) + dy * Math.cos(thetacur)) * Math.PI / 4096;
+        xpre=xcur;
+        ypre=ycur;
         theta=imuHeading;
     }
 
