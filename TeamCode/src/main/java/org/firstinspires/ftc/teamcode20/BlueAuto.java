@@ -24,7 +24,7 @@ public class BlueAuto extends TractionControl {
         int previousPos = getYOdometry();
         int Dterm;
         //platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        while (near(getYOdometry()-offsetY,odometryEncPerInch*yInch,500)) {
+        while (multiply_factor>0.1){
             multiply_factor = -Math.min(1, Math.max(-1, (kP * (getYOdometry() - odometryYGoal) / odometryEncPerInch) + (kI * IError) + (kD * (getYOdometry() - previousPos))));
             Dterm = getYOdometry() - previousPos;
             previousPos = getYOdometry();
@@ -69,7 +69,7 @@ public class BlueAuto extends TractionControl {
         //initialization
         grabber_extend1.setPosition(1);
         grabber_extend2.setPosition(0);
-        grabber.setPosition(1);
+        grabber.setPosition(grabber_open);
         platform_grabber.setPower(1);
         wait(300);
         platform_grabber.setPower(0.0);
@@ -81,11 +81,11 @@ public class BlueAuto extends TractionControl {
         int shift;
         if(pos == 1){shift = 0;}
         else if (pos == 0){
-            moveInchesG(-8,0,0.4);
+            moveInchesG(-6.5,0,0.4);
             shift=-8;
         }
         else {
-            moveInchesG(8, 0, 0.4);
+            moveInchesG(6.5, 0, 0.4);
             shift=8;
         }
 
@@ -93,36 +93,28 @@ public class BlueAuto extends TractionControl {
         ElapsedTime p = new ElapsedTime();
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
-        while ( (ymult*8>Math.abs(LB.getCurrentPosition())) && 1.3 < (left.getDistance(DistanceUnit.INCH)) && (1.3 < right.getDistance(DistanceUnit.INCH)) && p.milliseconds()<1200){
+        while ( (ymult*8>Math.abs(LB.getCurrentPosition())) && 1.3 < (left.getDistance(DistanceUnit.INCH)) && (1.3 < right.getDistance(DistanceUnit.INCH)) && p.milliseconds()<1000){
             setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
         }
+
         //grab 1st block
-        wait(300);
-        grabber.setPosition(.4);
+        grabber.setPosition(grabber_closed);
         wait(300);
         setAllDrivePower(0.0);
-        wait(300);
-        //move back
-        moveInchesGO(-15,0.3);
+        moveInchesG(0,-15,0.3);
 
         //move forward & approach foundation
-        turn(90, 0.4, 3);
+        turn(90, 0.3, 1);
         setNewGyro(90);
         p.reset();
-        moveInchesGO(85+shift,0.3);
-        /*
-        while(21.4<rangeSensorFront.getDistance(DistanceUnit.INCH)||p.milliseconds()<2500){
-            setAllDrivePowerG(-speed,-speed,speed,speed);
-        }
-        */
-
+        moveInchesG(0,88+shift,0.3);
         setAllDrivePowerG(-.35,.35,-.35,.35);
         wait(1200);
 
         //move foundation
         platform_grabber.setPower(-.8);
         wait(200);
-        turn(90, 0.67, 3);
+        turn(90, 0.7, 2);
 
         //drag foundation
         setNewGyro(180);
@@ -133,8 +125,9 @@ public class BlueAuto extends TractionControl {
             setAllDrivePowerG(koe*(0.25-0.55+0.37),koe*(0.25-0.55-0.37),koe*(0.25+0.55+0.37),koe*(0.22+0.5-0.37)); //turn+f0rwrd+side
         }
         */
-        setAllDrivePower(0.0);
-
+        setAllDrivePowerG(-.5,.5,-.5,.5,2);
+        wait(1200);
+        setAllDrivePower(0);
         //align to the right wall
         /*
         while(30>rangeSensorFront.getDistance(DistanceUnit.INCH)){
