@@ -28,7 +28,7 @@ public class BlueAuto extends TractionControl {
             previousPos = getYOdometry();
             IError += (getYOdometry() - odometryYGoal) / odometryEncPerInch;
             setAllDrivePower(multiply_factor * (-vx - vy), multiply_factor * (vx - vy), multiply_factor * (-vx + vy), multiply_factor * (vx + vy));
-
+/*
             telemetry.addData("kP", kP);
             telemetry.addData("P term", (getYOdometry() - odometryYGoal) / odometryEncPerInch);
             telemetry.addData("kI", kI);
@@ -38,6 +38,8 @@ public class BlueAuto extends TractionControl {
             telemetry.addData("current", getYOdometry());
             telemetry.addData("Y goal", odometryYGoal);
             telemetry.update();
+
+ */
         }
         setAllDrivePower(0);
     }
@@ -105,7 +107,7 @@ public class BlueAuto extends TractionControl {
         turn(90, 0.4, 3);
         setNewGyro(90);
         p.reset();
-        moveInchesGO(90+shift,0.3);
+        moveInchesGO(85+shift,0.3);
         /*
         while(21.4<rangeSensorFront.getDistance(DistanceUnit.INCH)||p.milliseconds()<2500){
             setAllDrivePowerG(-speed,-speed,speed,speed);
@@ -140,7 +142,7 @@ public class BlueAuto extends TractionControl {
         }
         setAllDrivePower(0.0);
          */
-
+/*
         //turn and drop the block
         platform_grabber.setPower(1);
         wait(300);
@@ -169,6 +171,8 @@ public class BlueAuto extends TractionControl {
         //park
         setNewGyro(90);
         moveInchesGO( -19, 0.4);
+
+ */
         requestOpModeStop();
     }
 }
