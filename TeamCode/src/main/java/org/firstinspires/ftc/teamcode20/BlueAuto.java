@@ -1,13 +1,50 @@
 package org.firstinspires.ftc.teamcode20;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous
 public class BlueAuto extends TractionControl {
-    private double speed = 0.4;
+    protected final double odometryEncPerInch = 1316;//4096.0/Math.PI;
+    protected int offsetY = 0;
+    private double speed = 0.3, kP = 0.5, kI = 0, kD = 0.0025;
+
+    protected void moveInchesGO(double yInch, double speed) {
+        offsetY = getYOdometry();
+        speed = Math.abs(speed);
+        double multiply_factor = 1;
+        int odometryYGoal = offsetY + (int) (yInch * odometryEncPerInch);
+        double vx = 0;
+        double vy = (yInch == 0) ? 0 : (yInch / Math.abs(yInch) * speed);
+        long IError = 0;
+        setAllDrivePowerG((vy), (vy), (-vy), (-vy));
+        int previousPos = getYOdometry();
+        int Dterm;
+        //platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        while (near(getYOdometry()-offsetY,odometryEncPerInch*yInch,500)) {
+            multiply_factor = -Math.min(1, Math.max(-1, (kP * (getYOdometry() - odometryYGoal) / odometryEncPerInch) + (kI * IError) + (kD * (getYOdometry() - previousPos))));
+            Dterm = getYOdometry() - previousPos;
+            previousPos = getYOdometry();
+            IError += (getYOdometry() - odometryYGoal) / odometryEncPerInch;
+            setAllDrivePowerG(multiply_factor * (-vx - vy), multiply_factor * (vx - vy), multiply_factor * (-vx + vy), multiply_factor * (vx + vy));
+/*
+            telemetry.addData("kP", kP);
+            telemetry.addData("P term", (getYOdometry() - odometryYGoal) / odometryEncPerInch);
+            telemetry.addData("kI", kI);
+            telemetry.addData("I term", IError);
+            telemetry.addData("kD", kD);
+            telemetry.addData("D term", Dterm);
+            telemetry.addData("current", getYOdometry());
+            telemetry.addData("Y goal", odometryYGoal);
+            telemetry.update();
+
+ */
+        }
+        setAllDrivePower(0);
+    }
     @Override
     public void init() {
         showTelemetry = false;
@@ -66,13 +103,13 @@ public class BlueAuto extends TractionControl {
         setAllDrivePower(0.0);
         wait(300);
         //move back
-        moveInchesG(0,-15,0.3);
+        moveInchesGO(-15,0.3);
 
         //move forward & approach foundation
-        turn(90, 0.4, 4);
+        turn(90, 0.4, 3);
         setNewGyro(90);
         p.reset();
-        moveInchesG(0,90+shift,0.4);
+        moveInchesGO(85+shift,0.3);
         /*
         while(21.4<rangeSensorFront.getDistance(DistanceUnit.INCH)||p.milliseconds()<2500){
             setAllDrivePowerG(-speed,-speed,speed,speed);
@@ -85,15 +122,17 @@ public class BlueAuto extends TractionControl {
         //move foundation
         platform_grabber.setPower(-.8);
         wait(200);
-        turn(90, 0.67, 5);
+        turn(90, 0.67, 3);
 
         //drag foundation
         setNewGyro(180);
+        /*
         double koe=0.75;
         p.reset();
         while(10<rangeSensorFront.getDistance(DistanceUnit.INCH) || p.milliseconds() < 3400){
             setAllDrivePowerG(koe*(0.25-0.55+0.37),koe*(0.25-0.55-0.37),koe*(0.25+0.55+0.37),koe*(0.22+0.5-0.37)); //turn+f0rwrd+side
         }
+        */
         setAllDrivePower(0.0);
 
         //align to the right wall
@@ -105,7 +144,7 @@ public class BlueAuto extends TractionControl {
         }
         setAllDrivePower(0.0);
          */
-
+/*
         //turn and drop the block
         platform_grabber.setPower(1);
         wait(300);
@@ -133,7 +172,9 @@ public class BlueAuto extends TractionControl {
 
         //park
         setNewGyro(90);
-        moveInchesG(0, -19, 0.4);
+        moveInchesGO( -19, 0.4);
+
+ */
         requestOpModeStop();
     }
 }

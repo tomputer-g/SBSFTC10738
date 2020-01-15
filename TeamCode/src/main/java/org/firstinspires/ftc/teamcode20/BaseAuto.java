@@ -279,17 +279,15 @@ public class BaseAuto extends BaseOpMode {
         imuOffset = target;
     }
 
-    private double getError(double targetAngle) {
-        return getError(targetAngle,getHeading());
-    }
-
     private double getError(double target, double cur) {
         double robotError =target-cur;
         while (robotError > 180) robotError -= 360;
         while (robotError <= -180) robotError += 360;
         return robotError;
     }
-
+    private double getError(double targetAngle) {
+        return getError(targetAngle,getHeading());
+    }
     private boolean onHeading(double turnSpeed, double angle, double PCoeff, double threshold) {
         double   error = getError(angle), steer, speed;
         boolean  onTarget = false;
@@ -297,24 +295,26 @@ public class BaseAuto extends BaseOpMode {
             steer = 0.0;
             speed = 0.0;
             onTarget = true;
-            if(showTelemetry)telemetry.addData("ON TARGET!", error);
         }
         else {
-            if(showTelemetry)telemetry.addData("not ON TARGET!", error);
+            //Ie+=
             steer = Range.clip(error/180 * PCoeff, -1, 1);
             speed  = turnSpeed * steer;
+            speed=(0<speed&&speed<.2)?.2:(0>speed&&speed>-.2)?-.2:speed;
         }
         setAllDrivePower(speed);
         if(showTelemetry)telemetry.update();
         return onTarget;
     }
-
     protected void turn(double angle, double speed, double threshold) {
         setMode_RUN_WITHOUT_ENCODER();
         setNewGyro0();
         double p_TURN = 6;
-        while(!onHeading(speed, angle, p_TURN, threshold));
+        //double Ie=0;
+        double rangle = (angle>25)?angle-2:angle;
+        while(!onHeading(speed, rangle, p_TURN, threshold));
     }
+
 
     protected void updateCoo(){
         double dtheta=getHeading()-theta;
