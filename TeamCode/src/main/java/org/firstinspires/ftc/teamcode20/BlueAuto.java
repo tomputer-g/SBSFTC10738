@@ -138,6 +138,14 @@ public class BlueAuto extends TractionControl {
         platform_grabber.setPower(1);
         wait(300);
         setAllDrivePower(0);
+        platform_grabber.setPower(0);
+        moveInchesG(-6,0,0.5);
+        turn(-90,0.4,1);
+        setNewGyro0();
+        servoThread.setTarget(0.7);
+        wait(400);
+        grabber.setPosition(grabber_open);
+        moveInchesG(0,-20,0.4);
         //align to the right wall
         /*
         while(30>rangeSensorFront.getDistance(DistanceUnit.INCH)){
@@ -147,7 +155,7 @@ public class BlueAuto extends TractionControl {
         }
         setAllDrivePower(0.0);
          */
-/*
+        /*
         //turn and drop the block
         platform_grabber.setPower(1);
         wait(300);
@@ -178,7 +186,9 @@ public class BlueAuto extends TractionControl {
         moveInchesGO( -19, 0.4);
 
  */
+        setAllDrivePower(0.0);
         servoThread.stopThread();
+        setNewGyro0();
         requestOpModeStop();
     }
 }
