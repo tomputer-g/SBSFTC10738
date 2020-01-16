@@ -49,10 +49,6 @@ public class TeleOp_Drive extends BaseAuto {
         autoPlace();
         if(holdSet){if(showTelemetry)telemetry.addData("Hold pos", hold);}
 
-        if(this.gamepad1.y){YPrimed = true;}if(!this.gamepad1.y && YPrimed){YPrimed = false;
-            slow = !slow;
-        }
-
 
         if(this.gamepad1.dpad_right) {
             DPRPrimed = true;
@@ -175,11 +171,7 @@ public class TeleOp_Drive extends BaseAuto {
 
              */
             scaledMove(-this.gamepad1.left_stick_x*0.3,-this.gamepad1.left_stick_y*0.15, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x*0.2));//replace with enc-based move
-        }else if(slow){
-            //if(showTelemetry)telemetry.addLine("slide and drivetrain slowed");
-            //scaledMove(-this.gamepad1.left_stick_x*0.4,-this.gamepad1.left_stick_y*0.4, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x*0.3));
-            setAllDrivePowerSlow(-1*(int)this.gamepad1.left_stick_y,(int)(this.gamepad1.left_stick_x),-1*(int)(this.gamepad1.right_stick_x));
-        } else{
+        }   else{
             scaledMove(-this.gamepad1.left_stick_x,-this.gamepad1.left_stick_y, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x));
         }
 
