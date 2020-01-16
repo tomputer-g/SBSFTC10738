@@ -505,7 +505,7 @@ public class BaseOpMode extends OpMode {
     protected final double slideEncoderPerInch = slideEncoderTravel / slideInchTravel;
     protected int RTState = -1;
     protected final double ctrl_deadzone = 0.2;
-    protected boolean slow = false;
+    protected int slow = 0;
 
     protected final int extenderTravel = -425;
 
@@ -522,8 +522,8 @@ public class BaseOpMode extends OpMode {
                 holdSet = false;
                 telemetry.addLine("slide is very slow");
                 if(-this.gamepad1.right_stick_y > 0){//asc
-                    L1.setPower(0.2*this.gamepad1.right_stick_y);
-                    L2.setPower(-0.2*this.gamepad1.right_stick_y);
+                    L1.setPower(0.5*this.gamepad1.right_stick_y);
+                    L2.setPower(-0.5*this.gamepad1.right_stick_y);
                 }else{//dec
                     L1.setPower(0.15*this.gamepad1.right_stick_y);
                     L2.setPower(-0.15*this.gamepad1.right_stick_y);
@@ -539,7 +539,7 @@ public class BaseOpMode extends OpMode {
                 holdSet = false;
                 L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                 L2.setPower(0);
-                if(slow){
+                if(slow==1){
                     //L1.setPower(-((a+(2000-L1.getCurrentPosition())/2000.0)*(0.2-a) ) * this.gamepad1.right_stick_y);
                     //L2.setPower(((a+(2000-L1.getCurrentPosition())/2000.0)*(0.2-a) )* this.gamepad1.right_stick_y);
                     telemetry.addData("L1 power", 0.4 * this.gamepad1.right_stick_y);
