@@ -97,9 +97,7 @@ public class BlueAuto extends TractionControl {
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
 
-        while (p.milliseconds()<1000){
-            setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
-        }
+        while (p.milliseconds()<1000) setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
 
         //grab 1st block
         grabber.setPosition(grabber_closed);
@@ -156,7 +154,7 @@ public class BlueAuto extends TractionControl {
         grabber.setPosition(grabber_open);
 
         //park
-        moveInchesG(-2,-25,0.4);
+        moveInchesG(-4,-25,0.4);
 
         setAllDrivePower(0.0);
         servoThread.stopThread();
