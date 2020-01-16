@@ -1,9 +1,14 @@
 package org.firstinspires.ftc.teamcode20;
 
+import android.provider.Telephony;
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import java.util.Map;
 
 import static java.lang.Thread.sleep;
 
@@ -26,13 +31,17 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         initSensors();
         initPlatformGrabber();
         initIMU();
+        setNewGyro0();
         grabber.setPosition(grabber_open);
-        setExtenderServoPosition(1);//lower the servos
+        servoThread.setTarget(0.99);
         platform_grabber.setPower(1);
         wait(150);
         platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         platform_grabber.setPower(0);
+        telemetry.addData("#Threads",Thread.getAllStackTraces().size());
+        telemetry.update();
+        Log.i("MultiThreadDrive","Threads running: "+Thread.getAllStackTraces().size());
         //pwmThread = new PWMThread();
     }
 
@@ -44,15 +53,8 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     @Override public void stop() {
         //pwmThread.stopThread();
         servoThread.stopThread();
-        super.stop();
     }
 
-    @Override
-    public void init_loop() {
-        super.init_loop();
-        telemetry.addData("servoThread is",servoThread.getState());
-        telemetry.update();
-    }
 
     @Override
     public void loop() {
@@ -120,7 +122,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
         //If not PWM: run full speed
         if(autoPlaceState != 1) {
-            if (!slow) {
+            if (!slow) {//only one direction at a time
                 joystickScaledMove(-this.gamepad1.left_stick_x, -this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x));
             } else {
                 joystickScaledMove(-0.3 * this.gamepad1.left_stick_x, -0.13 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.15 * this.gamepad1.right_stick_x));
@@ -177,10 +179,8 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             for(double d : speeds)
                 absMax = Math.max(Math.abs(d),absMax);
             if(absMax <= 1 && vr == 0){
-
                 setAllDrivePowerG(speeds[0], speeds[1], speeds[2], speeds[3]);
             }else if(vr == 0){
-
                 if(showTelemetry)telemetry.addLine("SCALED power: max was "+absMax);
                 setAllDrivePowerG(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
             }else if(absMax <= 1){
@@ -191,6 +191,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                 setAllDrivePower(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
             }
             if(Math.abs(vx) < 0.01 && Math.abs(vy) < 0.01 && Math.abs(vr) < 0.01){
+                setNewGyro0();
                 setAllDrivePower(0);
             }
     }

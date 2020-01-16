@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode20;
 
+import android.util.Log;
+
 import com.qualcomm.hardware.motors.GoBILDA5202Series;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -34,7 +36,7 @@ public class BaseOpMode extends OpMode {
 
     protected boolean showTelemetry = false;
 
-    protected ServoThread servoThread = new ServoThread();
+    protected ServoThread servoThread;
     protected DcMotor LF, LB, RF, RB;
     protected Servo grabber;
     protected Servo grabber_extend1, grabber_extend2;
@@ -684,6 +686,7 @@ public class BaseOpMode extends OpMode {
         //getPosition does not actually read position. We'll have to keep track using a double
         @Override
         public void run() {
+            Log.i("servoThread"+this.getId(),"Started running");
             while(!isInterrupted() && !stop){
                 if(gamepad1.dpad_up){upWasHeld = true;}else{upWasHeld = false;}
                 if(gamepad1.dpad_down){downWasHeld = true;}else{downWasHeld = false;}
@@ -720,9 +723,10 @@ public class BaseOpMode extends OpMode {
                         lastPosition -= 0.01;
                     }
                 }
+                lastPosition = roundTo2Dec(lastPosition);
+                targetPosition = roundTo2Dec(targetPosition);
             }
-            lastPosition = roundTo2Dec(lastPosition);
-            targetPosition = roundTo2Dec(targetPosition);
+            Log.i("servoThread"+this.getId(), "thread finished");
 
         }
 
@@ -733,6 +737,7 @@ public class BaseOpMode extends OpMode {
         }
 
         public void setTarget(double target){
+            Log.i("servoThread"+this.getId(),"setting target "+target);
             if(target > 0.99){target = 0.99;}
             if(target < 0.3){target = 0.3;}
             targetPosition = roundTo2Dec(target);
@@ -745,6 +750,7 @@ public class BaseOpMode extends OpMode {
         public void stopThread(){
             stop = true;
         }
+
     }
 
     private double roundTo2Dec(double d){
