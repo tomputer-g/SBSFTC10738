@@ -67,9 +67,11 @@ public class NoSlipDrive extends BaseAuto {
         if(phase==1){
             //setNewGyro0();
             //reset_ENCODER();
-            while(platform_grabber.getCurrentPosition()>-1313*(dist-10))
+            double target1 = -1313*Math.max((1-speed/2)*dist,dist*0.78);
+            while(platform_grabber.getCurrentPosition()>target1)
                 setAllDrivePowerG(-speed,-speed,speed,speed);
-            while(platform_grabber.getCurrentPosition()>-1313*dist-1)
+            double target2 = -1313*(dist-1);
+            while(platform_grabber.getCurrentPosition()>target2)
                 setAllDrivePowerG(0,0,0,0);
             odobrake();
             phase=0;
@@ -152,28 +154,25 @@ public class NoSlipDrive extends BaseAuto {
             omc = -platform_grabber.getCurrentPosition();
     }
 
-    protected void odobrake(){
-        setNewGyro0();
-        t = new ElapsedTime();
-        double angle = getHeading();
-        setAllDrivePower(0);
-        wait(10);
-        setAllDrivePowerG(1,1,-1,-1);
-        //while(odc>0){
-        //    updateOC();
-        //}
-        //while(odc>0){
-        //    updateOC();
-        //}
-        for(int i=0;i<5;i++){
-            double koe=1+(10-i)/15;
-            
-            setAllDrivePowerG(speed/koe/2,speed/koe/2,speed/2/koe-0.15,speed/koe/2-0.15);
-            wait(20);
-            setAllDrivePower(0.0);
+    protected void odobrake() {
+        setAllDrivePowerG(0);
+        setAllDrivePowerG(1, 1, -1, -1);
+        /*
+        while(odc>0){
+            updateOC();
+        }
+        while(odc>0){
+            updateOC();
+        }
+
+         */
+        for (int i = 0; i < 10; i++) {
+            double koe = (1 + (10 - i) / 15)*1.2;
+            setAllDrivePowerG(speed / koe / 2, speed / koe / 2, -speed / 2 / koe - 0.1, -speed / koe / 2 - 0.1);
+            wait(8);
+            setAllDrivePowerG(0.0);
         }
         //turn(-getHeading()+angle,.5,2);
-        mili=t.milliseconds();
     }
 
     protected void odobrakeduo(){
