@@ -194,7 +194,7 @@ public class MoveTest extends BaseAuto {
             previousPos = getYOdometry();
             IError += (getYOdometry() - odometryYGoal) / odometryEncPerInch;
             setAllDrivePowerG(multiply_factor * (-vx - vy), multiply_factor * (vx - vy), multiply_factor * (-vx + vy), multiply_factor * (vx + vy));
-/*
+            /*
             telemetry.addData("kP", kP);
             telemetry.addData("P term", (getYOdometry() - odometryYGoal) / odometryEncPerInch);
             telemetry.addData("kI", kI);
@@ -204,7 +204,6 @@ public class MoveTest extends BaseAuto {
             telemetry.addData("current", getYOdometry());
             telemetry.addData("Y goal", odometryYGoal);
             telemetry.update();
-
  */
         }
         setAllDrivePower(0);
