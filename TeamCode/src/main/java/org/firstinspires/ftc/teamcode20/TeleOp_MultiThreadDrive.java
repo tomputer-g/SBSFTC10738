@@ -16,12 +16,12 @@ import static java.lang.Thread.sleep;
 @TeleOp(group = "Final")
 public class TeleOp_MultiThreadDrive extends BaseAuto {
     private boolean BPrimed = false, RBPrimed = false, YPrimed = false, DPRPrimed = false;
-    private boolean[] xprime={true};
+    private boolean[] xprime={true},Xprimed={true};
     //slide
     private boolean platformGrabbed = false;
 
 
-    //private PWMThread pwmThread;
+    private PWMThread pwmThread;
 
 
     @Override public void init() {
@@ -40,7 +40,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         platform_grabber.setPower(0);
-        //pwmThread = new PWMThread();
+        pwmThread = new PWMThread();
         Set<Thread> keys = Thread.getAllStackTraces().keySet();
         Log.d("All threads log start","-------------------- "+keys.size()+"Threads -----------------------");
         for(Thread t : keys){
@@ -51,11 +51,11 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
     @Override public void start() {
         super.start();
-        //pwmThread.start();
+        pwmThread.start();
     }
 
     @Override public void stop() {
-        //pwmThread.stopThread();
+        pwmThread.stopThread();
         servoThread.stopThread();
     }
 
@@ -65,9 +65,13 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
         //toggle slow
         if(this.gamepad1.y){YPrimed = true;}if(!this.gamepad1.y && YPrimed){YPrimed = false;
-            slow = !slow;
+            if(slow==1)slow=0;
+            else slow=1;
         }
-
+        if(zheng(this.gamepad1.x,Xprimed)){
+            if(slow==2)slow=0;
+            else slow=2;
+        }
         //platform grabber toggle
         if(this.gamepad1.dpad_right) {
             DPRPrimed = true;
@@ -126,9 +130,9 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
         //If not PWM: run full speed
         if(autoPlaceState != 1) {
-            if (!slow) {//only one direction at a time
+            if (slow==0) {//only one direction at a time
                 joystickScaledMove(-this.gamepad1.left_stick_x, -this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x));
-            } else {
+            } else if(slow==2) {
                 slowModeMove(-0.35 * this.gamepad1.left_stick_x, -0.16 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.17 * this.gamepad1.right_stick_x));
             }
         }
@@ -160,12 +164,12 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
 
     //-------------------------------------Multithreading---------------------------------/
-    /*private class PWMThread extends Thread{
+    private class PWMThread extends Thread{
         volatile boolean stop = false;
         @Override
         public void run() {
             while(!isInterrupted()&&!stop){
-                if(slow){
+                if(slow==1){
                     //setAllDrivePowerSlow(-1*(int)gamepad1.left_stick_y,(int)(gamepad1.left_stick_x),-1*(int)(gamepad1.right_stick_x));
                     joystickScaledMove(-0.4*gamepad1.left_stick_x,-0.13*gamepad1.left_stick_y, (gamepad1.left_bumper?0:-0.25*gamepad1.right_stick_x));
                 }
@@ -175,7 +179,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             stop = true;
         }
     }
-*/
 
     protected void joystickScaledMove(double vx, double vy, double vr){
             double[] speeds = {vx - vy + vr, -vy - vx + vr, vx + vy + vr, -vx + vy + vr};
