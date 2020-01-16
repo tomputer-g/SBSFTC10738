@@ -134,7 +134,9 @@ public class BlueAuto extends TractionControl {
             setAllDrivePowerG(-0.5,-0.5,0.5,0.5,2);
         setAllDrivePower(0);
         setAllDrivePowerG(-.7,.7,-.7,.7,2);
-        wait(1500);
+        wait(1000);
+        platform_grabber.setPower(1);
+        wait(300);
         setAllDrivePower(0);
         //align to the right wall
         /*
@@ -176,6 +178,7 @@ public class BlueAuto extends TractionControl {
         moveInchesGO( -19, 0.4);
 
  */
+        servoThread.stopThread();
         requestOpModeStop();
     }
 }

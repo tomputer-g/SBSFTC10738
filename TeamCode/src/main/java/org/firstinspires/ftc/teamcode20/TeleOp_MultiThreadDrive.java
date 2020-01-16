@@ -26,6 +26,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         initSensors();
         initPlatformGrabber();
         initIMU();
+        setNewGyro0();
         grabber.setPosition(grabber_open);
         setExtenderServoPosition(1);//lower the servos
         platform_grabber.setPower(1);
