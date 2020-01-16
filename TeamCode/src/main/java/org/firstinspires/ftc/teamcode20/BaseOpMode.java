@@ -686,6 +686,7 @@ public class BaseOpMode extends OpMode {
         //getPosition does not actually read position. We'll have to keep track using a double
         @Override
         public void run() {
+            this.setName("Servo Thread "+this.getId());
             Log.i("servoThread"+this.getId(),"Started running");
             while(!isInterrupted() && !stop){
                 if(gamepad1.dpad_up){upWasHeld = true;}else{upWasHeld = false;}
@@ -737,9 +738,10 @@ public class BaseOpMode extends OpMode {
         }
 
         public void setTarget(double target){
-            Log.i("servoThread"+this.getId(),"setting target "+target);
+
             if(target > 0.99){target = 0.99;}
             if(target < 0.3){target = 0.3;}
+            Log.i("servoThread"+this.getId(),"setting target "+target);
             targetPosition = roundTo2Dec(target);
         }
 

@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.Map;
+import java.util.Set;
 
 import static java.lang.Thread.sleep;
 
@@ -39,10 +40,13 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         platform_grabber.setPower(0);
-        telemetry.addData("#Threads",Thread.getAllStackTraces().size());
-        telemetry.update();
-        Log.i("MultiThreadDrive","Threads running: "+Thread.getAllStackTraces().size());
         //pwmThread = new PWMThread();
+        Set<Thread> keys = Thread.getAllStackTraces().keySet();
+        Log.d("All threads log start","-------------------- "+keys.size()+"Threads -----------------------");
+        for(Thread t : keys){
+            Log.d("All threads: #"+t.getId(),t.getName());
+        }
+        Log.d("All threads log end","-------------------------------------------");
     }
 
     @Override public void start() {
@@ -125,7 +129,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             if (!slow) {//only one direction at a time
                 joystickScaledMove(-this.gamepad1.left_stick_x, -this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x));
             } else {
-                joystickScaledMove(-0.3 * this.gamepad1.left_stick_x, -0.13 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.15 * this.gamepad1.right_stick_x));
+                slowModeMove(-0.35 * this.gamepad1.left_stick_x, -0.16 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.17 * this.gamepad1.right_stick_x));
             }
         }
 
@@ -178,22 +182,37 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             double absMax = 0;
             for(double d : speeds)
                 absMax = Math.max(Math.abs(d),absMax);
-            if(absMax <= 1 && vr == 0){
-                setAllDrivePowerG(speeds[0], speeds[1], speeds[2], speeds[3]);
-            }else if(vr == 0){
-                if(showTelemetry)telemetry.addLine("SCALED power: max was "+absMax);
-                setAllDrivePowerG(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
+            if(Math.abs(vx) < 0.01 && Math.abs(vy) < 0.01 && Math.abs(vr) < 0.01){
+                setAllDrivePower(0);
             }else if(absMax <= 1){
-                setNewGyro0();
                 setAllDrivePower(speeds[0], speeds[1], speeds[2], speeds[3]);
             }else{
-                setNewGyro0();
                 setAllDrivePower(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
             }
-            if(Math.abs(vx) < 0.01 && Math.abs(vy) < 0.01 && Math.abs(vr) < 0.01){
-                setNewGyro0();
-                setAllDrivePower(0);
-            }
+
+    }
+
+    protected void slowModeMove(double vx, double vy, double vr){
+        double[] speeds = {vx - vy + vr, -vy - vx + vr, vx + vy + vr, -vx + vy + vr};
+        double absMax = 0;
+        for(double d : speeds)
+            absMax = Math.max(Math.abs(d),absMax);
+        if(absMax <= 1 && Math.abs(vr) < 0.01){
+            setAllDrivePowerG(speeds[0], speeds[1], speeds[2], speeds[3]);
+        }else if(Math.abs(vr) < 0.01){
+            if(showTelemetry)telemetry.addLine("SCALED power: max was "+absMax);
+            setAllDrivePowerG(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
+        }else if(absMax <= 1){
+            setNewGyro0();
+            setAllDrivePower(speeds[0], speeds[1], speeds[2], speeds[3]);
+        }else{
+            setNewGyro0();
+            setAllDrivePower(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
+        }
+        if(Math.abs(vx) < 0.01 && Math.abs(vy) < 0.01 && Math.abs(vr) < 0.01){
+            setNewGyro0();
+            setAllDrivePower(0);
+        }
     }
 
 }
