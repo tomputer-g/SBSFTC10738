@@ -130,7 +130,7 @@ public class BlueAuto extends TractionControl {
         double targetdist = getYOdometry()-12*1316;
         ElapsedTime t = new ElapsedTime();
         t.startTime();
-        while(getYOdometry()>targetdist||t.milliseconds()<2000)
+        while(getYOdometry()>targetdist&&t.milliseconds()<1500)
             setAllDrivePowerG(-0.5,-0.5,0.5,0.5,2);
         setAllDrivePower(0);
         setAllDrivePowerG(-.5,.5,-.5,.5,2);
