@@ -88,7 +88,7 @@ public class BlueAuto extends TractionControl {
             shift=-8;
         }
         else {
-            moveInchesG(6.5, 0, 0.4);
+            moveInchesG(8, 0, 0.4);
             shift=8;
         }
 
@@ -146,19 +146,20 @@ public class BlueAuto extends TractionControl {
         platform_grabber.setPower(0.0);
 
         //strafe left to put the block
-        moveInchesG(-7,0,0.5);
-        turn(-90,0.4,1);
+        moveInchesG(-3,0,0.5);
+        turn(-90,0.3,1);
         setNewGyro(90);
-        servoThread.setTarget(0.6);
+        //servoThread.setTarget(0.6);
         wait(800);
         grabber.setPosition(grabber_open);
-
+        platform_grabber.setPower(1);
         //park
         moveInchesG(-4,-25,0.4);
 
         setAllDrivePower(0.0);
         servoThread.stopThread();
         setNewGyro0();
+        platform_grabber.setPower(0);
         requestOpModeStop();
     }
 }

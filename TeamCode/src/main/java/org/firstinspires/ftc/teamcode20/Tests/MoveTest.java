@@ -29,6 +29,7 @@ public class MoveTest extends BaseAuto {
     private boolean[] qq = {true}, bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
     private ElapsedTime t=new ElapsedTime();
     private double  kP = 0.5, kI = 0, kD = 0.0025;
+    int WaitingTime = 300;
 
     //ModernRoboticsI2cRangeSensor rangeSensorSide;
     int dir;
@@ -43,6 +44,8 @@ public class MoveTest extends BaseAuto {
         initIMU();
         initDrivetrain();
         initOdometry();
+        initLinSlide();
+        initGrabber();
         //initVuforiaWebcam();
         setNewGyro0();
         rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
@@ -59,8 +62,30 @@ public class MoveTest extends BaseAuto {
     public void loop(){
         if(zheng(this.gamepad1.dpad_left,eee))speeed*=-1;
         if(zheng(this.gamepad1.dpad_right,fff))x+=10;
-        if(zheng(this.gamepad1.dpad_up,ee))y+=2;
-        if(zheng(this.gamepad1.dpad_down,ff))y-=2;
+        if(zheng(this.gamepad1.dpad_up,ee)){
+            //L1.setPower(0.5);
+            //L2.setPower(-0.5);
+            //wait(600);
+            servoThread.setTarget(1);
+            wait(200);
+            grabber.setPosition(grabber_closed);
+            wait(500);
+
+            holdSlide((int)slideEncoderPerInch/10);
+            servoThread.setTarget(0.8);
+            wait(2000);
+            grabber.setPosition(grabber_open);
+            wait(500);
+            //holdSlide(0);
+            holdSet=false;
+            L1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            L2.setPower(0);
+            L1.setPower(0);
+            grabber.setPosition(grabber_open);
+            servoThread.setTarget(1);
+        };
+        if(zheng(this.gamepad1.dpad_down,ff))WaitingTime+=50;
         if(zheng(this.gamepad1.y,m))speed+=.01;
         if(zheng(this.gamepad1.a,mm))speed-=.01;
         if(zheng(this.gamepad1.b,f))setNewGyro0();
@@ -93,7 +118,9 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.left_bumper,lF)) {
-            turn(y, speed, 1);
+            L1.setPower(0);
+            L2.setPower(0);
+            //turn(y, speed, 1);
             /*
             ElapsedTime p = new ElapsedTime();
             LF.setTargetPosition((int)(y*-ymult));
@@ -163,10 +190,14 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.right_bumper,bF)) {
-            moveInchesGO(y,speed);
+            L1.setPower(speed);
+            L2.setPower(-speed);
+            //moveInchesGO(y,speed);
         }
         //telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
+        telemetry.addData("wait: ",WaitingTime);
+
         telemetry.addData("Imu: ","%.2f",getHeading());
         telemetry.addData("Speed: ","%.2f" ,speed);
         //telemetry.addData("enc X", xOdometry.getCurrentPosition());
