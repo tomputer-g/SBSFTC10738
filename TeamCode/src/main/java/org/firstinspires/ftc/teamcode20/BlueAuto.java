@@ -101,7 +101,7 @@ public class BlueAuto extends TractionControl {
         grabber.setPosition(grabber_closed);
         wait(300);
         setAllDrivePower(0.0);
-        moveInchesG(0,-15,0.3);
+        moveInchesG(0,-13,0.3);
 
         //move forward & approach foundation
         turn(90, 0.3, 1);
@@ -133,7 +133,7 @@ public class BlueAuto extends TractionControl {
         while(getYOdometry()>targetdist&&t.milliseconds()<1500)
             setAllDrivePowerG(-0.5,-0.5,0.5,0.5,2);
         setAllDrivePower(0);
-        setAllDrivePowerG(-.5,.5,-.5,.5,2);
+        setAllDrivePowerG(-.7,.7,-.7,.7,2);
         wait(1500);
         setAllDrivePower(0);
         //align to the right wall
