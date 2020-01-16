@@ -45,6 +45,7 @@ public class BlueAuto extends TractionControl {
         }
         setAllDrivePower(0);
     }
+
     @Override
     public void init() {
         showTelemetry = false;
@@ -71,13 +72,15 @@ public class BlueAuto extends TractionControl {
         grabber_extend2.setPosition(0);
         grabber.setPosition(grabber_open);
         platform_grabber.setPower(1);
-        wait(300);
-        platform_grabber.setPower(0.0);
         moveInchesG(0,15,0.3);
+        platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
+
+        //find skystone
         int pos = skystonePosition();
         shutdownVuforia();
 
+        //shift to align to skystone
         int shift;
         if(pos == 1){shift = 0;}
         else if (pos == 0){
@@ -89,11 +92,12 @@ public class BlueAuto extends TractionControl {
             shift=8;
         }
 
-        //move to the first blocc
+        //move forward to the skystone
         ElapsedTime p = new ElapsedTime();
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
-        while ( (ymult*8>Math.abs(LB.getCurrentPosition())) && 1.3 < (left.getDistance(DistanceUnit.INCH)) && (1.3 < right.getDistance(DistanceUnit.INCH)) && p.milliseconds()<1000){
+
+        while (p.milliseconds()<1000){
             setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
         }
 
@@ -101,7 +105,7 @@ public class BlueAuto extends TractionControl {
         grabber.setPosition(grabber_closed);
         wait(300);
         setAllDrivePower(0.0);
-        moveInchesG(0,-13,0.3);
+        moveInchesG(0,-12,0.3);
 
         //move forward & approach foundation
         turn(90, 0.3, 1);
@@ -109,14 +113,14 @@ public class BlueAuto extends TractionControl {
         p.reset();
         moveInchesG(0,88+shift,0.3);
         setAllDrivePowerG(-.35,.35,-.35,.35);
-        wait(1200);
+        wait(1500);
 
-        //move foundation
+        //turn foundation
         platform_grabber.setPower(-.8);
         wait(200);
         turn(90, 0.7, 2);
 
-        //drag foundation
+        //drag foundation forward
         setNewGyro(180);
         /*
         double koe=0.75;
@@ -128,64 +132,32 @@ public class BlueAuto extends TractionControl {
         setAllDrivePower(0);
         double tempY = getYOdometry();
         double targetdist = getYOdometry()-12*1316;
-        ElapsedTime t = new ElapsedTime();
-        t.startTime();
-        while(getYOdometry()>targetdist&&t.milliseconds()<1500)
+        p = new ElapsedTime();
+        while(getYOdometry()>targetdist&&p.milliseconds()<1500)
             setAllDrivePowerG(-0.5,-0.5,0.5,0.5,2);
         setAllDrivePower(0);
+
+        //push it in
         setAllDrivePowerG(-.7,.7,-.7,.7,2);
         wait(1000);
+
+        //release grabber
         platform_grabber.setPower(1);
         wait(300);
         setAllDrivePower(0);
-        platform_grabber.setPower(0);
-        moveInchesG(-6,0,0.5);
-        turn(-90,0.4,1);
-        setNewGyro0();
-        servoThread.setTarget(0.7);
-        wait(400);
-        grabber.setPosition(grabber_open);
-        moveInchesG(0,-20,0.4);
-        //align to the right wall
-        /*
-        while(30>rangeSensorFront.getDistance(DistanceUnit.INCH)){
-            //telemetry.addData("Side",rangeSensorSide.getDistance(DistanceUnit.INCH));
-            //telemetry.update();
-            setAllDrivePowerG(0.5,-0.5,0.5,-0.5);
-        }
-        setAllDrivePower(0.0);
-         */
-        /*
-        //turn and drop the block
-        platform_grabber.setPower(1);
-        wait(300);
         platform_grabber.setPower(0.0);
-        moveInchesG(-4,0,0.4);
-        turn(-90,0.5,3);
 
-        //L1.setPower(-0.35);
-        //L2.setPower(0.35);
-        //wait(500);
-        grabber_extend1.setPosition(0.5);
-        grabber_extend2.setPosition(0.5);
-        wait(1000);
-        //L1.setPower(0.0);
-        //L2.setPower(0.0);
-        grabber.setPosition(1);
-        wait(300);
-        //L1.setPower(0.5);
-        //L2.setPower(-0.5);
-        grabber_extend1.setPosition(1);
-        grabber_extend2.setPosition(0);
-        wait(2000);
-        //L1.setPower(0.0);
-        //L2.setPower(0.0);
+        //strafe left to put the block
+        moveInchesG(-7,0,0.5);
+        turn(-90,0.4,1);
+        setNewGyro(90);
+        servoThread.setTarget(0.6);
+        wait(800);
+        grabber.setPosition(grabber_open);
 
         //park
-        setNewGyro(90);
-        moveInchesGO( -19, 0.4);
+        moveInchesG(-2,-25,0.4);
 
- */
         setAllDrivePower(0.0);
         servoThread.stopThread();
         setNewGyro0();
