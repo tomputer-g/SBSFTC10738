@@ -125,8 +125,16 @@ public class BlueAuto extends TractionControl {
             setAllDrivePowerG(koe*(0.25-0.55+0.37),koe*(0.25-0.55-0.37),koe*(0.25+0.55+0.37),koe*(0.22+0.5-0.37)); //turn+f0rwrd+side
         }
         */
+        setAllDrivePower(0);
+        double tempY = getYOdometry();
+        double targetdist = getYOdometry()-12*1316;
+        ElapsedTime t = new ElapsedTime();
+        t.startTime();
+        while(getYOdometry()>targetdist||t.milliseconds()<2000)
+            setAllDrivePowerG(-0.5,-0.5,0.5,0.5,2);
+        setAllDrivePower(0);
         setAllDrivePowerG(-.5,.5,-.5,.5,2);
-        wait(1200);
+        wait(1500);
         setAllDrivePower(0);
         //align to the right wall
         /*
