@@ -119,10 +119,12 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         }
 
         //If not PWM: run full speed
-        if(!slow){
-            joystickScaledMove(-this.gamepad1.left_stick_x,-this.gamepad1.left_stick_y, (this.gamepad1.left_bumper?0:-this.gamepad1.right_stick_x));
-        }else{
-            joystickScaledMove(-0.35*this.gamepad1.left_stick_x,-0.13*this.gamepad1.left_stick_y, (this.gamepad1.left_bumper?0:-0.2*this.gamepad1.right_stick_x));
+        if(autoPlaceState != 1) {
+            if (!slow) {
+                joystickScaledMove(-this.gamepad1.left_stick_x, -this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x));
+            } else {
+                joystickScaledMove(-0.3 * this.gamepad1.left_stick_x, -0.13 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.15 * this.gamepad1.right_stick_x));
+            }
         }
 
         //LT
@@ -175,15 +177,17 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             for(double d : speeds)
                 absMax = Math.max(Math.abs(d),absMax);
             if(absMax <= 1 && vr == 0){
-                setNewGyro0();
+
                 setAllDrivePowerG(speeds[0], speeds[1], speeds[2], speeds[3]);
             }else if(vr == 0){
-                setNewGyro0();
+
                 if(showTelemetry)telemetry.addLine("SCALED power: max was "+absMax);
                 setAllDrivePowerG(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
             }else if(absMax <= 1){
+                setNewGyro0();
                 setAllDrivePower(speeds[0], speeds[1], speeds[2], speeds[3]);
             }else{
+                setNewGyro0();
                 setAllDrivePower(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
             }
             if(Math.abs(vx) < 0.01 && Math.abs(vy) < 0.01 && Math.abs(vr) < 0.01){

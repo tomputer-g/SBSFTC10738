@@ -25,7 +25,7 @@ public class OldDummyBot extends BaseOpMode {
                 servo.setPosition(0);
             }
         }
-        move(this.gamepad1.left_stick_x, -this.gamepad1.left_stick_y, this.gamepad1.right_stick_x);
+        move(-this.gamepad1.left_stick_x, this.gamepad1.left_stick_y, -this.gamepad1.right_stick_x);
     }
 
 

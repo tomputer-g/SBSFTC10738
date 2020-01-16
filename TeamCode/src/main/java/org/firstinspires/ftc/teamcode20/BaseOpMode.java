@@ -192,6 +192,16 @@ public class BaseOpMode extends OpMode {
         return platform_grabber.getCurrentPosition();
     }
 
+    protected void resetYOdometry(){
+        platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    protected void resetXOdometry(){
+        xOdometry.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        xOdometry.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
     protected boolean zheng(boolean b, boolean[] f){
         //chzch butt on press
         //淦 --yeah
@@ -574,7 +584,12 @@ public class BaseOpMode extends OpMode {
         switch(autoPlaceState){
             case -1:
                 break;
-            case 0://approach
+            case 0:
+                servoThread.setTarget(0.3);
+                if(near(servoThread.lastPosition, 0.3, 0.02)){
+                    autoPlaceState++;
+                }
+            case 1://approach
                 if(tower_top.getDistance(DistanceUnit.INCH) > inchApproachTarget + 0.5){
                     setAllDrivePower(-approachSpeed,-approachSpeed,approachSpeed,approachSpeed);
                 }else if(tower_top.getDistance(DistanceUnit.INCH) < inchApproachTarget - 0.5){
@@ -584,7 +599,7 @@ public class BaseOpMode extends OpMode {
                     autoPlaceState++;
                 }
                 break;
-            case 1://just started. rise to top of tower
+            case 2://just started. rise to top of tower
                 L1.setPower(-1);
                 L2.setPower(1);
                 if(tower_top.getDistance(DistanceUnit.INCH) > 20.0 || (slideEncoderTravel > 0? L1.getCurrentPosition() > slideEncoderTravel : L1.getCurrentPosition() < slideEncoderTravel)){
@@ -595,7 +610,7 @@ public class BaseOpMode extends OpMode {
                     autoPlaceState++;
                 }
                 break;
-            case 2: //rise a bit more and hold position
+            case 3: //rise a bit more and hold position
                 if(ascendTarget + 50 > L1.getCurrentPosition()){
                     L1.setPower(0);
                     L2.setPower(0);
@@ -604,7 +619,7 @@ public class BaseOpMode extends OpMode {
                     autoPlaceState++;
                 }
                 break;
-            case 3: //extend
+            case 4: //extend
 
                 if(near(servoThread.lastPosition, grabberServoOut, 0.05)){
                     autoPlaceState++;
@@ -615,7 +630,7 @@ public class BaseOpMode extends OpMode {
                     L2.setPower(0);
                 }
                 break;
-            case 4: //drop & hold to correct level (descend 1200) & drop
+            case 5: //drop & hold to correct level (descend 1200) & drop
                 if(L1.getCurrentPosition() > descendTarget - 50){
                     //autoPlaceState++;
                     holdSet = false;
