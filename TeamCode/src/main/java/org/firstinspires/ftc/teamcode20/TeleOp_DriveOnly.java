@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode19.BaseTeleOp;
-@TeleOp
 public class TeleOp_DriveOnly extends BaseAuto {
     private OdometryThread thread = new OdometryThread();
 

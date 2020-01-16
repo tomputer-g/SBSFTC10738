@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode19.Tests.WallVUMarkTesting;
 
-@TeleOp
 public class TractionControl extends BaseAuto{
     private double runSpeed = 0.3;
     private int delay = 200;
