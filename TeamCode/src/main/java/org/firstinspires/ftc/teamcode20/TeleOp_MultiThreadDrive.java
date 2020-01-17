@@ -15,8 +15,9 @@ import static java.lang.Thread.sleep;
 
 @TeleOp(group = "Final")
 public class TeleOp_MultiThreadDrive extends BaseAuto {
-    private boolean BPrimed = false, RBPrimed = false, YPrimed = false, DPRPrimed = false;
+    private boolean BPrimed = false, RBPrimed = false, YPrimed = false, DPRPrimed = false, LPrimed = false;
     private boolean[] xprime={true},Xprimed={true};
+    private boolean tapeDirectionOut = true;
     //slide
     private boolean platformGrabbed = false;
 
@@ -30,6 +31,8 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         initGrabber();
         initLinSlide();
         initSensors();
+        xOdometry = hardwareMap.get(DcMotor.class, "xOdo");
+        xOdometry.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         initPlatformGrabber();
         initIMU();
         setNewGyro0();
@@ -123,17 +126,13 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         //DUP/DDOWN manual extender movement
         //manual extender movement is now in servoThread.
 
-        //X brake (nobody cares)
-        if(zheng(this.gamepad1.x,xprime)) {
-            brake();//TODO: blocks thread up to 440 ms
-        }
 
         //If not PWM: run full speed
         if(autoPlaceState != 1) {
             if (slow==0) {//only one direction at a time
                 joystickScaledMove(-this.gamepad1.left_stick_x, -this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x));
             } else if(slow==2) {
-                slowModeMove(-0.35 * this.gamepad1.left_stick_x, -0.16 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.17 * this.gamepad1.right_stick_x));
+                slowModeMove(-0.3 * this.gamepad1.left_stick_x, -0.16 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.17 * this.gamepad1.right_stick_x));
             }
         }
 
@@ -141,6 +140,23 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         if(this.gamepad1.left_trigger  > .5 && autoPlaceState == -1){//dependent on other things?
             autoPlaceState = 0;
             RTState = -1;
+        }
+
+
+        //tape out/tape in
+        if(this.gamepad1.dpad_left){
+            LPrimed = true;
+            if(tapeDirectionOut){
+                xOdometry.setPower(-1);
+            }else{
+                xOdometry.setPower(1);
+            }
+        }else{
+            if(LPrimed){
+                LPrimed = false;
+                tapeDirectionOut = !tapeDirectionOut;
+            }
+            xOdometry.setPower(0);
         }
 
         //run LT, RT, normal control
