@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous
-public class BlueAuto extends TractionControl {
+public class BlueAuto extends BaseAuto {
     protected final double odometryEncPerInch = 1316;//4096.0/Math.PI;
     protected int offsetY = 0;
     private double speed = 0.3, kP = 0.5, kI = 0, kD = 0.0025;
@@ -70,14 +70,15 @@ public class BlueAuto extends TractionControl {
         //initialization
         grabber_extend1.setPosition(1);
         grabber_extend2.setPosition(0);
-        grabber.setPosition(grabber_open);
+
         platform_grabber.setPower(1);
-        moveInchesG(0,15,0.3);
+        moveInchesG(0,15,0.5);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
 
         //find skystone
         int pos = skystonePosition();
+        grabber.setPosition(grabber_open);
         shutdownVuforia();
 
         //shift to align to skystone
