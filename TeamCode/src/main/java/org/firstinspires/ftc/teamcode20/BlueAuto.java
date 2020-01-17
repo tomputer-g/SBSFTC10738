@@ -98,7 +98,7 @@ public class BlueAuto extends BaseAuto {
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
         grabber.setPosition(grabber_open);
-        while (p.milliseconds()<630) setAllDrivePowerG(-0.45, -0.45, 0.45, 0.45);
+        while (p.milliseconds()<1000) setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
 
         //grab 1st block
         grabber.setPosition(grabber_closed);
@@ -107,7 +107,7 @@ public class BlueAuto extends BaseAuto {
         moveInchesG(0,-10,0.45);
 
         //move forward & approach foundation
-        turn(90, 0.5, 0.8);
+        turn(90, 0.4, 0.8);
         setNewGyro(90);
         p.reset();
         moveInchesG(0,80+shift,0.45);
@@ -132,7 +132,7 @@ public class BlueAuto extends BaseAuto {
         double tempY = getYOdometry();
         double targetdist = getYOdometry()-12*1316;
         p = new ElapsedTime();
-        while(getYOdometry()>targetdist&&p.milliseconds()<2000)
+        while(getYOdometry()>targetdist&&p.milliseconds()<3000)
             setAllDrivePowerG(-0.7,-0.7,0.8,0.8,2);
         setAllDrivePower(0);
 
@@ -149,7 +149,7 @@ public class BlueAuto extends BaseAuto {
         //strafe left to put the block
 
         servoThread.setTarget(0.5);
-        moveInchesG(-6.5,0,0.6);
+        moveInchesG(-5.5,0,0.6);
         turn(-90,0.4,1);
         setNewGyro(90);
        // holdSlide((int)slideEncoderPerInch/10);
