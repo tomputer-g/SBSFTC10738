@@ -98,13 +98,13 @@ public class BlueAuto extends BaseAuto {
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
         grabber.setPosition(grabber_open);
-        while (p.milliseconds()<660) setAllDrivePowerG(-0.45, -0.45, 0.45, 0.45);
+        while (p.milliseconds()<630) setAllDrivePowerG(-0.45, -0.45, 0.45, 0.45);
 
         //grab 1st block
         grabber.setPosition(grabber_closed);
         wait(400);
         setAllDrivePower(0.0);
-        moveInchesG(0,-10,0.5);
+        moveInchesG(0,-10,0.45);
 
         //move forward & approach foundation
         turn(90, 0.5, 0.8);
@@ -132,8 +132,8 @@ public class BlueAuto extends BaseAuto {
         double tempY = getYOdometry();
         double targetdist = getYOdometry()-12*1316;
         p = new ElapsedTime();
-        while(getYOdometry()>targetdist&&p.milliseconds()<1600)
-            setAllDrivePowerG(-0.7,-0.7,0.7,0.7,2);
+        while(getYOdometry()>targetdist&&p.milliseconds()<2000)
+            setAllDrivePowerG(-0.7,-0.7,0.8,0.8,2);
         setAllDrivePower(0);
 
         //push it in
