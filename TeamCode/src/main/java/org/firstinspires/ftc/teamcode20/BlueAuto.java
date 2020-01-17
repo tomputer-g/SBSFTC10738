@@ -85,7 +85,7 @@ public class BlueAuto extends TractionControl {
         if(pos == 1){shift = 0;}
         else if (pos == 0){
             moveInchesG(-6.5,0,0.4);
-            shift=-8;
+            shift=-10;
         }
         else {
             moveInchesG(6.5, 0, 0.4);
@@ -103,20 +103,20 @@ public class BlueAuto extends TractionControl {
         grabber.setPosition(grabber_closed);
         wait(300);
         setAllDrivePower(0.0);
-        moveInchesG(0,-12,0.3);
+        moveInchesG(0,-10,0.3);
 
         //move forward & approach foundation
         turn(90, 0.3, 1);
         setNewGyro(90);
         p.reset();
-        moveInchesG(0,88+shift,0.3);
+        moveInchesG(0,88+shift,0.4);
         setAllDrivePowerG(-.35,.35,-.35,.35);
         wait(1500);
 
         //turn foundation
         platform_grabber.setPower(-.8);
         wait(200);
-        turn(90, 0.7, 2);
+        turn(90, 0.9, 2);
 
         //drag foundation forward
         setNewGyro(180);
@@ -146,15 +146,23 @@ public class BlueAuto extends TractionControl {
         platform_grabber.setPower(0.0);
 
         //strafe left to put the block
-        moveInchesG(-7,0,0.5);
+        servoThread.setTarget(0.5);
+        moveInchesG(-6.5,0,0.5);
         turn(-90,0.4,1);
         setNewGyro(90);
-        servoThread.setTarget(0.6);
-        wait(800);
+       // holdSlide((int)slideEncoderPerInch/10);
+        //wait(1000);
+        //moveInchesG(0,4,0.43);
+        setAllDrivePowerG(-0.4,-0.4,0.4,0.4);
+       // wait(200);
+        servoThread.setTarget(.8);
+        wait(1300);
+
         grabber.setPosition(grabber_open);
 
         //park
-        moveInchesG(-4,-25,0.4);
+        moveInchesG(-3,0,0.4);
+        moveInchesG(0,-38,0.4);
 
         setAllDrivePower(0.0);
         servoThread.stopThread();
