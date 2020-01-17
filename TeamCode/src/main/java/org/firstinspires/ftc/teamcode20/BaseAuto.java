@@ -311,7 +311,11 @@ public class BaseAuto extends BaseOpMode {
         setNewGyro0();
         double p_TURN = 6;
         //double Ie=0;
-        double rangle = (angle>25)?angle-2:angle;
+
+        double rangle = angle;
+        if(angle>25)rangle-=2;
+        else if(angle<-25)rangle+=2;
+
         while(!onHeading(speed, rangle, p_TURN, threshold));
         theta=angle;
         //setNewGyro(angle);
