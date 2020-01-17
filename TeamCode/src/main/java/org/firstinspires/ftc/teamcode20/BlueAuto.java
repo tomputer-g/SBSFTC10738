@@ -85,11 +85,11 @@ public class BlueAuto extends BaseAuto {
         int shift;
         if(pos == 1){shift = 0;}
         else if (pos == 0){
-            moveInchesG(-6.5,0,0.4);
+            moveInchesG(-6.5,0,0.6);
             shift=-10;
         }
         else {
-            moveInchesG(8, 0, 0.4);
+            moveInchesG(8, 0, 0.6);
             shift=8;
         }
 
@@ -98,21 +98,21 @@ public class BlueAuto extends BaseAuto {
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
 
-        while (p.milliseconds()<1000) setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
+        while (p.milliseconds()<500) setAllDrivePowerG(-0.5, -0.5, 0.5, 0.5);
 
         //grab 1st block
         grabber.setPosition(grabber_closed);
         wait(300);
         setAllDrivePower(0.0);
-        moveInchesG(0,-10,0.3);
+        moveInchesG(0,-10,0.4);
 
         //move forward & approach foundation
-        turn(90, 0.3, 1);
+        turn(90, 0.4, 1);
         setNewGyro(90);
         p.reset();
-        moveInchesG(0,88+shift,0.4);
-        setAllDrivePowerG(-.35,.35,-.35,.35);
-        wait(1500);
+        moveInchesG(0,88+shift,0.6);
+        setAllDrivePowerG(-.5,.5,-.5,.5);
+        wait(1000);
 
         //turn foundation
         platform_grabber.setPower(-.8);
@@ -133,11 +133,11 @@ public class BlueAuto extends BaseAuto {
         double targetdist = getYOdometry()-12*1316;
         p = new ElapsedTime();
         while(getYOdometry()>targetdist&&p.milliseconds()<1500)
-            setAllDrivePowerG(-0.5,-0.5,0.5,0.5,2);
+            setAllDrivePowerG(-0.7,-0.7,0.7,0.7,2);
         setAllDrivePower(0);
 
         //push it in
-        setAllDrivePowerG(-.7,.7,-.7,.7,2);
+        setAllDrivePowerG(-.8,.8,-.8,.8,2);
         wait(1000);
 
         //release grabber
@@ -155,16 +155,16 @@ public class BlueAuto extends BaseAuto {
        // holdSlide((int)slideEncoderPerInch/10);
         //wait(1000);
         //moveInchesG(0,4,0.43);
-        setAllDrivePowerG(-0.4,-0.4,0.4,0.4);
+        setAllDrivePowerG(-0.5,-0.5,0.5,0.5);
        // wait(200);
         servoThread.setTarget(.8);
-        wait(1300);
+        wait(1000);
 
         grabber.setPosition(grabber_open);
         platform_grabber.setPower(1);
         //park
-        moveInchesG(-3,0,0.4);
-        moveInchesG(0,-38,0.4);
+        moveInchesG(-3,0,0.6);
+        moveInchesG(0,-38,0.6);
 
         setAllDrivePower(0.0);
         servoThread.stopThread();
