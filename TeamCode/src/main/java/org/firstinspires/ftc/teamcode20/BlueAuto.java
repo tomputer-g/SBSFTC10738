@@ -89,7 +89,7 @@ public class BlueAuto extends BaseAuto {
             shift=-10;
         }
         else {
-            moveInchesG(6.5, 0, 0.4);
+            moveInchesG(8, 0, 0.4);
             shift=8;
         }
 
@@ -147,6 +147,7 @@ public class BlueAuto extends BaseAuto {
         platform_grabber.setPower(0.0);
 
         //strafe left to put the block
+
         servoThread.setTarget(0.5);
         moveInchesG(-6.5,0,0.5);
         turn(-90,0.4,1);
@@ -160,7 +161,7 @@ public class BlueAuto extends BaseAuto {
         wait(1300);
 
         grabber.setPosition(grabber_open);
-
+        platform_grabber.setPower(1);
         //park
         moveInchesG(-3,0,0.4);
         moveInchesG(0,-38,0.4);
@@ -168,6 +169,7 @@ public class BlueAuto extends BaseAuto {
         setAllDrivePower(0.0);
         servoThread.stopThread();
         setNewGyro0();
+        platform_grabber.setPower(0);
         requestOpModeStop();
     }
 }
