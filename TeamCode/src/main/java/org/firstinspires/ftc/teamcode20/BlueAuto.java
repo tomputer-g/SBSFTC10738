@@ -72,7 +72,7 @@ public class BlueAuto extends BaseAuto {
         grabber_extend2.setPosition(0);
 
         platform_grabber.setPower(1);
-        moveInchesG(0,15,0.5);
+        moveInchesG(0,15,0.3);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
 
@@ -85,11 +85,11 @@ public class BlueAuto extends BaseAuto {
         int shift;
         if(pos == 1){shift = 0;}
         else if (pos == 0){
-            moveInchesG(-6.5,0,0.6);
+            moveInchesG(-6.5,0,0.4);
             shift=-10;
         }
         else {
-            moveInchesG(8, 0, 0.6);
+            moveInchesG(8, 0, 0.4);
             shift=8;
         }
 
@@ -98,19 +98,19 @@ public class BlueAuto extends BaseAuto {
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
 
-        while (p.milliseconds()<500) setAllDrivePowerG(-0.5, -0.5, 0.5, 0.5);
+        while (p.milliseconds()<600) setAllDrivePowerG(-0.4, -0.4, 0.4, 0.4);
 
         //grab 1st block
         grabber.setPosition(grabber_closed);
         wait(300);
         setAllDrivePower(0.0);
-        moveInchesG(0,-10,0.4);
+        moveInchesG(0,-10,0.5);
 
         //move forward & approach foundation
-        turn(90, 0.4, 1);
+        turn(90, 0.5, 0.8);
         setNewGyro(90);
         p.reset();
-        moveInchesG(0,88+shift,0.6);
+        moveInchesG(0,80+shift,0.5);
         setAllDrivePowerG(-.5,.5,-.5,.5);
         wait(1000);
 
@@ -132,13 +132,13 @@ public class BlueAuto extends BaseAuto {
         double tempY = getYOdometry();
         double targetdist = getYOdometry()-12*1316;
         p = new ElapsedTime();
-        while(getYOdometry()>targetdist&&p.milliseconds()<1500)
+        while(getYOdometry()>targetdist&&p.milliseconds()<1600)
             setAllDrivePowerG(-0.7,-0.7,0.7,0.7,2);
         setAllDrivePower(0);
 
         //push it in
         setAllDrivePowerG(-.8,.8,-.8,.8,2);
-        wait(1000);
+        wait(500);
 
         //release grabber
         platform_grabber.setPower(1);
@@ -149,7 +149,7 @@ public class BlueAuto extends BaseAuto {
         //strafe left to put the block
 
         servoThread.setTarget(0.5);
-        moveInchesG(-6.5,0,0.5);
+        moveInchesG(-6.5,0,0.6);
         turn(-90,0.4,1);
         setNewGyro(90);
        // holdSlide((int)slideEncoderPerInch/10);
@@ -164,7 +164,7 @@ public class BlueAuto extends BaseAuto {
         platform_grabber.setPower(1);
         //park
         moveInchesG(-3,0,0.6);
-        moveInchesG(0,-38,0.6);
+        moveInchesG(0,-38,0.5);
 
         setAllDrivePower(0.0);
         servoThread.stopThread();
