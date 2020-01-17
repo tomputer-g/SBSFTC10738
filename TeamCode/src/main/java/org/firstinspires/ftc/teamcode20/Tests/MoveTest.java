@@ -49,10 +49,10 @@ public class MoveTest extends BaseAuto {
         //initVuforiaWebcam();
         setNewGyro0();
         rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
-        speed=0.25;
+        speed=0.3;
         speeed = 0.03;
         dir=1;
-        y = 72;
+        y = -90;
         x = 0;
 
         // 三天之内刹了你();
@@ -60,8 +60,8 @@ public class MoveTest extends BaseAuto {
 
     @Override
     public void loop(){
-        if(zheng(this.gamepad1.dpad_left,eee))speeed*=-1;
-        if(zheng(this.gamepad1.dpad_right,fff))x+=10;
+        if(zheng(this.gamepad1.dpad_left,eee))y+=1;
+        if(zheng(this.gamepad1.dpad_right,fff))y-=1;
         if(zheng(this.gamepad1.dpad_up,ee)){
             //L1.setPower(0.5);
             //L2.setPower(-0.5);
@@ -118,9 +118,9 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.left_bumper,lF)) {
-            L1.setPower(0);
-            L2.setPower(0);
-            //turn(y, speed, 1);
+            //L1.setPower(0);
+            //L2.setPower(0);
+            turn(y, speed, 1);
             /*
             ElapsedTime p = new ElapsedTime();
             LF.setTargetPosition((int)(y*-ymult));
