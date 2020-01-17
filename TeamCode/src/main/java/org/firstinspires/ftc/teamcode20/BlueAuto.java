@@ -85,11 +85,11 @@ public class BlueAuto extends BaseAuto {
         int shift;
         if(pos == 1){shift = 0;}
         else if (pos == 0){
-            moveInchesG(-6.5,0,0.4);
+            moveInchesG(-6.5,0,0.5);
             shift=-10;
         }
         else {
-            moveInchesG(8, 0, 0.4);
+            moveInchesG(8, 0, 0.5);
             shift=8;
         }
 
@@ -97,12 +97,12 @@ public class BlueAuto extends BaseAuto {
         ElapsedTime p = new ElapsedTime();
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
-
-        while (p.milliseconds()<600) setAllDrivePowerG(-0.4, -0.4, 0.4, 0.4);
+        grabber.setPosition(grabber_open);
+        while (p.milliseconds()<660) setAllDrivePowerG(-0.45, -0.45, 0.45, 0.45);
 
         //grab 1st block
         grabber.setPosition(grabber_closed);
-        wait(300);
+        wait(400);
         setAllDrivePower(0.0);
         moveInchesG(0,-10,0.5);
 
@@ -110,7 +110,7 @@ public class BlueAuto extends BaseAuto {
         turn(90, 0.5, 0.8);
         setNewGyro(90);
         p.reset();
-        moveInchesG(0,80+shift,0.5);
+        moveInchesG(0,80+shift,0.45);
         setAllDrivePowerG(-.5,.5,-.5,.5);
         wait(1000);
 
@@ -155,10 +155,11 @@ public class BlueAuto extends BaseAuto {
        // holdSlide((int)slideEncoderPerInch/10);
         //wait(1000);
         //moveInchesG(0,4,0.43);
-        setAllDrivePowerG(-0.5,-0.5,0.5,0.5);
+        setAllDrivePowerG(-0.3,-0.3,0.3,0.3);
        // wait(200);
         servoThread.setTarget(.8);
         wait(1000);
+        setAllDrivePower(0.0);
 
         grabber.setPosition(grabber_open);
         platform_grabber.setPower(1);
