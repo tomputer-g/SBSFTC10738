@@ -140,10 +140,12 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         }
 
         //LT
-        if(this.gamepad1.left_trigger  > .5 && autoPlaceState == -1){//dependent on other things?
+        /*if(this.gamepad1.left_trigger  > .5 && autoPlaceState == -1){//dependent on other things?
             autoPlaceState = 0;
             RTState = -1;
         }
+
+         */
 
 
         //tape out/tape in
@@ -192,6 +194,8 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
                     setAllDrivePowerSlow(-1*(int)gamepad1.left_stick_y,(int)(gamepad1.left_stick_x),-0.7*(int)(gamepad1.right_stick_x));
                     //joystickScaledMove(-0.4*gamepad1.left_stick_x,-0.13*gamepad1.left_stick_y, (gamepad1.left_bumper?0:-0.25*gamepad1.right_stick_x));
+                }else if(slow == 0){
+                    setNewGyro0();
                 }
             }
         }

@@ -42,7 +42,7 @@ public class BaseOpMode extends OpMode {
     protected Servo grabber_extend1, grabber_extend2;
     protected DcMotor platform_grabber, xOdometry;
     protected DcMotor L1, L2;
-    protected final double grabber_open = 0.45, grabber_closed = 0.65;
+    protected final double grabber_open = 0.4, grabber_closed = 0.7;
     private final String logPrefix = "/sdcard/";
     private BufferedWriter logWriter;
     //private String[] bFN={"this.gamepad1.left_bumper","this.gamepad1.right_bumper","this.gamepad1.dpad_up","this.gamepad1.dpad_down","this.gamepad1.dpad_left","this.gamepad1.dpad_right","this.gamepad1.a","this.gamepad1.b","this.gamepad1.x","this.gamepad1.y"};
@@ -531,29 +531,15 @@ public class BaseOpMode extends OpMode {
 
             }else if (this.gamepad1.right_stick_y < 0 && (slideEncoderTravel > 0? L1.getCurrentPosition() < slideEncoderTravel-50 : L1.getCurrentPosition() > slideEncoderTravel+50)) {
                 L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                holdSet = false;
+                holdSet = false;//up
                 L1.setPower(this.gamepad1.right_stick_y);
                 L2.setPower(-this.gamepad1.right_stick_y);
                 telemetry.addData("L1 power",this.gamepad1.right_stick_y);
             } else if (this.gamepad1.right_stick_y > 0 && L1.getCurrentPosition() < 0) {
                 holdSet = false;
-                L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                L2.setPower(0);
-                if(slow==1){
-                    //L1.setPower(-((a+(2000-L1.getCurrentPosition())/2000.0)*(0.2-a) ) * this.gamepad1.right_stick_y);
-                    //L2.setPower(((a+(2000-L1.getCurrentPosition())/2000.0)*(0.2-a) )* this.gamepad1.right_stick_y);
-                    telemetry.addData("L1 power", 0.4 * this.gamepad1.right_stick_y);
-                    L1.setPower(0.4 * this.gamepad1.right_stick_y);
-                    //L2.setPower(-0.3 * this.gamepad1.right_stick_y);
-                    //if(showTelemetry)telemetry.addData("power",-((a+(2000-L1.getCurrentPosition())/2000.0)*(0.2-a) ) * this.gamepad1.right_stick_y);
-                }else{
-                    telemetry.addData("L1 power",0.8 * this.gamepad1.right_stick_y);
-                    L1.setPower(0.8 * this.gamepad1.right_stick_y);
-                    //L2.setPower(-0.5 * this.gamepad1.right_stick_y);
-                }
-
+                L1.setPower(0.15*this.gamepad1.right_stick_y);
+                L2.setPower(-0.15*this.gamepad1.right_stick_y);
             } else {
-
                 holdSlide(L1.getCurrentPosition());
             }
         }else if(RTState == -1 && autoPlaceState == -1){
@@ -580,7 +566,7 @@ public class BaseOpMode extends OpMode {
     private double inchApproachTarget = 10.6, approachSpeed = 0.2;
     protected Rev2mDistanceSensor tower_top;
 
-    protected final double grabberServoOut = 0.5, grabberServoIn = 1;
+    protected final double grabberServoOut = 0.72, grabberServoIn = 0.99;
 
     protected void autoPlace(){
         switch(autoPlaceState){
@@ -649,19 +635,14 @@ public class BaseOpMode extends OpMode {
         switch (RTState) {
             case -1: //none
                 break;
-            case 0: //just pressed button / moving upward 8 in
-                holdSlide((int) (L1.getCurrentPosition() + 8 * slideEncoderPerInch));
-                grabber.setPosition(0);
-                if (near(hold, L1.getCurrentPosition(), 100))//close enough
-                    RTState = 1;
-                break;
-            case 1://stow extender
+            case 0:
+                grabber.setPosition(0.1);
                 servoThread.setTarget(grabberServoIn);
                 if (near(servoThread.lastPosition, grabberServoIn, 0.05)){
-                    RTState = 2;
+                    RTState = 1;
                 }
                 break;
-            case 2://drop to ground
+            case 1://drop to ground
                 holdSet = false;
                 L1.setPower(0.8);
                 L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -671,6 +652,7 @@ public class BaseOpMode extends OpMode {
                     L1.setPower(0);
                     L2.setPower(0);
                     L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    grabber.setPosition(grabber_open);
                 }
                 break;
         }
