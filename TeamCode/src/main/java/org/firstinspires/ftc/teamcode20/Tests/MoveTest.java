@@ -190,14 +190,12 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.right_bumper,bF)) {
-            L1.setPower(speed);
-            L2.setPower(-speed);
+            turn(y,speed,2);
             //moveInchesGO(y,speed);
         }
         //telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
         telemetry.addData("wait: ",WaitingTime);
-
         telemetry.addData("Imu: ","%.2f",getHeading());
         telemetry.addData("Speed: ","%.2f" ,speed);
         //telemetry.addData("enc X", xOdometry.getCurrentPosition());
@@ -235,7 +233,7 @@ public class MoveTest extends BaseAuto {
             telemetry.addData("current", getYOdometry());
             telemetry.addData("Y goal", odometryYGoal);
             telemetry.update();
- */
+            */
         }
         setAllDrivePower(0);
     }
