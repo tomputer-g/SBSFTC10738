@@ -308,15 +308,15 @@ public class BaseAuto extends BaseOpMode {
     }
     protected void turn(double angle, double speed, double threshold) {
         setMode_RUN_WITHOUT_ENCODER();
-        setNewGyro0();
+        setNewGyro(theta);
         double p_TURN = 6;
         //double Ie=0;
-
+        /*
         double rangle = angle;
         if(angle>25)rangle-=2;
         else if(angle<-25)rangle+=2;
-
-        while(!onHeading(speed, rangle, p_TURN, threshold));
+         */
+        while(!onHeading(speed, angle, p_TURN, threshold));
         theta=angle;
         //setNewGyro(angle);
     }
@@ -349,7 +349,7 @@ public class BaseAuto extends BaseOpMode {
 
     protected void setAllDrivePowerSlow(double dir,double x,double w){
             w *= 1.6;
-            double highp = 0.03 / .18,cyclems=50;
+            double highp = 0.03 / .18,cyclems=200;
             if(w!=0)setNewGyro0();
             try {
                 sleep(0, (int) (cyclems * (1 - highp)));
