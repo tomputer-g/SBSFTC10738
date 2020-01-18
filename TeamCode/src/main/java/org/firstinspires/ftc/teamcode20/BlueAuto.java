@@ -85,11 +85,11 @@ public class BlueAuto extends BaseAuto {
         int shift;
         if(pos == 1){shift = 0;}
         else if (pos == 0){
-            moveInchesG(-6.5,0,0.5);
+            moveInchesG(-6.5,0,0.4);
             shift=-10;
         }
         else {
-            moveInchesG(8, 0, 0.5);
+            moveInchesG(8, 0, 0.4);
             shift=8;
         }
 
@@ -102,17 +102,17 @@ public class BlueAuto extends BaseAuto {
 
         //grab 1st block
         grabber.setPosition(grabber_closed);
-        wait(400);
+        wait(300);
         setAllDrivePower(0.0);
-        moveInchesG(0,-10,0.45);
+        moveInchesG(0,-10,0.3);
 
         //move forward & approach foundation
         turn(90, 0.4, 0.8);
         setNewGyro(90);
         p.reset();
-        moveInchesG(0,80+shift,0.45);
-        setAllDrivePowerG(-.5,.5,-.5,.5);
-        wait(1000);
+        moveInchesG(0,88+shift,0.4);
+        setAllDrivePowerG(-.35,.35,-.35,.35);
+        wait(1500);
 
         //turn foundation
         platform_grabber.setPower(-.8);
@@ -137,8 +137,8 @@ public class BlueAuto extends BaseAuto {
         setAllDrivePower(0);
 
         //push it in
-        setAllDrivePowerG(-.8,.8,-.8,.8,2);
-        wait(500);
+        setAllDrivePowerG(-.7,.7,-.7,.7,2);
+        wait(1000);
 
         //release grabber
         platform_grabber.setPower(1);
@@ -149,23 +149,23 @@ public class BlueAuto extends BaseAuto {
         //strafe left to put the block
 
         servoThread.setTarget(0.5);
-        moveInchesG(-5.5,0,0.6);
+        moveInchesG(-6.5,0,0.5);
         turn(-90,0.4,1);
         setNewGyro(90);
        // holdSlide((int)slideEncoderPerInch/10);
         //wait(1000);
         //moveInchesG(0,4,0.43);
-        setAllDrivePowerG(-0.3,-0.3,0.3,0.3);
+        setAllDrivePowerG(-0.4,-0.4,0.4,0.4);
        // wait(200);
         servoThread.setTarget(.8);
-        wait(800);
+        wait(1300);
         setAllDrivePower(0.0);
 
         grabber.setPosition(grabber_open);
         platform_grabber.setPower(1);
         wait(300);
         //park
-        moveInchesG(-3,0,0.6);
+        moveInchesG(-3,0,0.4);
         moveInchesG(0,-38,0.5);
 
         setAllDrivePower(0.0);
