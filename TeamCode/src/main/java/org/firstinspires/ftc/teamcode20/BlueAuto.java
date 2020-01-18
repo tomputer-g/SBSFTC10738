@@ -132,8 +132,8 @@ public class BlueAuto extends BaseAuto {
         double tempY = getYOdometry();
         double targetdist = getYOdometry()-12*1316;
         p = new ElapsedTime();
-        while(getYOdometry()>targetdist&&p.milliseconds()<3000)
-            setAllDrivePowerG(-0.7,-0.7,0.8,0.8,2);
+        while(getYOdometry()>targetdist&&p.milliseconds()<1500)
+            setAllDrivePowerG(-0.5,-0.5,0.5,0.5,2);
         setAllDrivePower(0);
 
         //push it in
@@ -158,11 +158,12 @@ public class BlueAuto extends BaseAuto {
         setAllDrivePowerG(-0.3,-0.3,0.3,0.3);
        // wait(200);
         servoThread.setTarget(.8);
-        wait(1000);
+        wait(800);
         setAllDrivePower(0.0);
 
         grabber.setPosition(grabber_open);
         platform_grabber.setPower(1);
+        wait(300);
         //park
         moveInchesG(-3,0,0.6);
         moveInchesG(0,-38,0.5);
