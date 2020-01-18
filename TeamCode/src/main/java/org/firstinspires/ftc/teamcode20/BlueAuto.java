@@ -83,13 +83,16 @@ public class BlueAuto extends BaseAuto {
 
         //shift to align to skystone
         int shift;
-        if(pos == 1){shift = 0;}
+        if(pos == 1){
+            moveInchesG(4,0,0.4);
+            shift = 0;
+        }
         else if (pos == 0){
-            moveInchesG(-6.5,0,0.4);
+            moveInchesG(-3,0,0.4);
             shift=-10;
         }
         else {
-            moveInchesG(8, 0, 0.4);
+            moveInchesG(12, 0, 0.4);
             shift=8;
         }
 
@@ -98,7 +101,7 @@ public class BlueAuto extends BaseAuto {
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
         grabber.setPosition(grabber_open);
-        while (p.milliseconds()<1000) setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
+        while (p.milliseconds()<1100) setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
 
         //grab 1st block
         grabber.setPosition(grabber_closed);
