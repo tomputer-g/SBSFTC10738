@@ -2,10 +2,12 @@ package org.firstinspires.ftc.teamcode20.Tests;
 
 
 import com.qualcomm.hardware.motors.GoBILDA5202Series;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+@Disabled
 
 @TeleOp
 public class FlippedMotorBrakeTest extends OpMode {

@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode19.BaseOpMode;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
-
+@Disabled
 @Autonomous(group = "Test")
 public class Encoders extends OpMode {
 

@@ -68,11 +68,11 @@ public class BlueAuto extends BaseAuto {
         //repeat until run out of time; first on other skystones
 
         //initialization
+        grabber.setPosition(0.03);
         grabber_extend1.setPosition(1);
         grabber_extend2.setPosition(0);
-
         platform_grabber.setPower(1);
-        moveInchesG(0,15,0.3);
+        moveInchesG(0,14,0.3);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
 
@@ -101,13 +101,13 @@ public class BlueAuto extends BaseAuto {
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
         grabber.setPosition(grabber_open);
-        while (p.milliseconds()<1100) setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
+        while (p.milliseconds()<1150) setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
 
         //grab 1st block
         grabber.setPosition(grabber_closed);
         wait(300);
         setAllDrivePower(0.0);
-        moveInchesG(0,-10,0.3);
+        moveInchesG(0,-11,0.3);
 
         //move forward & approach foundation
         turn(90, 0.4, 0.8);
@@ -120,7 +120,7 @@ public class BlueAuto extends BaseAuto {
         //turn foundation
         platform_grabber.setPower(-.8);
         wait(200);
-        turn(90, 0.9, 2);
+        turn(90, 0.8, 4);
 
         //drag foundation forward
         setNewGyro(180);
@@ -168,7 +168,7 @@ public class BlueAuto extends BaseAuto {
         platform_grabber.setPower(1);
         wait(300);
         //park
-        moveInchesG(-3,0,0.4);
+        moveInchesG(-4.5,0,0.4);
         moveInchesG(0,-38,0.5);
 
         setAllDrivePower(0.0);

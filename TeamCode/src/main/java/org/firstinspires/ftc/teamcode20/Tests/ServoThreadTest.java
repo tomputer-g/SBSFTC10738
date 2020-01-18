@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode20.BaseOpMode;
+@Disabled
 
 @TeleOp
 public class ServoThreadTest extends BaseOpMode {

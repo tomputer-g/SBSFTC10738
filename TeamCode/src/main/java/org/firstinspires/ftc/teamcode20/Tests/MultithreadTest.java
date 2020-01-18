@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode20.BaseOpMode;
-
+@Disabled
 @Autonomous
 public class MultithreadTest extends BaseOpMode {
     Thread testThread;

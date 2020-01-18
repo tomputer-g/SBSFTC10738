@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -8,7 +9,7 @@ import org.firstinspires.ftc.teamcode20.BaseOpMode;
 
 import static java.lang.Thread.sleep;
 
-
+@Disabled
 @Autonomous(group="Test")
 public class MoveEncoderSpeed extends BaseOpMode {
 

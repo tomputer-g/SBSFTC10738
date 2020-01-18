@@ -2,12 +2,14 @@ package org.firstinspires.ftc.teamcode20.Tests;
 
 import android.media.MediaPlayer;
 import com.qualcomm.ftccommon.SoundPlayer;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 
-@TeleOp
+@TeleOp@Disabled
+
 public class SoundTest extends BaseAuto {
     private int soundID = hardwareMap.appContext.getResources().getIdentifier("sound1", "raw", hardwareMap.appContext.getPackageName());
     private boolean bf[]={true};

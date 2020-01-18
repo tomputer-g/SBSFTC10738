@@ -314,7 +314,7 @@ public class BaseAuto extends BaseOpMode {
 
         double rangle = angle;
         if(angle>25)rangle-=2;
-        else if(angle<-25)rangle+=2;
+        else if(angle<-25)rangle+=1;
 
         while(!onHeading(speed, rangle, p_TURN, threshold));
         theta=getError(theta+angle,0);

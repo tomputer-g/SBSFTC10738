@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -8,6 +9,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
  * Created by Ziming Gao on 1/16/2018.
  */
+@Disabled
+
 @TeleOp
 public class ServoTest extends OpMode{
     private boolean lP, rP;

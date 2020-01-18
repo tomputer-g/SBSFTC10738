@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode20.BaseOpMode;
+@Disabled
 
 @TeleOp
 public class LinSlideManualTest extends BaseOpMode {

@@ -29,94 +29,118 @@ public class RedAuto extends TractionControl {
         //after pickup: turn 90 deg. move to platform, drop off
         //move to platform, drag into position, release
         //repeat until run out of time; first on other skystones
+        grabber.setPosition(0.03);
         grabber_extend1.setPosition(1);
         grabber_extend2.setPosition(0);
-        grabber.setPosition(0);
+        grabber.setPosition(0.03);
         platform_grabber.setPower(1);
-        wait(300);
-        platform_grabber.setPower(0);
-        moveInchesG(0,15,0.3);
+        moveInchesG(0,14,0.3);
+        platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
-        int pos = skystonePosition();
-        shutdownVuforia();
-        if(showTelemetry)
-        { telemetry.addData("pos: ",pos);
-        telemetry.update();
-        }
 
-        //pos = 1;
+        //find skystone
+        int pos = skystonePosition();
+        grabber.setPosition(grabber_open);
+        shutdownVuforia();
+
+        //shift to align to skystone
         int shift;
-        if(pos == 1){shift = 0;}
+        if(pos == 1){
+            moveInchesG(3.5,0,0.4);
+            shift = 0;
+        }
         else if (pos == 0){
-            moveInchesG(-8,0,0.4);
-            shift=10;
+            moveInchesG(-3,0,0.4);
+            shift=8;
         }
         else {
-            moveInchesG(8, 0, 0.4);
+            moveInchesG(12, 0, 0.4);
             shift=-8;
         }
-        //move to blocc
+
+        //move forward to the skystone
         ElapsedTime p = new ElapsedTime();
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
-        while ( (ymult*8>Math.abs(LB.getCurrentPosition())) && 1.3 < (left.getDistance(DistanceUnit.INCH)) && (1.3 < right.getDistance(DistanceUnit.INCH)) && p.milliseconds()<1500){
-            setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
-        }
-        wait(1000);
-        grabber.setPosition(.55);
-        setAllDrivePower(0);
-        moveInchesG(0,-8,0.3);
-        turn(-90, 0.4, 4);
-        setNewGyro(-90);
+        grabber.setPosition(grabber_open);
+        while (p.milliseconds()<1150) setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
+
+        //grab 1st block
+        grabber.setPosition(grabber_closed);
+        wait(300);
+        setAllDrivePower(0.0);
+        moveInchesG(0,-11,0.3);
+
+        //move forward & approach foundation
+        turn(90, 0.4, 0.8);
+        servoThread.setTarget(0.95);
+        setNewGyro(90);
         p.reset();
-        while(21.4<rangeSensorFront.getDistance(DistanceUnit.INCH)||p.milliseconds()<3000){
-            setAllDrivePowerG(-speed,-speed,speed,speed);
-        }
-        setAllDrivePower(0);
-        //moveInchesG(18,0,.35)
+        moveInchesG(0,-(88+shift-4),0.4);
         setAllDrivePowerG(-.35,.35,-.35,.35);
         wait(1500);
 
-        //move foundation
+        //turn foundation
         platform_grabber.setPower(-.8);
         wait(200);
+        turn(-90, 0.85, 4);
 
-        turn(-90, 0.67, 5);
-        //while (!near(getHeading(),90,3)) setAllDrivePower(-0.6,0.2,0.8,-0.4);
-        setNewGyro(180);
-        //ElapsedTime p = new ElapsedTime();
-        double koe=1;
-        while(13<rangeSensorFront.getDistance(DistanceUnit.INCH)){
-            setAllDrivePowerG(koe*(-0.25-0.55+0.37),koe*(-0.25-0.55-0.37),koe*(-0.25+0.55+0.37),koe*(-0.25+0.5-0.37)); //turn+f0rwrd+side
-            //telemetry.addData("Front",rangeSensorFront.getDistance(DistanceUnit.INCH));
-            //telemetry.update();
+        //drag foundation forward
+        setNewGyro(0);
+        /*
+        double koe=0.75;
+        p.reset();
+        while(10<rangeSensorFront.getDistance(DistanceUnit.INCH) || p.milliseconds() < 3400){
+            setAllDrivePowerG(koe*(0.25-0.55+0.37),koe*(0.25-0.55-0.37),koe*(0.25+0.55+0.37),koe*(0.22+0.5-0.37)); //turn+f0rwrd+side
         }
-        //setAllDrivePowerG(0);
-        //wait(1000);
+        */
         setAllDrivePower(0);
-        while(30>rangeSensorFront.getDistance(DistanceUnit.INCH)){
-            //telemetry.addData("Side",rangeSensorSide.getDistance(DistanceUnit.INCH));
-            //telemetry.update();
-            setAllDrivePowerG(0.5,-0.5,0.5,-0.5);
-        }
+
+        double tempY = getYOdometry();
+        double targetdist = getYOdometry()-12*1316;
+        p = new ElapsedTime();
+        while(getYOdometry()>targetdist&&p.milliseconds()<1500)
+            setAllDrivePowerG(0.5,0.5,-0.5,-0.5,2);
         setAllDrivePower(0);
+
+        //push it in
+        setAllDrivePowerG(-.7,.7,-.7,.7,2);
+        wait(1000);
+
+        //release grabber
         platform_grabber.setPower(1);
         wait(300);
-        platform_grabber.setPower(0);
-        moveInchesG(-2.3,0,0.4);
-        turn(90,0.5,8);
-        L1.setPower(-0.35);
-        L2.setPower(0.35);
-        wait(500);
-        grabber_extend1.setPosition(0);
-        grabber_extend2.setPosition(1);
         setAllDrivePower(0);
-        L1.setPower(0);
-        L2.setPower(0);
-        grabber.setPosition(grabber_open);
-        //park
+        platform_grabber.setPower(0.0);
+
+        //strafe left to put the block
+
+        servoThread.setTarget(0.5);
+        moveInchesG(-6.5,0,0.5);
+        turn(-90,0.4,1);
         setNewGyro(-90);
-        moveInchesG(0, -19, 0.5);
+        // holdSlide((int)slideEncoderPerInch/10);
+        //wait(1000);
+        //moveInchesG(0,4,0.43);
+        setAllDrivePowerG(-0.4,-0.4,0.4,0.4);
+        // wait(200);
+        servoThread.setTarget(.8);
+        wait(1300);
+        setAllDrivePower(0.0);
+
+        grabber.setPosition(grabber_open);
+        platform_grabber.setPower(1);
+        wait(300);
+        //park
+        moveInchesG(4,0,0.4);
+        moveInchesG(0,-38,0.5);
+
+        setAllDrivePower(0.0);
+        servoThread.stopThread();
+        setNewGyro0();
+        platform_grabber.setPower(0);
+
+
         requestOpModeStop();
     }
 }

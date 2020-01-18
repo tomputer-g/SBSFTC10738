@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode20.BaseAuto;
-
+@Disabled
 @Autonomous
 public class InitMultithreadTest extends BaseAuto {
 
