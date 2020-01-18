@@ -191,7 +191,7 @@ public class BaseAuto extends BaseOpMode {
     protected int skystonePosition(){
         VuforiaPositionTime = new ElapsedTime();
         targetsSkyStone.activate();
-        while(VuforiaPositionTime.milliseconds() < 1500){
+        while(VuforiaPositionTime.milliseconds() < 2500){
             for (VuforiaTrackable trackable : allTrackables) {
                 if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                     OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();

@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous
-public class BlueAuto extends TractionControl {
+public class BlueAuto extends BaseAuto {
     protected final double odometryEncPerInch = 1316;//4096.0/Math.PI;
     protected int offsetY = 0;
     private double speed = 0.3, kP = 0.5, kI = 0, kD = 0.0025;
@@ -70,7 +70,7 @@ public class BlueAuto extends TractionControl {
         //initialization
         grabber_extend1.setPosition(1);
         grabber_extend2.setPosition(0);
-        grabber.setPosition(grabber_open);
+
         platform_grabber.setPower(1);
         moveInchesG(0,15,0.3);
         platform_grabber.setPower(0.0);
@@ -78,6 +78,7 @@ public class BlueAuto extends TractionControl {
 
         //find skystone
         int pos = skystonePosition();
+        grabber.setPosition(grabber_open);
         shutdownVuforia();
 
         //shift to align to skystone
@@ -96,7 +97,7 @@ public class BlueAuto extends TractionControl {
         ElapsedTime p = new ElapsedTime();
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
-
+        grabber.setPosition(grabber_open);
         while (p.milliseconds()<1000) setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
 
         //grab 1st block
@@ -106,7 +107,7 @@ public class BlueAuto extends TractionControl {
         moveInchesG(0,-10,0.3);
 
         //move forward & approach foundation
-        turn(90, 0.3, 1);
+        turn(90, 0.4, 0.8);
         setNewGyro(90);
         p.reset();
         moveInchesG(0,88+shift,0.4);
@@ -158,12 +159,14 @@ public class BlueAuto extends TractionControl {
        // wait(200);
         servoThread.setTarget(.8);
         wait(1300);
+        setAllDrivePower(0.0);
 
         grabber.setPosition(grabber_open);
         platform_grabber.setPower(1);
+        wait(300);
         //park
         moveInchesG(-3,0,0.4);
-        moveInchesG(0,-38,0.4);
+        moveInchesG(0,-38,0.5);
 
         setAllDrivePower(0.0);
         servoThread.stopThread();
