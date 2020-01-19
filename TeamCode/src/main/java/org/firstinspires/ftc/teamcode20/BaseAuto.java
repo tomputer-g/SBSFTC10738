@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode20;
 
+import android.content.Context;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraManager;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
@@ -70,7 +74,6 @@ public class BaseAuto extends BaseOpMode {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         parameters.vuforiaLicenseKey = "AZlAJSf/////AAABmf5BgAyil0t8tK506wQNabJX0SH5ekkamom8UybSLKgtsYTY/0/AB5n0Db9/JRrUDLEhDRXJgx5osNHZt6kVKSIF5cdge/dE9OgOunoX6LWBqk8cHGwBlKCXl1eGuvBPwQa3OaJDC7neKLmlZf2/NJiJKMvi9VBqKEDsS74Dp0tFbJka5cJa8YpKyrJh8593SN8p2qcYxXRORCWzmdMdD2xHUJXw28foxuNOotp2onbDmpnfH7x4oegFalegxvQbJ3J0cFqOuP8pboEjoN0Zl64xFVu6ZCc2uvsnXECEgWtycA+bWmQZNG6BD4SLYN/LWVYBp6U5MrIHsNeOOQfwTAZNVDcLELke77iK1XuWnCzG";
         parameters.cameraDirection   = BACK;
-
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
         targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
 
@@ -189,6 +192,12 @@ public class BaseAuto extends BaseOpMode {
     }
 
     protected int skystonePosition(){
+        CameraManager cameraManager = (CameraManager) hardwareMap.appContext.getSystemService(Context.CAMERA_SERVICE);
+        try {
+            cameraManager.setTorchMode("0", true);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
         VuforiaPositionTime = new ElapsedTime();
         targetsSkyStone.activate();
         while(VuforiaPositionTime.milliseconds() < 2500){
@@ -206,9 +215,19 @@ public class BaseAuto extends BaseOpMode {
                         if(showTelemetry)telemetry.addLine("Move " + Math.abs(dist) + (dist > 0 ? "in. Right" : "in. Left"));
                         if (dist > 5) {
                             if(showTelemetry)telemetry.addData("Capture time", VuforiaPositionTime.milliseconds());
+                            try {
+                                cameraManager.setTorchMode("0", true);
+                            } catch (CameraAccessException e) {
+                                e.printStackTrace();
+                            }
                             return 2;
                         }else{
                             if(showTelemetry)telemetry.addData("Capture time", VuforiaPositionTime.milliseconds());
+                            try {
+                                cameraManager.setTorchMode("0", true);
+                            } catch (CameraAccessException e) {
+                                e.printStackTrace();
+                            }
                             return 1;
                         }
                     }
@@ -216,6 +235,11 @@ public class BaseAuto extends BaseOpMode {
             }
         }
         if(showTelemetry)telemetry.addLine("Vuforia exceeded 1s wait.");
+        try {
+            cameraManager.setTorchMode("0", true);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
         return 0;
     }
 

@@ -72,7 +72,7 @@ public class BlueAuto extends BaseAuto {
         grabber_extend1.setPosition(1);
         grabber_extend2.setPosition(0);
         platform_grabber.setPower(1);
-        moveInchesG(0,14,0.3);
+        moveInchesG(0,12,0.3);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
 
@@ -171,7 +171,7 @@ public class BlueAuto extends BaseAuto {
         platform_grabber.setPower(1);
         wait(300);
         //park
-        moveInchesG(-4.5,0,0.4);
+        //moveInchesG(-4.5,0,0.4);
         moveInchesG(0,-38,0.5);
 
         setAllDrivePower(0.0);
