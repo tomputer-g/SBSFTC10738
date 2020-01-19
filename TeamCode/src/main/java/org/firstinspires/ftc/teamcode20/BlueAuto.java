@@ -120,6 +120,9 @@ public class BlueAuto extends BaseAuto {
         //turn foundation
         platform_grabber.setPower(-.8);
         wait(200);
+        setAllDrivePowerG(0.5,-0.5,0.5,-0.5);
+        wait(1000);
+        setAllDrivePower(0);
         turn(90, 0.8, 4);
 
         //drag foundation forward

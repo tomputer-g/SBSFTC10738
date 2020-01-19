@@ -377,7 +377,7 @@ public class BaseAuto extends BaseOpMode {
         double vx=(xInch==0)?0:xInch/Math.abs(xInch)*Math.sin(theta)*speed;
         double vy=(yInch==0)?0:(yInch/Math.abs(yInch)*Math.cos(theta)*speed);
         boolean elf=Math.abs(-encoder_x-encoder_y)>Math.abs(-LF.getCurrentPosition()),elb=Math.abs(encoder_x-encoder_y)>Math.abs(-LB.getCurrentPosition()),erf=Math.abs(-encoder_x+encoder_y)>Math.abs(-RF.getCurrentPosition()),erb=Math.abs(encoder_x+encoder_y)>Math.abs(-RB.getCurrentPosition());
-        while(elf|| elb|| erf|| erb){
+        while((elf|| elb|| erf|| erb)){
             elf=Math.abs(-encoder_x-encoder_y)>Math.abs(-LF.getCurrentPosition());
             elb=Math.abs(encoder_x-encoder_y)>Math.abs(-LB.getCurrentPosition());
             erf=Math.abs(-encoder_x+encoder_y)>Math.abs(-RF.getCurrentPosition());

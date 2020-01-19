@@ -34,7 +34,7 @@ public class RedAuto extends TractionControl {
         grabber_extend2.setPosition(0);
         grabber.setPosition(0.03);
         platform_grabber.setPower(1);
-        moveInchesG(0,14,0.3);
+        moveInchesG(0,12,0.3);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
 
@@ -46,15 +46,15 @@ public class RedAuto extends TractionControl {
         //shift to align to skystone
         int shift;
         if(pos == 1){
-            moveInchesG(3.5,0,0.4);
+            //moveInchesG(3.5,0,0.4);
             shift = 0;
         }
         else if (pos == 0){
-            moveInchesG(-3,0,0.4);
+            moveInchesG(-7.5,0,0.4);
             shift=8;
         }
         else {
-            moveInchesG(12, 0, 0.4);
+            moveInchesG(8, 0, 0.4);
             shift=-8;
         }
 
@@ -69,7 +69,7 @@ public class RedAuto extends TractionControl {
         grabber.setPosition(grabber_closed);
         wait(300);
         setAllDrivePower(0.0);
-        moveInchesG(0,-11,0.3);
+        moveInchesG(0,-13,0.3);
 
         //move forward & approach foundation
         turn(90, 0.4, 0.8);
@@ -80,9 +80,14 @@ public class RedAuto extends TractionControl {
         setAllDrivePowerG(-.35,.35,-.35,.35);
         wait(1500);
 
+
         //turn foundation
         platform_grabber.setPower(-.8);
         wait(200);
+
+        setAllDrivePowerG(0.5,-0.5,0.5,-0.5);
+        wait(1000);
+        setAllDrivePower(0);
         turn(-90, 0.85, 4);
 
         //drag foundation forward
@@ -117,7 +122,7 @@ public class RedAuto extends TractionControl {
 
         servoThread.setTarget(0.5);
         moveInchesG(-6.5,0,0.5);
-        turn(-90,0.4,1);
+        turn(-85,0.4,1);
         setNewGyro(-90);
         // holdSlide((int)slideEncoderPerInch/10);
         //wait(1000);
@@ -132,8 +137,8 @@ public class RedAuto extends TractionControl {
         platform_grabber.setPower(1);
         wait(300);
         //park
-        moveInchesG(4,0,0.4);
-        moveInchesG(0,-38,0.5);
+        moveInchesG(-4,0,0.4);
+        moveInchesG(0,-35,0.5);
 
         setAllDrivePower(0.0);
         servoThread.stopThread();

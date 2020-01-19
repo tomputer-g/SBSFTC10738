@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode20;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode19.BaseTeleOp;
+
+@Disabled
 public class TeleOp_DriveOnly extends BaseAuto {
     private OdometryThread thread = new OdometryThread();
 

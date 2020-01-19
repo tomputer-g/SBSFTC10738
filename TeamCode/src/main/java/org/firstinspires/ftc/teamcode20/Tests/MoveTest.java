@@ -22,7 +22,6 @@ import static java.lang.Math.sqrt;
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
-@Disabled
 
 @TeleOp
 public class MoveTest extends BaseAuto {
@@ -48,6 +47,7 @@ public class MoveTest extends BaseAuto {
         initOdometry();
         initLinSlide();
         initGrabber();
+        initVuforia();
         //initVuforiaWebcam();
         setNewGyro0();
         rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
@@ -122,7 +122,22 @@ public class MoveTest extends BaseAuto {
         if(zheng(this.gamepad1.left_bumper,lF)) {
             //L1.setPower(0);
             //L2.setPower(0);
-            turn(y, speed, 1);
+            grabber.setPosition(0.03);
+            grabber_extend1.setPosition(1);
+            grabber_extend2.setPosition(0);
+            grabber.setPosition(0.03);
+            platform_grabber.setPower(1);
+            moveInchesG(0,12,0.3);
+            platform_grabber.setPower(0.0);
+            if(showTelemetry)telemetry.clear();
+
+            //find skystone
+            int pos = skystonePosition();
+            grabber.setPosition(grabber_open);
+            shutdownVuforia();
+            telemetry.addData("j",pos);
+            wait(2000);
+            //turn(y, speed, 1);
             /*
             ElapsedTime p = new ElapsedTime();
             LF.setTargetPosition((int)(y*-ymult));

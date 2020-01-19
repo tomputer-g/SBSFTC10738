@@ -26,7 +26,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
 
     @Override public void init() {
-        showTelemetry = true;
+        showTelemetry = false;
         initDrivetrain();
         initGrabber();
         initLinSlide();
@@ -44,12 +44,14 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         platform_grabber.setPower(0);
         pwmThread = new PWMThread();
-        Set<Thread> keys = Thread.getAllStackTraces().keySet();
+        /*Set<Thread> keys = Thread.getAllStackTraces().keySet();
         Log.d("All threads log start","-------------------- "+keys.size()+"Threads -----------------------");
         for(Thread t : keys){
             Log.d("All threads: #"+t.getId(),t.getName());
         }
         Log.d("All threads log end","-------------------------------------------");
+
+         */
     }
 
     @Override public void start() {
@@ -110,7 +112,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         }
 
         //RT if RT not started - cancels LT
-        if(this.gamepad1.right_trigger > 0.3 && (slideEncoderTravel > 0? L1.getCurrentPosition() < (slideEncoderTravel - 12 * slideEncoderPerInch) : L1.getCurrentPosition() > (slideEncoderTravel - 12 * slideEncoderPerInch)) && RTState == -1){
+        if(this.gamepad1.right_trigger > 0.3 && RTState == -1){
             //when can go 12in above & extender is extended & not started
             holdSet = false;
             autoPlaceState = -1;
