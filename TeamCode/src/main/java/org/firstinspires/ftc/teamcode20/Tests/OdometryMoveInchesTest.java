@@ -102,12 +102,13 @@ public class OdometryMoveInchesTest extends BaseAuto {
         setAllDrivePower((vy),(vy),(-vy),(-vy));
         int previousPos = getYOdometry();
         int Dterm;
+        double tpre=0;
         while(Math.abs((getYOdometry() - odometryYGoal)/odometryEncPerInch) > brakeDist);
-        while(!this.gamepad1.b && !near(getYOdometry(),odometryYGoal,10)){
-            Dterm = getYOdometry() - previousPos;
-
+        while(!this.gamepad1.b && !near(getYOdometry(),odometryYGoal,100)){
+            double tcur=t.milliseconds();
+            Dterm = (int)((getYOdometry() - previousPos)/(tcur-tpre));
             multiply_factor = -Math.min(1, Math.max(-1, k *((kP * -(getYOdometry() - odometryYGoal)/odometryEncPerInch) +  (near(Dterm,0,5000)?(kD * Dterm):0)) + (kI * IError )));
-
+            tpre=tcur;
             previousPos = getYOdometry();
             IError += (getYOdometry() - odometryYGoal);
             setAllDrivePowerG(multiply_factor*(-vx-vy),multiply_factor*(vx-vy),multiply_factor*(-vx+vy),multiply_factor*(vx+vy));
