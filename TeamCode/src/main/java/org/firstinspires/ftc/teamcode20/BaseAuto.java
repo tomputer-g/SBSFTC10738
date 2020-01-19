@@ -216,7 +216,7 @@ public class BaseAuto extends BaseOpMode {
                         if (dist > 5) {
                             if(showTelemetry)telemetry.addData("Capture time", VuforiaPositionTime.milliseconds());
                             try {
-                                cameraManager.setTorchMode("0", true);
+                                cameraManager.setTorchMode("0", false);
                             } catch (CameraAccessException e) {
                                 e.printStackTrace();
                             }
@@ -224,7 +224,7 @@ public class BaseAuto extends BaseOpMode {
                         }else{
                             if(showTelemetry)telemetry.addData("Capture time", VuforiaPositionTime.milliseconds());
                             try {
-                                cameraManager.setTorchMode("0", true);
+                                cameraManager.setTorchMode("0", false);
                             } catch (CameraAccessException e) {
                                 e.printStackTrace();
                             }
@@ -236,7 +236,7 @@ public class BaseAuto extends BaseOpMode {
         }
         if(showTelemetry)telemetry.addLine("Vuforia exceeded 1s wait.");
         try {
-            cameraManager.setTorchMode("0", true);
+            cameraManager.setTorchMode("0", false);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }

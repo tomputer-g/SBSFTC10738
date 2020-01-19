@@ -102,20 +102,15 @@ public class RedAuto extends TractionControl {
         setAllDrivePower(0);
 
         double tempY = getYOdometry();
-        double targetdist = getYOdometry()-12*1316;
+        double targetdist = getYOdometry()+12*1316;
         p = new ElapsedTime();
-        while(getYOdometry()>targetdist&&p.milliseconds()<1500)
+        while(getYOdometry()<targetdist&&p.milliseconds()<1500)
             setAllDrivePowerG(0.5,0.5,-0.5,-0.5,2);
         setAllDrivePower(0);
 
         //push it in
         setAllDrivePowerG(-.7,.7,-.7,.7,2);
-        wait(1000);
-
-        //release grabber
-        platform_grabber.setPower(1);
-        wait(300);
-        setAllDrivePower(0);
+        wait(700);
         platform_grabber.setPower(0.0);
 
         //strafe left to put the block
@@ -135,16 +130,15 @@ public class RedAuto extends TractionControl {
 
         grabber.setPosition(grabber_open);
         platform_grabber.setPower(1);
-        wait(300);
+        wait(500);
         //park
-        moveInchesG(-4,0,0.4);
+        moveInchesG(-18,0,0.4);
         moveInchesG(0,-35,0.5);
 
         setAllDrivePower(0.0);
         servoThread.stopThread();
         setNewGyro0();
         platform_grabber.setPower(0);
-
 
         requestOpModeStop();
     }
