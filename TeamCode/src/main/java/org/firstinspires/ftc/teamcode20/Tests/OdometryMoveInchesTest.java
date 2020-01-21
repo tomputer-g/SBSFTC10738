@@ -9,8 +9,8 @@ import org.firstinspires.ftc.teamcode20.BaseAuto;
 @TeleOp
 public class OdometryMoveInchesTest extends BaseAuto {
     private boolean APrimed = false, upP = false, downP = false, leftP = false, rightP = false, x = false;
-    private double speed = 0.3, kP = 0.1, kI = 0, kD = 0, brakeSpeed = 0;//kP = 0.035, kI = 1E-5, kD = 5E-6, k = 0.5, brakeDist = 7.5, brakeSpeed = 0.1;
-    private int targetInches = -48;
+    private double speed = 0.3, kP = 1.25, kI = 0, kD = 0.12, brakeSpeed = 0;//kP = 0.035, kI = 1E-5, kD = 5E-6, k = 0.5, brakeDist = 7.5, brakeSpeed = 0.1;
+    private int targetInches = -100;
 
     //FOR 0.3: use P = 0.7, D = 0.003
 
@@ -30,14 +30,14 @@ public class OdometryMoveInchesTest extends BaseAuto {
         }
         if(this.gamepad1.dpad_left){leftP = true;}if(leftP && !this.gamepad1.dpad_left){ leftP = false;
             //speed -= 0.05;
-            kP -= 1E-3;
+            kD -= 1E-3;
         }
         if(this.gamepad1.dpad_right){rightP = true;}if(rightP && !this.gamepad1.dpad_right){ rightP = false;
             //speed += 0.05;
-            kP += 1E-3;
+            kD += 1E-3;
         }
         if(this.gamepad1.dpad_down){downP = true;}if(downP && !this.gamepad1.dpad_down){ downP = false;
-            kP /= 10.0;
+            kD /= 10.0;
             /*if(this.gamepad1.left_bumper){
                 //kP -= 0.001;
                 //kD /= 10.0;
@@ -52,7 +52,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
              */
         }
         if(this.gamepad1.dpad_up){upP = true;}if(upP && !this.gamepad1.dpad_up){ upP = false;
-            kP *= 10.0;
+            kD *= 10.0;
             /*if(this.gamepad1.left_bumper){
                 //kP += 0.001;
                 //kD *= 10.0;
@@ -78,7 +78,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
         telemetry.addData("kD", kD);
         telemetry.update();
     }
-    protected final double odometryEncPerInch = 1316;//4096.0/Math.PI;
+    protected final double odometryEncPerInch = 1324.28;//4096.0/Math.PI;
     protected int offsetY = 0;
 
     @Override
@@ -89,7 +89,6 @@ public class OdometryMoveInchesTest extends BaseAuto {
     }
 
     protected void moveInchesGO(double yInch, double speed){
-
         writeLogHeader("P="+kP+", I="+kI+", D="+kD+",speed="+speed+",target="+targetInches * odometryEncPerInch);
         writeLogHeader("time,position,P,I,D,LF speed");
         ElapsedTime t = new ElapsedTime();
@@ -103,7 +102,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
         setAllDrivePower(vy,vy,-vy,-vy);
         int previousPos = offsetY, currentOdometry = offsetY, Dterm;
         double tpre=0;
-        while(!this.gamepad1.b && !near(currentOdometry,odometryYGoal,100)){
+        while(!this.gamepad1.b){// && !near(currentOdometry,odometryYGoal,100)){
             currentOdometry = getYOdometry();
             double tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
@@ -113,7 +112,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
             IError += (currentOdometry - odometryYGoal);
             setAllDrivePowerG(multiply_factor*(-vx-vy),multiply_factor*(vx-vy),multiply_factor*(-vx+vy),multiply_factor*(vx+vy));
 
-            writeLog(t.milliseconds()+", "+currentOdometry+", "+((currentOdometry - odometryYGoal)/odometryEncPerInch)+", "+IError+", "+Dterm+(near(Dterm,0,5000)?"":"clipped")+", "+multiply_factor*(-vx-vy));
+            writeLog(t.milliseconds()+", "+currentOdometry+", "+((currentOdometry - odometryYGoal)/odometryEncPerInch)+", "+IError+", "+LF.getPower());
             telemetry.addData("power",LF.getPower());
             telemetry.update();
 
