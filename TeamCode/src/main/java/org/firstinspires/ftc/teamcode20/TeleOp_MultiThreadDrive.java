@@ -36,13 +36,14 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         initPlatformGrabber();
         initIMU();
         setNewGyro0();
-        grabber.setPosition(grabber_open);
         servoThread.setTarget(0.99);
-        platform_grabber.setPower(1);
+        /*platform_grabber.setPower(1);
         wait(150);
         platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         platform_grabber.setPower(0);
+        
+         */
         pwmThread = new PWMThread();
         /*Set<Thread> keys = Thread.getAllStackTraces().keySet();
         Log.d("All threads log start","-------------------- "+keys.size()+"Threads -----------------------");

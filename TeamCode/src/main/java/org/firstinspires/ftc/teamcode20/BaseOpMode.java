@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.R;
+import org.openftc.revextensions2.ExpansionHubEx;
+import org.openftc.revextensions2.ExpansionHubMotor;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -35,9 +37,9 @@ Make sure TeleOp2019Trident and BaseAuto can inherit needed stuff by setting the
 public class BaseOpMode extends OpMode {
 
     protected boolean showTelemetry = false;
-
+    protected ExpansionHubEx hub2, hub4;
     protected ServoThread servoThread;
-    protected DcMotor LF, LB, RF, RB;
+    protected ExpansionHubMotor LF, LB, RF, RB;
     protected Servo grabber;
     protected Servo grabber_extend1, grabber_extend2;
     protected DcMotor platform_grabber, xOdometry;
@@ -57,7 +59,10 @@ public class BaseOpMode extends OpMode {
         msStuckDetectInit = 30000;
     }
 
-    @Override public void init() {}
+    @Override public void init() {
+        hub2 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
+        hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
+    }
 
     @Override public void loop() {
 
@@ -160,10 +165,10 @@ public class BaseOpMode extends OpMode {
     }
 
     protected void initDrivetrain(){
-        LF = hardwareMap.get(DcMotor.class,"LF");
-        LB = hardwareMap.get(DcMotor.class,"LB");
-        RF = hardwareMap.get(DcMotor.class,"RF");
-        RB = hardwareMap.get(DcMotor.class,"RB");
+        LF = (ExpansionHubMotor) hardwareMap.get(DcMotor.class,"LF");
+        LB = (ExpansionHubMotor) hardwareMap.get(DcMotor.class,"LB");
+        RF = (ExpansionHubMotor) hardwareMap.get(DcMotor.class,"RF");
+        RB = (ExpansionHubMotor) hardwareMap.get(DcMotor.class,"RB");
         LF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         LB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         RF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
