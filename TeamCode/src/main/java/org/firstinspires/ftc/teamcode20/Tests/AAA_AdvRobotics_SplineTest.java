@@ -9,7 +9,7 @@ public class AAA_AdvRobotics_SplineTest extends BaseAuto {
     private Vector2 end = new Vector2(-44,48);
     private final Vector2 start = new Vector2(-8.55,8.55);
     private boolean[] a = {true};
-    Thread u=new UD();
+    private Thread u=new UD();
     @Override
     public void init() {
         coo.setX(8.55);coo.setY(8.55);
@@ -19,6 +19,10 @@ public class AAA_AdvRobotics_SplineTest extends BaseAuto {
     @Override
     public void start(){
         u.start();
+    }
+    @Override
+    public void stop(){
+        u.stopThread();
     }
     @Override
     public void loop() {
