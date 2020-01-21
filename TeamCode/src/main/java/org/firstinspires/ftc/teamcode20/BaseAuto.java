@@ -22,6 +22,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode20.Tests.Vector2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,7 @@ public class BaseAuto extends BaseOpMode {
 
     //Encoders
     protected double xmult = 1430.5/72, ymult = 18.65;
-    protected double[] coo={0,0};
+    protected Vector2 coo=new Vector2(0,0);
     private double xpre=0,ypre=0,theta=0;
 
     protected void initVuforia(){
@@ -351,8 +352,7 @@ public class BaseAuto extends BaseOpMode {
         double xcur=getXOdometry(),ycur=-getYOdometry(),thetacur=imuHeading/180*Math.PI;
         double dx=xcur-xpre;
         double dy=ycur-ypre;
-        coo[0] += (dx * Math.cos(thetacur) + dy * Math.sin(thetacur)) * Math.PI / 4096;
-        coo[1] += (dx * Math.sin(thetacur) + dy * Math.cos(thetacur)) * Math.PI / 4096;
+        coo.add(new Vector2((dx * Math.cos(thetacur) + dy * Math.sin(thetacur)) * Math.PI / 4096,(dx * Math.sin(thetacur) + dy * Math.cos(thetacur)) * Math.PI / 4096));
         xpre=xcur;
         ypre=ycur;
         theta=imuHeading;
