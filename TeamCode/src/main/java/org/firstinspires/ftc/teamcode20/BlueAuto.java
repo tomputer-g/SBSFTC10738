@@ -113,14 +113,14 @@ public class BlueAuto extends BaseAuto {
         turn(90, 0.4, 0.8);
         setNewGyro(90);
         p.reset();
-        moveInchesG(0,88+shift,0.4);
+        moveInchesG(0,88+shift-3,0.4);
         setAllDrivePowerG(-.35,.35,-.35,.35);
         wait(1500);
 
         //turn foundation
         platform_grabber.setPower(-.8);
         wait(200);
-        setAllDrivePowerG(0.5,-0.5,0.5,-0.5);
+        setAllDrivePowerG(0.55,-0.55,0.55,-0.55);
         wait(1000);
         setAllDrivePower(0);
         turn(90, 0.8, 4);
@@ -136,9 +136,9 @@ public class BlueAuto extends BaseAuto {
         */
         setAllDrivePower(0);
         double tempY = getYOdometry();
-        double targetdist = getYOdometry()-12*1316;
+        double targetdist = getYOdometry()-15*1316;
         p = new ElapsedTime();
-        while(getYOdometry()>targetdist&&p.milliseconds()<1500)
+        while(getYOdometry()>targetdist&&p.milliseconds()<2000)
             setAllDrivePowerG(-0.5,-0.5,0.5,0.5,2);
         setAllDrivePower(0);
 
@@ -171,7 +171,7 @@ public class BlueAuto extends BaseAuto {
         platform_grabber.setPower(1);
         wait(300);
         //park
-        //moveInchesG(-4.5,0,0.4);
+        moveInchesG(-2.5,0,0.4);
         moveInchesG(0,-38,0.5);
 
         setAllDrivePower(0.0);

@@ -7,7 +7,6 @@ import org.firstinspires.ftc.teamcode19.BaseOpMode;
 /**
  * Created by Ziming Gao on 12/11/2017.
  */
-//@TeleOp(name = "Ctrler test", group = "test")
 public class ControllerTest extends BaseOpMode {
 
     @Override public void init() {}
