@@ -5,11 +5,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode20.BaseAuto;
-
+@Disabled
 @TeleOp
-public class OdometryMoveInchesTest extends BaseAuto {
+public class OdometryIKMoveInchesTest extends BaseAuto {
     private boolean APrimed = false, upP = false, downP = false, leftP = false, rightP = false, x = false;
-    private double speed = 0.3, kP = 0.1, kI = 0, kD = 0, brakeSpeed = 0;//kP = 0.035, kI = 1E-5, kD = 5E-6, k = 0.5, brakeDist = 7.5, brakeSpeed = 0.1;
+    private double speed = 0.3, kP = 0.1, kI = 0, kD = 0, k = 1, brakeDist = 7.5,brakeSpeed = 0;//kP = 0.035, kI = 1E-5, kD = 5E-6, k = 0.5, brakeDist = 7.5, brakeSpeed = 0.1;
     private int targetInches = -48;
 
     //FOR 0.3: use P = 0.7, D = 0.003
@@ -70,12 +70,15 @@ public class OdometryMoveInchesTest extends BaseAuto {
         kP = Math.round(kP * 10000) / 10000.0;
         kI = Math.round(kI * 1E9) / 1.0E9;
         kD = Math.round(kD * 1E9) / 1.0E9;
+        k = Math.round(k * 100) / 100.0;
         telemetry.addData("enc Y", getYOdometry());
         telemetry.addData("target", targetInches * odometryEncPerInch);
         telemetry.addData("speed", speed);
         telemetry.addData("kP", kP);
         telemetry.addData("kI", kI);
         telemetry.addData("kD", kD);
+        telemetry.addData("k",k);
+        telemetry.addData("braking dist",brakeDist);
         telemetry.update();
     }
     protected final double odometryEncPerInch = 1316;//4096.0/Math.PI;
@@ -90,7 +93,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
 
     protected void moveInchesGO(double yInch, double speed){
 
-        writeLogHeader("P="+kP+", I="+kI+", D="+kD+",speed="+speed+",target="+targetInches * odometryEncPerInch);
+        writeLogHeader("P="+kP+", I="+kI+", D="+kD+",k="+k+",speed="+speed+",target="+targetInches * odometryEncPerInch+", brakeDist="+brakeDist);
         writeLogHeader("time,position,P,I,D,LF speed");
         ElapsedTime t = new ElapsedTime();
         offsetY = getYOdometry();
@@ -100,23 +103,33 @@ public class OdometryMoveInchesTest extends BaseAuto {
         double vx = 0;
         double vy=(yInch==0)?0:(yInch/Math.abs(yInch)*speed);
         long IError = 0;
-        setAllDrivePower(vy,vy,-vy,-vy);
-        int previousPos = offsetY, currentOdometry = offsetY, Dterm;
+        setAllDrivePower((vy),(vy),(-vy),(-vy));
+        int previousPos = getYOdometry();
+        int Dterm;
         double tpre=0;
-        while(!this.gamepad1.b && !near(currentOdometry,odometryYGoal,100)){
-            currentOdometry = getYOdometry();
+        while(Math.abs((getYOdometry() - odometryYGoal)/odometryEncPerInch) > brakeDist);
+        while(!this.gamepad1.b && !near(getYOdometry(),odometryYGoal,100)){
             double tcur=t.milliseconds();
-            Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
-            multiply_factor = -Math.min(1, Math.max(-1, ((kP * (currentOdometry - odometryYGoal)/odometryEncPerInch) +  (near(Dterm,0,5000)?(kD * Dterm):0)) + (kI * IError )));
+            Dterm = (int)((getYOdometry() - previousPos)/(tcur-tpre));
+            multiply_factor = -Math.min(1, Math.max(-1, k *((kP * -(getYOdometry() - odometryYGoal)/odometryEncPerInch) +  (near(Dterm,0,5000)?(kD * Dterm):0)) + (kI * IError )));
             tpre=tcur;
-            previousPos = currentOdometry;
-            IError += (currentOdometry - odometryYGoal);
+            previousPos = getYOdometry();
+            IError += (getYOdometry() - odometryYGoal);
             setAllDrivePowerG(multiply_factor*(-vx-vy),multiply_factor*(vx-vy),multiply_factor*(-vx+vy),multiply_factor*(vx+vy));
 
-            writeLog(t.milliseconds()+", "+currentOdometry+", "+((currentOdometry - odometryYGoal)/odometryEncPerInch)+", "+IError+", "+Dterm+(near(Dterm,0,5000)?"":"clipped")+", "+multiply_factor*(-vx-vy));
+            writeLog(t.milliseconds()+", "+getYOdometry()+", "+((getYOdometry() - odometryYGoal)/odometryEncPerInch)+", "+IError+", "+Dterm+(near(Dterm,0,5000)?"":"clipped")+", "+multiply_factor*(-vx-vy));
             telemetry.addData("power",LF.getPower());
             telemetry.update();
-
+            /*telemetry.addData("kP", kP);
+            telemetry.addData("P term", (getYOdometry() - odometryYGoal)/odometryEncPerInch);
+            telemetry.addData("kI", kI);
+            telemetry.addData("I term", IError);
+            telemetry.addData("kD", kD);
+            telemetry.addData("D term",Dterm);
+            telemetry.addData("current",getYOdometry());
+            telemetry.addData("Y goal",odometryYGoal);
+            telemetry.update();
+             */
         }
         setAllDrivePower(0);
     }

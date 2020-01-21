@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode20.Tests;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
@@ -14,6 +15,9 @@ public class OpenFTCExtensionTest extends OpMode {
     ExpansionHubMotor LF, LB, RF, RB, L1, L2, xOdo, platform;
     LEDThread ledThread;
     RevBulkData bulkData2, bulkData4;
+
+    double bulk100=0, control100=0;
+    boolean YP;
     @Override
     public void init() {
         hub2 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
@@ -35,17 +39,30 @@ public class OpenFTCExtensionTest extends OpMode {
     public void loop() {
 
         //Servo current draw is broken right now, apparently
-
-        bulkData2 = hub2.getBulkInputData();
-        bulkData4 = hub4.getBulkInputData();
-        telemetry.addData("Battery voltage",hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS));
+        if(this.gamepad1.y){YP = true;}if(!this.gamepad1.y && YP){
+            YP = false;
+            ElapsedTime t = new ElapsedTime();
+            for(int i = 0;i < 100; i++){
+                RevBulkData dataTmp = hub2.getBulkInputData();
+            }
+            bulk100 = t.milliseconds();
+            t.reset();
+            for(int i = 0;i < 100; i++){
+                LF.getCurrentPosition();
+                LB.getCurrentPosition();
+                RF.getCurrentPosition();
+                RB.getCurrentPosition();
+            }
+            control100 = t.milliseconds();
+        }
+        /*telemetry.addData("Battery voltage",hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS));
         telemetry.addData("*Hub 2 total*",hub2.getTotalModuleCurrentDraw(ExpansionHubEx.CurrentDrawUnits.AMPS) );
         /*telemetry.addData("LF",LF.getCurrentDraw(ExpansionHubEx.CurrentDrawUnits.AMPS));
         telemetry.addData("LB",LB.getCurrentDraw(ExpansionHubEx.CurrentDrawUnits.AMPS));
         telemetry.addData("RF",RF.getCurrentDraw(ExpansionHubEx.CurrentDrawUnits.AMPS));
         telemetry.addData("RB",RB.getCurrentDraw(ExpansionHubEx.CurrentDrawUnits.AMPS));
 
-         */
+
         telemetry.addLine("Phone charging is ON");
         telemetry.addData("*Hub 4 total*",hub4.getTotalModuleCurrentDraw(ExpansionHubEx.CurrentDrawUnits.AMPS));
         /*telemetry.addData("L1",L1.getCurrentDraw(ExpansionHubEx.CurrentDrawUnits.AMPS));
@@ -54,6 +71,8 @@ public class OpenFTCExtensionTest extends OpMode {
         telemetry.addData("platform",platform.getCurrentDraw(ExpansionHubEx.CurrentDrawUnits.AMPS));
 
          */
+        telemetry.addData("Bulk * 100",bulk100);
+        telemetry.addData("Control * 100", control100);
         telemetry.update();
     }
 
