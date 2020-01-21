@@ -38,7 +38,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 public class BaseAuto extends BaseOpMode {
 
     //Vuforia
-    private VuforiaLocalizer vuforia;
+    protected VuforiaLocalizer vuforia;
     private boolean VuforiaInit = false;
     protected static final float mmPerInch = 25.4f;
     protected OpenGLMatrix lastLocation = null;
