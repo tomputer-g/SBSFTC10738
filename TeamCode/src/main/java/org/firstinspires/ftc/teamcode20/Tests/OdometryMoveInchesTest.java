@@ -2,17 +2,27 @@ package org.firstinspires.ftc.teamcode20.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode20.BaseAuto;
+import org.openftc.revextensions2.ExpansionHubEx;
 
 @TeleOp
 public class OdometryMoveInchesTest extends BaseAuto {
-    private boolean APrimed = false, upP = false, downP = false, leftP = false, rightP = false;
-    private double speed = 0.3, kP = 1, kI = 0, kD = 0.12, brakeSpeed = 0;//kP = 0.035, kI = 1E-5, kD = 5E-6, k = 0.5, brakeDist = 7.5, brakeSpeed = 0.1;
-    private int targetInches = -100;
+    /*
+    target is 100 inches
 
-    //FOR 0.3: use P = 0.7, D = 0.003
+    0.3 speed: P = 1,       D = 0.12,   result: +1/32 in
+    0.6 speed: P = 0.075,   D = 1.4E-2, result: 0 in.
+    0.9 speed: P = 0.0325,  D = 7.3E-3, result: spin +- 1/4 in
+     */
+    private double[] params =       {1E-4,  0,     0,       0.9,        -100,           0.8};
+    private String[] paramNames =   {"P",   "I",    "D",    "speed",    "targetInches", "turnkP"};
+    private int currentSelectParamIndex = 0;
+    private boolean l, r, u, d, lb, rb, APrimed = false;
+
+    protected final double odometryEncPerInch = 1324.28;
 
     @Override
     public void init() {
@@ -20,102 +30,99 @@ public class OdometryMoveInchesTest extends BaseAuto {
         initOdometry();
         initIMU();
         initLogger("PIDtest"+System.currentTimeMillis()+".csv");
-
+        hub2 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
     }
     @Override
     public void loop() {
         if(this.gamepad1.a){APrimed = true;}if(APrimed && !this.gamepad1.a){ APrimed = false;
             resetYOdometry();
-            moveInchesGO(targetInches,speed);
+            resetXOdometry();
+            LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            moveInchesGO(params[4],params[3]);
         }
-        if(this.gamepad1.dpad_left){leftP = true;}if(leftP && !this.gamepad1.dpad_left){ leftP = false;
-            speed -= 0.01;
-            //kD -= 1.0;
-        }
-        if(this.gamepad1.dpad_right){rightP = true;}if(rightP && !this.gamepad1.dpad_right){ rightP = false;
-            speed += 0.01;
-            //kD += 1.0;
-        }
-        if(this.gamepad1.dpad_down){downP = true;}if(downP && !this.gamepad1.dpad_down){ downP = false;
-            kD /= 10.0;
-            /*if(this.gamepad1.left_bumper){
-                //kP -= 0.001;
-                //kD /= 10.0;
-                //kI /= 10.0;
-            }else if(this.gamepad1.right_bumper){
-                kI -= 1.0E-6;
-            }else{
-                //kD -= 1E-9;
-                //k-=0.05;
-            }
 
-             */
-        }
-        if(this.gamepad1.dpad_up){upP = true;}if(upP && !this.gamepad1.dpad_up){ upP = false;
-            kD *= 10.0;
-            /*if(this.gamepad1.left_bumper){
-                //kP += 0.001;
-                //kD *= 10.0;
-                kI *= 10.0;
-            }else if(this.gamepad1.right_bumper){
-                kI += 1.0E-6;
-            }else{
-                //kD += 1E-9;
-                k+=0.05;
+        if(this.gamepad1.left_bumper){lb = true;}if(!this.gamepad1.left_bumper && lb){
+            lb = false;
+            currentSelectParamIndex--;
+            if(currentSelectParamIndex < 0){
+                currentSelectParamIndex = params.length - 1;
             }
-
-             */
         }
-        brakeSpeed = Math.round(brakeSpeed * 100) / 100.0;
-        kP = Math.round(kP * 10000) / 10000.0;
-        kI = Math.round(kI * 1E9) / 1.0E9;
-        kD = Math.round(kD * 1E9) / 1.0E9;
-        speed = Math.round(speed * 100) / 100.0;
+        if(this.gamepad1.right_bumper){rb = true;}if(!this.gamepad1.right_bumper && rb){
+            rb = false;
+            currentSelectParamIndex++;
+            if(currentSelectParamIndex >= params.length){
+                currentSelectParamIndex = 0;
+            }
+        }
+        if(this.gamepad1.dpad_left){l = true;}if(!this.gamepad1.dpad_left && l){
+            l = false;
+            params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] - 1) * 1E9) / 1E9;
+
+        }
+        if(this.gamepad1.dpad_right){r = true;}if(!this.gamepad1.dpad_right && r){
+            r = false;
+            params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] + 1) * 1E9) / 1E9;
+
+        }
+        if(this.gamepad1.dpad_up){u = true;}if(!this.gamepad1.dpad_up && u){
+            u = false;
+            params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] * 10.0) * 1E9) / 1E9;
+
+        }
+        if(this.gamepad1.dpad_down){d = true;}if(!this.gamepad1.dpad_down && d){
+            d = false;
+            params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] / 10.0) * 1E9) / 1E9;
+
+        }
+
+        telemetry.addData("parameters",params[0]+", "+params[1]+", "+params[2]+", "+params[3]+", "+params[4]);
+        telemetry.addData("now changing", paramNames[currentSelectParamIndex]);
         telemetry.addData("enc Y", getYOdometry());
-        telemetry.addData("target", targetInches * odometryEncPerInch);
-        telemetry.addData("speed", speed);
-        telemetry.addData("kDClipSpeed",speed * 5000 / 0.3);
-        telemetry.addData("kP", kP);
-        telemetry.addData("kI", kI);
-        telemetry.addData("kD", kD);
+        telemetry.addData("target", params[4] * odometryEncPerInch);
+        telemetry.addLine("0.3 speed: P = 1,       D = 0.12\n" +
+                                    "0.6 speed: P = 0.075,   D = 1.4E-2\n" +
+                                    "0.9 speed: P = 0.0325,  D = 7.3E-3");
         telemetry.update();
     }
-    protected final double odometryEncPerInch = 1324.28;//4096.0/Math.PI;
-    protected int offsetY = 0;
+
 
     @Override
     public void stop() {
         stopLog();
         super.stop();
-
     }
 
     protected void moveInchesGO(double yInch, double speed){
-        writeLogHeader("P="+kP+", I="+kI+", D="+kD+",speed="+speed+",target="+targetInches * odometryEncPerInch);
-        writeLogHeader("time,position,P,I,D,LF speed");
+        if(yInch == 0)return;
+        writeLogHeader("P="+params[0]+", I="+params[1]+", D="+params[2]+",speed="+speed+",target="+yInch * odometryEncPerInch+", batt"+hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS));
+        writeLogHeader("millis time,position,P,eff. P Power,I,D,eff. D Power,LF speed,LF counts,GyroDrift");
         ElapsedTime t = new ElapsedTime();
-        offsetY = getYOdometry();
+        int offsetY = getYOdometry();
         speed=Math.abs(speed);
-        double multiply_factor=1;
+        double multiply_factor;
         int odometryYGoal = offsetY + (int)(yInch * odometryEncPerInch);
-        double vx = 0;
-        double vy = (yInch==0)?0:(yInch/Math.abs(yInch)*speed);
+        double vy = (yInch/Math.abs(yInch)*speed);
         long IError = 0;
         setAllDrivePower(vy,vy,-vy,-vy);
-        int previousPos = offsetY, currentOdometry = offsetY, Dterm;
-        double tpre=0;
-        while(!this.gamepad1.b){// && !near(currentOdometry,odometryYGoal,100)){
+        int previousPos = offsetY, currentOdometry, Dterm;
+        double tpre = 0, tcur;
+
+        while(!this.gamepad1.b){
             currentOdometry = getYOdometry();
-            double tcur=t.milliseconds();
+            tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
-            multiply_factor = -Math.min(1, Math.max(-1, ((kP * (currentOdometry - odometryYGoal)/odometryEncPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0)) + (kI * IError )));
+            multiply_factor = -Math.min(1, Math.max(-(1/speed), ((params[0] * (currentOdometry - odometryYGoal)/odometryEncPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(params[2] * Dterm):0)) + (params[1] * IError )));
             tpre=tcur;
             previousPos = currentOdometry;
             IError += (currentOdometry - odometryYGoal);
-            setAllDrivePowerG(multiply_factor*(-vx-vy),multiply_factor*(vx-vy),multiply_factor*(-vx+vy),multiply_factor*(vx+vy));
+            setAllDrivePowerG(multiply_factor*-vy,multiply_factor*-vy,multiply_factor*vy,multiply_factor*vy, params[5]);
 
-            writeLog(t.milliseconds()+", "+currentOdometry+", "+((currentOdometry - odometryYGoal)/odometryEncPerInch)+", "+IError+", "+LF.getPower());
+            writeLog(t.milliseconds()+", "+currentOdometry+", "+((currentOdometry - odometryYGoal)/odometryEncPerInch)+", "+((currentOdometry - odometryYGoal)/odometryEncPerInch)*params[0]+", "+IError+", "+Dterm+", "+(near(Dterm,0,speed * 5000 / 0.3)?(params[2] * Dterm):"CLIPPED")+", "+LF.getPower()+", "+LF.getCurrentPosition()+", "+getHeading());
         }
         setAllDrivePower(0);
+        writeLogHeader("Gyro drift="+getHeading()+", Xdrift="+getXOdometry());
+        writeLogHeader("----End of run----");
     }
 }
