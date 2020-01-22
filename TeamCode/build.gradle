@@ -16,7 +16,11 @@ apply from: '../build.common.gradle'
 
 android {
     buildToolsVersion = '28.0.3'
+    packagingOptions {
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+    }
 }
+
 dependencies{
     implementation 'org.openftc:rev-extensions-2:1.2'
     implementation project(path: ':opencv')
