@@ -226,6 +226,7 @@ so manually move them:
 * javadoc\serialized-form.html
 * javadoc\stylesheet.css
 
+
 Moved Files:
 ------------
 Android Gradle projects use a different directory structure than ADT
@@ -235,6 +236,7 @@ Eclipse projects. Here's how the projects were restructured:
 * res\ => opencv\src\main\res\
 * src\ => opencv\src\main\java\
 * src\org\opencv\engine\OpenCVEngineInterface.aidl => opencv\src\main\aidl\org\opencv\engine\OpenCVEngineInterface.aidl
+
 
 Next Steps:
 -----------

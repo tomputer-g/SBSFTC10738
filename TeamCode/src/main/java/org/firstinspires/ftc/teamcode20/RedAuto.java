@@ -37,16 +37,23 @@ public class RedAuto extends TractionControl {
         moveInchesG(0,12,0.3);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
-
+        int[] resultcounter = {0,0,0};
         //find skystone
-        int pos = skystonePosition();
+        for (int i = 0;i<10;++i){
+            resultcounter[new_skystoneposition()]++;
+        }
+        int curmax = -1;
+        int pos = 0;
+        for (int i = 0;i<3;++i){
+            if(resultcounter[i]>curmax){pos = i;curmax=resultcounter[i];}
+        }
+
         grabber.setPosition(grabber_open);
         shutdownVuforia();
 
         //shift to align to skystone
         int shift;
         if(pos == 1){
-            //moveInchesG(3.5,0,0.4);
             shift = 0;
         }
         else if (pos == 0){
