@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
+import android.graphics.Bitmap;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.vuforia.Frame;
 import com.vuforia.Image;
@@ -12,6 +14,7 @@ import org.firstinspires.ftc.teamcode20.BaseAuto;
 public class VufuriaTakeImageTest extends BaseAuto {
     protected VuforiaLocalizer.CloseableFrame frame;
     protected Image image;
+    protected Bitmap bm;
     public void init(){
         initVuforia();
         vuforia.setFrameQueueCapacity(6);
@@ -37,7 +40,15 @@ public class VufuriaTakeImageTest extends BaseAuto {
         telemetry.log().add("Num Bytes = %d",image.getPixels().remaining());
         telemetry.update();
 
+        bm = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Bitmap.Config.RGB_565);
+        bm.copyPixelsFromBuffer(image.getPixels());
+        
         //wait(5000);
+    }
+
+    @Override
+    public void stop(){
+        frame.close();
     }
 
 }
