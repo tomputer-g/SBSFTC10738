@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode20.Tests;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
@@ -22,7 +21,7 @@ public class AAA_AdvRobotics_SplineTest extends BaseAuto {
     }
     @Override
     public void stop(){
-        u.stopThread();
+       // u.stopThread();
     }
     @Override
     public void loop() {
