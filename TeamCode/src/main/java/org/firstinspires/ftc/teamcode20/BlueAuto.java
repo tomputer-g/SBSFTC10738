@@ -101,7 +101,7 @@ public class BlueAuto extends BaseAuto {
             shift = 0;
         }
         else if (pos == 0){
-            moveInchesG(-7,0,0.4);
+            moveInchesG(-8,0,0.4);
             shift=-10;
         }
         else {
