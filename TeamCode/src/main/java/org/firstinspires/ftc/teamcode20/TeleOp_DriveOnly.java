@@ -24,7 +24,7 @@ public class TeleOp_DriveOnly extends BaseAuto {
         //move(-this.gamepad1.left_stick_x, this.gamepad1.left_stick_y, -this.gamepad1.right_stick_x);
         //new bot
         updateCoo();
-        telemetry.addLine("(x,y): (" + (int)(coo[0]) + "," + (int)(coo[1]) + ")");
+        telemetry.addLine("(x,y): (" + (int)(coo.getX()) + "," + (int)(coo.getY()) + ")");
         telemetry.update();
         joystickScaledMove(-this.gamepad1.left_stick_x, -this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x));
     }
