@@ -75,24 +75,37 @@ public class BlueAuto extends BaseAuto {
         moveInchesG(0,12,0.3);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
-
+        int[] resultcounter = {0,0,0};
         //find skystone
-        int pos = skystonePosition();
+        for (int i = 0;i<20;++i){
+            resultcounter[new_skystoneposition()]++;
+        }
+        int curmax = -1;
+        int pos = 0;
+        for (int i = 0;i<3;++i){
+            if(resultcounter[i]>curmax){pos = i;curmax=resultcounter[i];}
+        }
+        telemetry.addData("0:", resultcounter[0]);
+        telemetry.addData("1:", resultcounter[1]);
+        telemetry.addData("2:", resultcounter[2]);
+        telemetry.addData("pos", pos);
+        telemetry.update();
+
         grabber.setPosition(grabber_open);
         shutdownVuforia();
 
         //shift to align to skystone
         int shift;
         if(pos == 1){
-            moveInchesG(4,0,0.4);
+            //moveInchesG(4,0,0.4);
             shift = 0;
         }
         else if (pos == 0){
-            moveInchesG(-3,0,0.4);
+            moveInchesG(-7,0,0.4);
             shift=-10;
         }
         else {
-            moveInchesG(12, 0, 0.4);
+            moveInchesG(8, 0, 0.4);
             shift=8;
         }
 

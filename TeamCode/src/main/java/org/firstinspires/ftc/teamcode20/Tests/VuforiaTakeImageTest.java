@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.vuforia.CameraDevice;
 import com.vuforia.Frame;
 import com.vuforia.Image;
@@ -32,6 +33,7 @@ public class VuforiaTakeImageTest extends BaseAuto {
 
     @Override
     public void loop(){
+        ElapsedTime t = new ElapsedTime();
         VuforiaLocalizer.CloseableFrame frame = null;
         Image image = null;
         int result = 0;
@@ -98,7 +100,7 @@ public class VuforiaTakeImageTest extends BaseAuto {
         if((!r) && (!l))result = 0;
         else if(l)result = 1;
         else result = 2;
-
+        telemetry.addData("time", t.milliseconds());
         telemetry.addData("pos: ", result);
         telemetry.update();
         frame.close();
