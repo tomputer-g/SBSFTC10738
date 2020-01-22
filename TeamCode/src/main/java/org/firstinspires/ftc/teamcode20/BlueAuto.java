@@ -77,7 +77,7 @@ public class BlueAuto extends BaseAuto {
         if(showTelemetry)telemetry.clear();
         int[] resultcounter = {0,0,0};
         //find skystone
-        for (int i = 0;i<20;++i){
+        for (int i = 0;i<10;++i){
             resultcounter[new_skystoneposition()]++;
         }
         int curmax = -1;
@@ -85,11 +85,11 @@ public class BlueAuto extends BaseAuto {
         for (int i = 0;i<3;++i){
             if(resultcounter[i]>curmax){pos = i;curmax=resultcounter[i];}
         }
-        telemetry.addData("0:", resultcounter[0]);
-        telemetry.addData("1:", resultcounter[1]);
-        telemetry.addData("2:", resultcounter[2]);
-        telemetry.addData("pos", pos);
-        telemetry.update();
+        //telemetry.addData("0:", resultcounter[0]);
+        //telemetry.addData("1:", resultcounter[1]);
+        //telemetry.addData("2:", resultcounter[2]);
+        //telemetry.addData("pos", pos);
+        //telemetry.update();
 
         grabber.setPosition(grabber_open);
         shutdownVuforia();
