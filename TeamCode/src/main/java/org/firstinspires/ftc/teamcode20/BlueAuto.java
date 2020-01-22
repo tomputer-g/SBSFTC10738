@@ -97,7 +97,6 @@ public class BlueAuto extends BaseAuto {
         //shift to align to skystone
         int shift;
         if(pos == 1){
-            //moveInchesG(4,0,0.4);
             shift = 0;
         }
         else if (pos == 0){

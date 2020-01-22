@@ -47,14 +47,13 @@ public class RedAuto extends TractionControl {
         for (int i = 0;i<3;++i){
             if(resultcounter[i]>curmax){pos = i;curmax=resultcounter[i];}
         }
-        
+
         grabber.setPosition(grabber_open);
         shutdownVuforia();
 
         //shift to align to skystone
         int shift;
         if(pos == 1){
-            //moveInchesG(3.5,0,0.4);
             shift = 0;
         }
         else if (pos == 0){
