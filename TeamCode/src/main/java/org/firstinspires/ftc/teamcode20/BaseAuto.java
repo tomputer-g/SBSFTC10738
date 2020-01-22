@@ -373,6 +373,7 @@ public class BaseAuto extends BaseOpMode {
         imuHeading = getError(Double.parseDouble(String.format(Locale.getDefault(), "%.2f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle)))),imuOffset);
         return imuHeading;
     }
+    //dao ge aoligei
 
     protected void setNewGyro0(){
         imuOffset = 0;
