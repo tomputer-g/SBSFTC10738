@@ -13,6 +13,11 @@
 
 // Include common definitions from above.
 apply from: '../build.common.gradle'
+
+android {
+    buildToolsVersion = '28.0.3'
+}
 dependencies{
     implementation 'org.openftc:rev-extensions-2:1.2'
+    implementation project(path: ':opencv')
 }
