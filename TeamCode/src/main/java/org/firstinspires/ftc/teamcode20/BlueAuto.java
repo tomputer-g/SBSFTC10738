@@ -113,7 +113,7 @@ public class BlueAuto extends BaseAuto {
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
         grabber.setPosition(grabber_open);
-        while (p.milliseconds()<1150) setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
+        while (p.milliseconds()<1300) setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
 
         //grab 1st block
         grabber.setPosition(grabber_closed);
