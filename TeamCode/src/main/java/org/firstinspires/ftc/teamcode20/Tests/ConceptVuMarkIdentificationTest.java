@@ -47,6 +47,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
+import org.opencv.android.BaseLoaderCallback;
 /**
  * This OpMode illustrates the basics of using the Vuforia engine to determine
  * the identity of Vuforia VuMarks encountered on the field. The code is structured as
@@ -71,9 +72,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 public class ConceptVuMarkIdentificationTest extends LinearOpMode {
 
     public static final String TAG = "Vuforia VuMark Sample";
-    AppUtil appUtil = AppUtil.getInstance();
     OpenGLMatrix lastLocation = null;
-
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
      * localization engine.
