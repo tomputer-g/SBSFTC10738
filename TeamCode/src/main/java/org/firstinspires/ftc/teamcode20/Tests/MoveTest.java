@@ -65,27 +65,6 @@ public class MoveTest extends BaseAuto {
         if(zheng(this.gamepad1.dpad_left,eee))y+=1;
         if(zheng(this.gamepad1.dpad_right,fff))y-=1;
         if(zheng(this.gamepad1.dpad_up,ee)){
-            //L1.setPower(0.5);
-            //L2.setPower(-0.5);
-            //wait(600);
-            servoThread.setTarget(1);
-            wait(200);
-            grabber.setPosition(grabber_closed);
-            wait(500);
-
-            holdSlide((int)slideEncoderPerInch/10);
-            servoThread.setTarget(0.8);
-            wait(2000);
-            grabber.setPosition(grabber_open);
-            wait(500);
-            //holdSlide(0);
-            holdSet=false;
-            L1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            L2.setPower(0);
-            L1.setPower(0);
-            grabber.setPosition(grabber_open);
-            servoThread.setTarget(1);
         };
         if(zheng(this.gamepad1.dpad_down,ff))WaitingTime+=50;
         if(zheng(this.gamepad1.y,m))speed+=.01;
@@ -120,62 +99,9 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.left_bumper,lF)) {
-            //L1.setPower(0);
-            //L2.setPower(0);
-            grabber.setPosition(0.03);
-            grabber_extend1.setPosition(1);
-            grabber_extend2.setPosition(0);
-            grabber.setPosition(0.03);
-            platform_grabber.setPower(1);
-            moveInchesG(0,12,0.3);
-            platform_grabber.setPower(0.0);
-            if(showTelemetry)telemetry.clear();
-
-            //find skystone
-            int pos = skystonePosition();
-            grabber.setPosition(grabber_open);
-            shutdownVuforia();
-            telemetry.addData("j",pos);
-            wait(2000);
-            //turn(y, speed, 1);
-            /*
-            ElapsedTime p = new ElapsedTime();
-            LF.setTargetPosition((int)(y*-ymult));
-            //LB.setTargetPosition((int)(y*-ymult));
-            //RF.setTargetPosition((int)(y*ymult));
-            //RB.setTargetPosition((int)(y*ymult));
-
-            LF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            //LB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            //RF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            //RB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            setAllDrivePower(-speed,-speed,speed,speed);
-            while(LF.isBusy()){
-                setAllDrivePowerG(-speed,-speed,speed,speed);
-                //telemetry.addData("ss", -platform_grabber.getCurrentPosition());
-                //telemetry.addData("Power: ",LF.getPower());
-                //telemetry.addData("flag: ",LF.isBusy());
-                //telemetry.update();
-
-                    if(p.milliseconds()>500){
-                        reset_ENCODER();
-
-                        LF.setTargetPosition((int) (-((y*1316+platform_grabber.getCurrentPosition())*18.6/1316)));
-                        LB.setTargetPosition((int) (-((y*1316+platform_grabber.getCurrentPosition())*18.6/1316)));
-                        RF.setTargetPosition((int) ((y*1316+platform_grabber.getCurrentPosition())*18.6/1316));
-                        RB.setTargetPosition((int) ((y*1316+platform_grabber.getCurrentPosition())*18.6/1316));
-
-
-                        //setMode_RUN_WITHOUT_ENCODER();
-                        RUN_TO_POSITION();
-                        p.reset();
-                    }
-
-
-            setMode_RUN_WITHOUT_ENCODER();
-            setAllDrivePower(0);
-            */
+            setAllDrivePowerG(-.3,-.3,.3,.3);
+            wait(1000);
+            setAllDrivePowerG(-speed,-speed,speed,speed);
         }
             /*
             ElapsedTime t=new ElapsedTime();
@@ -207,17 +133,16 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.right_bumper,bF)) {
-            turn(y,speed,2);
-            //moveInchesGO(y,speed);
+            setAllDrivePowerG(0);
         }
-        //telemetry.addData("x: ",x);
+        telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
-        telemetry.addData("wait: ",WaitingTime);
+        //telemetry.addData("wait: ",WaitingTime);
         telemetry.addData("Imu: ","%.2f",getHeading());
         telemetry.addData("Speed: ","%.2f" ,speed);
         //telemetry.addData("enc X", xOdometry.getCurrentPosition());
         telemetry.addData("enc Y", LF.getCurrentPosition()/1305);
-        telemetry.addData("ss", -platform_grabber.getCurrentPosition());
+        //telemetry.addData("ss", -platform_grabber.getCurrentPosition());
         telemetry.update();
     }
 
