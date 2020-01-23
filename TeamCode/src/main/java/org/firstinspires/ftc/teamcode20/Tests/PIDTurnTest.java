@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode20.BaseOpMode;
 @TeleOp
 
 public class PIDTurnTest extends BaseAuto {
-    private double kP=0.058,kD=0;
+    private double kP=0.068,kD=0.9;
     private int magnitude=-2;
     private boolean[] du ={true}, dd={true}, dl={true},dr={true},rb={true},y={true},a={true},x={true},b={true},lb={true};
     private double imuinitvalue=0, target=90, result=0;
