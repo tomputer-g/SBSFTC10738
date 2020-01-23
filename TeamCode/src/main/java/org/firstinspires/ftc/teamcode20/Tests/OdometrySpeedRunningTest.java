@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode20.BaseAuto;
-@Disabled
 
 @TeleOp
 public class OdometrySpeedRunningTest extends BaseAuto {
@@ -56,44 +55,42 @@ public class OdometrySpeedRunningTest extends BaseAuto {
 
     private class OdometrySpeedThread extends Thread{
         volatile boolean stop = false;
-        public int targetSpeed = 4000;
+        public int targetSpeed = -12000;
         public double setPower = 0;
         private ElapsedTime t;
         private int lastPosition;
         public double lastSpeed;
-        public double kPY = 1E-6, kDY = 1E-6, kPX = 1E-5, kDX = 0;
+        public double kPY = 1E-6, kDY = 0, kPX = 1E-5, kDX = 0;
 
 
         @Override
         public void run() {
             Log.d("OdometrySpeed"+this.getId(),"Started running");
             t = new ElapsedTime();
-            //lastPosition = getYOdometry();
-            lastPosition = getXOdometry();
-            writeLogHeader("kPX,kDX,ns,targetSpeed,lastSpeed,dPower,setPower");
+            lastPosition = getYOdometry();
+            //lastPosition = getXOdometry();
+            writeLogHeader("ns,position,kPX,kDX,targetSpeed,lastSpeed,dPower,setPower");
             while(!isInterrupted() && !stop){
                 if(runOdoSpeed){
+                    int currentOdo = getYOdometry();
                     long ns = t.nanoseconds();
-                    //double currentSpeed = (getYOdometry()-lastPosition)*1.0E9/ns;
-                    double currentSpeed = (getXOdometry() - lastPosition) * 1.0E9 / ns;
-                    //PID here
-                    //double dPower = (kPY * (targetSpeed - currentSpeed) + kDY * (currentSpeed - lastSpeed));
-                    double dPower = (kPX * (targetSpeed - currentSpeed)+kDX*(currentSpeed - lastSpeed));
+                    double currentSpeed = (currentOdo-lastPosition)*1.0E9/ns;
+                    double dPower = (kPY * (targetSpeed - currentSpeed) + kDY * (currentSpeed - lastSpeed));
                     setPower += dPower;
-                    setPower = Math.min(1, Math.max(0, setPower));//0,-1
-                    //lastSpeed = (getYOdometry()-lastPosition)*1.0E9/ns;
-                    lastSpeed = (getXOdometry() - lastPosition) * 1.0E9 / ns;
-                    //setAllDrivePower(0,setPower);
-                    setAllDrivePower(setPower, 0);
+                    setPower = Math.min(0, Math.max(-1, setPower));//0,-1
+                    lastSpeed = (currentOdo-lastPosition)*1.0E9/ns;
+                    setAllDrivePower(0,setPower);
+                    //setAllDrivePower(setPower, 0);
                     t.reset();
-                    //lastPosition = getYOdometry();
-                    lastPosition = getXOdometry();
-                    writeLog(""+kPX+","+kDX+","+ns+","+targetSpeed+","+lastSpeed+","+dPower+","+setPower);
+                    writeLog(""+ns+","+currentOdo+","+kPY+","+kDY+","+targetSpeed+","+lastSpeed+","+dPower+","+setPower);
+                    lastPosition = currentOdo;
+                    //lastPosition = getXOdometry();
+
                 }else{
                     setAllDrivePower(0);
                     t.reset();
-                    //lastPosition = getYOdometry();
-                    lastPosition = getXOdometry();
+                    lastPosition = getYOdometry();
+                    //lastPosition = getXOdometry();
                     lastSpeed = 0;
                     setPower = 0;
                 }
