@@ -373,7 +373,6 @@ public class BaseAuto extends BaseOpMode {
         imuHeading = getError(Double.parseDouble(String.format(Locale.getDefault(), "%.2f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle)))),imuOffset);
         return imuHeading;
     }
-    //dao ge aoligei
 
     protected void setNewGyro0(){
         imuOffset = 0;
@@ -500,6 +499,36 @@ public class BaseAuto extends BaseOpMode {
 
     public void moveInchesG(double xInch, double yInch, double speed){
         moveInchesG(xInch,yInch,speed,.8);
+    }
+
+    protected void moveInchesGO(double yInch, double speed){
+        //for 0.3: P = 1,       D = 0.12
+        if(yInch == 0)return;
+        ElapsedTime t = new ElapsedTime();
+        int offsetY = getYOdometry();
+        speed=Math.abs(speed);
+        double multiply_factor, prev_speed = 0;
+        int odometryYGoal = offsetY + (int)(yInch * odometryEncPerInch);
+        double vy = (yInch/Math.abs(yInch)*speed);
+        int previousPos = offsetY, currentOdometry = 0, Dterm;
+        double tpre = 0, tcur;
+        int steadyCounter = 0;
+        while(steadyCounter < 5 && !this.gamepad1.b){//b is there so we can break out of loop anytime
+            currentOdometry = getYOdometry();
+            tcur=t.milliseconds();
+            Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
+            multiply_factor = -Math.min(1, Math.max(-(1/speed), ((1.0 * (currentOdometry - odometryYGoal)/odometryEncPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(0.12 * Dterm):0))));
+            if(near(prev_speed, Math.abs(multiply_factor*speed),0.001) && near(currentOdometry, odometryYGoal, odometryEncPerInch)){
+                steadyCounter++;
+            }else{
+                steadyCounter = 0;
+            }
+            previousPos = currentOdometry;
+            tpre=tcur;
+            setAllDrivePowerG(multiply_factor*-vy,multiply_factor*-vy,multiply_factor*vy,multiply_factor*vy);
+        }
+        setAllDrivePower(0);
+
     }
 
     public void brake(){
