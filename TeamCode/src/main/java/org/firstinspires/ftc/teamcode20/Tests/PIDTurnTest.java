@@ -14,7 +14,7 @@ public class PIDTurnTest extends BaseAuto {
     private double kP=0.088,kD=0;
     private int magnitude=-1;
     private boolean[] du ={true}, dd={true}, dl={true},dr={true},rb={true},y={true},a={true},x={true},b={true},lb={true};
-    private double imuinitvalue=0, target=90;
+    private double imuinitvalue=0, target=90, result=0;
     @Override
     public void init() {
         initDrivetrain();
@@ -37,6 +37,7 @@ public class PIDTurnTest extends BaseAuto {
         telemetry.addData("kP: ",kP);
         telemetry.addData("kD: ",kD);
         telemetry.addData("imu: ",getHeading());
+        telemetry.addData("result: ",result);
         if(zheng(this.gamepad1.left_bumper,lb)){
             PIDturn(target,kD,kP,0.3);
             setNewGyro0();
@@ -58,6 +59,7 @@ public class PIDTurnTest extends BaseAuto {
             t.reset();
         }
         setAllDrivePower(0.0);
+        result=getHeading();
 
     }
 }
