@@ -99,9 +99,12 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.left_bumper,lF)) {
-            setAllDrivePowerG(-.3,-.3,.3,.3);
-            wait(1000);
-            setAllDrivePowerG(-speed,-speed,speed,speed);
+            setNewGyro(180);
+            moveInchesG(0,5,.6);
+            setNewGyro(90);
+            moveInchesG(5,05,.6);
+            setNewGyro(180);
+            moveInchesG(0,5,.6);
         }
             /*
             ElapsedTime t=new ElapsedTime();
