@@ -47,6 +47,9 @@ public class BaseOpMode extends OpMode {
     protected final double grabber_open = 0.4, grabber_closed = 0.7;
     private final String logPrefix = "/sdcard/";
     private BufferedWriter logWriter;
+
+    protected final double odometryEncPerInch = 1324.28;
+
     //private String[] bFN={"this.gamepad1.left_bumper","this.gamepad1.right_bumper","this.gamepad1.dpad_up","this.gamepad1.dpad_down","this.gamepad1.dpad_left","this.gamepad1.dpad_right","this.gamepad1.a","this.gamepad1.b","this.gamepad1.x","this.gamepad1.y"};
     //private boolean[] bFB={this.gamepad1.left_bumper,this.gamepad1.right_bumper,this.gamepad1.dpad_up,this.gamepad1.dpad_down,this.gamepad1.dpad_left,this.gamepad1.dpad_right,this.gamepad1.a,this.gamepad1.b,this.gamepad1.x,this.gamepad1.y};
     //private boolean[] bF={true,true,true,true,true,true,true,true,true,true};
@@ -316,6 +319,8 @@ public class BaseOpMode extends OpMode {
         reset_ENCODER();
     }
 
+
+
     protected void moveInchesHighSpeed(double xInch, double yInch, double speed, int acc_s, int dec_s, double acc_p, double dec_p, double initial_speed)
     {
 
@@ -362,7 +367,6 @@ public class BaseOpMode extends OpMode {
         }
         while((LF.isBusy()||LB.isBusy()||RF.isBusy()||RB.isBusy()));
     }
-
     protected void moveInchesHighSpeedWithoutWait(double xInch, double yInch, double speed, int acc_s, int dec_s, double acc_p, double dec_p, double initial_speed){
         setMode_RESET_AND_RUN_TO_POSITION();
 

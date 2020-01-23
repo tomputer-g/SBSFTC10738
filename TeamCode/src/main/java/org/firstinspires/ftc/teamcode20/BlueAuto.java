@@ -12,40 +12,6 @@ public class BlueAuto extends BaseAuto {
     protected int offsetY = 0;
     private double speed = 0.3, kP = 0.5, kI = 0, kD = 0.0025;
 
-    protected void moveInchesGO(double yInch, double speed) {
-        offsetY = getYOdometry();
-        speed = Math.abs(speed);
-        double multiply_factor = 1;
-        int odometryYGoal = offsetY + (int) (yInch * odometryEncPerInch);
-        double vx = 0;
-        double vy = (yInch == 0) ? 0 : (yInch / Math.abs(yInch) * speed);
-        long IError = 0;
-        setAllDrivePowerG((vy), (vy), (-vy), (-vy));
-        int previousPos = getYOdometry();
-        int Dterm;
-        //platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        while (multiply_factor>0.1){
-            multiply_factor = -Math.min(1, Math.max(-1, (kP * (getYOdometry() - odometryYGoal) / odometryEncPerInch) + (kI * IError) + (kD * (getYOdometry() - previousPos))));
-            Dterm = getYOdometry() - previousPos;
-            previousPos = getYOdometry();
-            IError += (getYOdometry() - odometryYGoal) / odometryEncPerInch;
-            setAllDrivePowerG(multiply_factor * (-vx - vy), multiply_factor * (vx - vy), multiply_factor * (-vx + vy), multiply_factor * (vx + vy));
-/*
-            telemetry.addData("kP", kP);
-            telemetry.addData("P term", (getYOdometry() - odometryYGoal) / odometryEncPerInch);
-            telemetry.addData("kI", kI);
-            telemetry.addData("I term", IError);
-            telemetry.addData("kD", kD);
-            telemetry.addData("D term", Dterm);
-            telemetry.addData("current", getYOdometry());
-            telemetry.addData("Y goal", odometryYGoal);
-            telemetry.update();
-
- */
-        }
-        setAllDrivePower(0);
-    }
-
     @Override
     public void init() {
         showTelemetry = false;

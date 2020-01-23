@@ -17,7 +17,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
     0.6 speed: P = 0.075,   D = 1.4E-2, result: 0 in.
     0.9 speed: P = 0.0325,  D = 7.3E-3, result: spin +- 1/4 in
      */
-    private double[] params =       {1E-4,  0,     0,       0.9,        -100,           0.8};
+    private double[] params =       {1E-4,  0,     0,       0.3,        -40,           0.8};
     private String[] paramNames =   {"P",   "I",    "D",    "speed",    "targetInches", "turnkP"};
     private int currentSelectParamIndex = 0;
     private boolean l, r, u, d, lb, rb, APrimed = false;
@@ -95,6 +95,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
         super.stop();
     }
 
+    /*
     protected void moveInchesGO(double yInch, double speed){
         if(yInch == 0)return;
         writeLogHeader("P="+params[0]+", I="+params[1]+", D="+params[2]+",speed="+speed+",target="+yInch * odometryEncPerInch+", batt"+hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS));
@@ -127,4 +128,6 @@ public class OdometryMoveInchesTest extends BaseAuto {
         writeLogHeader("Gyro drift="+getHeading()+", Xdrift="+getXOdometry());
         writeLogHeader("----End of run----");
     }
+
+     */
 }
