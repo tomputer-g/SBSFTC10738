@@ -11,7 +11,7 @@ public class BlueAuto extends BaseAuto {
     protected final double odometryEncPerInch = 1316;//4096.0/Math.PI;
     protected int offsetY = 0;
     private double speed = 0.3, kP = 0.5, kI = 0, kD = 0.0025;
-
+    int pos = 0;
     @Override
     public void init() {
         showTelemetry = false;
@@ -23,7 +23,16 @@ public class BlueAuto extends BaseAuto {
         initVuforia();
         initSensors();
         setNewGyro0();
-        speed=0.3;
+        int[] resultcounter = {0,0,0};
+        //find skystone
+        for (int i = 0;i<4;++i) resultcounter[new_skystoneposition()]++;
+        int curmax = -1;
+        for (int i = 0;i<3;++i){ if(resultcounter[i]>curmax){pos = i;curmax=resultcounter[i];} }
+        telemetry.addData("info:", "%d %d %d",resultcounter[0],resultcounter[1],resultcounter[2]);
+        telemetry.addData("pos: ", pos);
+        telemetry.update();
+        shutdownVuforia();
+
     }
     @Override
     public void loop() {
@@ -40,17 +49,7 @@ public class BlueAuto extends BaseAuto {
         platform_grabber.setPower(1);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
-        int[] resultcounter = {0,0,0};
-        //find skystone
-        for (int i = 0;i<4;++i) resultcounter[new_skystoneposition()]++;
-        int curmax = -1, pos = 0;
-        for (int i = 0;i<3;++i){ if(resultcounter[i]>curmax){pos = i;curmax=resultcounter[i];} }
-        telemetry.addData("info:", "%d %d %d",resultcounter[0],resultcounter[1],resultcounter[2]);
-        telemetry.addData("pos: ", pos);
-        telemetry.update();
-
         grabber.setPosition(grabber_open);
-        shutdownVuforia();
 
         //shift to align to skystone
         int shift;
@@ -78,13 +77,13 @@ public class BlueAuto extends BaseAuto {
         grabber.setPosition(grabber_closed);
         wait(500);
         setAllDrivePower(0.0);
-        moveInchesGO(-12,0.3);
+        moveInchesG(0,-12,0.3);
 
         //move forward & approach foundation
         turn(90, 0.4, 0.8);
         setNewGyro(90);
         p.reset();
-        moveInchesGO(88+shift,0.4);
+        moveInchesGO(-(88+shift),0.3);
         setAllDrivePowerG(-.35,.35,-.35,.35);
         wait(1500);
 
