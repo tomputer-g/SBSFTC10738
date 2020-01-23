@@ -502,6 +502,7 @@ public class BaseAuto extends BaseOpMode {
     }
 
     protected void moveInchesGO(double yInch, double speed){
+        setNewGyro0();
         //for 0.3: P = 1,       D = 0.12
         if(yInch == 0)return;
         ElapsedTime t = new ElapsedTime();
@@ -518,7 +519,7 @@ public class BaseAuto extends BaseOpMode {
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
             multiply_factor = -Math.min(1, Math.max(-(1/speed), ((1.0 * (currentOdometry - odometryYGoal)/odometryEncPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(0.12 * Dterm):0))));
-            if(near(prev_speed, Math.abs(multiply_factor*speed),0.001) && near(currentOdometry, odometryYGoal, odometryEncPerInch)){
+            if(near(prev_speed, multiply_factor*vy,0.001) && near(currentOdometry, odometryYGoal, odometryEncPerInch)){
                 steadyCounter++;
             }else{
                 steadyCounter = 0;
@@ -526,6 +527,7 @@ public class BaseAuto extends BaseOpMode {
             previousPos = currentOdometry;
             tpre=tcur;
             setAllDrivePowerG(multiply_factor*-vy,multiply_factor*-vy,multiply_factor*vy,multiply_factor*vy);
+            prev_speed = multiply_factor * vy;
         }
         setAllDrivePower(0);
 
