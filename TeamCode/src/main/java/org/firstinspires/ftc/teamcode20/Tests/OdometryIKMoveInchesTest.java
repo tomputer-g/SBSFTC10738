@@ -26,7 +26,7 @@ public class OdometryIKMoveInchesTest extends BaseAuto {
     public void loop() {
         if(this.gamepad1.a){APrimed = true;}if(APrimed && !this.gamepad1.a){ APrimed = false;
             resetYOdometry();
-            moveInchesGO(targetInches,speed);
+            moveInchesGOY(targetInches,speed);
         }
         if(this.gamepad1.dpad_left){leftP = true;}if(leftP && !this.gamepad1.dpad_left){ leftP = false;
             //speed -= 0.05;
@@ -91,7 +91,7 @@ public class OdometryIKMoveInchesTest extends BaseAuto {
 
     }
 
-    protected void moveInchesGO(double yInch, double speed){
+    protected void moveInchesGOY(double yInch, double speed){
 
         writeLogHeader("P="+kP+", I="+kI+", D="+kD+",k="+k+",speed="+speed+",target="+targetInches * odometryEncPerInch+", brakeDist="+brakeDist);
         writeLogHeader("time,position,P,I,D,LF speed");
@@ -121,7 +121,7 @@ public class OdometryIKMoveInchesTest extends BaseAuto {
             telemetry.addData("power",LF.getPower());
             telemetry.update();
             /*telemetry.addData("kP", kP);
-            telemetry.addData("P term", (getYOdometry() - odometryYGoal)/odometryEncPerInch);
+            telemetry.addData("P term", (getYOdometry() - odometryYGoal)/odometryEncYPerInch);
             telemetry.addData("kI", kI);
             telemetry.addData("I term", IError);
             telemetry.addData("kD", kD);

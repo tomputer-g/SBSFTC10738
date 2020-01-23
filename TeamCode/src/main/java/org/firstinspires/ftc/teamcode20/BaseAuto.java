@@ -518,7 +518,7 @@ public class BaseAuto extends BaseOpMode {
         moveInchesG(xInch,yInch,speed,.8);
     }
 
-    protected void moveInchesGO(double yInch, double speed){
+    protected void moveInchesGOY(double yInch, double speed){
         setNewGyro0();
         //for 0.3: P = 1,       D = 0.12
         double kP = 1, kD = 0.12;
@@ -537,7 +537,7 @@ public class BaseAuto extends BaseOpMode {
         int offsetY = getYOdometry();
         speed=Math.abs(speed);
         double multiply_factor, prev_speed = 0;
-        int odometryYGoal = offsetY + (int)(yInch * odometryEncPerInch);
+        int odometryYGoal = offsetY + (int)(yInch * odometryEncYPerInch);
         double vy = (yInch/Math.abs(yInch)*speed);
         int previousPos = offsetY, currentOdometry = 0, Dterm;
         double tpre = 0, tcur;
@@ -546,8 +546,8 @@ public class BaseAuto extends BaseOpMode {
             currentOdometry = getYOdometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
-            multiply_factor = -Math.min(1, Math.max(-(1/speed), ((kP * (currentOdometry - odometryYGoal)/odometryEncPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
-            if(near(prev_speed, multiply_factor*vy,0.001) && near(currentOdometry, odometryYGoal, odometryEncPerInch)){
+            multiply_factor = -Math.min(1, Math.max(-(1/speed), ((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
+            if(near(prev_speed, multiply_factor*vy,0.001) && near(currentOdometry, odometryYGoal, odometryEncYPerInch)){
                 steadyCounter++;
             }else{
                 steadyCounter = 0;
@@ -559,6 +559,32 @@ public class BaseAuto extends BaseOpMode {
         }
         setAllDrivePower(0);
 
+    }
+
+    protected void moveInchesGOX(double xInch, double speed){//0.5 only
+        if(xInch == 0)return;
+        ElapsedTime t = new ElapsedTime();
+        int offsetX = getXOdometry();
+        speed=Math.abs(speed);
+        double multiply_factor;
+        int odometryXGoal = offsetX + (int)(xInch * odometryEncXPerInch);
+        double vx = (xInch/Math.abs(xInch)*speed);
+        setAllDrivePower(-vx,vx,-vx,vx);
+        int previousPos = offsetX, currentOdometry, Dterm;
+        double tpre = 0, tcur;
+
+        while(!this.gamepad1.b){
+            currentOdometry = getXOdometry();
+            tcur=t.milliseconds();
+            Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
+            multiply_factor = -Math.min(1, Math.max(-1, ((0.5 * (currentOdometry - odometryXGoal)/odometryEncXPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(0.05 * Dterm):0))));
+            previousPos = currentOdometry;
+            tpre=tcur;
+            setAllDrivePowerG(multiply_factor*-vx,multiply_factor*vx,multiply_factor*-vx,multiply_factor*vx);
+        }
+        setAllDrivePower(0);
+        writeLogHeader("Gyro drift="+getHeading()+", Ydrift="+getYOdometry());
+        writeLogHeader("----End of run----");
     }
 
     public void brake(){

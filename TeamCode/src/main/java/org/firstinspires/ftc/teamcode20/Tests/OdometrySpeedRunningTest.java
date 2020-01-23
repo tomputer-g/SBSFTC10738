@@ -13,10 +13,10 @@ import org.openftc.revextensions2.ExpansionHubEx;
 public class OdometrySpeedRunningTest extends BaseAuto {
     private boolean runOdoSpeed = false, BPrimed = false;
     private OdometrySpeedThread odometrySpeedThread;
-    private double[] params =       {1E-6,  3E-5,  -40000, 1};
+    private double[] params =       {1E-6,  9E-6,  -10000, 1};//opt: 1E-6, 3E-5, ...,1
     private String[] paramNames =   {"kP",   "kD", "targetSpeed", "k"};
     private int currentSelectParamIndex = 0;
-    private boolean l, r, u, d, lb, rb, APrimed = false;
+    private boolean l, r, u, d, lb, rb;
 
     protected final double odometryEncPerInch = 1324.28;
 
@@ -51,13 +51,19 @@ public class OdometrySpeedRunningTest extends BaseAuto {
         }
         if(this.gamepad1.dpad_left){l = true;}if(!this.gamepad1.dpad_left && l){
             l = false;
-            params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] - 1E-6) * 1E9) / 1E9;
-
+            if(currentSelectParamIndex == 2){
+                params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] - 1E4) * 1E9) / 1E9;
+            }else {
+                params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] - 1E-6) * 1E9) / 1E9;
+            }
         }
         if(this.gamepad1.dpad_right){r = true;}if(!this.gamepad1.dpad_right && r){
             r = false;
-            params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] + 1E-6) * 1E9) / 1E9;
-
+            if(currentSelectParamIndex == 2){
+                params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] + 1E4) * 1E9) / 1E9;
+            }else {
+                params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] + 1E-6) * 1E9) / 1E9;
+            }
         }
         if(this.gamepad1.dpad_up){u = true;}if(!this.gamepad1.dpad_up && u){
             u = false;
@@ -91,31 +97,34 @@ public class OdometrySpeedRunningTest extends BaseAuto {
         public void run() {
             Log.d("OdometrySpeed"+this.getId(),"Started running");
             t = new ElapsedTime();
-            lastPosition = getYOdometry();
+            lastPosition = getXOdometry();//getYOdometry();
             int currentOdo = lastPosition;
-            writeLogHeader("ns,position,kPY,kDY,targetSpeed,lastSpeed,dPower,setPower,"+hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2").read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)+"V");
+            writeLogHeader("ns,position,kPX,kDX,targetSpeed,lastSpeed,dPower,setPower,"+hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2").read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)+"V");
             while(!isInterrupted() && !stop){
                 if(runOdoSpeed){
                     lastPosition = currentOdo;
-                    currentOdo = getYOdometry();
+                    currentOdo = getXOdometry();//getYOdometry();
                     long ns = t.nanoseconds();
                     t.reset();
                     double currentSpeed = (currentOdo-lastPosition)*1.0E9/ns;
                     double dPower = params[3]*(params[0] * (params[2] - currentSpeed) + params[1] * (lastSpeed - currentSpeed));
                     setPower += dPower;
-                    setPower = Math.min(0, Math.max(-1, setPower));//0,-1
-                    lastSpeed = (currentOdo-lastPosition)*1.0E9/ns;
-                    LF.setPower(setPower);
+                    setPower = Math.min(1, Math.max(-1, setPower));
+                    if(near(currentSpeed,0,10) && t.milliseconds() < 1000){
+                        setPower = Math.signum(setPower) * 0.4;//no
+                    }
+                    lastSpeed = currentSpeed;
+                    LF.setPower(-setPower);
                     LB.setPower(setPower);
                     RF.setPower(-setPower);
-                    RB.setPower(-setPower);
+                    RB.setPower(setPower);
                     writeLog(""+ns+","+currentOdo+","+params[0]+","+params[1]+","+params[2]+","+lastSpeed+","+dPower+","+setPower);
 
                 }else{
                     setAllDrivePower(0);
                     t.reset();
                     currentOdo = lastPosition;
-                    lastPosition = getYOdometry();
+                    lastPosition = getXOdometry();//getYOdometry();
                     lastSpeed = 0;
                     setPower = 0;
                 }
