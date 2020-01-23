@@ -11,8 +11,8 @@ import org.firstinspires.ftc.teamcode20.BaseOpMode;
 @TeleOp
 
 public class PIDTurnTest extends BaseAuto {
-    private double kP=0.088,kD=0;
-    private int magnitude=-1;
+    private double kP=0.058,kD=0;
+    private int magnitude=-2;
     private boolean[] du ={true}, dd={true}, dl={true},dr={true},rb={true},y={true},a={true},x={true},b={true},lb={true};
     private double imuinitvalue=0, target=90;
     @Override
@@ -38,7 +38,7 @@ public class PIDTurnTest extends BaseAuto {
         telemetry.addData("kD: ",kD);
         telemetry.addData("imu: ",getHeading());
         if(zheng(this.gamepad1.left_bumper,lb)){
-            PIDturn(target,kD,kP,0.3);
+            PIDturn(target,kD,kP,0.5);
             setNewGyro0();
         }
     }
@@ -47,12 +47,11 @@ public class PIDTurnTest extends BaseAuto {
         setNewGyro0();
         double e = target;
         ElapsedTime t = new ElapsedTime();
-        speed=(target>0)?speed:-speed;
         while(!this.gamepad1.right_bumper){
             double e2 = target-(getHeading());
             double D = kd*(e2-e)/t.milliseconds();
             double P = e2*kp;
-            if(Math.abs(P)>Math.abs(speed))P=speed;
+            if(Math.abs(P)>Math.abs(speed))P=P>0?speed:-speed;
             setAllDrivePower(P+D,P+D,P+D,P+D);
             e=e2;
             t.reset();
