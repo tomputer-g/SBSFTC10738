@@ -31,6 +31,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
         initIMU();
         initLogger("PIDtest"+System.currentTimeMillis()+".csv");
         hub2 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
+        hub2.setPhoneChargeEnabled(true);
     }
     @Override
     public void loop() {

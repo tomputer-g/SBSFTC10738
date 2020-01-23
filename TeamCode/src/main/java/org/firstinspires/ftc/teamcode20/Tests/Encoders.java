@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode19.BaseOpMode;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
-@Disabled
 @Autonomous(group = "Test")
 public class Encoders extends OpMode {
 
@@ -18,10 +17,10 @@ public class Encoders extends OpMode {
         LB = hardwareMap.get(DcMotor.class,"LB");
         RF = hardwareMap.get(DcMotor.class,"RF");
         RB = hardwareMap.get(DcMotor.class,"RB");
-        a = hardwareMap.get(DcMotor.class,"a");
-        b = hardwareMap.get(DcMotor.class,"b");
-        c = hardwareMap.get(DcMotor.class,"c");
-        d = hardwareMap.get(DcMotor.class,"d");
+        a = hardwareMap.get(DcMotor.class,"L1");
+        b = hardwareMap.get(DcMotor.class,"L2");
+        c = hardwareMap.get(DcMotor.class,"xOdo");
+        d = hardwareMap.get(DcMotor.class,"platform");
     }
 
     @Override
