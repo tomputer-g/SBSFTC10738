@@ -25,24 +25,23 @@ public class PIDTurnTest extends BaseAuto {
     }
     @Override
     public void loop() {
-        if(zheng(this.gamepad1.dpad_up,du)){kP+=Math.pow(10,magnitude);}
-        if(zheng(this.gamepad1.dpad_down,dd)){kP-=Math.pow(10,magnitude);}
-        if(zheng(this.gamepad1.y,y)){kD+=Math.pow(10,magnitude);}
-        if(zheng(this.gamepad1.a,a)){kD-=Math.pow(10,magnitude);}
+        //if(zheng(this.gamepad1.dpad_up,du)){kP+=Math.pow(10,magnitude);}
+        //if(zheng(this.gamepad1.dpad_down,dd)){kP-=Math.pow(10,magnitude);}
+        //if(zheng(this.gamepad1.y,y)){kD+=Math.pow(10,magnitude);}
+        //if(zheng(this.gamepad1.a,a)){kD-=Math.pow(10,magnitude);}
         if(zheng(this.gamepad1.x,x)){target+=5;}
         if(zheng(this.gamepad1.b,b)){target-=5;}
-        if(zheng(this.gamepad1.dpad_left,dl)){magnitude++;}
-        if(zheng(this.gamepad1.dpad_right,dr)){magnitude--;}
-        telemetry.addData("magnitude: ",Math.pow(10,magnitude));
-        telemetry.addData("kP: ",kP);
-        telemetry.addData("kD: ",kD);
+        //if(zheng(this.gamepad1.dpad_left,dl)){magnitude++;}
+        //if(zheng(this.gamepad1.dpad_right,dr)){magnitude--;}
+        //telemetry.addData("magnitude: ",Math.pow(10,magnitude));
+        //telemetry.addData("kP: ",kP);
+        //telemetry.addData("kD: ",kD);
         telemetry.addData("imu: ",getHeading());
         telemetry.addData("target:",target);
-        telemetry.addData("result: ",result);
-        telemetry.addLine("LF: "+LF.getCurrentPosition()+" LB: "+LB.getCurrentPosition()+" RF: "+RF.getCurrentPosition()+" RB:"+RB.getCurrentPosition());
+        //telemetry.addData("result: ",result);
+        //telemetry.addLine("LF: "+LF.getCurrentPosition()+" LB: "+LB.getCurrentPosition()+" RF: "+RF.getCurrentPosition()+" RB:"+RB.getCurrentPosition());
         if(zheng(this.gamepad1.left_bumper,lb)){
-            testPIDturn(target,kD,kP,0.5);
-            setNewGyro0();
+            PIDturn(target);
         }
     }
 
