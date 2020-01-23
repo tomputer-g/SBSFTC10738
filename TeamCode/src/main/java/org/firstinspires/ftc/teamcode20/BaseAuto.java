@@ -519,6 +519,7 @@ public class BaseAuto extends BaseOpMode {
     }
 
     protected void moveInchesGOY(double yInch, double speed){
+        yInch = -yInch;
         setNewGyro0();
         //for 0.3: P = 1,       D = 0.12
         double kP = 1, kD = 0.12;

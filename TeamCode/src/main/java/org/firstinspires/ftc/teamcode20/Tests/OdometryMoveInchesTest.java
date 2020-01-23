@@ -16,8 +16,8 @@ public class OdometryMoveInchesTest extends BaseAuto {
     0.6 speed: P = 0.075,   D = 1.4E-2, result: 0 in.
     0.9 speed: P = 0.0325,  D = 7.3E-3, result: spin +- 1/4 in
      */
-    private double[] params =       {0.05,  0,     0,       0.3,        40,           0.8};
-    private String[] paramNames =   {"P",   "I",    "D",    "speed",    "targetInches", "turnkP"};
+    private double[] params =       {0.05,  0,     0,       0.3,        40,           };
+    private String[] paramNames =   {"P",   "I",    "D",    "speed",    "targetInches"};
     private int currentSelectParamIndex = 0;
     private boolean l, r, u, d, lb, rb, APrimed = false;
 
@@ -118,7 +118,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
             previousPos = currentOdometry;
             tpre=tcur;
 
-            setAllDrivePowerG(multiply_factor*-vy,multiply_factor*-vy,multiply_factor*vy,multiply_factor*vy, params[5]);
+            setAllDrivePowerG(multiply_factor*-vy,multiply_factor*-vy,multiply_factor*vy,multiply_factor*vy);
 
             writeLog(t.milliseconds()+", "+currentOdometry+", "+((currentOdometry - odometryYGoal)/ odometryEncYPerInch)+", "+((currentOdometry - odometryYGoal)/ odometryEncYPerInch)*params[0]+", "+IError+", "+Dterm+", "+(near(Dterm,0,speed * 5000 / 0.3)?(params[2] * Dterm):"CLIPPED")+", "+LF.getPower()+", "+LF.getCurrentPosition()+", "+getHeading());
         }
@@ -152,7 +152,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
             previousPos = currentOdometry;
             tpre=tcur;
 
-            setAllDrivePowerG(multiply_factor*-vx,multiply_factor*vx,multiply_factor*-vx,multiply_factor*vx, params[5]);
+            setAllDrivePowerG(multiply_factor*-vx,multiply_factor*vx,multiply_factor*-vx,multiply_factor*vx);
 
             writeLog(t.milliseconds()+", "+currentOdometry+", "+((currentOdometry - odometryXGoal)/odometryEncXPerInch)+", "+((currentOdometry - odometryXGoal)/odometryEncXPerInch)*params[0]+", "+IError+", "+Dterm+", "+(near(Dterm,0,speed * 5000 / 0.3)?(params[2] * Dterm):"CLIPPED")+", "+LF.getPower()+", "+LF.getCurrentPosition()+", "+getHeading());
         }
