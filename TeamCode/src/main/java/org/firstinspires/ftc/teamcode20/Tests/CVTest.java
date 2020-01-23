@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
 import com.disnodeteam.dogecv.detectors.skystone.SkystoneDetector;
+import com.disnodeteam.dogecv.detectors.skystone.StoneDetector;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode20.BaseAuto;
@@ -8,17 +9,20 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.Locale;
+
 @TeleOp
 public class CVTest extends BaseAuto {
     private OpenCvCamera phoneCam;
     private SkystoneDetector skyStoneDetector;
+    private StoneDetector stoneDetector;
     @Override
     public void init() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDevice();
-        skyStoneDetector = new SkystoneDetector();
-        phoneCam.setPipeline(skyStoneDetector);
+        //skyStoneDetector = new SkystoneDetector();
+        stoneDetector=new StoneDetector();
+        phoneCam.setPipeline(stoneDetector);
     }
     @Override
     public void start(){
@@ -26,8 +30,8 @@ public class CVTest extends BaseAuto {
     }
     @Override
     public void loop(){
-        telemetry.addData("Stone Position X", skyStoneDetector.getScreenPosition().x);
-        telemetry.addData("Stone Position Y", skyStoneDetector.getScreenPosition().y);
+        telemetry.addData("Stone Position X", stoneDetector.foundScreenPositions().size());
+        telemetry.addData("Stone Position Y", stoneDetector.foundScreenPositions().size());
         telemetry.addData("Frame Count", phoneCam.getFrameCount());
         telemetry.addData("FPS", String.format(Locale.US, "%.2f", phoneCam.getFps()));
         telemetry.addData("Total frame time ms", phoneCam.getTotalFrameTimeMs());
