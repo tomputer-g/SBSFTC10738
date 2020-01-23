@@ -113,10 +113,11 @@ public class OdometryMoveInchesTest extends BaseAuto {
             currentOdometry = getYOdometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
+            IError += (currentOdometry - odometryYGoal)*(tcur-tpre);
             multiply_factor = -Math.min(1, Math.max(-(1/speed), ((params[0] * (currentOdometry - odometryYGoal)/odometryEncPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(params[2] * Dterm):0)) + (params[1] * IError )));
-            tpre=tcur;
             previousPos = currentOdometry;
-            IError += (currentOdometry - odometryYGoal);
+            tpre=tcur;
+
             setAllDrivePowerG(multiply_factor*-vy,multiply_factor*-vy,multiply_factor*vy,multiply_factor*vy, params[5]);
 
             writeLog(t.milliseconds()+", "+currentOdometry+", "+((currentOdometry - odometryYGoal)/odometryEncPerInch)+", "+((currentOdometry - odometryYGoal)/odometryEncPerInch)*params[0]+", "+IError+", "+Dterm+", "+(near(Dterm,0,speed * 5000 / 0.3)?(params[2] * Dterm):"CLIPPED")+", "+LF.getPower()+", "+LF.getCurrentPosition()+", "+getHeading());
