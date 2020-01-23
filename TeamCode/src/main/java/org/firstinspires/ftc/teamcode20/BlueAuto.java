@@ -71,13 +71,13 @@ public class BlueAuto extends BaseAuto {
         setMode_RUN_WITHOUT_ENCODER();
         grabber.setPosition(grabber_open);
         //while (p.milliseconds()<1300) setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
-        moveInchesGO(-28,0.3);
+        moveInchesGO(-30.75,0.3);
         //grab 1st block
-        setAllDrivePower(-0.2,-0.2,0.2,0.2);
+        //setAllDrivePowerG(-0.2,-0.2,0.2,0.2);
         grabber.setPosition(grabber_closed);
         wait(500);
-        setAllDrivePower(0.0);
-        moveInchesG(0,-12,0.3);
+        //setAllDrivePower(0.0);
+        moveInchesG(0,-10,0.3);
 
         //move forward & approach foundation
         turn(90, 0.4, 0.8);
@@ -141,7 +141,7 @@ public class BlueAuto extends BaseAuto {
         platform_grabber.setPower(1);
         wait(300);
         //park
-        moveInchesGO(-38,0.3);
+        moveInchesG(0,-38,0.3);
 
         setAllDrivePower(0.0);
         servoThread.stopThread();

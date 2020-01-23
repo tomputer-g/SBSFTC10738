@@ -29,6 +29,7 @@ public class MoveTest extends BaseAuto {
     private int offsetX = 0, offsetY = 0;
     private boolean[] qq = {true}, bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
     private ElapsedTime t=new ElapsedTime();
+    private double speedLF=0,speedLB=0,speedRF=0,speedRB=0;
     private double  kP = 0.5, kI = 0, kD = 0.0025;
     int WaitingTime = 300;
 
@@ -62,12 +63,11 @@ public class MoveTest extends BaseAuto {
 
     @Override
     public void loop(){
-        if(zheng(this.gamepad1.dpad_left,eee))y+=1;
-        if(zheng(this.gamepad1.dpad_right,fff))y-=1;
-        if(zheng(this.gamepad1.dpad_up,ee)){
-        };
-        if(zheng(this.gamepad1.dpad_down,ff))WaitingTime+=50;
-        if(zheng(this.gamepad1.y,m))speed+=.01;
+        if(zheng(this.gamepad1.dpad_left,eee))speedLB+=0.1*dir;
+        if(zheng(this.gamepad1.dpad_right,fff))speedLF+=0.1*dir;
+        if(zheng(this.gamepad1.dpad_up,ee))speedRF+=0.1*dir;
+        if(zheng(this.gamepad1.dpad_down,ff))speedRB+=0.1*dir;
+        if(zheng(this.gamepad1.y,m))dir*=-1;
         if(zheng(this.gamepad1.a,mm))speed-=.01;
         if(zheng(this.gamepad1.b,f))setNewGyro0();
             /*
@@ -99,9 +99,9 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.left_bumper,lF)) {
-            setAllDrivePowerG(-.3,-.3,.3,.3);
-            wait(1000);
-            setAllDrivePowerG(-speed,-speed,speed,speed);
+            setAllDrivePower(speedLF,speedLB,speedRF,speedRB);
+            //wait(1000);
+            //setAllDrivePowerG(-speed,-speed,speed,speed);
         }
             /*
             ElapsedTime t=new ElapsedTime();
@@ -133,16 +133,17 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.right_bumper,bF)) {
-            setAllDrivePowerG(0);
+            setAllDrivePower(0);
         }
-        telemetry.addData("x: ",x);
-        telemetry.addData("y: ",y);
+        telemetry.addData("RFRBLFLB", "%.2f %.2f %.2f %.2f",speedRF,speedRB,speedLF,speedLB);
+        //telemetry.addData("x: ",x);
+        //telemetry.addData("y: ",y);
         //telemetry.addData("wait: ",WaitingTime);
-        telemetry.addData("Imu: ","%.2f",getHeading());
-        telemetry.addData("Speed: ","%.2f" ,speed);
+        //telemetry.addData("Imu: ","%.2f",getHeading());
+        //telemetry.addData("Speed: ","%.2f" ,speed);
         //telemetry.addData("enc X", xOdometry.getCurrentPosition());
         telemetry.addData("enc Y", LF.getCurrentPosition()/1305);
-        //telemetry.addData("ss", -platform_grabber.getCurrentPosition());
+        telemetry.addData("ss", -platform_grabber.getCurrentPosition());
         telemetry.update();
     }
 
