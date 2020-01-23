@@ -11,10 +11,10 @@ import org.firstinspires.ftc.teamcode20.BaseOpMode;
 @TeleOp
 
 public class PIDTurnTest extends BaseAuto {
-    private double kP=0.058,kD=0;
+    private double kP=0.068,kD=0.9;
     private int magnitude=-2;
     private boolean[] du ={true}, dd={true}, dl={true},dr={true},rb={true},y={true},a={true},x={true},b={true},lb={true};
-    private double imuinitvalue=0, target=90, result=0;
+    private double imuinitvalue=0, target=90, result=0, resuuu=0;
     @Override
     public void init() {
         initDrivetrain();
@@ -25,31 +25,32 @@ public class PIDTurnTest extends BaseAuto {
     }
     @Override
     public void loop() {
-        if(zheng(this.gamepad1.dpad_up,du)){kP+=Math.pow(10,magnitude);}
-        if(zheng(this.gamepad1.dpad_down,dd)){kP-=Math.pow(10,magnitude);}
-        if(zheng(this.gamepad1.y,y)){kD+=Math.pow(10,magnitude);}
-        if(zheng(this.gamepad1.a,a)){kD-=Math.pow(10,magnitude);}
+        //if(zheng(this.gamepad1.dpad_up,du)){kP+=Math.pow(10,magnitude);}
+        //if(zheng(this.gamepad1.dpad_down,dd)){kP-=Math.pow(10,magnitude);}
+        //if(zheng(this.gamepad1.y,y)){kD+=Math.pow(10,magnitude);}
+        //if(zheng(this.gamepad1.a,a)){kD-=Math.pow(10,magnitude);}
         if(zheng(this.gamepad1.x,x)){target+=5;}
         if(zheng(this.gamepad1.b,b)){target-=5;}
-        if(zheng(this.gamepad1.dpad_left,dl)){magnitude++;}
-        if(zheng(this.gamepad1.dpad_right,dr)){magnitude--;}
-        telemetry.addData("magnitude: ",Math.pow(10,magnitude));
-        telemetry.addData("kP: ",kP);
-        telemetry.addData("kD: ",kD);
+        //if(zheng(this.gamepad1.dpad_left,dl)){magnitude++;}
+        //if(zheng(this.gamepad1.dpad_right,dr)){magnitude--;}
+        //telemetry.addData("magnitude: ",Math.pow(10,magnitude));
+        //telemetry.addData("kP: ",kP);
+        //telemetry.addData("kD: ",kD);
         telemetry.addData("imu: ",getHeading());
-        telemetry.addData("result: ",result);
+        telemetry.addData("target:",target);
+        //telemetry.addData("result: ",result);
+        //telemetry.addLine("LF: "+LF.getCurrentPosition()+" LB: "+LB.getCurrentPosition()+" RF: "+RF.getCurrentPosition()+" RB:"+RB.getCurrentPosition());
         if(zheng(this.gamepad1.left_bumper,lb)){
-            PIDturn(target,kD,kP,0.5);
-            setNewGyro0();
+            PIDturn(target);
         }
     }
 
-    public void PIDturn(double target, double kd, double kp,double speed){
-        setNewGyro0();
+    public void testPIDturn(double target, double kd, double kp,double speed){
         double e = target;
         ElapsedTime t = new ElapsedTime();
-        while(!this.gamepad1.right_bumper){
-            double e2 = target-(getHeading());
+        ElapsedTime n= new ElapsedTime();
+        while(n.milliseconds()<3000&&near(target,getAdjustedHeading(target),0.2)){
+            double e2 = target-(getAdjustedHeading(target));
             double D = kd*(e2-e)/t.milliseconds();
             double P = e2*kp;
             if(Math.abs(P)>Math.abs(speed))P=P>0?speed:-speed;
@@ -59,6 +60,14 @@ public class PIDTurnTest extends BaseAuto {
         }
         setAllDrivePower(0.0);
         result=getHeading();
+        setNewGyro(target);
+    }
 
+    private double getAdjustedHeading(double target){
+        double i = getHeading();
+        if(target>0)
+            return i<0?i+360:i;
+        else
+            return i>0?i-360:i;
     }
 }
