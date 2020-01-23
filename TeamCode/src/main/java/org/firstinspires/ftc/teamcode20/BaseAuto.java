@@ -255,9 +255,9 @@ public class BaseAuto extends BaseOpMode {
         VuforiaLocalizer.CloseableFrame frame = null;
         Image image = null;
         int result = 0;
-        int red_L = 0, red_R = 0, blue_L=0,blue_R=0,green_L=0,green_R=0;
-        int curpixel_L, curpixel_R;
-        boolean l = true, r=true;
+        int red_L = 0, red_R = 0, blue_L=0,blue_R=0,green_L=0,green_R=0, red_M = 0,blue_M=0,green_M=0;
+        int curpixel_L, curpixel_R, curpixel_M;
+        boolean l = true, r=true, m = true;
 
         try {frame = this.vuforia.getFrameQueue().take(); }
         catch (InterruptedException e)
@@ -282,20 +282,26 @@ public class BaseAuto extends BaseOpMode {
             bm.copyPixelsFromBuffer(pixels);
             for(int i = -10;i<10;++i){
                 for(int j = -10;j<10;++j){
-                    curpixel_L = bm.getPixel(960+i,180+j);//"left"
-                    curpixel_R = bm.getPixel(600+i,180+j);//"right"
-                    red_L+= Color.red(curpixel_L);
+                    curpixel_L = bm.getPixel(1030+i,320+j);//"left"
+                    curpixel_M = bm.getPixel(780+i,320+j);//"mid"
+                    curpixel_R = bm.getPixel(530+i,320+j);//"right"
+                    red_L+=Color.red(curpixel_L);
                     blue_L+=Color.blue(curpixel_L);
                     green_L+=Color.green(curpixel_L);
+                    red_M+=Color.red(curpixel_M);
+                    blue_M+=Color.blue(curpixel_M);
+                    green_M+=Color.green(curpixel_M);
                     red_R+=Color.red(curpixel_R);
                     blue_R+=Color.blue(curpixel_R);
                     green_R+=Color.green(curpixel_R);
                 }
             }
-            red_L/=400;red_R/=400;blue_L/=400;blue_R/=400;green_L/=400;green_R/=400;
+            red_L/=400;red_R/=400;red_M/=400;blue_M/=400;blue_L/=400;blue_R/=400;green_M/=400;green_L/=400;green_R/=400;
+
+            //telemetry.addData("rgb@L" ,"red: %d blue: %d green: %d",red_L, blue_L, green_L);
+            //telemetry.addData("rgb@M" ,"red: %d blue: %d green: %d",red_M, blue_M, green_M);
+            //telemetry.addData("rgb@R" ,"red: %d blue: %d green: %d",red_R, blue_R, green_R);
             /*
-            telemetry.addData("rgb@960x180" ,"red: %d blue: %d green: %d",red_L, blue_L, green_L);
-            telemetry.addData("rgb@600x180" ,"red: %d blue: %d green: %d",red_R, blue_R, green_R);
             int a = bm.getPixel(960,180);
             int b = bm.getPixel(640,180);
             int reda = Color.red(a), bluea = Color.blue(a), greena = Color.green(a);
@@ -313,16 +319,15 @@ public class BaseAuto extends BaseOpMode {
             */
         }
 
-        if(red_L>100&&blue_L<20&&green_L>100) l = false;
-        if(red_R>100&&blue_R<20&&green_R>100) r = false;
-        if((!r) && (!l))result = 0;
-        else if(l)result = 1;
-        else result = 2;
+        if(red_L>100&&blue_L<30&&green_L>90) l = false;
+        if(red_R>100&&blue_R<30&&green_R>90) r = false;
+        if(red_M>100&&blue_M<30&&green_M>90) m = false;
 
-        //telemetry.addData("pos: ", result);
-        //telemetry.update();
+        if(l)result=0;
+        if(m)result=1;
+        if(r)result=2;
+        //telemetry.addData("position: ", result);
         frame.close();
-        //wait(500);
         return result;
     }
 

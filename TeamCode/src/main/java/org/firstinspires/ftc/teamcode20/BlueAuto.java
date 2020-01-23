@@ -38,24 +38,16 @@ public class BlueAuto extends BaseAuto {
         grabber_extend1.setPosition(1);
         grabber_extend2.setPosition(0);
         platform_grabber.setPower(1);
-        moveInchesG(0,12,0.3);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
         int[] resultcounter = {0,0,0};
         //find skystone
-        for (int i = 0;i<10;++i){
-            resultcounter[new_skystoneposition()]++;
-        }
-        int curmax = -1;
-        int pos = 0;
-        for (int i = 0;i<3;++i){
-            if(resultcounter[i]>curmax){pos = i;curmax=resultcounter[i];}
-        }
-        //telemetry.addData("0:", resultcounter[0]);
-        //telemetry.addData("1:", resultcounter[1]);
-        //telemetry.addData("2:", resultcounter[2]);
-        //telemetry.addData("pos", pos);
-        //telemetry.update();
+        for (int i = 0;i<4;++i) resultcounter[new_skystoneposition()]++;
+        int curmax = -1, pos = 0;
+        for (int i = 0;i<3;++i){ if(resultcounter[i]>curmax){pos = i;curmax=resultcounter[i];} }
+        telemetry.addData("info:", "%d %d %d",resultcounter[0],resultcounter[1],resultcounter[2]);
+        telemetry.addData("pos: ", pos);
+        telemetry.update();
 
         grabber.setPosition(grabber_open);
         shutdownVuforia();
@@ -67,7 +59,7 @@ public class BlueAuto extends BaseAuto {
         }
         else if (pos == 0){
             moveInchesG(-8,0,0.4);
-            shift=-10;
+            shift=-8;
         }
         else {
             moveInchesG(8, 0, 0.4);
@@ -79,19 +71,20 @@ public class BlueAuto extends BaseAuto {
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
         grabber.setPosition(grabber_open);
-        while (p.milliseconds()<1300) setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
-
+        //while (p.milliseconds()<1300) setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
+        moveInchesGO(-28,0.3);
         //grab 1st block
+        setAllDrivePower(-0.2,-0.2,0.2,0.2);
         grabber.setPosition(grabber_closed);
-        wait(300);
+        wait(500);
         setAllDrivePower(0.0);
-        moveInchesG(0,-11,0.3);
+        moveInchesGO(-12,0.3);
 
         //move forward & approach foundation
         turn(90, 0.4, 0.8);
         setNewGyro(90);
         p.reset();
-        moveInchesG(0,88+shift-3,0.4);
+        moveInchesGO(88+shift,0.4);
         setAllDrivePowerG(-.35,.35,-.35,.35);
         wait(1500);
 
@@ -149,8 +142,7 @@ public class BlueAuto extends BaseAuto {
         platform_grabber.setPower(1);
         wait(300);
         //park
-        moveInchesG(-2.5,0,0.4);
-        moveInchesG(0,-38,0.5);
+        moveInchesGO(-38,0.3);
 
         setAllDrivePower(0.0);
         servoThread.stopThread();
