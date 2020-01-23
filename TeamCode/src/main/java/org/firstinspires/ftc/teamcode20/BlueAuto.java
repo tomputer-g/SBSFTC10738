@@ -71,7 +71,7 @@ public class BlueAuto extends BaseAuto {
         setMode_RUN_WITHOUT_ENCODER();
         grabber.setPosition(grabber_open);
         //while (p.milliseconds()<1300) setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
-        moveInchesGO(-30.75,0.3);
+        moveInchesGOY(30.75,0.3);
         //grab 1st block
         //setAllDrivePowerG(-0.2,-0.2,0.2,0.2);
         grabber.setPosition(grabber_closed);
@@ -83,8 +83,8 @@ public class BlueAuto extends BaseAuto {
         turn(90, 0.4, 0.8);
         setNewGyro(90);
         p.reset();
-        moveInchesGO(-(88+shift),0.3);
-        setAllDrivePowerG(-.35,.35,-.35,.35);
+        moveInchesGOY((88+shift),0.6);
+        moveInchesGOX(15.5,0.5);
         wait(1500);
 
         //turn foundation
