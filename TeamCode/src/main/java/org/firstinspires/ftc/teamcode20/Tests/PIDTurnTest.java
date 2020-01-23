@@ -14,7 +14,7 @@ public class PIDTurnTest extends BaseAuto {
     private double kP=0.068,kD=0.9;
     private int magnitude=-2;
     private boolean[] du ={true}, dd={true}, dl={true},dr={true},rb={true},y={true},a={true},x={true},b={true},lb={true};
-    private double imuinitvalue=0, target=90, result=0;
+    private double imuinitvalue=0, target=90, result=0, resuuu=0;
     @Override
     public void init() {
         initDrivetrain();
@@ -47,7 +47,6 @@ public class PIDTurnTest extends BaseAuto {
     }
 
     public void PIDturn(double target, double kd, double kp,double speed){
-        setNewGyro0();
         double e = target;
         ElapsedTime t = new ElapsedTime();
         while(!this.gamepad1.right_bumper){
@@ -61,7 +60,7 @@ public class PIDTurnTest extends BaseAuto {
         }
         setAllDrivePower(0.0);
         result=getHeading();
-
+        setNewGyro(target);
     }
 
     private double getAdjustedHeading(double target){
