@@ -48,7 +48,7 @@ public class BaseOpMode extends OpMode {
     private final String logPrefix = "/sdcard/";
     private BufferedWriter logWriter;
 
-    protected final double odometryEncPerInch = 1324.28;
+    protected final double odometryEncYPerInch = 1324.28, odometryEncXPerInch = 1314.42;
 
     //private String[] bFN={"this.gamepad1.left_bumper","this.gamepad1.right_bumper","this.gamepad1.dpad_up","this.gamepad1.dpad_down","this.gamepad1.dpad_left","this.gamepad1.dpad_right","this.gamepad1.a","this.gamepad1.b","this.gamepad1.x","this.gamepad1.y"};
     //private boolean[] bFB={this.gamepad1.left_bumper,this.gamepad1.right_bumper,this.gamepad1.dpad_up,this.gamepad1.dpad_down,this.gamepad1.dpad_left,this.gamepad1.dpad_right,this.gamepad1.a,this.gamepad1.b,this.gamepad1.x,this.gamepad1.y};

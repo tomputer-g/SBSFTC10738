@@ -148,7 +148,7 @@ public class MoveTest extends BaseAuto {
     }
 
     //move
-    protected void moveInchesGO(double yInch, double speed) {
+    protected void moveInchesGOY(double yInch, double speed) {
         offsetY = getYOdometry();
         speed = Math.abs(speed);
         double multiply_factor = 1;
@@ -168,7 +168,7 @@ public class MoveTest extends BaseAuto {
             setAllDrivePowerG(multiply_factor * (-vx - vy), multiply_factor * (vx - vy), multiply_factor * (-vx + vy), multiply_factor * (vx + vy));
             /*
             telemetry.addData("kP", kP);
-            telemetry.addData("P term", (getYOdometry() - odometryYGoal) / odometryEncPerInch);
+            telemetry.addData("P term", (getYOdometry() - odometryYGoal) / odometryEncYPerInch);
             telemetry.addData("kI", kI);
             telemetry.addData("I term", IError);
             telemetry.addData("kD", kD);
