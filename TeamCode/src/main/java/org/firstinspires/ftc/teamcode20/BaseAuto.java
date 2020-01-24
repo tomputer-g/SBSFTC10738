@@ -75,26 +75,6 @@ public class BaseAuto extends BaseOpMode {
     protected double[] coo={0,0};
     private double xpre=0,ypre=0,theta=0;
 
-
-    //new PIDturn
-    public void PIDturn(double target){
-        double speed = 0.5;
-        double e = target;
-        ElapsedTime t = new ElapsedTime();
-        ElapsedTime n= new ElapsedTime();
-        while(n.milliseconds()<3000*target/90&&!near(target,getError(target),0.2)){
-            double e2 = target-(getError(target));
-            double D = 0.9*(e2-e)/t.milliseconds();
-            double P = e2*0.068;
-            if(Math.abs(P)>Math.abs(speed))P=P>0?speed:-speed;
-            setAllDrivePower(P+D,P+D,P+D,P+D);
-            e=e2;
-            t.reset();
-        }
-        setAllDrivePower(0.0);
-        setNewGyro(target);
-    }
-
     protected void initVuforia(){
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
@@ -451,6 +431,23 @@ public class BaseAuto extends BaseOpMode {
         //setNewGyro(angle);
     }
 
+    public void PIDturn(double target){
+        double speed = 0.5;
+        double e = target;
+        ElapsedTime t = new ElapsedTime();
+        ElapsedTime n= new ElapsedTime();
+        while(n.milliseconds()<3000*target/90&&!near(target,getError(target),0.2)){
+            double e2 = getError(target);
+            double D = 0.9*(e2-e)/t.milliseconds();
+            double P = e2*0.068;
+            if(Math.abs(P)>Math.abs(speed))P=P>0?speed:-speed;
+            setAllDrivePower(P+D,P+D,P+D,P+D);
+            e=e2;
+            t.reset();
+        }
+        setAllDrivePower(0.0);
+        setNewGyro(target);
+    }
 
     protected void updateCoo(){
         double dtheta=getHeading()-theta;
