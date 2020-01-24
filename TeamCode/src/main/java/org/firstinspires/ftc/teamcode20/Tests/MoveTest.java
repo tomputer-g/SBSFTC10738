@@ -102,6 +102,7 @@ public class MoveTest extends BaseAuto {
             setAllDrivePower(speedLF,speedLB,speedRF,speedRB);
             //wait(1000);
             //setAllDrivePowerG(-speed,-speed,speed,speed);
+
         }
             /*
             ElapsedTime t=new ElapsedTime();
