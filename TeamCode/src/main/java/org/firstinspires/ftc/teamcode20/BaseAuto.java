@@ -527,7 +527,6 @@ public class BaseAuto extends BaseOpMode {
     protected void moveInchesGOY(double yInch, double speed){
         yInch = -yInch;
         setNewGyro0();
-        //for 0.3: P = 1,       D = 0.12
         double kP = 1, kD = 0.12;
         if(yInch == 0)return;
         if(Math.abs(speed) == 0.3){
@@ -553,15 +552,16 @@ public class BaseAuto extends BaseOpMode {
             currentOdometry = getYOdometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
-            multiply_factor = -Math.min(1, Math.max(-(1/speed), ((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
+            multiply_factor = -Math.min(1, Math.max(-1, ((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
             if(near(prev_speed, multiply_factor*vy,0.001) && near(currentOdometry, odometryYGoal, odometryEncYPerInch)){
                 steadyCounter++;
             }else{
                 steadyCounter = 0;
             }
+            Log.d("GOY "+yInch,"steady"+steadyCounter+", position"+currentOdometry+", speed"+prev_speed);
             previousPos = currentOdometry;
             tpre=tcur;
-            setAllDrivePowerG(multiply_factor*-vy,multiply_factor*-vy,multiply_factor*vy,multiply_factor*vy);
+            setAllDrivePowerG(multiply_factor*vy,multiply_factor*vy,multiply_factor*-vy,multiply_factor*-vy);
             prev_speed = multiply_factor * vy;
         }
         setAllDrivePower(0);
@@ -590,6 +590,7 @@ public class BaseAuto extends BaseOpMode {
             }else{
                 steadyCounter = 0;
             }
+            Log.d("GOX "+xInch,"steady"+steadyCounter+", position"+currentOdometry+", speed"+prev_speed);
             previousPos = currentOdometry;
             tpre=tcur;
             setAllDrivePowerG(multiply_factor*-vx,multiply_factor*vx,multiply_factor*-vx,multiply_factor*vx);

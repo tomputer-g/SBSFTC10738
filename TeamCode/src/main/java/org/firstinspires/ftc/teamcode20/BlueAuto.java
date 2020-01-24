@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode20;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -86,10 +88,11 @@ public class BlueAuto extends BaseAuto {
         setNewGyro(90);
         p.reset();
         moveInchesGOY((88+shift),0.9);
-        this.stop();
-        requestOpModeStop();
+        Log.d("BlueAuto","88+shift GOY finished");
         moveInchesGOX(17.5,0.5);
-        wait(1500);
+        requestOpModeStop();
+
+        //wait(1500);
 
         //turn foundation
         platform_grabber.setPower(-.8);
