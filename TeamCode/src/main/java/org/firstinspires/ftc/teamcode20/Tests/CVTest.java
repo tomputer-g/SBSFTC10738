@@ -23,7 +23,7 @@ public class CVTest extends BaseAuto {
         phoneCam.openCameraDevice();
         //skyStoneDetector = new SkystoneDetector();
         stoneDetector=new StoneDetector();
-        stoneDetector.stonesToFind=1;
+        stoneDetector.stonesToFind=2;
         phoneCam.setPipeline(stoneDetector);
     }
     @Override
