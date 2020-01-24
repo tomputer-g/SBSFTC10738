@@ -99,10 +99,12 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.left_bumper,lF)) {
-            setAllDrivePower(speedLF,speedLB,speedRF,speedRB);
-            //wait(1000);
-            //setAllDrivePowerG(-speed,-speed,speed,speed);
-
+            setNewGyro(180);
+            moveInchesG(0,5,.6);
+            setNewGyro(90);
+            moveInchesG(5,5,.6);
+            setNewGyro(180);
+            moveInchesG(0,5,.6);
         }
             /*
             ElapsedTime t=new ElapsedTime();
@@ -134,11 +136,14 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.right_bumper,bF)) {
+
+            setAllDrivePowerG(-speed,-speed,speed,speed);
+            wait(1000);
             setAllDrivePower(0);
         }
-        telemetry.addData("RFRBLFLB", "%.2f %.2f %.2f %.2f",speedRF,speedRB,speedLF,speedLB);
-        //telemetry.addData("x: ",x);
-        //telemetry.addData("y: ",y);
+        slowModeMove(-0.4 * this.gamepad1.left_stick_x, -0.16 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.3 * this.gamepad1.right_stick_x));
+        telemetry.addData("x: ",x);
+        telemetry.addData("y: ",y);
         //telemetry.addData("wait: ",WaitingTime);
         //telemetry.addData("Imu: ","%.2f",getHeading());
         //telemetry.addData("Speed: ","%.2f" ,speed);
@@ -148,6 +153,28 @@ public class MoveTest extends BaseAuto {
         telemetry.update();
     }
 
+    protected void slowModeMove(double vx, double vy, double vr){
+        double[] speeds = {vx - vy + vr, -vy - vx + vr, vx + vy + vr, -vx + vy + vr};
+        double absMax = 0;
+        for(double d : speeds)
+            absMax = Math.max(Math.abs(d),absMax);
+        if(absMax <= 1 && Math.abs(vr) < 0.01){
+            setAllDrivePowerG(speeds[0], speeds[1], speeds[2], speeds[3]);
+        }else if(Math.abs(vr) < 0.01){
+            if(showTelemetry)telemetry.addLine("SCALED power: max was "+absMax);
+            setAllDrivePowerG(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
+        }else if(absMax <= 1){
+            setNewGyro0();
+            setAllDrivePower(speeds[0], speeds[1], speeds[2], speeds[3]);
+        }else{
+            setNewGyro0();
+            setAllDrivePower(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
+        }
+        if(Math.abs(vx) < 0.01 && Math.abs(vy) < 0.01 && Math.abs(vr) < 0.01){
+            setNewGyro0();
+            setAllDrivePower(0);
+        }
+    }
     //move
     protected void moveInchesGOY(double yInch, double speed) {
         offsetY = getYOdometry();
