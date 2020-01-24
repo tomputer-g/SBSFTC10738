@@ -22,6 +22,7 @@ public class BlueAuto extends BaseAuto {
         initPlatformGrabber();
         initVuforia();
         initSensors();
+        initOdometry();
         setNewGyro0();
         int[] resultcounter = {0,0,0};
         //find skystone
@@ -71,11 +72,12 @@ public class BlueAuto extends BaseAuto {
         setMode_RUN_WITHOUT_ENCODER();
         grabber.setPosition(grabber_open);
         //while (p.milliseconds()<1300) setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
-        moveInchesGOY(30.75,0.3);
+        moveInchesGOY(30.7,0.6);
         //grab 1st block
         //setAllDrivePowerG(-0.2,-0.2,0.2,0.2);
         grabber.setPosition(grabber_closed);
-        wait(500);
+        wait(300);        servoThread.setTarget(0.95);
+
         //setAllDrivePower(0.0);
         moveInchesG(0,-10,0.3);
 
@@ -83,8 +85,10 @@ public class BlueAuto extends BaseAuto {
         turn(90, 0.4, 0.8);
         setNewGyro(90);
         p.reset();
-        moveInchesGOY((88+shift),0.6);
-        moveInchesGOX(15.5,0.5);
+        moveInchesGOY((88+shift),0.9);
+        this.stop();
+        requestOpModeStop();
+        moveInchesGOX(17.5,0.5);
         wait(1500);
 
         //turn foundation
