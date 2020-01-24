@@ -38,7 +38,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
             resetXOdometry();
             LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            moveInchesGOX(params[4],params[3]);
+            moveInchesGOY(params[4],params[3]);
         }
 
         if(this.gamepad1.left_bumper){lb = true;}if(!this.gamepad1.left_bumper && lb){
@@ -93,7 +93,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
         super.stop();
     }
 
-
+/*
     protected void moveInchesGOY(double yInch, double speed){
         if(yInch == 0)return;
         writeLogHeader("P="+params[0]+", I="+params[1]+", D="+params[2]+",speed="+speed+",target="+yInch * odometryEncYPerInch +", batt"+hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS));
@@ -160,4 +160,6 @@ public class OdometryMoveInchesTest extends BaseAuto {
         writeLogHeader("Gyro drift="+getHeading()+", Ydrift="+getYOdometry());
         writeLogHeader("----End of run----");
     }
+
+ */
 }

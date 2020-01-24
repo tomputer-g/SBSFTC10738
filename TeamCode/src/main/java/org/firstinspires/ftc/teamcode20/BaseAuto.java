@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
+import android.util.Log;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
@@ -544,8 +545,8 @@ public class BaseAuto extends BaseOpMode {
         speed=Math.abs(speed);
         double multiply_factor, prev_speed = 0;
         int odometryYGoal = offsetY + (int)(yInch * odometryEncYPerInch);
-        double vy = (yInch/Math.abs(yInch)*speed);
-        int previousPos = offsetY, currentOdometry = 0, Dterm;
+        double vy = speed;
+        int previousPos = offsetY, currentOdometry, Dterm;
         double tpre = 0, tcur;
         int steadyCounter = 0;
         while(steadyCounter < 5 && !this.gamepad1.b){//b is there so we can break out of loop anytime
@@ -572,25 +573,29 @@ public class BaseAuto extends BaseOpMode {
         ElapsedTime t = new ElapsedTime();
         int offsetX = getXOdometry();
         speed=Math.abs(speed);
-        double multiply_factor;
+        double multiply_factor, prev_speed = 0;
         int odometryXGoal = offsetX + (int)(xInch * odometryEncXPerInch);
-        double vx = (xInch/Math.abs(xInch)*speed);
+        double vx = speed;//(xInch/Math.abs(xInch)*speed);//
         setAllDrivePower(-vx,vx,-vx,vx);
         int previousPos = offsetX, currentOdometry, Dterm;
         double tpre = 0, tcur;
-
-        while(!this.gamepad1.b){
+        int steadyCounter = 0;
+        while(steadyCounter < 5 && !this.gamepad1.b){
             currentOdometry = getXOdometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
             multiply_factor = -Math.min(1, Math.max(-1, ((0.5 * (currentOdometry - odometryXGoal)/odometryEncXPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(0.05 * Dterm):0))));
+            if(near(prev_speed, multiply_factor*vx,0.001) && near(currentOdometry, odometryXGoal, odometryEncXPerInch)){
+                steadyCounter++;
+            }else{
+                steadyCounter = 0;
+            }
             previousPos = currentOdometry;
             tpre=tcur;
             setAllDrivePowerG(multiply_factor*-vx,multiply_factor*vx,multiply_factor*-vx,multiply_factor*vx);
+            prev_speed = multiply_factor * vx;
         }
         setAllDrivePower(0);
-        writeLogHeader("Gyro drift="+getHeading()+", Ydrift="+getYOdometry());
-        writeLogHeader("----End of run----");
     }
 
     public void brake(){
