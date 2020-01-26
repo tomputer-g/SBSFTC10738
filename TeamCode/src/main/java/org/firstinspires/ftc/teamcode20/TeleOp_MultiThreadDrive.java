@@ -138,7 +138,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             if (slow==0) {//only one direction at a time
                 joystickScaledMove(-this.gamepad1.left_stick_x, -this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x));
             } else if(slow==2) {
-                slowModeMove(-0.3 * this.gamepad1.left_stick_x, -0.16 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.3 * this.gamepad1.right_stick_x));
+                slowModeMove(-0.4 * this.gamepad1.left_stick_x, -0.16 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.3 * this.gamepad1.right_stick_x));
             }
         }
 

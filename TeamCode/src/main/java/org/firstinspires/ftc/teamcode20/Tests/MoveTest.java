@@ -63,11 +63,11 @@ public class MoveTest extends BaseAuto {
 
     @Override
     public void loop(){
-        if(zheng(this.gamepad1.dpad_left,eee))speedLB+=0.1*dir;
-        if(zheng(this.gamepad1.dpad_right,fff))speedLF+=0.1*dir;
-        if(zheng(this.gamepad1.dpad_up,ee))speedRF+=0.1*dir;
-        if(zheng(this.gamepad1.dpad_down,ff))speedRB+=0.1*dir;
-        if(zheng(this.gamepad1.y,m))dir*=-1;
+        if(zheng(this.gamepad1.dpad_left,eee))x-=0.1;
+        if(zheng(this.gamepad1.dpad_right,fff))x+=0.1;
+        if(zheng(this.gamepad1.dpad_up,ee))y+=0.1;
+        if(zheng(this.gamepad1.dpad_down,ff))y+=0.1;
+        if(zheng(this.gamepad1.y,m))speed+=1;
         if(zheng(this.gamepad1.a,mm))speed-=.01;
         if(zheng(this.gamepad1.b,f))setNewGyro0();
             /*
@@ -99,14 +99,11 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.left_bumper,lF)) {
-            setNewGyro(180);
-            moveInchesG(0,5,.6);
-            setNewGyro(90);
-            moveInchesG(5,5,.6);
-            setNewGyro(180);
-            moveInchesG(0,5,.6);
+            setAllDrivePowerG(-speed,-speed,speed,speed);
+            while(!this.gamepad1.b){}
+            setAllDrivePower(0);
         }
-            /*
+        /*
             ElapsedTime t=new ElapsedTime();
             setAllDrivePower(-speed,-speed,speed,speed);
             wait(1200);
@@ -136,21 +133,30 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.right_bumper,bF)) {
-
-            setAllDrivePowerG(-speed,-speed,speed,speed);
-            wait(1000);
+            ElapsedTime t=new ElapsedTime();
+            double tcur=t.milliseconds();
+            double ecur=getHeading();
+            double tpre=tcur;
+            double epre=ecur;
+            while(!this.gamepad1.b){
+                tcur=t.milliseconds();
+                ecur=getHeading();
+                setAllDrivePowerG(-speed,-speed,speed,speed,0.8,x,ecur-epre,tcur-tpre);
+                epre=ecur;
+                tpre=tcur;
+            }
             setAllDrivePower(0);
         }
-        slowModeMove(-0.4 * this.gamepad1.left_stick_x, -0.16 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.3 * this.gamepad1.right_stick_x));
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
-        //telemetry.addData("wait: ",WaitingTime);
-        //telemetry.addData("Imu: ","%.2f",getHeading());
-        //telemetry.addData("Speed: ","%.2f" ,speed);
-        //telemetry.addData("enc X", xOdometry.getCurrentPosition());
-        telemetry.addData("enc Y", LF.getCurrentPosition()/1305);
-        telemetry.addData("ss", -platform_grabber.getCurrentPosition());
+        telemetry.addData("Imu: ","%.2f",getHeading());
+        telemetry.addData("Speed: ","%.2f" ,speed);;
         telemetry.update();
+    }
+
+    protected void setAllDrivePowerG(double a, double b, double c, double d,double Kp,double Kd,double de,double dt){
+        double p=Kp*(getHeading()*0.1/9)+Kd*(de)/dt;
+        setAllDrivePower(a-p,b-p,c-p,d-p);
     }
 
     protected void slowModeMove(double vx, double vy, double vr){
