@@ -65,6 +65,7 @@ public class BaseAuto extends BaseOpMode {
     protected static BNO055IMU imu;
     protected static double imuHeading;
     protected static double imuOffset=0;
+    protected static double acctarget=0;
 
     //Vuforia
     private ElapsedTime VuforiaPositionTime;
@@ -432,22 +433,34 @@ public class BaseAuto extends BaseOpMode {
         //setNewGyro(angle);
     }
 
-    public void PIDturn(double target){
-        double speed = 0.5;
-        double e = target;
+    public void PIDturn(double target, boolean resetOffset){
+        double e = target,kd=0.9,kp=0.068,speed=0.5;
         ElapsedTime t = new ElapsedTime();
-        ElapsedTime n= new ElapsedTime();
-        while(n.milliseconds()<3000*target/90&&!near(target,getError(target),0.2)){
-            double e2 = getError(target);
-            double D = 0.9*(e2-e)/t.milliseconds();
-            double P = e2*0.068;
+        int i=0;
+        while(i<5){
+            double e2 = target-(getAdjustedHeading(target));
+            double D = kd*(e2-e)/t.milliseconds();
+            double P = e2*kp;
             if(Math.abs(P)>Math.abs(speed))P=P>0?speed:-speed;
-            setAllDrivePower(P+D,P+D,P+D,P+D);
+            double power = P+D;
+            setAllDrivePower(power);
             e=e2;
+            if(near(e2-e,0,0.1)&&near(e,0,2))
+                i++;
             t.reset();
         }
         setAllDrivePower(0.0);
-        setNewGyro(target);
+        acctarget+=target;
+        if(resetOffset)
+            acctarget=0;
+        setNewGyro(acctarget);
+    }
+    private double getAdjustedHeading(double target){
+        double i = getHeading();
+        if(target>0)
+            return i<-100?i+360:i;
+        else
+            return i>100?i-360:i;
     }
 
     protected void updateCoo(){
