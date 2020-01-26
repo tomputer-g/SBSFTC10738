@@ -33,7 +33,7 @@ public class MoveTest extends BaseAuto {
     private double  kP = 0.5, kI = 0, kD = 0.0025;
     int WaitingTime = 300;
 
-    //ModernRoboticsI2cRangeSensor rangeSensorSide;
+    private PG pg=new PG();
     int dir;
     private void 三天之内刹了你(){
         setAllDrivePower(1,1,-1,-1);
@@ -57,8 +57,17 @@ public class MoveTest extends BaseAuto {
         dir=1;
         y = -90;
         x = 0;
-
         // 三天之内刹了你();
+    }
+
+    @Override
+    public void start(){
+        pg.start();
+    }
+
+    @Override
+    public void stop(){
+        pg.stopThread();
     }
 
     @Override
@@ -70,7 +79,7 @@ public class MoveTest extends BaseAuto {
         if(zheng(this.gamepad1.y,m))speed+=1;
         if(zheng(this.gamepad1.a,mm))speed-=.01;
         if(zheng(this.gamepad1.b,f))setNewGyro0();
-            /*
+        /*
         if(zheng(this.gamepad1.left_bumper,bF)){
             ElapsedTime t=new ElapsedTime();
             targetsSkyStone.activate();
@@ -99,40 +108,10 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.left_bumper,lF)) {
-            setAllDrivePowerG(-speed,-speed,speed,speed);
-            while(!this.gamepad1.b){}
-            setAllDrivePower(0);
+            setP(-speed,-speed,speed,speed);
         }
-        /*
-            ElapsedTime t=new ElapsedTime();
-            setAllDrivePower(-speed,-speed,speed,speed);
-            wait(1200);
-            t.reset();
-            //setAllDrivePower(-.25,-.25,.25,.25);
-            setAllDrivePower(0);
-            int a=1000;
-            while(!near(a,0,50)){
-                a=L2.getCurrentPosition();
-                wait(10);
-                a=L2.getCurrentPosition()-a;
-                if(a<307){
-                    x=t.milliseconds();
-                    setAllDrivePower(0);
-                    setAllDrivePower(.03,.03,-.03,-.03);
-                    t.reset();
-                    break;
-                }
-            }
-            while(!near(a,0,50)){
-                a=L2.getCurrentPosition();
-                wait(10);
-                a=L2.getCurrentPosition()-a;
-            }
-            y=t.milliseconds();
-            setAllDrivePower(0);
-        }
-        */
         if(zheng(this.gamepad1.right_bumper,bF)) {
+            /*
             ElapsedTime t=new ElapsedTime();
             double tcur=t.milliseconds();
             double ecur=getHeading();
@@ -146,12 +125,44 @@ public class MoveTest extends BaseAuto {
                 tpre=tcur;
             }
             setAllDrivePower(0);
+            */
+            setP(0,0,0,0);
         }
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
         telemetry.addData("Imu: ","%.2f",getHeading());
         telemetry.addData("Speed: ","%.2f" ,speed);;
         telemetry.update();
+    }
+
+    private class PG extends Thread{
+        volatile boolean stop = false,run=false;
+        private double a,b,c,d,Kp;
+
+        public void PG(){ a=0;b=0;c=0;d=0;Kp=.8; }
+        public void setAllPower(double w,double x,double y,double z){ a=w;b=x;c=y;d=z; }
+
+        @Override
+        public void run() {
+            double p=0;
+            while(!isInterrupted()&&!stop){
+                if(a==0&&b==0&&c==0&&d==0){}
+                else{
+                    p = Kp * (getHeading() * 0.1 / 9);
+                    setAllDrivePower(a - p, b - p, c - p, d - p);
+                }
+            }
+        }
+        public void stopThread(){
+            stop = true;
+        }
+    }
+
+    public void setP(double w,double x,double y,double z){
+        if(w==0&&x==0&&y==0&&z==0){
+            setAllDrivePower(0);
+        }
+        pg.setAllPower(w,x,y,z);
     }
 
     protected void setAllDrivePowerG(double a, double b, double c, double d,double Kp,double Kd,double de,double dt){
