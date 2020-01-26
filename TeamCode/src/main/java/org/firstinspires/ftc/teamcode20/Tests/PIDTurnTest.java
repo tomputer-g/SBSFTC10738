@@ -41,7 +41,7 @@ public class PIDTurnTest extends BaseAuto {
         //telemetry.addData("result: ",result);
         //telemetry.addLine("LF: "+LF.getCurrentPosition()+" LB: "+LB.getCurrentPosition()+" RF: "+RF.getCurrentPosition()+" RB:"+RB.getCurrentPosition());
         if(zheng(this.gamepad1.left_bumper,lb)){
-            PIDturn(target);
+            testPIDturn(target,kD,kP,0.5);
         }
     }
 
@@ -49,12 +49,15 @@ public class PIDTurnTest extends BaseAuto {
         double e = target;
         ElapsedTime t = new ElapsedTime();
         ElapsedTime n= new ElapsedTime();
-        while(n.milliseconds()<3000&&near(target,getAdjustedHeading(target),0.2)){
+        int i=0;
+        while(i<6){
             double e2 = target-(getAdjustedHeading(target));
             double D = kd*(e2-e)/t.milliseconds();
             double P = e2*kp;
             if(Math.abs(P)>Math.abs(speed))P=P>0?speed:-speed;
             setAllDrivePower(P+D,P+D,P+D,P+D);
+            if(P+D<0.15)
+                i++;
             e=e2;
             t.reset();
         }
