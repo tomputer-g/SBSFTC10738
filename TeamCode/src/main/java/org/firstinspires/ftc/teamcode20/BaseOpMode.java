@@ -200,8 +200,12 @@ public class BaseOpMode extends OpMode {
         return xOdometry.getCurrentPosition();
     }
 
-    protected int getYOdometry(){
+    protected int getY1Odometry(){
         return platform_grabber.getCurrentPosition();
+    }
+
+    protected int getY2Odometry(){
+        return L2.getCurrentPosition();
     }
 
     protected void resetYOdometry(){
