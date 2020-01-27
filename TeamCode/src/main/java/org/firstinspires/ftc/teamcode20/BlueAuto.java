@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode20;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -45,8 +47,7 @@ public class BlueAuto extends BaseAuto {
 
         //initialization
         grabber.setPosition(0.03);
-        grabber_extend1.setPosition(1);
-        grabber_extend2.setPosition(0);
+        servoThread.setTarget(0.97);
         platform_grabber.setPower(1);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
@@ -72,24 +73,28 @@ public class BlueAuto extends BaseAuto {
         setMode_RUN_WITHOUT_ENCODER();
         grabber.setPosition(grabber_open);
         //while (p.milliseconds()<1300) setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
-        moveInchesGOY(30.7,0.6);
+        moveInchesGOY(30.75,0.6);
         //grab 1st block
         //setAllDrivePowerG(-0.2,-0.2,0.2,0.2);
         grabber.setPosition(grabber_closed);
-        wait(300);        servoThread.setTarget(0.95);
-
+        servoThread.setTarget(0.85);
+        wait(300);
         //setAllDrivePower(0.0);
-        moveInchesG(0,-10,0.3);
+        moveInchesGOY(-15,0.6);
 
         //move forward & approach foundation
-        turn(90, 0.4, 0.8);
-        setNewGyro(90);
+        //turn(90, 0.4, 0.8);
+        //setNewGyro(90);
         p.reset();
-        moveInchesGOY((88+shift),0.9);
-        this.stop();
+        //kuaishou
+        moveInchesGOX(-(84+shift),0.5);
+        servoThread.setTarget(0.5);
+        Log.d("BlueAuto","88+shift GOY finished");
+        moveInchesGOY(18,0.6);
+        servoThread.setTarget(0.8);
         requestOpModeStop();
-        moveInchesGOX(17.5,0.5);
-        wait(1500);
+
+        //wait(1500);
 
         //turn foundation
         platform_grabber.setPower(-.8);
