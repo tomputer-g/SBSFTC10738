@@ -37,14 +37,16 @@ public class CVTest extends BaseAuto {
         try {
             telemetry.addData("Stone Position X", stoneDetector.foundScreenPositions().get(0).x);
             telemetry.addData("Stone Position Y", stoneDetector.foundScreenPositions().get(0).y);
+            telemetry.addLine("X: "+ stoneDetector.foundRectangles().get(0).x+" Y: "+stoneDetector.foundRectangles().get(0).y);
+            //telemetry.addLine()
         }
         catch(Exception e){}
-        telemetry.addData("Frame Count", phoneCam.getFrameCount());
-        telemetry.addData("FPS", String.format(Locale.US, "%.2f", phoneCam.getFps()));
-        telemetry.addData("Total frame time ms", phoneCam.getTotalFrameTimeMs());
-        telemetry.addData("Pipeline time ms", phoneCam.getPipelineTimeMs());
-        telemetry.addData("Overhead time ms", phoneCam.getOverheadTimeMs());
-        telemetry.addData("Theoretical max FPS", phoneCam.getCurrentPipelineMaxFps());
+        //telemetry.addData("Frame Count", phoneCam.getFrameCount());
+        //telemetry.addData("FPS", String.format(Locale.US, "%.2f", phoneCam.getFps()));
+        //telemetry.addData("Total frame time ms", phoneCam.getTotalFrameTimeMs());
+        //telemetry.addData("Pipeline time ms", phoneCam.getPipelineTimeMs());
+        //telemetry.addData("Overhead time ms", phoneCam.getOverheadTimeMs());
+        //telemetry.addData("Theoretical max FPS", phoneCam.getCurrentPipelineMaxFps());
         telemetry.update();
     }
     @Override
