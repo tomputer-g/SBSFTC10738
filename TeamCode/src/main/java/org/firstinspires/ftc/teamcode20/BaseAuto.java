@@ -75,7 +75,7 @@ public class BaseAuto extends BaseOpMode {
     //Encoders
     protected double xmult = 1430.5/72, ymult = 18.65;
     protected double[] coo={0,0};
-    private double xpre=0,ypre=0,theta=0;
+    private double xpre=0,y1pre=0,y2pre=0,theta=0;
 
     protected void initVuforia(){
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -465,13 +465,14 @@ public class BaseAuto extends BaseOpMode {
 
     protected void updateCoo(){
         double dtheta=getHeading()-theta;
-        double xcur=getXOdometry(),ycur=-getYOdometry(),thetacur=imuHeading/180*Math.PI;
-        double dx=xcur-xpre;
-        double dy=ycur-ypre;
-        coo[0] += (dx * Math.cos(thetacur) + dy * Math.sin(thetacur)) * Math.PI / 4096;
-        coo[1] += (dx * Math.sin(thetacur) + dy * Math.cos(thetacur)) * Math.PI / 4096;
+        double xcur=getXOdometry()/odometryEncXPerInch,y1cur=-getY1Odometry()/odometryEncYPerInch,y2cur=-getY2Odometry()/odometryEncYPerInch,thetacur=imuHeading/180*Math.PI;
+        double dx=(near(dtheta,0,3))?xcur-xpre:0;
+        double dy=(y1cur-y1pre+y2cur-y2pre)/2;
+        coo[0] += (dx * Math.cos(thetacur) + dy * Math.sin(thetacur));
+        coo[1] += (dx * Math.sin(thetacur) + dy * Math.cos(thetacur));
         xpre=xcur;
-        ypre=ycur;
+        y1pre=y1cur;
+        y2pre=y2cur;
         theta=imuHeading;
     }
 
@@ -553,7 +554,7 @@ public class BaseAuto extends BaseOpMode {
             kD = 7.3E-3;
         }
         ElapsedTime t = new ElapsedTime();
-        int offsetY = getYOdometry();
+        int offsetY = getY1Odometry();
         speed=Math.abs(speed);
         double multiply_factor, prev_speed = 0;
         int odometryYGoal = offsetY + (int)(yInch * odometryEncYPerInch);
@@ -562,7 +563,7 @@ public class BaseAuto extends BaseOpMode {
         double tpre = 0, tcur;
         int steadyCounter = 0;
         while(steadyCounter < 5 && !this.gamepad1.b){//b is there so we can break out of loop anytime
-            currentOdometry = getYOdometry();
+            currentOdometry = getY1Odometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
             multiply_factor = -Math.min(1, Math.max(-1, ((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));

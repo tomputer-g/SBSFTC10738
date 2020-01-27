@@ -3,10 +3,7 @@ package org.firstinspires.ftc.teamcode20;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous
 public class BlueAuto extends BaseAuto {
@@ -115,10 +112,10 @@ public class BlueAuto extends BaseAuto {
         }
         */
         setAllDrivePower(0);
-        double tempY = getYOdometry();
-        double targetdist = getYOdometry()-15*1316;
+        double tempY = getY1Odometry();
+        double targetdist = getY1Odometry()-15*1316;
         p = new ElapsedTime();
-        while(getYOdometry()>targetdist&&p.milliseconds()<2000)
+        while(getY1Odometry()>targetdist&&p.milliseconds()<2000)
             setAllDrivePowerG(-0.5,-0.5,0.5,0.5,2);
         setAllDrivePower(0);
 
