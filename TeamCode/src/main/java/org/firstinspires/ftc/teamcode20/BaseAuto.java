@@ -465,7 +465,7 @@ public class BaseAuto extends BaseOpMode {
 
     protected void updateCoo(){
         double dtheta=getHeading()-theta;
-        double xcur=getXOdometry()*odometryEncXPerInch,y1cur=-getY1Odometry()*odometryEncYPerInch,y2cur=-getY2Odometry()*odometryEncYPerInch,thetacur=imuHeading/180*Math.PI;
+        double xcur=getXOdometry()/odometryEncXPerInch,y1cur=-getY1Odometry()/odometryEncYPerInch,y2cur=-getY2Odometry()/odometryEncYPerInch,thetacur=imuHeading/180*Math.PI;
         double dx=(near(dtheta,0,3))?xcur-xpre:0;
         double dy=(y1cur-y1pre+y2cur-y2pre)/2;
         coo[0] += (dx * Math.cos(thetacur) + dy * Math.sin(thetacur));

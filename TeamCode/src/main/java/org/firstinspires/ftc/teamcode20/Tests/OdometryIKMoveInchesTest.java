@@ -25,7 +25,7 @@ public class OdometryIKMoveInchesTest extends BaseAuto {
     @Override
     public void loop() {
         if(this.gamepad1.a){APrimed = true;}if(APrimed && !this.gamepad1.a){ APrimed = false;
-            resetYOdometry();
+            resetY1Odometry();
             moveInchesGOY(targetInches,speed);
         }
         if(this.gamepad1.dpad_left){leftP = true;}if(leftP && !this.gamepad1.dpad_left){ leftP = false;

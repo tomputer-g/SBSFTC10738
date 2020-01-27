@@ -34,7 +34,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
     @Override
     public void loop() {
         if(this.gamepad1.a){APrimed = true;}if(APrimed && !this.gamepad1.a){ APrimed = false;
-            resetYOdometry();
+            resetY1Odometry();
             resetXOdometry();
             LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

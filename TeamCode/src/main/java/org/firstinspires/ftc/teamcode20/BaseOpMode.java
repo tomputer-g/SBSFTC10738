@@ -208,9 +208,14 @@ public class BaseOpMode extends OpMode {
         return L2.getCurrentPosition();
     }
 
-    protected void resetYOdometry(){
+    protected void resetY1Odometry(){
         platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    protected void resetY2Odometry(){
+        L2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     protected void resetXOdometry(){
