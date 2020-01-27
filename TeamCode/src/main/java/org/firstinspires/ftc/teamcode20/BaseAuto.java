@@ -379,7 +379,6 @@ public class BaseAuto extends BaseOpMode {
         L2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         cooThread=new CooThread();
-        cooThread.start();
     }
 
     //IMU

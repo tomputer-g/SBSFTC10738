@@ -53,11 +53,11 @@ public class BlueAuto extends BaseAuto {
             shift = 0;
         }
         else if (pos == 0){
-            moveInchesGOX(-8,0.5);
+            moveInchesG(-8,0,0.5);
             shift=-8;
         }
         else {
-            moveInchesGOX(8, 0.5);
+            moveInchesG(8, 0,0.5);
             shift=8;
         }
 
