@@ -79,7 +79,7 @@ public class MoveTest extends BaseAuto {
         if(zheng(this.gamepad1.y,m))speed+=1;
         if(zheng(this.gamepad1.a,mm))speed-=.01;
         if(zheng(this.gamepad1.b,f))setNewGyro0();
-        /*
+
         if(zheng(this.gamepad1.left_bumper,bF)){
             ElapsedTime t=new ElapsedTime();
             targetsSkyStone.activate();
@@ -106,7 +106,8 @@ public class MoveTest extends BaseAuto {
             }
             shutdownVuforia();
         }
-        */
+
+        /*
         if(zheng(this.gamepad1.left_bumper,lF)) {
             setP(-speed,-speed,speed,speed);
         }
@@ -125,7 +126,6 @@ public class MoveTest extends BaseAuto {
                 tpre=tcur;
             }
             setAllDrivePower(0);
-            */
             setP(0,0,0,0);
         }
         telemetry.addData("x: ",x);
@@ -133,6 +133,8 @@ public class MoveTest extends BaseAuto {
         telemetry.addData("Imu: ","%.2f",getHeading());
         telemetry.addData("Speed: ","%.2f" ,speed);;
         telemetry.update();
+
+        */
     }
 
     private class PG extends Thread{
