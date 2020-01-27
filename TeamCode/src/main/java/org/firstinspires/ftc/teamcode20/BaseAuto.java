@@ -65,6 +65,7 @@ public class BaseAuto extends BaseOpMode {
     protected static BNO055IMU imu;
     protected static double imuHeading;
     protected static double imuOffset=0;
+    protected static double acctarget=0;
 
     //Vuforia
     private ElapsedTime VuforiaPositionTime;
@@ -432,22 +433,34 @@ public class BaseAuto extends BaseOpMode {
         //setNewGyro(angle);
     }
 
-    public void PIDturn(double target){
-        double speed = 0.5;
-        double e = target;
+    public void PIDturn(double target, boolean resetOffset){
+        double e = target,kd=0.9,kp=0.068,speed=0.5;
         ElapsedTime t = new ElapsedTime();
-        ElapsedTime n= new ElapsedTime();
-        while(n.milliseconds()<3000*target/90&&!near(target,getError(target),0.2)){
-            double e2 = getError(target);
-            double D = 0.9*(e2-e)/t.milliseconds();
-            double P = e2*0.068;
+        int i=0;
+        while(i<5){
+            double e2 = target-(getAdjustedHeading(target));
+            double D = kd*(e2-e)/t.milliseconds();
+            double P = e2*kp;
             if(Math.abs(P)>Math.abs(speed))P=P>0?speed:-speed;
-            setAllDrivePower(P+D,P+D,P+D,P+D);
+            double power = P+D;
+            setAllDrivePower(power);
             e=e2;
+            if(near(e2-e,0,0.1)&&near(e,0,2))
+                i++;
             t.reset();
         }
-        setAllDrivePower(0.0);
-        setNewGyro(target);
+        setAllDrivePower(0);
+        acctarget+=target;
+        if(resetOffset)
+            acctarget=0;
+        setNewGyro(acctarget);
+    }
+    private double getAdjustedHeading(double target){
+        double i = getHeading();
+        if(target>0)
+            return i<-100?i+360:i;
+        else
+            return i>100?i-360:i;
     }
 
     protected void updateCoo(){
@@ -527,7 +540,6 @@ public class BaseAuto extends BaseOpMode {
     protected void moveInchesGOY(double yInch, double speed){
         yInch = -yInch;
         setNewGyro0();
-        //for 0.3: P = 1,       D = 0.12
         double kP = 1, kD = 0.12;
         if(yInch == 0)return;
         if(Math.abs(speed) == 0.3){
@@ -553,15 +565,16 @@ public class BaseAuto extends BaseOpMode {
             currentOdometry = getYOdometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
-            multiply_factor = -Math.min(1, Math.max(-(1/speed), ((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
+            multiply_factor = -Math.min(1, Math.max(-1, ((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
             if(near(prev_speed, multiply_factor*vy,0.001) && near(currentOdometry, odometryYGoal, odometryEncYPerInch)){
                 steadyCounter++;
             }else{
                 steadyCounter = 0;
             }
+            Log.d("GOY "+yInch,"steady"+steadyCounter+", position"+currentOdometry+", speed"+prev_speed);
             previousPos = currentOdometry;
             tpre=tcur;
-            setAllDrivePowerG(multiply_factor*-vy,multiply_factor*-vy,multiply_factor*vy,multiply_factor*vy);
+            setAllDrivePowerG(multiply_factor*vy,multiply_factor*vy,multiply_factor*-vy,multiply_factor*-vy);
             prev_speed = multiply_factor * vy;
         }
         setAllDrivePower(0);
@@ -590,6 +603,7 @@ public class BaseAuto extends BaseOpMode {
             }else{
                 steadyCounter = 0;
             }
+            Log.d("GOX "+xInch,"steady"+steadyCounter+", position"+currentOdometry+", speed"+prev_speed);
             previousPos = currentOdometry;
             tpre=tcur;
             setAllDrivePowerG(multiply_factor*-vx,multiply_factor*vx,multiply_factor*-vx,multiply_factor*vx);
