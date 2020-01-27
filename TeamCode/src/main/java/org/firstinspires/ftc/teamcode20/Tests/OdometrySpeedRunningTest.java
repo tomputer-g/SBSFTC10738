@@ -97,13 +97,13 @@ public class OdometrySpeedRunningTest extends BaseAuto {
         public void run() {
             Log.d("OdometrySpeed"+this.getId(),"Started running");
             t = new ElapsedTime();
-            lastPosition = getXOdometry();//getYOdometry();
+            lastPosition = getXOdometry();//getY1Odometry();
             int currentOdo = lastPosition;
             writeLogHeader("ns,position,kPX,kDX,targetSpeed,lastSpeed,dPower,setPower,"+hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2").read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)+"V");
             while(!isInterrupted() && !stop){
                 if(runOdoSpeed){
                     lastPosition = currentOdo;
-                    currentOdo = getXOdometry();//getYOdometry();
+                    currentOdo = getXOdometry();//getY1Odometry();
                     long ns = t.nanoseconds();
                     t.reset();
                     double currentSpeed = (currentOdo-lastPosition)*1.0E9/ns;
@@ -124,7 +124,7 @@ public class OdometrySpeedRunningTest extends BaseAuto {
                     setAllDrivePower(0);
                     t.reset();
                     currentOdo = lastPosition;
-                    lastPosition = getXOdometry();//getYOdometry();
+                    lastPosition = getXOdometry();//getY1Odometry();
                     lastSpeed = 0;
                     setPower = 0;
                 }
