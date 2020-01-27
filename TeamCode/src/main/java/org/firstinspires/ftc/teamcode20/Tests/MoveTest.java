@@ -132,8 +132,8 @@ public class MoveTest extends BaseAuto {
         telemetry.addData("y: ",y);
         telemetry.addData("Imu: ","%.2f",getHeading());
         telemetry.addData("Speed: ","%.2f" ,speed);;
-        telemetry.addData("[x]: ","%.2f",coo[0]);
-        telemetry.addData("[y]: ","%.2f" ,coo[1]);;
+        telemetry.addData("[x]: ","%.2f",n_pass[0]);
+        telemetry.addData("[y]: ","%.2f" ,n_pass[1]);;
         telemetry.update();
     }
 

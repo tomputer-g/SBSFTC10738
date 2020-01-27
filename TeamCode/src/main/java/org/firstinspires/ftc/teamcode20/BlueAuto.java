@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode20;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous
+@Autonomous()
 public class BlueAuto extends BaseAuto {
     protected final double odometryEncPerInch = 1316;//4096.0/Math.PI;
     protected int offsetY = 0;
@@ -71,13 +69,16 @@ public class BlueAuto extends BaseAuto {
         wait(300);
         servoThread.setTarget(0.85);
         //setAllDrivePower(0.0);
-        moveInchesGOY(-6.5,0.6);
+        moveInchesG(0,-6,0.4);
 
         //move forward & approach foundation
         PIDturn(90, false);
         setNewGyro(90);
         p.reset();
         moveInchesGOY((86.75+shift),0.6);
+        telemetry.addData("x,y","%.2f %.2f", n_pass[0], n_pass[1]);
+        telemetry.update();
+        wait(3000);
         //telemetry.addData()
         /*
 

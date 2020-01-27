@@ -1,10 +1,7 @@
 package org.firstinspires.ftc.teamcode20;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
-import org.firstinspires.ftc.teamcode19.BaseTeleOp;
 
 @Disabled
 public class TeleOp_DriveOnly extends BaseAuto {
@@ -24,7 +21,7 @@ public class TeleOp_DriveOnly extends BaseAuto {
         //move(-this.gamepad1.left_stick_x, this.gamepad1.left_stick_y, -this.gamepad1.right_stick_x);
         //new bot
         updateCoo();
-        telemetry.addLine("(x,y): (" + (int)(coo[0]) + "," + (int)(coo[1]) + ")");
+        telemetry.addLine("(x,y): (" + (int)(n_pass[0]) + "," + (int)(n_pass[1]) + ")");
         telemetry.update();
         joystickScaledMove(-this.gamepad1.left_stick_x, -this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x));
     }

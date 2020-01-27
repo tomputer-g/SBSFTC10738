@@ -75,7 +75,7 @@ public class BaseAuto extends BaseOpMode {
 
     //Odometry
     protected double xmult = 1430.5/72, ymult = 18.65;
-    protected double[] coo={0,0};
+    protected double[] n_pass ={0,0};
     private double xpre=0,y1pre=0,y2pre=0,theta=0;
     protected CooThread cooThread;
 
@@ -631,8 +631,8 @@ public class BaseAuto extends BaseOpMode {
         double xcur=getXOdometry()/odometryEncXPerInch,y1cur=-getY1Odometry()/odometryEncYPerInch,y2cur=-getY2Odometry()/odometryEncYPerInch,thetacur=imuHeading/180*Math.PI;
         double dx=(near(dtheta,0,3))?xcur-xpre:0;
         double dy=(y1cur-y1pre+y2cur-y2pre)/2;
-        coo[0] += (dx * Math.cos(thetacur) + dy * Math.sin(thetacur));
-        coo[1] += (dx * Math.sin(thetacur) + dy * Math.cos(thetacur));
+        n_pass[0] += (dx * Math.cos(thetacur) + dy * Math.sin(thetacur));
+        n_pass[1] += (dx * Math.sin(thetacur) + dy * Math.cos(thetacur));
         xpre=xcur;
         y1pre=y1cur;
         y2pre=y2cur;
