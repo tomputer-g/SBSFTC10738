@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode20;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous
+@Autonomous()
 public class BlueAuto extends BaseAuto {
     protected final double odometryEncPerInch = 1316;//4096.0/Math.PI;
     protected int offsetY = 0;
@@ -43,8 +41,7 @@ public class BlueAuto extends BaseAuto {
         //repeat until run out of time; first on other skystones
 
         //initialization
-        grabber.setPosition(0.03);
-        servoThread.setTarget(0.97);
+        servoThread.setTarget(0.98);
         platform_grabber.setPower(1);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
@@ -56,42 +53,34 @@ public class BlueAuto extends BaseAuto {
             shift = 0;
         }
         else if (pos == 0){
-            moveInchesG(-8,0,0.4);
+            moveInchesG(-8,0,0.5);
             shift=-8;
         }
         else {
-            moveInchesG(8, 0, 0.4);
+            moveInchesG(8, 0,0.5);
             shift=8;
         }
 
         //move forward to the skystone
         ElapsedTime p = new ElapsedTime();
-        reset_ENCODER();
-        setMode_RUN_WITHOUT_ENCODER();
-        grabber.setPosition(grabber_open);
-        //while (p.milliseconds()<1300) setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
-        moveInchesGOY(30.75,0.6);
+        moveInchesGOY(30.5,0.6);
         //grab 1st block
-        //setAllDrivePowerG(-0.2,-0.2,0.2,0.2);
         grabber.setPosition(grabber_closed);
-        servoThread.setTarget(0.85);
         wait(300);
+        servoThread.setTarget(0.85);
         //setAllDrivePower(0.0);
-        moveInchesGOY(-15,0.6);
+        moveInchesG(0,-6,0.4);
 
         //move forward & approach foundation
-        //turn(90, 0.4, 0.8);
-        //setNewGyro(90);
+        PIDturn(90, false);
+        setNewGyro(90);
         p.reset();
-        //kuaishou
-        moveInchesGOX(-(84+shift),0.5);
-        servoThread.setTarget(0.5);
-        Log.d("BlueAuto","88+shift GOY finished");
-        moveInchesGOY(18,0.6);
-        servoThread.setTarget(0.8);
-        requestOpModeStop();
+        moveInchesGOY((86.75+shift),0.6);
 
-        //wait(1500);
+        wait(3000);
+        //telemetry.addData()
+        /*
+
 
         //turn foundation
         platform_grabber.setPower(-.8);
@@ -103,13 +92,13 @@ public class BlueAuto extends BaseAuto {
 
         //drag foundation forward
         setNewGyro(180);
-        /*
-        double koe=0.75;
-        p.reset();
-        while(10<rangeSensorFront.getDistance(DistanceUnit.INCH) || p.milliseconds() < 3400){
-            setAllDrivePowerG(koe*(0.25-0.55+0.37),koe*(0.25-0.55-0.37),koe*(0.25+0.55+0.37),koe*(0.22+0.5-0.37)); //turn+f0rwrd+side
-        }
-        */
+
+        //double koe=0.75;
+        //p.reset();
+        //while(10<rangeSensorFront.getDistance(DistanceUnit.INCH) || p.milliseconds() < 3400){
+        //    setAllDrivePowerG(koe*(0.25-0.55+0.37),koe*(0.25-0.55-0.37),koe*(0.25+0.55+0.37),koe*(0.22+0.5-0.37)); //turn+f0rwrd+side
+        //}
+
         setAllDrivePower(0);
         double tempY = getY1Odometry();
         double targetdist = getY1Odometry()-15*1316;
@@ -153,6 +142,8 @@ public class BlueAuto extends BaseAuto {
         servoThread.stopThread();
         setNewGyro0();
         platform_grabber.setPower(0);
+
+        */
         requestOpModeStop();
     }
 }

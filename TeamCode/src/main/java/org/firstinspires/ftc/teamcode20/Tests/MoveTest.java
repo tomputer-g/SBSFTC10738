@@ -17,6 +17,9 @@ public class MoveTest extends BaseAuto {
     private double speedLF=0,speedLB=0,speedRF=0,speedRB=0;
     private double  kP = 0.5, kI = 0, kD = 0.0025;
     int WaitingTime = 300;
+    int steps = 20;
+    double basespeed = 0.23;
+
 
     private PG pg=new PG();
     private Thread uc=new UC();
@@ -58,6 +61,17 @@ public class MoveTest extends BaseAuto {
 
     @Override
     public void loop(){
+        if(zheng(this.gamepad1.dpad_left,eee))speedLB+=0.1*dir;
+        if(zheng(this.gamepad1.dpad_right,fff))speedLF+=0.1*dir;
+        if(zheng(this.gamepad1.dpad_up,ee))speedRF+=0.1*dir;
+        if(zheng(this.gamepad1.dpad_down,ff))speedRB+=0.1*dir;
+        if(zheng(this.gamepad1.y,m))basespeed+=.01;
+        if(zheng(this.gamepad1.a,mm))basespeed-=.01;
+        if(zheng(this.gamepad1.b,f))steps++;
+        if(zheng(this.gamepad1.x,ff))steps--;
+
+            /*
+
         if(zheng(this.gamepad1.dpad_left,eee))x-=0.1;
         if(zheng(this.gamepad1.dpad_right,fff))x+=0.1;
         if(zheng(this.gamepad1.dpad_up,ee))y+=0.1;
@@ -94,7 +108,7 @@ public class MoveTest extends BaseAuto {
         }
         */
         if(zheng(this.gamepad1.left_bumper,lF)) {
-            setP(-speed,-speed,speed,speed);
+            //setP(-speed,-speed,speed,speed);
         }
         if(zheng(this.gamepad1.right_bumper,bF)) {
             /*
@@ -112,14 +126,14 @@ public class MoveTest extends BaseAuto {
             }
             setAllDrivePower(0);
             */
-            setP(0,0,0,0);
+            //setP(0,0,0,0);
         }
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
         telemetry.addData("Imu: ","%.2f",getHeading());
         telemetry.addData("Speed: ","%.2f" ,speed);;
-        telemetry.addData("[x]: ","%.2f",coo[0]);
-        telemetry.addData("[y]: ","%.2f" ,coo[1]);;
+        telemetry.addData("[x]: ","%.2f",n_pass[0]);
+        telemetry.addData("[y]: ","%.2f" ,n_pass[1]);;
         telemetry.update();
     }
 
@@ -145,31 +159,18 @@ public class MoveTest extends BaseAuto {
 
         @Override
         public void run() {
-            double p=0;
-            while(!isInterrupted()&&!stop){
-                if(a==0&&b==0&&c==0&&d==0){}
-                else{
+            double p = 0;
+            while (!isInterrupted() && !stop) {
+                if (a == 0 && b == 0 && c == 0 && d == 0) {
+                } else {
                     p = Kp * (getHeading() * 0.1 / 9);
                     setAllDrivePower(a - p, b - p, c - p, d - p);
                 }
             }
-        }
-        public void stopThread(){
-            stop = true;
-        }
-    }
 
-    public void setP(double w,double x,double y,double z){
-        if(w==0&&x==0&&y==0&&z==0){
-            setAllDrivePower(0);
-        }
-        pg.setAllPower(w,x,y,z);
-    }
 
-    protected void setAllDrivePowerG(double a, double b, double c, double d,double Kp,double Kd,double de,double dt){
-        double p=Kp*(getHeading()*0.1/9)+Kd*(de)/dt;
-        setAllDrivePower(a-p,b-p,c-p,d-p);
-    }
+            }
+
 
     protected void slowModeMove(double vx, double vy, double vr){
         double[] speeds = {vx - vy + vr, -vy - vx + vr, vx + vy + vr, -vx + vy + vr};
@@ -223,26 +224,29 @@ public class MoveTest extends BaseAuto {
             telemetry.addData("Y goal", odometryYGoal);
             telemetry.update();
             */
-        }
-        setAllDrivePower(0);
-    }
+                }
+                setAllDrivePower(0);
+            }
 
-    protected void moveInches(double xInch, double yInch, double speed){
-        setMode_RESET_AND_RUN_TO_POSITION();
-        double p_mult = 80;
-        double xmult = 232.5088/12, ymult = 232.7551/12;
-        int p_time = (int) (sqrt(xInch*xInch + yInch*yInch)*p_mult);
-        ElapsedTime t = new ElapsedTime();
-        int encoder_x = (int)(xInch * xmult), encoder_y = (int)(yInch * ymult);
-        int encoder_1 = Math.abs(encoder_x + encoder_y); // LB, RF
-        int encoder_2 = Math.abs(encoder_x - encoder_y); // LF, RB
-        double conversion_fct = speed/((encoder_1 + encoder_2)/2);
-        double speed_1 = conversion_fct * encoder_1, speed_2 = conversion_fct * encoder_2;
-        setAllDrivePower(speed_2,speed_1,speed_1,speed_2);
-        LF.setTargetPosition(encoder_x - encoder_y);
-        LB.setTargetPosition(-encoder_x - encoder_y);
-        RF.setTargetPosition(encoder_x + encoder_y);
-        RB.setTargetPosition(-encoder_x + encoder_y);
-        while((LF.isBusy()||LB.isBusy()||RF.isBusy()||RB.isBusy()) && t.milliseconds() < p_time);
-    }
+            protected void moveInches ( double xInch, double yInch, double speed){
+                setMode_RESET_AND_RUN_TO_POSITION();
+                double p_mult = 80;
+                double xmult = 232.5088 / 12, ymult = 232.7551 / 12;
+                int p_time = (int) (sqrt(xInch * xInch + yInch * yInch) * p_mult);
+                ElapsedTime t = new ElapsedTime();
+                int encoder_x = (int) (xInch * xmult), encoder_y = (int) (yInch * ymult);
+                int encoder_1 = Math.abs(encoder_x + encoder_y); // LB, RF
+                int encoder_2 = Math.abs(encoder_x - encoder_y); // LF, RB
+                double conversion_fct = speed / ((encoder_1 + encoder_2) / 2);
+                double speed_1 = conversion_fct * encoder_1, speed_2 = conversion_fct * encoder_2;
+                setAllDrivePower(speed_2, speed_1, speed_1, speed_2);
+                LF.setTargetPosition(encoder_x - encoder_y);
+                LB.setTargetPosition(-encoder_x - encoder_y);
+                RF.setTargetPosition(encoder_x + encoder_y);
+                RB.setTargetPosition(-encoder_x + encoder_y);
+                while ((LF.isBusy() || LB.isBusy() || RF.isBusy() || RB.isBusy()) && t.milliseconds() < p_time)
+                    ;
+            }
+        }
+
 }
