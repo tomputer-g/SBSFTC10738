@@ -32,7 +32,8 @@ public class MoveTest extends BaseAuto {
     private double speedLF=0,speedLB=0,speedRF=0,speedRB=0;
     private double  kP = 0.5, kI = 0, kD = 0.0025;
     int WaitingTime = 300;
-
+    int steps = 20;
+    double basespeed = 0.23;
     //ModernRoboticsI2cRangeSensor rangeSensorSide;
     int dir;
     private void 三天之内刹了你(){
@@ -67,9 +68,11 @@ public class MoveTest extends BaseAuto {
         if(zheng(this.gamepad1.dpad_right,fff))speedLF+=0.1*dir;
         if(zheng(this.gamepad1.dpad_up,ee))speedRF+=0.1*dir;
         if(zheng(this.gamepad1.dpad_down,ff))speedRB+=0.1*dir;
-        if(zheng(this.gamepad1.y,m))dir*=-1;
-        if(zheng(this.gamepad1.a,mm))speed-=.01;
-        if(zheng(this.gamepad1.b,f))setNewGyro0();
+        if(zheng(this.gamepad1.y,m))basespeed+=.01;
+        if(zheng(this.gamepad1.a,mm))basespeed-=.01;
+        if(zheng(this.gamepad1.b,f))steps++;
+        if(zheng(this.gamepad1.x,ff))steps--;
+
             /*
         if(zheng(this.gamepad1.left_bumper,bF)){
             ElapsedTime t=new ElapsedTime();
@@ -135,21 +138,38 @@ public class MoveTest extends BaseAuto {
             setAllDrivePower(0);
         }
         */
-        if(zheng(this.gamepad1.right_bumper,bF)) {
 
-            setAllDrivePowerG(-speed,-speed,speed,speed);
-            wait(1000);
+        if(zheng(this.gamepad1.right_bumper,bF)) {
+            platform_grabber.setPower(-1);
+            wait(300);
+            moveInchesGOX(-16.5,0.8);
+            for(int i = 1;i<=steps;++i){
+            RF.setPower(  i*basespeed/steps);
+            LB.setPower(2*i*basespeed/steps);
+            LF.setPower(3*i*basespeed/steps);
+            wait(20);
+            //LB.setPower(0);
+            }
+            while(getHeading()<85);
+            setNewGyro(90);
+            //moveInchesGOX(15,0.7);
             setAllDrivePower(0);
+            platform_grabber.setPower(0);
         }
-        slowModeMove(-0.4 * this.gamepad1.left_stick_x, -0.16 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.3 * this.gamepad1.right_stick_x));
-        telemetry.addData("x: ",x);
-        telemetry.addData("y: ",y);
+        //slowModeMove(-0.4 * this.gamepad1.left_stick_x, -0.16 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.3 * this.gamepad1.right_stick_x));
+        telemetry.addData("bspeed: ","%.3f",basespeed);
+        telemetry.addData("steps: ",steps);
         //telemetry.addData("wait: ",WaitingTime);
         //telemetry.addData("Imu: ","%.2f",getHeading());
         //telemetry.addData("Speed: ","%.2f" ,speed);
         //telemetry.addData("enc X", xOdometry.getCurrentPosition());
-        telemetry.addData("enc Y", LF.getCurrentPosition()/1305);
-        telemetry.addData("ss", -platform_grabber.getCurrentPosition());
+        //telemetry.addData("enc Y", LF.getCurrentPosition()/1305);
+        //telemetry.addData("ss", -platform_grabber.getCurrentPosition());
+        telemetry.addData("lf",LF.getCurrentPosition());
+        telemetry.addData("lb",LB.getCurrentPosition());
+        telemetry.addData("rf",RF.getCurrentPosition());
+        telemetry.addData("rb",RB.getCurrentPosition());
+
         telemetry.update();
     }
 

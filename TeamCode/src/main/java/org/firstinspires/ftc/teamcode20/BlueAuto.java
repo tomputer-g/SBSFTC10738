@@ -76,16 +76,17 @@ public class BlueAuto extends BaseAuto {
         //grab 1st block
         //setAllDrivePowerG(-0.2,-0.2,0.2,0.2);
         grabber.setPosition(grabber_closed);
-        wait(300);        servoThread.setTarget(0.95);
+        wait(300);
+        servoThread.setTarget(0.95);
 
         //setAllDrivePower(0.0);
         moveInchesG(0,-10,0.3);
 
         //move forward & approach foundation
-        turn(90, 0.4, 0.8);
+        //turn(90, 0.4, 0.8);
         setNewGyro(90);
         p.reset();
-        moveInchesGOY((88+shift),0.9);
+        moveInchesGOY((88+shift),0.6);
         this.stop();
         requestOpModeStop();
         moveInchesGOX(17.5,0.5);
