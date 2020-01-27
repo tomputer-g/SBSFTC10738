@@ -1,27 +1,12 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.w3c.dom.Element.*;
-import com.google.ftcresearch.tfod.tracking.ObjectTracker;
-import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
-import org.firstinspires.ftc.teamcode20.TractionControl;
 
 import static java.lang.Math.sqrt;
-import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
 @TeleOp
 public class MoveTest extends BaseAuto {
@@ -194,7 +179,7 @@ public class MoveTest extends BaseAuto {
     }
     //move
     protected void moveInchesGOY(double yInch, double speed) {
-        offsetY = getYOdometry();
+        offsetY = getY1Odometry();
         speed = Math.abs(speed);
         double multiply_factor = 1;
         int odometryYGoal = offsetY + (int) (yInch * odometryEncPerInch);
@@ -202,23 +187,23 @@ public class MoveTest extends BaseAuto {
         double vy = (yInch == 0) ? 0 : (yInch / Math.abs(yInch) * speed);
         long IError = 0;
         setAllDrivePowerG((vy), (vy), (-vy), (-vy));
-        int previousPos = getYOdometry();
+        int previousPos = getY1Odometry();
         int Dterm;
         //platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         while (multiply_factor>0.1) {
-            multiply_factor = -Math.min(1, Math.max(-1, (kP * (getYOdometry() - odometryYGoal) / odometryEncPerInch) + (kI * IError) + (kD * (getYOdometry() - previousPos))));
-            Dterm = getYOdometry() - previousPos;
-            previousPos = getYOdometry();
-            IError += (getYOdometry() - odometryYGoal) / odometryEncPerInch;
+            multiply_factor = -Math.min(1, Math.max(-1, (kP * (getY1Odometry() - odometryYGoal) / odometryEncPerInch) + (kI * IError) + (kD * (getY1Odometry() - previousPos))));
+            Dterm = getY1Odometry() - previousPos;
+            previousPos = getY1Odometry();
+            IError += (getY1Odometry() - odometryYGoal) / odometryEncPerInch;
             setAllDrivePowerG(multiply_factor * (-vx - vy), multiply_factor * (vx - vy), multiply_factor * (-vx + vy), multiply_factor * (vx + vy));
             /*
             telemetry.addData("kP", kP);
-            telemetry.addData("P term", (getYOdometry() - odometryYGoal) / odometryEncYPerInch);
+            telemetry.addData("P term", (getY1Odometry() - odometryYGoal) / odometryEncYPerInch);
             telemetry.addData("kI", kI);
             telemetry.addData("I term", IError);
             telemetry.addData("kD", kD);
             telemetry.addData("D term", Dterm);
-            telemetry.addData("current", getYOdometry());
+            telemetry.addData("current", getY1Odometry());
             telemetry.addData("Y goal", odometryYGoal);
             telemetry.update();
             */
