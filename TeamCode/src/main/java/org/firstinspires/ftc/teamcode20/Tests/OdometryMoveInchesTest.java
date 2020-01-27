@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -36,9 +38,10 @@ public class OdometryMoveInchesTest extends BaseAuto {
         if(this.gamepad1.a){APrimed = true;}if(APrimed && !this.gamepad1.a){ APrimed = false;
             resetY1Odometry();
             resetXOdometry();
+            setNewGyro0();
             LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            moveInchesGOX(params[4],params[3]);
+            moveInchesGOY(params[4],params[3]);
         }
 
         if(this.gamepad1.left_bumper){lb = true;}if(!this.gamepad1.left_bumper && lb){
@@ -80,10 +83,14 @@ public class OdometryMoveInchesTest extends BaseAuto {
             params[currentSelectParamIndex] = -params[currentSelectParamIndex];
         }
 
+        telemetry.addData("for reference","\n0.3 speed: P = 1,       D = 0.12,   result: +1/32 in\n" +
+                "    0.6 speed: P = 0.075,   D = 1.4E-2, result: 0 in.\n" +
+                "    0.9 speed: P = 0.0325,  D = 7.3E-3, result: +- 1/4 in");
         telemetry.addData("parameters",params[0]+", "+params[1]+", "+params[2]+", "+params[3]+", "+params[4]);
         telemetry.addData("now changing", paramNames[currentSelectParamIndex]);
         telemetry.addData("enc X", getXOdometry());
-        telemetry.addData("target", params[4] * odometryEncYPerInch);
+        telemetry.addData("enc Y1",getY1Odometry());
+        telemetry.addData("target", -params[4] * odometryEncYPerInch);
         telemetry.update();
     }
 
@@ -93,6 +100,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
         stopLog();
         super.stop();
     }
+
     protected void moveInchesGOX(double xInch, double speed){
         if(xInch == 0)return;
         writeLogHeader("P="+params[0]+", I="+params[1]+", D="+params[2]+",speed="+speed+",target="+xInch * odometryEncXPerInch+", batt"+hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS));
@@ -124,6 +132,42 @@ public class OdometryMoveInchesTest extends BaseAuto {
         writeLogHeader("Gyro drift="+getHeading()+", Ydrift="+ getY1Odometry());
         writeLogHeader("----End of GOX----");
     }
+
+    protected void moveInchesGOY(double yInch, double speed){
+        yInch = -yInch;
+        setNewGyro0();
+        double kP = params[0], kD = params[2];
+        if(yInch == 0)return;
+
+        ElapsedTime t = new ElapsedTime();
+        int offsetY = getY1Odometry();
+        speed=Math.abs(speed);
+        double multiply_factor, prev_speed = 0;
+        int odometryYGoal = offsetY + (int)(yInch * odometryEncYPerInch);
+        double vy = speed;
+        int previousPos = offsetY, currentOdometry, Dterm;
+        double tpre = 0, tcur;
+        int steadyCounter = 0;
+        while(steadyCounter < 5 && !this.gamepad1.b){//b is there so we can break out of loop anytime
+            currentOdometry = getY1Odometry();
+            tcur=t.milliseconds();
+            Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
+            multiply_factor = -Math.min(1, Math.max(-1, ((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
+            if(near(prev_speed, multiply_factor*vy,0.001) && near(currentOdometry, odometryYGoal, odometryEncYPerInch)){
+                steadyCounter++;
+            }else{
+                steadyCounter = 0;
+            }
+            Log.d("GOY "+yInch,"steady"+steadyCounter+", position"+currentOdometry+", speed"+prev_speed);
+            previousPos = currentOdometry;
+            tpre=tcur;
+            setAllDrivePowerG(multiply_factor*vy,multiply_factor*vy,multiply_factor*-vy,multiply_factor*-vy);
+            prev_speed = multiply_factor * vy;
+        }
+        setAllDrivePower(0);
+
+    }
+
     private void antiSkidAccelerationX(double start, double goal, double accTime){
         writeLogHeader("start="+start+",goal="+goal+",acc time="+accTime+",batt "+hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2").read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)+"V");
         writeLogHeader("time,delta,current,odometry,wheel");

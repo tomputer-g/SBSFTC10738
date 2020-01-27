@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode20;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous()
+@Autonomous
 public class BlueAuto extends BaseAuto {
     protected final double odometryEncPerInch = 1316;//4096.0/Math.PI;
     protected int offsetY = 0;
