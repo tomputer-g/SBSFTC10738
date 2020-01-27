@@ -10,6 +10,7 @@ import android.util.Log;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.vuforia.Image;
@@ -72,10 +73,11 @@ public class BaseAuto extends BaseOpMode {
     private double[] displacements = {2, 7};//+ = forward; + = right
     private double headingDisplacement = -90;
 
-    //Encoders
+    //Odometry
     protected double xmult = 1430.5/72, ymult = 18.65;
     protected double[] coo={0,0};
     private double xpre=0,y1pre=0,y2pre=0,theta=0;
+    protected CooThread cooThread;
 
     protected void initVuforia(){
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -363,6 +365,23 @@ public class BaseAuto extends BaseOpMode {
         tower_top = hardwareMap.get(Rev2mDistanceSensor.class, "tower_top");
     }
 
+    //Odometry
+    protected void initOdometry(){
+        //L2 is Y encoder
+        //platform grabber is X encoder
+        platform_grabber = hardwareMap.get(DcMotor.class, "platform");
+        platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        xOdometry = hardwareMap.get(DcMotor.class, "xOdo");
+        xOdometry.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        xOdometry.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        L2 = hardwareMap.get(DcMotor.class, "L2");
+        L2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        cooThread=new CooThread();
+        cooThread.start();
+    }
+
     //IMU
     protected void initIMU(){
         BNO055IMU.Parameters BNOParameters = new BNO055IMU.Parameters();
@@ -461,19 +480,6 @@ public class BaseAuto extends BaseOpMode {
             return i<-100?i+360:i;
         else
             return i>100?i-360:i;
-    }
-
-    protected void updateCoo(){
-        double dtheta=getHeading()-theta;
-        double xcur=getXOdometry()/odometryEncXPerInch,y1cur=-getY1Odometry()/odometryEncYPerInch,y2cur=-getY2Odometry()/odometryEncYPerInch,thetacur=imuHeading/180*Math.PI;
-        double dx=(near(dtheta,0,3))?xcur-xpre:0;
-        double dy=(y1cur-y1pre+y2cur-y2pre)/2;
-        coo[0] += (dx * Math.cos(thetacur) + dy * Math.sin(thetacur));
-        coo[1] += (dx * Math.sin(thetacur) + dy * Math.cos(thetacur));
-        xpre=xcur;
-        y1pre=y1cur;
-        y2pre=y2cur;
-        theta=imuHeading;
     }
 
     protected void setAllDrivePowerG(double a, double b, double c, double d,double Kp){
@@ -618,4 +624,31 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(-speed,-speed,speed,speed);
         wait(40+(int)(400*Math.abs(speed)));
     }
+
+    //Coordinate
+    protected void updateCoo(){
+        double dtheta=getHeading()-theta;
+        double xcur=getXOdometry()/odometryEncXPerInch,y1cur=-getY1Odometry()/odometryEncYPerInch,y2cur=-getY2Odometry()/odometryEncYPerInch,thetacur=imuHeading/180*Math.PI;
+        double dx=(near(dtheta,0,3))?xcur-xpre:0;
+        double dy=(y1cur-y1pre+y2cur-y2pre)/2;
+        coo[0] += (dx * Math.cos(thetacur) + dy * Math.sin(thetacur));
+        coo[1] += (dx * Math.sin(thetacur) + dy * Math.cos(thetacur));
+        xpre=xcur;
+        y1pre=y1cur;
+        y2pre=y2cur;
+        theta=imuHeading;
+    }
+    protected class CooThread extends Thread{
+        volatile public boolean stop = false;
+        @Override
+        public void run() {
+            while (!isInterrupted() && !stop) {
+                updateCoo();
+            }
+        }
+        public void stopThread(){
+            stop = true;
+        }
+    }
 }
+
