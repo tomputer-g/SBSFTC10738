@@ -449,7 +449,7 @@ public class BaseAuto extends BaseOpMode {
                 i++;
             t.reset();
         }
-        setAllDrivePower(0.0);
+        setAllDrivePower(0);
         acctarget+=target;
         if(resetOffset)
             acctarget=0;
