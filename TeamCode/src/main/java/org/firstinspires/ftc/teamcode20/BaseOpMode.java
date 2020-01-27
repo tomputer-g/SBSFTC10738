@@ -152,7 +152,6 @@ public class BaseOpMode extends OpMode {
     protected void setAllDrivePower(double pX, double pY){
         if(Math.abs(pX)+Math.abs(pY) > 1)
             throw new IllegalArgumentException("setAllDrivePower(px,py) sets a power beyond 1");
-        setMode_RUN_WITHOUT_ENCODER();
         LF.setPower(-pX+pY);
         LB.setPower(pX+pY);
         RF.setPower(-pX-pY);
