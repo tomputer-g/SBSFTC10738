@@ -76,8 +76,7 @@ public class BlueAuto extends BaseAuto {
         setNewGyro(90);
         p.reset();
         moveInchesGOY((86.75+shift),0.6);
-        telemetry.addData("x,y","%.2f %.2f", n_pass[0], n_pass[1]);
-        telemetry.update();
+
         wait(3000);
         //telemetry.addData()
         /*

@@ -644,6 +644,8 @@ public class BaseAuto extends BaseOpMode {
         public void run() {
             while (!isInterrupted() && !stop) {
                 updateCoo();
+                telemetry.addData("x,y","%.2f %.2f", n_pass[0], n_pass[1]);
+                telemetry.update();
             }
         }
         public void stopThread(){
