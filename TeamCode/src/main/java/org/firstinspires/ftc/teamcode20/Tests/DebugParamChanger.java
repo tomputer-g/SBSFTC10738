@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode20.Tests;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp
 public class DebugParamChanger extends OpMode {
     private double[] params = {0,0,0,0,0};
     private String[] paramNames = {"a", "b", "c", "d", "e"};
