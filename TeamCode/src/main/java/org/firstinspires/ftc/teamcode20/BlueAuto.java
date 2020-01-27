@@ -85,14 +85,14 @@ public class BlueAuto extends BaseAuto {
 
         //move forward & approach foundation
         //turn(90, 0.4, 0.8);
-        //setNewGyro(90);
+        setNewGyro(90);
         p.reset();
         //kuaishou
-        moveInchesGOX(-(84+shift),0.5);
+        moveInchesGOY(-(88+shift),0.5);
         servoThread.setTarget(0.5);
         Log.d("BlueAuto","88+shift GOY finished");
-        moveInchesGOY(18,0.6);
-        servoThread.setTarget(0.8);
+        //moveInchesGOY(18,0.6);
+        //servoThread.setTarget(0.8);
         requestOpModeStop();
 
         //wait(1500);
