@@ -31,8 +31,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         initGrabber();
         initLinSlide();
         initSensors();
-        xOdometry = hardwareMap.get(DcMotor.class, "xOdo");
-        xOdometry.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        initOdometry();
         initPlatformGrabber();
         initIMU();
         setNewGyro0();
@@ -57,6 +56,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
     @Override public void start() {
         super.start();
+        cooThread.start();
         pwmThread.start();
     }
 
@@ -182,6 +182,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             telemetry.addData("ext", grabber_extend1.getPosition());
             telemetry.addData("slide 1", L1.getCurrentPosition());
             telemetry.addData("tower_top dist", tower_top.getDistance(DistanceUnit.INCH) + "in.");
+            telemetry.addData("x,y","%.2f %.2f", n_pass[0], n_pass[1]);
             telemetry.update();
         }
     }
