@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -37,7 +35,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
     @Override
     public void loop() {
         if(this.gamepad1.a){APrimed = true;}if(APrimed && !this.gamepad1.a){ APrimed = false;
-            resetYOdometry();
+            resetY1Odometry();
             resetXOdometry();
             setNewGyro0();
             LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -138,7 +136,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
             writeLog(t.milliseconds()+", "+currentOdometry+", "+((currentOdometry - odometryXGoal)/odometryEncXPerInch)+", "+((currentOdometry - odometryXGoal)/odometryEncXPerInch)*params[0]+", "+Dterm+", "+(near(Dterm,0,speed * 5000 / 0.3)?(params[2] * Dterm):"CLIPPED")+", "+LF.getPower()+", "+LF.getCurrentPosition()+", "+getHeading());
         }
         setAllDrivePower(0);
-        writeLogHeader("Gyro drift="+getHeading()+", Ydrift="+getYOdometry());
+        writeLogHeader("Gyro drift="+getHeading()+", Ydrift="+ getY1Odometry());
         writeLogHeader("----End of GOX----");
     }
 /*

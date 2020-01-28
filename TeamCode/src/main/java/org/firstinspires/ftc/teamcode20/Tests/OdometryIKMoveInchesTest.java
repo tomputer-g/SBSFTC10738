@@ -25,7 +25,7 @@ public class OdometryIKMoveInchesTest extends BaseAuto {
     @Override
     public void loop() {
         if(this.gamepad1.a){APrimed = true;}if(APrimed && !this.gamepad1.a){ APrimed = false;
-            resetYOdometry();
+            resetY1Odometry();
             moveInchesGOY(targetInches,speed);
         }
         if(this.gamepad1.dpad_left){leftP = true;}if(leftP && !this.gamepad1.dpad_left){ leftP = false;
@@ -71,7 +71,7 @@ public class OdometryIKMoveInchesTest extends BaseAuto {
         kI = Math.round(kI * 1E9) / 1.0E9;
         kD = Math.round(kD * 1E9) / 1.0E9;
         k = Math.round(k * 100) / 100.0;
-        telemetry.addData("enc Y", getYOdometry());
+        telemetry.addData("enc Y", getY1Odometry());
         telemetry.addData("target", targetInches * odometryEncPerInch);
         telemetry.addData("speed", speed);
         telemetry.addData("kP", kP);
@@ -96,7 +96,7 @@ public class OdometryIKMoveInchesTest extends BaseAuto {
         writeLogHeader("P="+kP+", I="+kI+", D="+kD+",k="+k+",speed="+speed+",target="+targetInches * odometryEncPerInch+", brakeDist="+brakeDist);
         writeLogHeader("time,position,P,I,D,LF speed");
         ElapsedTime t = new ElapsedTime();
-        offsetY = getYOdometry();
+        offsetY = getY1Odometry();
         speed=Math.abs(speed);
         double multiply_factor=1;
         int odometryYGoal = offsetY + (int)(yInch * odometryEncPerInch);
@@ -104,29 +104,29 @@ public class OdometryIKMoveInchesTest extends BaseAuto {
         double vy=(yInch==0)?0:(yInch/Math.abs(yInch)*speed);
         long IError = 0;
         setAllDrivePower((vy),(vy),(-vy),(-vy));
-        int previousPos = getYOdometry();
+        int previousPos = getY1Odometry();
         int Dterm;
         double tpre=0;
-        while(Math.abs((getYOdometry() - odometryYGoal)/odometryEncPerInch) > brakeDist);
-        while(!this.gamepad1.b && !near(getYOdometry(),odometryYGoal,100)){
+        while(Math.abs((getY1Odometry() - odometryYGoal)/odometryEncPerInch) > brakeDist);
+        while(!this.gamepad1.b && !near(getY1Odometry(),odometryYGoal,100)){
             double tcur=t.milliseconds();
-            Dterm = (int)((getYOdometry() - previousPos)/(tcur-tpre));
-            multiply_factor = -Math.min(1, Math.max(-1, k *((kP * -(getYOdometry() - odometryYGoal)/odometryEncPerInch) +  (near(Dterm,0,5000)?(kD * Dterm):0)) + (kI * IError )));
+            Dterm = (int)((getY1Odometry() - previousPos)/(tcur-tpre));
+            multiply_factor = -Math.min(1, Math.max(-1, k *((kP * -(getY1Odometry() - odometryYGoal)/odometryEncPerInch) +  (near(Dterm,0,5000)?(kD * Dterm):0)) + (kI * IError )));
             tpre=tcur;
-            previousPos = getYOdometry();
-            IError += (getYOdometry() - odometryYGoal);
+            previousPos = getY1Odometry();
+            IError += (getY1Odometry() - odometryYGoal);
             setAllDrivePowerG(multiply_factor*(-vx-vy),multiply_factor*(vx-vy),multiply_factor*(-vx+vy),multiply_factor*(vx+vy));
 
-            writeLog(t.milliseconds()+", "+getYOdometry()+", "+((getYOdometry() - odometryYGoal)/odometryEncPerInch)+", "+IError+", "+Dterm+(near(Dterm,0,5000)?"":"clipped")+", "+multiply_factor*(-vx-vy));
+            writeLog(t.milliseconds()+", "+ getY1Odometry()+", "+((getY1Odometry() - odometryYGoal)/odometryEncPerInch)+", "+IError+", "+Dterm+(near(Dterm,0,5000)?"":"clipped")+", "+multiply_factor*(-vx-vy));
             telemetry.addData("power",LF.getPower());
             telemetry.update();
             /*telemetry.addData("kP", kP);
-            telemetry.addData("P term", (getYOdometry() - odometryYGoal)/odometryEncYPerInch);
+            telemetry.addData("P term", (getY1Odometry() - odometryYGoal)/odometryEncYPerInch);
             telemetry.addData("kI", kI);
             telemetry.addData("I term", IError);
             telemetry.addData("kD", kD);
             telemetry.addData("D term",Dterm);
-            telemetry.addData("current",getYOdometry());
+            telemetry.addData("current",getY1Odometry());
             telemetry.addData("Y goal",odometryYGoal);
             telemetry.update();
              */
