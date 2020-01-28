@@ -1,29 +1,12 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.w3c.dom.Element.*;
-import com.google.ftcresearch.tfod.tracking.ObjectTracker;
-import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
-import org.firstinspires.ftc.teamcode20.TractionControl;
 
 import static java.lang.Math.sqrt;
-import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
 @TeleOp
 public class MoveTest extends BaseAuto {
@@ -39,6 +22,7 @@ public class MoveTest extends BaseAuto {
 
 
     private PG pg=new PG();
+    private Thread uc=new UC();
     int dir;
     private void 三天之内刹了你(){
         setAllDrivePower(1,1,-1,-1);
@@ -68,16 +52,26 @@ public class MoveTest extends BaseAuto {
     @Override
     public void start(){
         pg.start();
+        uc.start();
     }
 
     @Override
     public void stop(){
-        pg.stopThread();
     }
 
     @Override
     public void loop(){
-        /*
+        if(zheng(this.gamepad1.dpad_left,eee))speedLB+=0.1*dir;
+        if(zheng(this.gamepad1.dpad_right,fff))speedLF+=0.1*dir;
+        if(zheng(this.gamepad1.dpad_up,ee))speedRF+=0.1*dir;
+        if(zheng(this.gamepad1.dpad_down,ff))speedRB+=0.1*dir;
+        if(zheng(this.gamepad1.y,m))basespeed+=.01;
+        if(zheng(this.gamepad1.a,mm))basespeed-=.01;
+        if(zheng(this.gamepad1.b,f))steps++;
+        if(zheng(this.gamepad1.x,ff))steps--;
+
+            /*
+
         if(zheng(this.gamepad1.dpad_left,eee))x-=0.1;
         if(zheng(this.gamepad1.dpad_right,fff))x+=0.1;
         if(zheng(this.gamepad1.dpad_up,ee))y+=0.1;
@@ -85,32 +79,33 @@ public class MoveTest extends BaseAuto {
         if(zheng(this.gamepad1.y,m))speed+=1;
         if(zheng(this.gamepad1.a,mm))speed-=.01;
         if(zheng(this.gamepad1.b,f))setNewGyro0();
-         */
-        //if(zheng(this.gamepad1.left_bumper,bF)){
-        ElapsedTime t=new ElapsedTime();
-        targetsSkyStone.activate();
-        VuforiaTrackable trackable = allTrackables.get(12);
-        while(t.milliseconds()<500000) {
-            if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
-                if (robotLocationTransform != null) {
-                    lastLocation = robotLocationTransform;
+
+        if(zheng(this.gamepad1.left_bumper,bF)){
+            ElapsedTime t=new ElapsedTime();
+            targetsSkyStone.activate();
+            VuforiaTrackable trackable = allTrackables.get(11);
+            while(t.milliseconds()<50000) {
+                if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
+                    if (robotLocationTransform != null) {
+                        lastLocation = robotLocationTransform;
+                    }
+                    if (trackable.getName().equals("Rear Perimeter 1")) {
+                        Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+                        telemetry.addLine("Turn " + (int) Math.abs(rotation.thirdAngle - 90) + (rotation.thirdAngle - 90 > 0 ? "deg. CW" : "deg. CCW"));
+                        VectorF translation = lastLocation.getTranslation();
+                        double disty = translation.get(1)/mmPerInch;
+                        double distx = translation.get(0)/mmPerInch;
+                        double distz = translation.get(2)/mmPerInch;
+                        telemetry.addData("x: ",distx);
+                        telemetry.addData("y: ",disty);
+                        telemetry.addData("z: ",distz);
+                    }
+                    telemetry.update();
                 }
-                if (trackable.getName().equals("Rear Perimeter 2")) {
-                    Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                    telemetry.addLine("Turn " + (int) Math.abs(rotation.thirdAngle - 90) + (rotation.thirdAngle - 90 > 0 ? "deg. CW" : "deg. CCW"));
-                    VectorF translation = lastLocation.getTranslation();
-                    double disty = translation.get(1)/mmPerInch;
-                    double distx = translation.get(0)/mmPerInch;
-                    double distz = translation.get(2)/mmPerInch;
-                    telemetry.addData("x: ",distx);
-                    telemetry.addData("y: ",disty);
-                    telemetry.addData("z: ",distz);
-                }
-                telemetry.update();
             }
-        }
             shutdownVuforia();
+        }
 
         /*
         if(zheng(this.gamepad1.left_bumper,lF)) {
@@ -137,9 +132,24 @@ public class MoveTest extends BaseAuto {
         telemetry.addData("y: ",y);
         telemetry.addData("Imu: ","%.2f",getHeading());
         telemetry.addData("Speed: ","%.2f" ,speed);;
+        telemetry.addData("[x]: ","%.2f",n_pass[0]);
+        telemetry.addData("[y]: ","%.2f" ,n_pass[1]);;
         telemetry.update();
 
         */
+    }
+
+    private class UC extends Thread{
+        volatile boolean stop = false,run=false;
+        @Override
+        public void run() {
+            while(!isInterrupted()&&!stop){
+                updateCoo();
+            }
+        }
+        public void stopThread(){
+            stop = true;
+        }
     }
 
     private class PG extends Thread{
@@ -188,7 +198,7 @@ public class MoveTest extends BaseAuto {
     }
     //move
     protected void moveInchesGOY(double yInch, double speed) {
-        offsetY = getYOdometry();
+        offsetY = getY1Odometry();
         speed = Math.abs(speed);
         double multiply_factor = 1;
         int odometryYGoal = offsetY + (int) (yInch * odometryEncPerInch);
@@ -196,23 +206,23 @@ public class MoveTest extends BaseAuto {
         double vy = (yInch == 0) ? 0 : (yInch / Math.abs(yInch) * speed);
         long IError = 0;
         setAllDrivePowerG((vy), (vy), (-vy), (-vy));
-        int previousPos = getYOdometry();
+        int previousPos = getY1Odometry();
         int Dterm;
         //platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         while (multiply_factor>0.1) {
-            multiply_factor = -Math.min(1, Math.max(-1, (kP * (getYOdometry() - odometryYGoal) / odometryEncPerInch) + (kI * IError) + (kD * (getYOdometry() - previousPos))));
-            Dterm = getYOdometry() - previousPos;
-            previousPos = getYOdometry();
-            IError += (getYOdometry() - odometryYGoal) / odometryEncPerInch;
+            multiply_factor = -Math.min(1, Math.max(-1, (kP * (getY1Odometry() - odometryYGoal) / odometryEncPerInch) + (kI * IError) + (kD * (getY1Odometry() - previousPos))));
+            Dterm = getY1Odometry() - previousPos;
+            previousPos = getY1Odometry();
+            IError += (getY1Odometry() - odometryYGoal) / odometryEncPerInch;
             setAllDrivePowerG(multiply_factor * (-vx - vy), multiply_factor * (vx - vy), multiply_factor * (-vx + vy), multiply_factor * (vx + vy));
             /*
             telemetry.addData("kP", kP);
-            telemetry.addData("P term", (getYOdometry() - odometryYGoal) / odometryEncYPerInch);
+            telemetry.addData("P term", (getY1Odometry() - odometryYGoal) / odometryEncYPerInch);
             telemetry.addData("kI", kI);
             telemetry.addData("I term", IError);
             telemetry.addData("kD", kD);
             telemetry.addData("D term", Dterm);
-            telemetry.addData("current", getYOdometry());
+            telemetry.addData("current", getY1Odometry());
             telemetry.addData("Y goal", odometryYGoal);
             telemetry.update();
             */

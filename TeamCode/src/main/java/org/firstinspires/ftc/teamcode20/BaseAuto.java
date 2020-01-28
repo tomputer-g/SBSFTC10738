@@ -73,7 +73,7 @@ public class BaseAuto extends BaseOpMode {
     private double[] displacements = {2, 7};//+ = forward; + = right
     private double headingDisplacement = -90;
 
-    //Encoders
+    //Odometry
     protected double xmult = 1430.5/72, ymult = 18.65;
     protected double[] n_pass ={0,0};
     private double xpre=0,y1pre=0,y2pre=0,theta=0;
@@ -561,7 +561,7 @@ public class BaseAuto extends BaseOpMode {
             kD = 7.3E-3;
         }
         ElapsedTime t = new ElapsedTime();
-        int offsetY = getYOdometry();
+        int offsetY = getY1Odometry();
         speed=Math.abs(speed);
         double multiply_factor, prev_speed = 0;
         int odometryYGoal = offsetY + (int)(yInch * odometryEncYPerInch);
@@ -570,7 +570,7 @@ public class BaseAuto extends BaseOpMode {
         double tpre = 0, tcur;
         int steadyCounter = 0;
         while(steadyCounter < 5 && !this.gamepad1.b){//b is there so we can break out of loop anytime
-            currentOdometry = getYOdometry();
+            currentOdometry = getY1Odometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
             multiply_factor = -Math.min(1, Math.max(-1, ((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));

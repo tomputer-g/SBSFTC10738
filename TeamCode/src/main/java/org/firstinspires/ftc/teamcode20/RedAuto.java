@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode20;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
 @Autonomous
 public class RedAuto extends TractionControl {
     private double speed = 0.4;
@@ -108,10 +106,10 @@ public class RedAuto extends TractionControl {
         */
         setAllDrivePower(0);
 
-        double tempY = getYOdometry();
-        double targetdist = getYOdometry()+12*1316;
+        double tempY = getY1Odometry();
+        double targetdist = getY1Odometry()+12*1316;
         p = new ElapsedTime();
-        while(getYOdometry()<targetdist&&p.milliseconds()<1500)
+        while(getY1Odometry()<targetdist&&p.milliseconds()<1500)
             setAllDrivePowerG(0.5,0.5,-0.5,-0.5,2);
         setAllDrivePower(0);
 
