@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -18,15 +16,16 @@ public class OdometryMoveInchesTest extends BaseAuto {
     0.6 speed: P = 0.075,   D = 1.4E-2, result: 0 in.
     0.9 speed: P = 0.0325,  D = 7.3E-3, result: spin +- 1/4 in
      */
-    private double[] params =       {0.05,  0,     0,       0.5,        40,           };
+    private double[] params =       {0.5,  0,     0.04,       0.5,        6,           };
     private String[] paramNames =   {"P",   "I",    "D",    "speed",    "targetInches"};
     private int currentSelectParamIndex = 0;
-    private boolean l, r, u, d, lb, rb, y, APrimed = false;
+    private boolean l, r, u, d, lb, rb, y, APrimed = false, x = false, platformGrabbed = false;
 
     protected final double odometryEncYPerInch = 1324.28, odometryEncXPerInch = 1316.38;
     @Override
     public void init() {
         initDrivetrain();
+        initPlatformGrabber();
         initOdometry();
         initIMU();
         initLogger("OdoMoveInchesX"+System.currentTimeMillis()+".csv");
@@ -41,7 +40,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
             setNewGyro0();
             LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            moveInchesGOY(params[4],params[3]);
+            moveInchesGOX(params[4],params[3]);
         }
 
         if(this.gamepad1.left_bumper){lb = true;}if(!this.gamepad1.left_bumper && lb){
@@ -83,9 +82,20 @@ public class OdometryMoveInchesTest extends BaseAuto {
             params[currentSelectParamIndex] = -params[currentSelectParamIndex];
         }
 
-        telemetry.addData("for reference","\n0.3 speed: P = 1,       D = 0.12,   result: +1/32 in\n" +
-                "    0.6 speed: P = 0.075,   D = 1.4E-2, result: 0 in.\n" +
-                "    0.9 speed: P = 0.0325,  D = 7.3E-3, result: +- 1/4 in");
+        if(this.gamepad1.x) {
+            x = true;
+        }if(!this.gamepad1.x && x){
+            x = false;
+            if(platformGrabbed){//already held
+                platformGrabbed = false;
+                platform_grabber.setPower(1);
+                wait(100);//TODO: blocks thread?
+                platform_grabber.setPower(0);
+            }else{
+                platformGrabbed = true;
+                platform_grabber.setPower(-0.4);
+            }
+        }
         telemetry.addData("parameters",params[0]+", "+params[1]+", "+params[2]+", "+params[3]+", "+params[4]);
         telemetry.addData("now changing", paramNames[currentSelectParamIndex]);
         telemetry.addData("enc X", getXOdometry());
@@ -101,20 +111,19 @@ public class OdometryMoveInchesTest extends BaseAuto {
         super.stop();
     }
 
-    protected void moveInchesGOX(double xInch, double speed){
+    protected void moveInchesGOX_platform(double xInch, double speed){
         if(xInch == 0)return;
         writeLogHeader("P="+params[0]+", I="+params[1]+", D="+params[2]+",speed="+speed+",target="+xInch * odometryEncXPerInch+", batt"+hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS));
-        writeLogHeader("millis time,position,P,eff. P Power,I,D,eff. D Power,LF speed,LF counts,GyroDrift");
+        writeLogHeader("millis time,position,P,eff. P Power,D,eff. D Power,LF speed,LF counts,GyroDrift");
         ElapsedTime t = new ElapsedTime();
         int offsetX = getXOdometry();
         speed=Math.abs(speed);
         double multiply_factor;
         int odometryXGoal = offsetX + (int)(xInch * odometryEncXPerInch);
-        double vx = (xInch/Math.abs(xInch)*speed);
-        setAllDrivePower(-vx,vx,-vx,vx);
+        double vx = speed;
         int previousPos = offsetX, currentOdometry, Dterm;
         double tpre = 0, tcur;
-        antiSkidAccelerationX(0,vx,1000);
+        //antiSkidAccelerationX(0,vx,1000);
         while(!this.gamepad1.b){
             currentOdometry = getXOdometry();
             tcur=t.milliseconds();
@@ -122,8 +131,6 @@ public class OdometryMoveInchesTest extends BaseAuto {
             multiply_factor = -Math.min(1, Math.max(-1, ((params[0] * (currentOdometry - odometryXGoal)/odometryEncXPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(params[2] * Dterm):0))));
             previousPos = currentOdometry;
             tpre=tcur;
-
-
             setAllDrivePowerG(multiply_factor*-vx,multiply_factor*vx,multiply_factor*-vx,multiply_factor*vx);
 
             writeLog(t.milliseconds()+", "+currentOdometry+", "+((currentOdometry - odometryXGoal)/odometryEncXPerInch)+", "+((currentOdometry - odometryXGoal)/odometryEncXPerInch)*params[0]+", "+Dterm+", "+(near(Dterm,0,speed * 5000 / 0.3)?(params[2] * Dterm):"CLIPPED")+", "+LF.getPower()+", "+LF.getCurrentPosition()+", "+getHeading());
@@ -132,7 +139,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
         writeLogHeader("Gyro drift="+getHeading()+", Ydrift="+ getY1Odometry());
         writeLogHeader("----End of GOX----");
     }
-
+/*
     protected void moveInchesGOY(double yInch, double speed){
         yInch = -yInch;
         setNewGyro0();
@@ -168,6 +175,8 @@ public class OdometryMoveInchesTest extends BaseAuto {
 
     }
 
+
+ */
     private void antiSkidAccelerationX(double start, double goal, double accTime){
         writeLogHeader("start="+start+",goal="+goal+",acc time="+accTime+",batt "+hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2").read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)+"V");
         writeLogHeader("time,delta,current,odometry,wheel");

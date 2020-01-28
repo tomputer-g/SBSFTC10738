@@ -543,7 +543,7 @@ public class BaseAuto extends BaseOpMode {
         moveInchesG(xInch,yInch,speed,.8);
     }
 
-    protected void moveInchesGOY(double yInch, double speed){
+    protected void moveInchesGOY(double yInch, double speed){//use 0.4 for short-dist
         yInch = -yInch;
         setNewGyro0();
         double kP = 1, kD = 0.12;
@@ -551,6 +551,9 @@ public class BaseAuto extends BaseOpMode {
         if(Math.abs(speed) == 0.3){
             kP = 1;
             kD = 0.12;
+        }else if(Math.abs(speed) == 0.4){
+            kP = 0.27;
+            kD = 0.03;
         }else if(Math.abs(speed) == 0.6){
             kP = 0.075;
             kD = 1.4E-2;
@@ -595,7 +598,6 @@ public class BaseAuto extends BaseOpMode {
         double multiply_factor, prev_speed = 0;
         int odometryXGoal = offsetX + (int)(xInch * odometryEncXPerInch);
         double vx = speed;//(xInch/Math.abs(xInch)*speed);//
-        setAllDrivePower(-vx,vx,-vx,vx);
         int previousPos = offsetX, currentOdometry, Dterm;
         double tpre = 0, tcur;
         int steadyCounter = 0;
@@ -604,6 +606,41 @@ public class BaseAuto extends BaseOpMode {
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
             multiply_factor = -Math.min(1, Math.max(-1, ((0.5 * (currentOdometry - odometryXGoal)/odometryEncXPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(0.05 * Dterm):0))));
+            if(near(prev_speed, multiply_factor*vx,0.001) && near(currentOdometry, odometryXGoal, odometryEncXPerInch)){
+                steadyCounter++;
+            }else{
+                steadyCounter = 0;
+            }
+            Log.d("GOX "+xInch,"steady"+steadyCounter+", position"+currentOdometry+", speed"+prev_speed);
+            previousPos = currentOdometry;
+            tpre=tcur;
+            setAllDrivePowerG(multiply_factor*-vx,multiply_factor*vx,multiply_factor*-vx,multiply_factor*vx);
+            prev_speed = multiply_factor * vx;
+        }
+        setAllDrivePower(0);
+    }
+
+    protected void moveInchesGOX_platform(double xInch, double speed){//0.8 only, for doing the platform
+        double kP = 1, kD = 0.07;
+        if(Math.abs(speed) == 0.8){
+            kP = 1;
+            kD = 0.07;
+        }
+        if(xInch == 0)return;
+        ElapsedTime t = new ElapsedTime();
+        int offsetX = getXOdometry();
+        speed=Math.abs(speed);
+        double multiply_factor, prev_speed = 0;
+        int odometryXGoal = offsetX + (int)(xInch * odometryEncXPerInch);
+        double vx = speed;//(xInch/Math.abs(xInch)*speed);//
+        int previousPos = offsetX, currentOdometry, Dterm;
+        double tpre = 0, tcur;
+        int steadyCounter = 0;
+        while(steadyCounter < 5 && !this.gamepad1.b){
+            currentOdometry = getXOdometry();
+            tcur=t.milliseconds();
+            Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
+            multiply_factor = -Math.min(1, Math.max(-1, ((kP * (currentOdometry - odometryXGoal)/odometryEncXPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
             if(near(prev_speed, multiply_factor*vx,0.001) && near(currentOdometry, odometryXGoal, odometryEncXPerInch)){
                 steadyCounter++;
             }else{
