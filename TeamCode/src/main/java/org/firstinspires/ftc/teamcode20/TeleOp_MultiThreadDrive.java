@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -15,11 +16,12 @@ import static java.lang.Thread.sleep;
 
 @TeleOp(group = "Final")
 public class TeleOp_MultiThreadDrive extends BaseAuto {
-    private boolean BPrimed = false, RBPrimed = false, YPrimed = false, DPRPrimed = false, LPrimed = false;
+    private boolean BPrimed = false, RBPrimed = false, YPrimed = false, DPRPrimed = false, LPrimed = false, start = false;
     private boolean[] xprime={true},Xprimed={true};
     private boolean tapeDirectionOut = true;
     //slide
     private boolean platformGrabbed = false;
+    Servo france;
 
 
     private PWMThread pwmThread;
@@ -35,6 +37,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         initPlatformGrabber();
         initIMU();
         setNewGyro0();
+        france = hardwareMap.get(Servo.class, "capstone");
         servoThread.setTarget(0.99);
         /*platform_grabber.setPower(1);
         wait(150);
@@ -104,6 +107,15 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         }
         if(this.gamepad1.b && this.gamepad1.left_bumper){
             grabber.setPosition(0.01);
+        }
+
+        if(this.gamepad1.start){start = true;}if(start && !this.gamepad1.start){
+            start = false;
+            if(france.getPosition() > 0.5){
+                france.setPosition(0);
+            }else{
+                france.setPosition(1);
+            }
         }
 
         //driver cancel LT&RT (by dpad up/dpad down/ RB/ LB+Left stick

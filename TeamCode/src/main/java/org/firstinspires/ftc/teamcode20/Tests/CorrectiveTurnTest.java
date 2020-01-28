@@ -12,8 +12,8 @@ import org.openftc.revextensions2.RevBulkData;
 
 @TeleOp
 public class CorrectiveTurnTest extends BaseAuto {
-    private double[] params = {1200,0.3,1E-4,1E-5};//,90.0,0};
-    private String[] paramNames = {"OCspeed","RTPSpeed","P","D"};//, "angle", "accTime"};
+    private double[] params = {0.3,90,1E-4,1E-5,0.5};//,90.0,0};
+    private String[] paramNames = {"speed","angle","P","D","rampUpS"};//, "angle", "accTime"};
     private int currentSelectParamIndex = 0;
     private boolean l, r, u, d, lb, rb, a, y;
 
@@ -29,7 +29,7 @@ public class CorrectiveTurnTest extends BaseAuto {
 
         if(this.gamepad1.a){a = true;}if(!this.gamepad1.a && a){
             a = false;
-            correctiveTurnSpeed(params[0]);
+            correctiveTurn(params[1], params[0]);
             //correctiveTurn(params[1],params[0],params[2]);
         }
         /*if(this.gamepad1.y){y = true;}if(!this.gamepad1.y && y){
@@ -87,7 +87,7 @@ public class CorrectiveTurnTest extends BaseAuto {
 
         }
 
-        telemetry.addData("parameters",params[0]+", "+params[1]+", "+params[2]+","+params[3]);
+        telemetry.addData("parameters",params[0]+", "+params[1]+", "+params[2]+","+params[3]+","+params[4]);
         telemetry.addData("now changing", paramNames[currentSelectParamIndex]);
         telemetry.update();
     }
@@ -97,6 +97,26 @@ public class CorrectiveTurnTest extends BaseAuto {
         stopLog();
         super.stop();
     }
+
+    private void correctiveTurn(double angle, double OCspeed){
+        writeLogHeader("P="+params[2]+",D="+params[3]+",target="+OCspeed+",angle"+angle+",batt "+hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)+"V");
+        setNewGyro0();
+        double multiplier = 0;
+        double currentError = 0, lastError = 0;
+        double lastSpeed = 0;
+        ElapsedTime t = new ElapsedTime();
+        while(!this.gamepad1.b){
+            double currentHeading = getHeading();
+            currentError = currentHeading - angle;
+            multiplier = -Math.max(-1, Math.min(1, params[2] * currentError + params[3] * (lastError - currentError)*1000/t.milliseconds()));
+            //lastSpeed = lastSpeed + multiplier * OCspeed;
+            setAllDrivePower(multiplier * OCspeed);
+            t.reset();
+            lastError = currentError;//CCW=+
+        }
+        setAllDrivePower(0);
+    }
+
 
     private void correctiveTurnSpeed(double targetSpeed){
         writeLogHeader("P="+params[2]+",D="+params[3]+",target="+targetSpeed+",batt "+hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)+"V");
@@ -117,6 +137,7 @@ public class CorrectiveTurnTest extends BaseAuto {
         double[] currentSpeed = {0,0,0,0};
         double[] setPower = {0,0,0,0};
         double[] lastSpeed = {0,0,0,0};
+        double rampupSpeed = 0;
         ElapsedTime t = new ElapsedTime();
         /*
         double rampUpSpeed = 0;
@@ -138,7 +159,7 @@ public class CorrectiveTurnTest extends BaseAuto {
             previousPos[2] = bulk.getMotorCurrentPosition(RF);
             previousPos[3] = bulk.getMotorCurrentPosition(RB);
             for(int i = 0;i < 4; i++){
-                double dPower = params[2] * (rampUpSpeed - currentSpeed[i]) + params[3] * (lastSpeed[i] - currentSpeed[i]);
+                double dPower = 1E-4 * (rampUpSpeed - currentSpeed[i]) + 1E-5 * (lastSpeed[i] - currentSpeed[i]);
                 lastSpeed[i] = setPower[i];
                 setPower[i] += dPower;
                 setPower[i] = Math.min(1,Math.max(-1, setPower[i]));
@@ -151,6 +172,36 @@ public class CorrectiveTurnTest extends BaseAuto {
             writeLog(previousPos[0]+","+previousPos[1]+","+previousPos[2]+","+previousPos[3]+","+currentSpeed[0]+","+currentSpeed[1]+","+currentSpeed[2]+","+currentSpeed[3]+","+setPower[0]+","+setPower[1]+","+setPower[2]+","+setPower[3]);
             Log.i("CorrectiveTurn-rampup", "currentSpeed="+currentSpeed[0]+","+currentSpeed[1]+","+currentSpeed[2]+","+currentSpeed[3]
                     +", setPower="+setPower[0]+","+setPower[1]+","+setPower[2]+","+setPower[3]+",rampup="+rampUpSpeed);
+            t.reset();
+        }
+
+         */
+        /*while(!this.gamepad1.b){
+            wait(50);
+            double dT = t.milliseconds() / 1000;
+            RevBulkData bulk = hub2.getBulkInputData();
+            currentSpeed[0] = ( bulk.getMotorCurrentPosition(LF) - previousPos[0] )/dT;
+            currentSpeed[1] = ( bulk.getMotorCurrentPosition(LB) - previousPos[1] )/dT;
+            currentSpeed[2] = ( bulk.getMotorCurrentPosition(RF) - previousPos[2] )/dT;
+            currentSpeed[3] = ( bulk.getMotorCurrentPosition(RB) - previousPos[3] )/dT;
+            previousPos[0] = bulk.getMotorCurrentPosition(LF);
+            previousPos[1] = bulk.getMotorCurrentPosition(LB);
+            previousPos[2] = bulk.getMotorCurrentPosition(RF);
+            previousPos[3] = bulk.getMotorCurrentPosition(RB);
+            rampupSpeed += dT * targetSpeed/params[4];//speed up
+            if(Math.abs(rampupSpeed) > Math.abs(targetSpeed)){
+                break;
+            }
+            for(int i = 0;i < 4; i++){
+                double dPower = 1E-4 * (rampupSpeed - currentSpeed[i]) + 1E-5 * (lastSpeed[i] - currentSpeed[i]);
+                lastSpeed[i] = setPower[i];
+                setPower[i] += dPower;
+                setPower[i] = Math.min(1,Math.max(-1, setPower[i]));
+            }
+            setAllDrivePower(setPower[0], setPower[1], setPower[2], setPower[3]);
+            writeLog(previousPos[0]+","+previousPos[1]+","+previousPos[2]+","+previousPos[3]+","+currentSpeed[0]+","+currentSpeed[1]+","+currentSpeed[2]+","+currentSpeed[3]+","+setPower[0]+","+setPower[1]+","+setPower[2]+","+setPower[3]);
+            Log.i("CorrectiveTurn", "currentSpeed="+currentSpeed[0]+","+currentSpeed[1]+","+currentSpeed[2]+","+currentSpeed[3]
+                    +", setPower="+setPower[0]+","+setPower[1]+","+setPower[2]+","+setPower[3]);
             t.reset();
         }
 
@@ -169,7 +220,7 @@ public class CorrectiveTurnTest extends BaseAuto {
             previousPos[2] = bulk.getMotorCurrentPosition(RF);
             previousPos[3] = bulk.getMotorCurrentPosition(RB);
             for(int i = 0;i < 4; i++){
-                double dPower = params[2] * (targetSpeed - currentSpeed[i]) + params[3] * (lastSpeed[i] - currentSpeed[i]);
+                double dPower = 1E-4 * (targetSpeed - currentSpeed[i]) + 1E-5 * (lastSpeed[i] - currentSpeed[i]);
                 lastSpeed[i] = setPower[i];
                 setPower[i] += dPower;
                 setPower[i] = Math.min(1,Math.max(-1, setPower[i]));
