@@ -401,8 +401,7 @@ public class BaseAuto extends BaseOpMode {
 
     protected void setNewGyro0(){
         imuOffset = 0;
-        getHeading();
-        imuOffset = imuHeading;
+        imuOffset = getHeading();;
     }
 
     protected void setNewGyro(double target){
@@ -626,16 +625,17 @@ public class BaseAuto extends BaseOpMode {
 
     //Coordinate
     protected void updateCoo(){
-        double dtheta=getHeading()-theta;
-        double xcur=getXOdometry()/odometryEncXPerInch,y1cur=-getY1Odometry()/odometryEncYPerInch,y2cur=-getY2Odometry()/odometryEncYPerInch,thetacur=imuHeading/180*Math.PI;
-        double dx=(near(dtheta,0,3))?xcur-xpre:0;
-        double dy=(y1cur-y1pre+y2cur-y2pre)/2;
+        double heading=getError(getHeading()+imuOffset,0);
+        double dtheta=heading-theta;
+        double xcur=getXOdometry()/odometryEncXPerInch,y1cur=-getY1Odometry()/odometryEncYPerInch,y2cur=-getY2Odometry()/odometryEncYPerInch,thetacur=heading/180*Math.PI;
+        double dx=(near(dtheta,0,5))?xcur-xpre:0;
+        double dy=(y1cur+y2cur-y1pre-y2pre)/2;//(near(dtheta,0,5))?y1cur-y1pre:0;
         n_pass[0] += (dx * Math.cos(thetacur) + dy * Math.sin(thetacur));
         n_pass[1] += (dx * Math.sin(thetacur) + dy * Math.cos(thetacur));
         xpre=xcur;
         y1pre=y1cur;
         y2pre=y2cur;
-        theta=imuHeading;
+        theta=heading;
     }
     protected class CooThread extends Thread{
         volatile public boolean stop = false;
@@ -643,8 +643,10 @@ public class BaseAuto extends BaseOpMode {
         public void run() {
             while (!isInterrupted() && !stop) {
                 updateCoo();
-                telemetry.addData("x,y","%.2f %.2f", n_pass[0], n_pass[1]);
-                telemetry.update();
+                try {
+                    wait(50);
+                }
+                catch(Exception e){}
             }
         }
         public void stopThread(){
