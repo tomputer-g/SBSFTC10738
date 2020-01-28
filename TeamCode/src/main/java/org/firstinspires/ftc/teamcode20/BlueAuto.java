@@ -1,7 +1,16 @@
 package org.firstinspires.ftc.teamcode20;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+
+import java.util.Locale;
+
+import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.ZYX;
 
 @Autonomous
 public class BlueAuto extends BaseAuto {
@@ -41,12 +50,12 @@ public class BlueAuto extends BaseAuto {
         //repeat until run out of time; first on other skystones
 
         //initialization
-        servoThread.setTarget(0.98);
+        servoThread.setTarget(0.975);
         platform_grabber.setPower(1);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
         grabber.setPosition(grabber_open);
-
+        wait(1000);
         //shift to align to skystone
         int shift;
         if(pos == 1){
@@ -63,7 +72,7 @@ public class BlueAuto extends BaseAuto {
 
         //move forward to the skystone
         ElapsedTime p = new ElapsedTime();
-        moveInchesGOY(30.5,0.6);
+        moveInchesGOY(30.75,0.6);
         //grab 1st block
         grabber.setPosition(grabber_closed);
         wait(300);
@@ -76,9 +85,31 @@ public class BlueAuto extends BaseAuto {
         setNewGyro(90);
         p.reset();
         moveInchesGOY((86.75+shift),0.6);
+        p.reset();
+        while (p.milliseconds()<800)setAllDrivePowerG(-.5,.5,-.5,.5);
 
-        wait(3000);
+        platform_grabber.setPower(-1);
+        wait(300);
+        moveInchesGOX_platform(-16.5,0.8);
+        int steps = 20;
+        double basespeed = 0.23;//real nigga
+        for(int i = 1;i<=steps;++i){
+            RF.setPower(  i*basespeed/steps);
+            LB.setPower(2*i*basespeed/steps);
+            LF.setPower(3*i*basespeed/steps);
+            wait(20);
+            //LB.setPower(0);
+        }
+        while (getHeading()<86){
+            Log.i("angel", ""+getHeading());
+            telemetry.addData("s", getHeading());
+            telemetry.update();
+        }
+        setNewGyro(180);
+        setAllDrivePower(0);
         //telemetry.addData()
+        //plantation.setLocation(Florida.class);
+        //plantation.addSlave(new Slave("inger","#000000"));
         /*
 
 
