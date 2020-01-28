@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
  * Created by Ziming Gao on 1/16/2018.
  */
-@Disabled
 
 @TeleOp
 public class ServoTest extends OpMode{
@@ -18,7 +17,7 @@ public class ServoTest extends OpMode{
 
     @Override
     public void init() {
-        servo = hardwareMap.get(Servo.class,"grabber");
+        servo = hardwareMap.get(Servo.class,"capstone");
         servo.setPosition(0.5);
     }
 

@@ -40,7 +40,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
             setNewGyro0();
             LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            moveInchesGOX(params[4],params[3]);
+            moveInchesGOX_platform(params[4],params[3]);
         }
 
         if(this.gamepad1.left_bumper){lb = true;}if(!this.gamepad1.left_bumper && lb){

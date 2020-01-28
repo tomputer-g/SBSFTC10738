@@ -178,8 +178,7 @@ public class CorrectiveTurnTest extends BaseAuto {
             RB.setPower(setPower[3]);
             writeLog(previousPos[0]+","+previousPos[1]+","+previousPos[2]+","+previousPos[3]+","+currentSpeed[0]+","+currentSpeed[1]+","+currentSpeed[2]+","+currentSpeed[3]+","+setPower[0]+","+setPower[1]+","+setPower[2]+","+setPower[3]);
             Log.i("CorrectiveTurn", "currentSpeed="+currentSpeed[0]+","+currentSpeed[1]+","+currentSpeed[2]+","+currentSpeed[3]
-                                            +", setPower="+setPower[0]+","+setPower[1]+","+setPower[2]+","+setPower[3]
-                                            );
+                                            +", setPower="+setPower[0]+","+setPower[1]+","+setPower[2]+","+setPower[3]);
             t.reset();
         }
 
