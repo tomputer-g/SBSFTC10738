@@ -681,9 +681,11 @@ public class BaseAuto extends BaseOpMode {
             while (!isInterrupted() && !stop) {
                 updateCoo();
                 try {
-                    wait(50);
+                    wait(1);
                 }
                 catch(Exception e){}
+                telemetry.addData("position:", "%.3f %.3f", n_pass[0], n_pass[1]);
+                telemetry.update();
             }
         }
         public void stopThread(){

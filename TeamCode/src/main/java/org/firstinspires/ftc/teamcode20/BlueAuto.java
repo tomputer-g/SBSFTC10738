@@ -24,10 +24,10 @@ public class BlueAuto extends BaseAuto {
         initDrivetrain();
         initIMU();
         initGrabber();
-        initLinSlide();
+        //initLinSlide();
         initPlatformGrabber();
         initVuforia();
-        initSensors();
+        //initSensors();
         initOdometry();
         setNewGyro0();
         int[] resultcounter = {0,0,0};
@@ -39,7 +39,7 @@ public class BlueAuto extends BaseAuto {
         telemetry.addData("pos: ", pos);
         telemetry.update();
         shutdownVuforia();
-
+        //cooThread.start();
     }
     @Override
     public void loop() {
@@ -50,7 +50,7 @@ public class BlueAuto extends BaseAuto {
         //repeat until run out of time; first on other skystones
 
         //initialization
-        servoThread.setTarget(0.975);
+        servoThread.setTarget(0.96);
         platform_grabber.setPower(1);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
@@ -72,7 +72,7 @@ public class BlueAuto extends BaseAuto {
 
         //move forward to the skystone
         ElapsedTime p = new ElapsedTime();
-        moveInchesGOY(30.75,0.6);
+        moveInchesGOY(30.7,0.6);
         //grab 1st block
         grabber.setPosition(grabber_closed);
         wait(300);
@@ -86,25 +86,22 @@ public class BlueAuto extends BaseAuto {
         p.reset();
         moveInchesGOY((86.75+shift),0.6);
         p.reset();
-        while (p.milliseconds()<800)setAllDrivePowerG(-.5,.5,-.5,.5);
+        while (p.milliseconds()<700)setAllDrivePowerG(-.5,.5,-.5,.5);
 
         platform_grabber.setPower(-1);
         wait(300);
-        moveInchesGOX_platform(-16.5,0.8);
+        moveInchesGOX_platform(-24,0.8);
         int steps = 20;
-        double basespeed = 0.23;//real nigga
-        for(int i = 1;i<=steps;++i){
+        double basespeed = 0.3;
+        for(int i = 10;i<=steps;++i){
             RF.setPower(  i*basespeed/steps);
             LB.setPower(2*i*basespeed/steps);
             LF.setPower(3*i*basespeed/steps);
             wait(20);
             //LB.setPower(0);
         }
-        while (getHeading()<86){
-            Log.i("angel", ""+getHeading());
-            telemetry.addData("s", getHeading());
-            telemetry.update();
-        }
+        while (getHeading()<80);
+
         setNewGyro(180);
         setAllDrivePower(0);
         //telemetry.addData()
