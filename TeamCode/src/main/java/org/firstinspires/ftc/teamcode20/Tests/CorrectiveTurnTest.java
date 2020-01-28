@@ -12,7 +12,7 @@ import org.openftc.revextensions2.RevBulkData;
 
 @TeleOp
 public class CorrectiveTurnTest extends BaseAuto {
-    private double[] params = {1200,0.3,1E-4,0};//,90.0,0};
+    private double[] params = {1200,0.3,1E-4,1E-5};//,90.0,0};
     private String[] paramNames = {"OCspeed","RTPSpeed","P","D"};//, "angle", "accTime"};
     private int currentSelectParamIndex = 0;
     private boolean l, r, u, d, lb, rb, a, y;
@@ -32,10 +32,12 @@ public class CorrectiveTurnTest extends BaseAuto {
             correctiveTurnSpeed(params[0]);
             //correctiveTurn(params[1],params[0],params[2]);
         }
-        if(this.gamepad1.y){y = true;}if(!this.gamepad1.y && y){
+        /*if(this.gamepad1.y){y = true;}if(!this.gamepad1.y && y){
             y = false;
             runToPositionSpeed(params[1]);
         }
+
+         */
         if(this.gamepad1.b){
             LF.setPower(0);
             LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -172,10 +174,7 @@ public class CorrectiveTurnTest extends BaseAuto {
                 setPower[i] += dPower;
                 setPower[i] = Math.min(1,Math.max(-1, setPower[i]));
             }
-            LF.setPower(setPower[0]);
-            LB.setPower(setPower[1]);
-            RF.setPower(setPower[2]);
-            RB.setPower(setPower[3]);
+            setAllDrivePower(setPower[0], setPower[1], setPower[2], setPower[3]);
             writeLog(previousPos[0]+","+previousPos[1]+","+previousPos[2]+","+previousPos[3]+","+currentSpeed[0]+","+currentSpeed[1]+","+currentSpeed[2]+","+currentSpeed[3]+","+setPower[0]+","+setPower[1]+","+setPower[2]+","+setPower[3]);
             Log.i("CorrectiveTurn", "currentSpeed="+currentSpeed[0]+","+currentSpeed[1]+","+currentSpeed[2]+","+currentSpeed[3]
                                             +", setPower="+setPower[0]+","+setPower[1]+","+setPower[2]+","+setPower[3]);
@@ -184,7 +183,7 @@ public class CorrectiveTurnTest extends BaseAuto {
 
     }
 
-    private void runToPositionSpeed(double speed) {
+    /*private void runToPositionSpeed(double speed) {
         LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         RF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -203,7 +202,6 @@ public class CorrectiveTurnTest extends BaseAuto {
         RB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
     }
-    /*
     private void correctiveTurn(double angle, double speed, double accTime){
         setNewGyro0();
 
