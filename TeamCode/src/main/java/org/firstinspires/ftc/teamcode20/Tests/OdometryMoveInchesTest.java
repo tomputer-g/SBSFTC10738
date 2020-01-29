@@ -18,7 +18,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
     0.6 speed: P = 0.075,   D = 1.4E-2, result: 0 in.
     0.9 speed: P = 0.0325,  D = 7.3E-3, result: spin +- 1/4 in
      */
-    private double[] params =       {0.0325,  0,     7.3E-3,       0.9,        6,           };
+    private double[] params =       {0.17,  0,     0.015,       0.9,        6,           };
     private String[] paramNames =   {"P",   "I",    "D",    "speed",    "targetInches"};
     private int currentSelectParamIndex = 0;
     private boolean l, r, u, d, lb, rb, y, APrimed = false, x = false, platformGrabbed = false;

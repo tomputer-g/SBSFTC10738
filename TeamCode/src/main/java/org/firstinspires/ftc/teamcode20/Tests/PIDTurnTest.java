@@ -1,5 +1,7 @@
 
 package org.firstinspires.ftc.teamcode20.Tests;
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,6 +13,8 @@ import org.firstinspires.ftc.teamcode20.BaseOpMode;
 @TeleOp
 
 public class PIDTurnTest extends BaseAuto {
+    private double[] params =       {0.17,  0,     0.015,       0.9,        -6,           };
+    private String[] paramNames =   {"P",   "I",    "D",    "speed",    "targetInches"};
     private double kP=0.028,kD=0.922;
     private int magnitude=-2;
     private boolean[] du ={true}, dd={true}, dl={true},dr={true},rb={true},y={true},a={true},x={true},b={true},lb={true};
@@ -42,14 +46,22 @@ public class PIDTurnTest extends BaseAuto {
         //telemetry.addData("result: ",result);
         //telemetry.addLine("LF: "+LF.getCurrentPosition()+" LB: "+LB.getCurrentPosition()+" RF: "+RF.getCurrentPosition()+" RB:"+RB.getCurrentPosition());
         if(zheng(this.gamepad1.left_bumper,lb)){
-            taunePIDturn(target,kP,kD,1,true);
+            resetY1Odometry();
+            resetXOdometry();
+            setNewGyro0();
+            LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            moveShortInchesGOY(-6,params[3],params[0],params[2]);
+            taunePIDturn(90,0.027,0.922,1,false);
         }
     }
     //0.8, kp 0.033,kd 0.8
     //1 kp 0.027 kd 0.922,90
     private void taunePIDturn(double target, double kp, double kd, double speed, boolean resetOffset){
-        if(resetOffset)
+        if(resetOffset){
             acctarget=0;
+            setNewGyro0();
+        }
         double e = target;
         ElapsedTime t = new ElapsedTime();
         int i=0;
@@ -58,8 +70,7 @@ public class PIDTurnTest extends BaseAuto {
             double D = kd*(e2-e)/t.milliseconds();
             double P = e2*kp;
             if(Math.abs(P)>Math.abs(speed))P=P>0?speed:-speed;
-            double power = P+D;
-            setAllDrivePower(power);
+            setAllDrivePower(P+D);
             e=e2;
             if(near(e2-e,0,0.1)&&near(e,0,2))
                 i++;
@@ -73,6 +84,38 @@ public class PIDTurnTest extends BaseAuto {
         }
         else
             setNewGyro(acctarget);
+    }
+
+    protected void moveShortInchesGOY(double yInch, double speed,double kP,double kD){//use 0.4 for short-dist
+        yInch = -yInch;
+        setNewGyro0();
+        ElapsedTime t = new ElapsedTime();
+        int offsetY = getY1Odometry();
+        speed=Math.abs(speed);
+        double multiply_factor, prev_speed = 0;
+        int odometryYGoal = offsetY + (int)(yInch * odometryEncYPerInch);
+        double vy = speed;
+        int previousPos = offsetY, currentOdometry, Dterm;
+        double tpre = 0, tcur;
+        int steadyCounter = 0;
+        while(steadyCounter < 5 && !this.gamepad1.b){//b is there so we can break out of loop anytime
+            currentOdometry = getY1Odometry();
+            tcur=t.milliseconds();
+            Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
+            multiply_factor = -Math.min(1, Math.max(-1, ((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
+            if(near(prev_speed, multiply_factor*vy,0.001) && near(currentOdometry, odometryYGoal, odometryEncYPerInch)){
+                steadyCounter++;
+            }else{
+                steadyCounter = 0;
+            }
+            //Log.d("GOY "+yInch,"steady"+steadyCounter+", position"+currentOdometry+", speed"+prev_speed);
+            previousPos = currentOdometry;
+            tpre=tcur;
+            setAllDrivePowerG(multiply_factor*vy,multiply_factor*vy,multiply_factor*-vy,multiply_factor*-vy, params[0]);
+            prev_speed = multiply_factor * vy;
+        }
+        setAllDrivePower(0);
+
     }
 
     public void testPIDturn(double target, double kd, double kp,double speed){
@@ -99,6 +142,8 @@ public class PIDTurnTest extends BaseAuto {
         acctarget+=target;
         setNewGyro(acctarget);
     }
+
+
 
     private double getAdjustedHeading(double target){
         double i = getHeading();
