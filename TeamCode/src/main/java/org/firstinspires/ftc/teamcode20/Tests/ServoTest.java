@@ -15,14 +15,12 @@ public class ServoTest extends OpMode{
     private boolean lP, rP;
     private Servo servo;
 
-    @Override
-    public void init() {
+    @Override public void init() {
         servo = hardwareMap.get(Servo.class,"capstone");
         servo.setPosition(0.5);
     }
 
-    @Override
-    public void loop() {
+    @Override public void loop() {
         if(this.gamepad1.dpad_left){lP = true;}if(lP && !this.gamepad1.dpad_left){
             lP = false;
             servo.setPosition(Math.max(servo.getPosition() - 0.05, 0));
