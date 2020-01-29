@@ -39,7 +39,7 @@ public class BlueAuto extends BaseAuto {
         telemetry.addData("pos: ", pos);
         telemetry.update();
         shutdownVuforia();
-        //cooThread.start();
+       // cooThread.start();
     }
     @Override
     public void loop() {
@@ -50,7 +50,7 @@ public class BlueAuto extends BaseAuto {
         //repeat until run out of time; first on other skystones
 
         //initialization
-        servoThread.setTarget(0.96);
+        servoThread.setTarget(0.98);
         platform_grabber.setPower(1);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
@@ -90,7 +90,7 @@ public class BlueAuto extends BaseAuto {
 
         platform_grabber.setPower(-1);
         wait(300);
-        moveInchesGOX_platform(-24,0.8);
+        moveInchesGOX_platform(-18,0.8);
         int steps = 20;
         double basespeed = 0.3;
         for(int i = 10;i<=steps;++i){
@@ -100,7 +100,7 @@ public class BlueAuto extends BaseAuto {
             wait(20);
             //LB.setPower(0);
         }
-        while (getHeading()<80);
+
 
         setNewGyro(180);
         setAllDrivePower(0);

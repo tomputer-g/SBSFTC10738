@@ -65,6 +65,7 @@ public class BaseAuto extends BaseOpMode {
     //IMU
     protected static BNO055IMU imu;
     protected static double imuHeading;
+    protected static double imuAbsolute=0;
     protected static double imuOffset=0;
     protected static double acctarget=0;
 
@@ -395,6 +396,7 @@ public class BaseAuto extends BaseOpMode {
 
     protected double getHeading(){
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, ZYX, AngleUnit.DEGREES);
+        imuAbsolute = getError(Double.parseDouble(String.format(Locale.getDefault(), "%.2f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle)))),0);
         imuHeading = getError(Double.parseDouble(String.format(Locale.getDefault(), "%.2f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle)))),imuOffset);
         return imuHeading;
     }
@@ -408,16 +410,16 @@ public class BaseAuto extends BaseOpMode {
         imuOffset = target;
     }
 
-    private double getError(double target, double cur) {
+    protected double getError(double target, double cur) {
         double robotError =target-cur;
         while (robotError > 180) robotError -= 360;
         while (robotError <= -180) robotError += 360;
         return robotError;
     }
-    private double getError(double targetAngle) {
+    protected double getError(double targetAngle) {
         return getError(targetAngle,getHeading());
     }
-    private boolean onHeading(double turnSpeed, double angle, double PCoeff, double threshold) {
+    protected boolean onHeading(double turnSpeed, double angle, double PCoeff, double threshold) {
         double   error = getError(angle), steer, speed;
         boolean  onTarget = false;
         if (Math.abs(error) <= threshold) {
