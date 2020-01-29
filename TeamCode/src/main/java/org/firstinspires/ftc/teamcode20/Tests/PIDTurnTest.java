@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode20.BaseOpMode;
 @TeleOp
 
 public class PIDTurnTest extends BaseAuto {
-    private double kP=0.068,kD=0.9;
+    private double kP=0.028,kD=0.922;
     private int magnitude=-2;
     private boolean[] du ={true}, dd={true}, dl={true},dr={true},rb={true},y={true},a={true},x={true},b={true},lb={true};
     private double imuinitvalue=0, target=90, result=0, resuuu=0;
@@ -26,14 +26,14 @@ public class PIDTurnTest extends BaseAuto {
     }
     @Override
     public void loop() {
-        //if(zheng(this.gamepad1.dpad_up,du)){kP+=Math.pow(10,magnitude);}
-        //if(zheng(this.gamepad1.dpad_down,dd)){kP-=Math.pow(10,magnitude);}
-        //if(zheng(this.gamepad1.y,y)){kD+=Math.pow(10,magnitude);}
-        //if(zheng(this.gamepad1.a,a)){kD-=Math.pow(10,magnitude);}
+        if(zheng(this.gamepad1.dpad_up,du)){kP+=Math.pow(10,magnitude);}
+        if(zheng(this.gamepad1.dpad_down,dd)){kP-=Math.pow(10,magnitude);}
+        if(zheng(this.gamepad1.y,y)){kD+=Math.pow(10,magnitude);}
+        if(zheng(this.gamepad1.a,a)){kD-=Math.pow(10,magnitude);}
         if(zheng(this.gamepad1.x,x)){target+=5;}
         if(zheng(this.gamepad1.b,b)){target-=5;}
-        //if(zheng(this.gamepad1.dpad_left,dl)){magnitude++;}
-        //if(zheng(this.gamepad1.dpad_right,dr)){magnitude--;}
+        if(zheng(this.gamepad1.dpad_left,dl)){magnitude++;}
+        if(zheng(this.gamepad1.dpad_right,dr)){magnitude--;}
         telemetry.addData("magnitude: ",Math.pow(10,magnitude));
         telemetry.addData("kP: ",kP);
         telemetry.addData("kD: ",kD);
@@ -42,8 +42,37 @@ public class PIDTurnTest extends BaseAuto {
         //telemetry.addData("result: ",result);
         //telemetry.addLine("LF: "+LF.getCurrentPosition()+" LB: "+LB.getCurrentPosition()+" RF: "+RF.getCurrentPosition()+" RB:"+RB.getCurrentPosition());
         if(zheng(this.gamepad1.left_bumper,lb)){
-            PIDturn(target,false);
+            taunePIDturn(target,kP,kD,1,true);
         }
+    }
+    //0.8, kp 0.033,kd 0.8
+    //1 kp 0.027 kd 0.922,90
+    private void taunePIDturn(double target, double kp, double kd, double speed, boolean resetOffset){
+        if(resetOffset)
+            acctarget=0;
+        double e = target;
+        ElapsedTime t = new ElapsedTime();
+        int i=0;
+        while(i<5&&!zheng(this.gamepad1.right_bumper, rb)){
+            double e2 = target-(getAdjustedHeading(target));
+            double D = kd*(e2-e)/t.milliseconds();
+            double P = e2*kp;
+            if(Math.abs(P)>Math.abs(speed))P=P>0?speed:-speed;
+            double power = P+D;
+            setAllDrivePower(power);
+            e=e2;
+            if(near(e2-e,0,0.1)&&near(e,0,2))
+                i++;
+            t.reset();
+        }
+        setAllDrivePower(0);
+        acctarget+=target;
+        if(resetOffset) {
+            acctarget = 0;
+            setNewGyro0();
+        }
+        else
+            setNewGyro(acctarget);
     }
 
     public void testPIDturn(double target, double kd, double kp,double speed){

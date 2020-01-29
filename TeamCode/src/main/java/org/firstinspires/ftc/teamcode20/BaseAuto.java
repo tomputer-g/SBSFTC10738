@@ -29,6 +29,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode20.Tests.PIDTurnTest;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -451,7 +452,13 @@ public class BaseAuto extends BaseOpMode {
     }
 
     public void PIDturn(double target, boolean resetOffset){
-        double e = target,kd=0.9,kp=0.068,speed=0.5;
+        tunePIDturn(target,0.068,0.9,0.5,resetOffset);
+    }
+
+    public void tunePIDturn(double target, double kp, double kd, double speed, boolean resetOffset){
+        if(resetOffset)
+            acctarget=0;
+        double e = target;
         ElapsedTime t = new ElapsedTime();
         int i=0;
         while(i<5){
@@ -472,6 +479,7 @@ public class BaseAuto extends BaseOpMode {
             acctarget=0;
         setNewGyro(acctarget);
     }
+
     private double getAdjustedHeading(double target){
         double i = getHeading();
         if(target>0)
