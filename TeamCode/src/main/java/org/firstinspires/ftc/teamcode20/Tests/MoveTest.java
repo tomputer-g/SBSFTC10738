@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode20.Tests;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 
@@ -61,25 +62,14 @@ public class MoveTest extends BaseAuto {
 
     @Override
     public void loop(){
-        if(zheng(this.gamepad1.dpad_left,eee))speedLB+=0.1*dir;
-        if(zheng(this.gamepad1.dpad_right,fff))speedLF+=0.1*dir;
-        if(zheng(this.gamepad1.dpad_up,ee))speedRF+=0.1*dir;
-        if(zheng(this.gamepad1.dpad_down,ff))speedRB+=0.1*dir;
-        if(zheng(this.gamepad1.y,m))basespeed+=.01;
-        if(zheng(this.gamepad1.a,mm))basespeed-=.01;
-        if(zheng(this.gamepad1.b,f))steps++;
-        if(zheng(this.gamepad1.x,ff))steps--;
-
-            /*
-
-        if(zheng(this.gamepad1.dpad_left,eee))x-=0.1;
-        if(zheng(this.gamepad1.dpad_right,fff))x+=0.1;
-        if(zheng(this.gamepad1.dpad_up,ee))y+=0.1;
-        if(zheng(this.gamepad1.dpad_down,ff))y+=0.1;
+        if(zheng(this.gamepad1.dpad_left,eee))x-=2;
+        if(zheng(this.gamepad1.dpad_right,fff))x+=2;
+        if(zheng(this.gamepad1.dpad_up,ee))y+=0.01;
+        if(zheng(this.gamepad1.dpad_down,ff))y+=0.01;
         if(zheng(this.gamepad1.y,m))speed+=1;
         if(zheng(this.gamepad1.a,mm))speed-=.01;
         if(zheng(this.gamepad1.b,f))setNewGyro0();
-
+        /*
         if(zheng(this.gamepad1.left_bumper,bF)){
             ElapsedTime t=new ElapsedTime();
             targetsSkyStone.activate();
@@ -106,37 +96,57 @@ public class MoveTest extends BaseAuto {
             }
             shutdownVuforia();
         }
+        */
 
-        /*
         if(zheng(this.gamepad1.left_bumper,lF)) {
             //setP(-speed,-speed,speed,speed);
         }
         if(zheng(this.gamepad1.right_bumper,bF)) {
-            /*
-            ElapsedTime t=new ElapsedTime();
-            double tcur=t.milliseconds();
-            double ecur=getHeading();
-            double tpre=tcur;
-            double epre=ecur;
-            while(!this.gamepad1.b){
-                tcur=t.milliseconds();
-                ecur=getHeading();
-                setAllDrivePowerG(-speed,-speed,speed,speed,0.8,x,ecur-epre,tcur-tpre);
-                epre=ecur;
-                tpre=tcur;
-            }
-            setAllDrivePower(0);
-            setP(0,0,0,0);
+            turn(x,speed,2);
         }
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
         telemetry.addData("Imu: ","%.2f",getHeading());
+        telemetry.addData("target: ",acctarget);
         telemetry.addData("Speed: ","%.2f" ,speed);;
-        telemetry.addData("[x]: ","%.2f",n_pass[0]);
-        telemetry.addData("[y]: ","%.2f" ,n_pass[1]);;
+        //telemetry.addData("[x]: ","%.2f",n_pass[0]);
+        //telemetry.addData("[y]: ","%.2f" ,n_pass[1]);;
         telemetry.update();
 
-        */
+
+    }
+
+    private double getError(double target, double cur) {
+        double robotError =target-cur;
+        while (robotError > 180) robotError -= 360;
+        while (robotError <= -180) robotError += 360;
+        return robotError;
+    }
+    private double getError(double targetAngle) {
+        return getError(targetAngle,getHeading());
+    }
+    private boolean onHeading(double turnSpeed, double angel,double epre, double Kp, double Kd, double threshold) {
+ q
+        boolean  onTarget = false;
+        if (Math.abs(error) <= threshold) {
+            steer = 0.0;
+            speed = 0.0;
+            onTarget = true;
+        }
+        else {
+            steer = Range.clip(Kp*epre/180+Kd*(error-epre), -turnSpeed, turnSpeed);
+            speed  = steer;//(turnSpeed<0)?Range.clip(steer,turnSpeed,0):Range.clip(steer,0,turnSpeed);
+        }
+        setAllDrivePower(speed);
+        return onTarget;
+    }
+    protected void turn(double angle, double speed, double threshold) {
+        setNewGyro(acctarget);
+        double p_TURN = 6,d_turn=0,epre=getError(angle);
+        while(!onHeading(speed, angle,epre, p_TURN,d_turn, threshold)){
+            epre = getError(angle);
+        }
+        acctarget=getError(acctarget+angle,0);
     }
 
     private class UC extends Thread{
@@ -228,26 +238,6 @@ public class MoveTest extends BaseAuto {
             */
                 }
                 setAllDrivePower(0);
-            }
-
-            protected void moveInches ( double xInch, double yInch, double speed){
-                setMode_RESET_AND_RUN_TO_POSITION();
-                double p_mult = 80;
-                double xmult = 232.5088 / 12, ymult = 232.7551 / 12;
-                int p_time = (int) (sqrt(xInch * xInch + yInch * yInch) * p_mult);
-                ElapsedTime t = new ElapsedTime();
-                int encoder_x = (int) (xInch * xmult), encoder_y = (int) (yInch * ymult);
-                int encoder_1 = Math.abs(encoder_x + encoder_y); // LB, RF
-                int encoder_2 = Math.abs(encoder_x - encoder_y); // LF, RB
-                double conversion_fct = speed / ((encoder_1 + encoder_2) / 2);
-                double speed_1 = conversion_fct * encoder_1, speed_2 = conversion_fct * encoder_2;
-                setAllDrivePower(speed_2, speed_1, speed_1, speed_2);
-                LF.setTargetPosition(encoder_x - encoder_y);
-                LB.setTargetPosition(-encoder_x - encoder_y);
-                RF.setTargetPosition(encoder_x + encoder_y);
-                RB.setTargetPosition(-encoder_x + encoder_y);
-                while ((LF.isBusy() || LB.isBusy() || RF.isBusy() || RB.isBusy()) && t.milliseconds() < p_time)
-                    ;
             }
         }
 
