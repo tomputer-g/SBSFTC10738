@@ -122,32 +122,7 @@ public class MoveTest extends BaseAuto {
         while (robotError <= -180) robotError += 360;
         return robotError;
     }
-    private double getError(double targetAngle) {
-        return getError(targetAngle,getHeading());
-    }
-    private boolean onHeading(double turnSpeed, double angel,double epre, double Kp, double Kd, double threshold) {
- q
-        boolean  onTarget = false;
-        if (Math.abs(error) <= threshold) {
-            steer = 0.0;
-            speed = 0.0;
-            onTarget = true;
-        }
-        else {
-            steer = Range.clip(Kp*epre/180+Kd*(error-epre), -turnSpeed, turnSpeed);
-            speed  = steer;//(turnSpeed<0)?Range.clip(steer,turnSpeed,0):Range.clip(steer,0,turnSpeed);
-        }
-        setAllDrivePower(speed);
-        return onTarget;
-    }
-    protected void turn(double angle, double speed, double threshold) {
-        setNewGyro(acctarget);
-        double p_TURN = 6,d_turn=0,epre=getError(angle);
-        while(!onHeading(speed, angle,epre, p_TURN,d_turn, threshold)){
-            epre = getError(angle);
-        }
-        acctarget=getError(acctarget+angle,0);
-    }
+
 
     private class UC extends Thread{
         volatile boolean stop = false,run=false;
