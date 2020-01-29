@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -16,7 +18,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
     0.6 speed: P = 0.075,   D = 1.4E-2, result: 0 in.
     0.9 speed: P = 0.0325,  D = 7.3E-3, result: spin +- 1/4 in
      */
-    private double[] params =       {0.5,  0,     0.04,       0.5,        6,           };
+    private double[] params =       {0.0325,  0,     7.3E-3,       0.9,        6,           };
     private String[] paramNames =   {"P",   "I",    "D",    "speed",    "targetInches"};
     private int currentSelectParamIndex = 0;
     private boolean l, r, u, d, lb, rb, y, APrimed = false, x = false, platformGrabbed = false;
@@ -40,7 +42,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
             setNewGyro0();
             LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            moveInchesGOX_platform(params[4],params[3]);
+            moveInchesGOY(params[4],params[3],params[0],params[2]);
         }
 
         if(this.gamepad1.left_bumper){lb = true;}if(!this.gamepad1.left_bumper && lb){
@@ -109,6 +111,38 @@ public class OdometryMoveInchesTest extends BaseAuto {
     public void stop() {
         stopLog();
         super.stop();
+    }
+
+    protected void moveInchesGOY(double yInch, double speed,double kP,double kD){//use 0.4 for short-dist
+        yInch = -yInch;
+        setNewGyro0();
+        ElapsedTime t = new ElapsedTime();
+        int offsetY = getY1Odometry();
+        speed=Math.abs(speed);
+        double multiply_factor, prev_speed = 0;
+        int odometryYGoal = offsetY + (int)(yInch * odometryEncYPerInch);
+        double vy = speed;
+        int previousPos = offsetY, currentOdometry, Dterm;
+        double tpre = 0, tcur;
+        int steadyCounter = 0;
+        while(steadyCounter < 5 && !this.gamepad1.b){//b is there so we can break out of loop anytime
+            currentOdometry = getY1Odometry();
+            tcur=t.milliseconds();
+            Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
+            multiply_factor = -Math.min(1, Math.max(-1, ((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
+            if(near(prev_speed, multiply_factor*vy,0.001) && near(currentOdometry, odometryYGoal, odometryEncYPerInch)){
+                steadyCounter++;
+            }else{
+                steadyCounter = 0;
+            }
+            Log.d("GOY "+yInch,"steady"+steadyCounter+", position"+currentOdometry+", speed"+prev_speed);
+            previousPos = currentOdometry;
+            tpre=tcur;
+            setAllDrivePowerG(multiply_factor*vy,multiply_factor*vy,multiply_factor*-vy,multiply_factor*-vy);
+            prev_speed = multiply_factor * vy;
+        }
+        setAllDrivePower(0);
+
     }
 
     protected void moveInchesGOX_platform(double xInch, double speed){
