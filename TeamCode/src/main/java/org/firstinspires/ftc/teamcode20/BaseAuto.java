@@ -65,6 +65,8 @@ public class BaseAuto extends BaseOpMode {
 
     //IMU
     protected static BNO055IMU imu;
+    protected Orientation angles;
+    protected double angle;
     protected static double imuHeading;
     protected static double imuAbsolute=0;
     protected static double imuOffset=0;
@@ -396,15 +398,17 @@ public class BaseAuto extends BaseOpMode {
     }
 
     protected double getHeading(){
-        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, ZYX, AngleUnit.DEGREES);
-        imuAbsolute = getError(Double.parseDouble(String.format(Locale.getDefault(), "%.2f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle)))),0);
-        imuHeading = getError(Double.parseDouble(String.format(Locale.getDefault(), "%.2f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle)))),imuOffset);
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, ZYX, AngleUnit.DEGREES);
+        angle = Double.parseDouble(String.format(Locale.getDefault(), "%.2f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle))));
+        imuAbsolute = getError(angle,0);
+        imuHeading = getError(angle,imuOffset);
         return imuHeading;
     }
 
     protected void setNewGyro0(){
+        //looks dumb but crucial
         imuOffset = 0;
-        imuOffset = getHeading();;
+        imuOffset = getHeading();
     }
 
     protected void setNewGyro(double target){

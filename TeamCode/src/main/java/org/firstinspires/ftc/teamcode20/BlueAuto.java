@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode20;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -86,7 +87,7 @@ public class BlueAuto extends BaseAuto {
         p.reset();
         moveInchesGOY((86.75+shift),0.6);
         p.reset();
-        while (p.milliseconds()<700)setAllDrivePowerG(-.5,.5,-.5,.5);
+        while (p.milliseconds()<730)setAllDrivePowerG(-.5,.5,-.5,.5);
 
         platform_grabber.setPower(-1);
         wait(300);
@@ -100,8 +101,17 @@ public class BlueAuto extends BaseAuto {
             wait(20);
             //LB.setPower(0);
         }
+        double curAng = getHeading();
+        while (curAng<70){
+            curAng = getHeading();
+        }
+        while (curAng<90){
+            curAng = getHeading();
+            RF.setPower(RF.getPower()*getError(90,curAng)/20);
+            LB.setPower(LB.getPower()*getError(90,curAng)/20);
+            LF.setPower(LF.getPower()*getError(90,curAng)/20);
 
-
+        }
         setNewGyro(180);
         setAllDrivePower(0);
         //telemetry.addData()
