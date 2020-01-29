@@ -18,8 +18,8 @@ public class OdometryMoveInchesTest extends BaseAuto {
     0.6 speed: P = 0.075,   D = 1.4E-2, result: 0 in.
     0.9 speed: P = 0.0325,  D = 7.3E-3, result: spin +- 1/4 in
      */
-    private double[] params =       {0.8,       0.6,        30.5,           };
-    private String[] paramNames =   {"Pturn",    "speed",    "targetInches"};
+    private double[] params =       {0.0325,  0,     7.3E-3,       0.9,        6,           };
+    private String[] paramNames =   {"P",   "I",    "D",    "speed",    "targetInches"};
     private int currentSelectParamIndex = 0;
     private boolean l, r, u, d, lb, rb, y, APrimed = false, x = false, platformGrabbed = false;
 
@@ -42,7 +42,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
             setNewGyro0();
             LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            moveInchesGOY(params[2],params[1]);
+            moveInchesGOY(params[4],params[3],params[0],params[2]);
         }
 
         if(this.gamepad1.left_bumper){lb = true;}if(!this.gamepad1.left_bumper && lb){
@@ -112,25 +112,9 @@ public class OdometryMoveInchesTest extends BaseAuto {
         super.stop();
     }
 
-
-    protected void moveInchesGOY(double yInch, double speed){//use 0.4 for short-dist
+    protected void moveInchesGOY(double yInch, double speed,double kP,double kD){//use 0.4 for short-dist
         yInch = -yInch;
         setNewGyro0();
-        double kP = 1, kD = 0.12;
-        if(yInch == 0)return;
-        if(Math.abs(speed) == 0.3){
-            kP = 1;
-            kD = 0.12;
-        }else if(Math.abs(speed) == 0.4){
-            kP = 0.27;
-            kD = 0.03;
-        }else if(Math.abs(speed) == 0.6){
-            kP = 0.075;
-            kD = 1.4E-2;
-        }else if(Math.abs(speed) == 0.9){
-            kP = 0.0325;
-            kD = 7.3E-3;
-        }
         ElapsedTime t = new ElapsedTime();
         int offsetY = getY1Odometry();
         speed=Math.abs(speed);
