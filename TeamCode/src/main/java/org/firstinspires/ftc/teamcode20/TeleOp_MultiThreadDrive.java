@@ -220,6 +220,20 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         }
     }
 
+    private class CompositeMoveThread extends Thread{
+        boolean stop = false;
+        @Override
+        public void run() {
+            while(!stop && !isInterrupted()){
+                
+            }
+        }
+
+        public void stopThread(){
+            stop = true;
+        }
+    }
+
     protected void joystickScaledMove(double vx, double vy, double vr){
             double[] speeds = {vx - vy + vr, -vy - vx + vr, vx + vy + vr, -vx + vy + vr};
             double absMax = 0;
