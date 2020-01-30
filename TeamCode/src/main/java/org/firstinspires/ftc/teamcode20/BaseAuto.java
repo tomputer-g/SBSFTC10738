@@ -65,7 +65,10 @@ public class BaseAuto extends BaseOpMode {
 
     //IMU
     protected static BNO055IMU imu;
+    protected Orientation angles;
+    protected double angle;
     protected static double imuHeading;
+    protected static double imuAbsolute=0;
     protected static double imuOffset=0;
     protected static double acctarget=0;
 
@@ -395,30 +398,33 @@ public class BaseAuto extends BaseOpMode {
     }
 
     protected double getHeading(){
-        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, ZYX, AngleUnit.DEGREES);
-        imuHeading = getError(Double.parseDouble(String.format(Locale.getDefault(), "%.2f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle)))),imuOffset);
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, ZYX, AngleUnit.DEGREES);
+        angle = Double.parseDouble(String.format(Locale.getDefault(), "%.2f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle))));
+        imuAbsolute = getError(angle,0);
+        imuHeading = getError(angle,imuOffset);
         return imuHeading;
     }
 
     protected void setNewGyro0(){
+        //looks dumb but crucial
         imuOffset = 0;
-        imuOffset = getHeading();;
+        imuOffset = getHeading();
     }
 
     protected void setNewGyro(double target){
         imuOffset = target;
     }
 
-    private double getError(double target, double cur) {
+    protected double getError(double target, double cur) {
         double robotError =target-cur;
         while (robotError > 180) robotError -= 360;
         while (robotError <= -180) robotError += 360;
         return robotError;
     }
-    private double getError(double targetAngle) {
+    protected double getError(double targetAngle) {
         return getError(targetAngle,getHeading());
     }
-    private boolean onHeading(double turnSpeed, double angle, double PCoeff, double threshold) {
+    protected boolean onHeading(double turnSpeed, double angle, double PCoeff, double threshold) {
         double   error = getError(angle), steer, speed;
         boolean  onTarget = false;
         if (Math.abs(error) <= threshold) {
@@ -697,9 +703,11 @@ public class BaseAuto extends BaseOpMode {
             while (!isInterrupted() && !stop) {
                 updateCoo();
                 try {
-                    wait(50);
+                    wait(1);
                 }
                 catch(Exception e){}
+                telemetry.addData("position:", "%.3f %.3f", n_pass[0], n_pass[1]);
+                telemetry.update();
             }
         }
         public void stopThread(){
