@@ -13,7 +13,7 @@ public class CompositeMovementTest extends BaseAuto{
 
     private double kP=0.028,kD=0.922,speed=0.5,ssas=0.2;
     private int magnitude=-2;
-    private boolean[] du ={true}, dd={true}, dl={true},dr={true},rb={true},y={true},a={true},x={true},b={true},lb={true};
+    private boolean[] du ={true}, dd={true}, dl={true},dr={true},rb={true},y={true},a={true},x={true},b={true},lb={true},st={true};
     private double imuinitvalue=0, target=90, result=0, resuuu=0;
     private double acctarget=0;
 
@@ -41,10 +41,13 @@ public class CompositeMovementTest extends BaseAuto{
         telemetry.addData("imu: ",getHeading());
         telemetry.addData("ssas: ",ssas);
         if(zheng(this.gamepad1.left_bumper,lb)){
-            lefty(false);
+            lefty();
         }
         if(zheng(this.gamepad1.right_bumper,rb)){
-            righty(false);
+            righty();
+        }
+        if(zheng(this.gamepad1.start,st)){
+            backy();
         }
     }
     private void taunePIDturn(double target, double kp, double kd, double spe, boolean resetOffset){
@@ -78,7 +81,7 @@ public class CompositeMovementTest extends BaseAuto{
             setNewGyro(acctarget);
     }
 
-    private void lefty(boolean resetOffset){
+    private void lefty2(boolean resetOffset){
         double target=90,kd=0.922,kp=0.028;
         if(resetOffset){
             acctarget=0;
@@ -110,7 +113,31 @@ public class CompositeMovementTest extends BaseAuto{
             setNewGyro(acctarget);
     }
 
-    private void righty(boolean resetOffset){
+    private void backy(){
+        double target=180,kd=0.922,kp=0.028;
+        double e = target;
+        acctarget=0;
+        setNewGyro0();
+        ElapsedTime t = new ElapsedTime();
+        int i=0;
+        setAllDrivePower(1,1,-1,-1);
+        wait(150);
+        while(i<5&&!zheng(this.gamepad1.right_bumper, rb)){
+            double e2 = target-(getAdjustedHeading(target));
+            double D = kd*(e2-e)/t.milliseconds();
+            double P = e2*kp;
+            if(Math.abs(P)>Math.abs(1))P=P>0?1:-1;
+            double A=P+D;
+            setAllDrivePower(A);
+            e=e2;
+            if(near(e2-e,0,0.2)&&near(e,0,4))
+                i++;
+            t.reset();
+        }
+        setAllDrivePower(0);
+    }
+
+    private void righty3(boolean resetOffset){
         double target=-90,kd=0.922,kp=0.028;
         if(resetOffset){
             acctarget=0;
@@ -124,6 +151,38 @@ public class CompositeMovementTest extends BaseAuto{
             double e2 = target-(getAdjustedHeading(target));
             double D = kd*(e2-e)/t.milliseconds();
             double P = e2*kp;
+            if(Math.abs(P)>Math.abs(0.7))P=P>0?0.7:-0.7;
+            double A=P+D;
+            setAllDrivePower(A-0.3+0.2,A+0.3+0.2,A-0.3-0.2,A+0.3-0.2);
+            e=e2;
+            if(near(e2-e,0,0.2)&&near(e,0,4))
+                i++;
+            t.reset();
+        }
+        setAllDrivePower(0);
+        acctarget+=target;
+        if(resetOffset) {
+            acctarget = 0;
+            setNewGyro0();
+        }
+        else
+            setNewGyro(acctarget);
+    }
+
+    protected void righty2(boolean resetOffset){
+        double target=-90;
+        if(resetOffset){
+            acctarget=0;
+            setNewGyro0();
+        }
+        double e = target;
+        ElapsedTime t = new ElapsedTime();
+        int i=0;
+        setAllDrivePower(1,1,-1,-1);
+        while(i<5){
+            double e2 = target-(getAdjustedHeading(target));
+            double D = 0.922*(e2-e)/t.milliseconds();
+            double P = e2*0.028;
             if(Math.abs(P)>Math.abs(0.7))P=P>0?0.7:-0.7;
             double A=P+D;
             setAllDrivePower(A-0.3+0.2,A+0.3+0.2,A-0.3-0.2,A+0.3-0.2);

@@ -451,15 +451,15 @@ public class BaseAuto extends BaseOpMode {
         //setNewGyro(angle);
     }
 
-    public void PIDturn(double target, boolean resetOffset){
+    protected void PIDturn(double target, boolean resetOffset){
         tunePIDturn(target,0.068,0.9,0.5,resetOffset);
     }
 
-    public void PIDturnfast(double target, boolean resetOffset){
+    protected void PIDturnfast(double target, boolean resetOffset){
         tunePIDturn(target,0.027,0.922,1,false);
     }
 
-    private void tunePIDturn(double target, double kp, double kd, double speed, boolean resetOffset){
+    protected void tunePIDturn(double target, double kp, double kd, double speed, boolean resetOffset){
         if(resetOffset){
             acctarget=0;
             setNewGyro0();
@@ -487,6 +487,55 @@ public class BaseAuto extends BaseOpMode {
         else
             setNewGyro(acctarget);
     }
+    protected void lefty(){
+        double target=90,kd=0.922,kp=0.028;
+        acctarget=0;
+        setNewGyro0();
+        double e = target;
+        ElapsedTime t = new ElapsedTime();
+        int i=0;
+        setAllDrivePower(1,1,-1,-1);
+        wait(40);
+        while(i<5){
+            double e2 = target-(getAdjustedHeading(target));
+            double D = kd*(e2-e)/t.milliseconds();
+            double P = e2*kp;
+            if(Math.abs(P)>Math.abs(0.6))P=P>0?0.7:-0.7;
+            double A=P+D;
+            setAllDrivePower(A+0.3+0.1,A-0.3+0.1,A+0.3-0.1,A-0.3-0.1);
+            e=e2;
+            if(near(e2-e,0,0.2)&&near(e,0,4))
+                i++;
+            t.reset();
+        }
+        setAllDrivePower(0);
+        setNewGyro0();
+    }
+    protected void righty(){
+        double target=-90;
+        acctarget=0;
+        setNewGyro0();
+        double e = target;
+        ElapsedTime t = new ElapsedTime();
+        int i=0;
+        setAllDrivePower(1,1,-1,-1);
+        wait(40);
+        while(i<5){
+            double e2 = target-(getAdjustedHeading(target));
+            double D = 0.922*(e2-e)/t.milliseconds();
+            double P = e2*0.028;
+            if(Math.abs(P)>Math.abs(0.7))P=P>0?0.7:-0.7;
+            double A=P+D;
+            setAllDrivePower(A-0.3+0.1,A+0.3+0.1,A-0.3-0.1,A+0.3-0.1);
+            e=e2;
+            if(near(e2-e,0,0.2)&&near(e,0,4))
+                i++;
+            t.reset();
+        }
+        setAllDrivePower(0);
+        setNewGyro0();
+    }
+
 
     private double getAdjustedHeading(double target){
         double i = getHeading();

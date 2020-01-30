@@ -46,13 +46,7 @@ public class PIDTurnTest extends BaseAuto {
         //telemetry.addData("result: ",result);
         //telemetry.addLine("LF: "+LF.getCurrentPosition()+" LB: "+LB.getCurrentPosition()+" RF: "+RF.getCurrentPosition()+" RB:"+RB.getCurrentPosition());
         if(zheng(this.gamepad1.left_bumper,lb)){
-            resetY1Odometry();
-            resetXOdometry();
-            setNewGyro0();
-            LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            moveShortInchesGOY(-6,params[3],params[0],params[2]);
-            taunePIDturn(90,0.027,0.922,1,false);
+            tunePIDturn(target,0.068,0.9,0.5,true);
         }
     }
     //0.8, kp 0.033,kd 0.8
