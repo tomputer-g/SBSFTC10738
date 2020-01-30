@@ -1,28 +1,20 @@
 package org.firstinspires.ftc.teamcode20;
 
-import android.provider.Telephony;
-import android.util.Log;
-
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-import java.util.Map;
-import java.util.Set;
 
 import static java.lang.Thread.sleep;
 
 @TeleOp(group = "Final")
 public class TeleOp_MultiThreadDrive extends BaseAuto {
-    private boolean BPrimed = false, RBPrimed = false, YPrimed = false, DPRPrimed = false, LPrimed = false, start = false;
-    private boolean[] xprime={true},Xprimed={true};
+    private boolean b = false, rb = false, y = false, dpad_r = false, dpad_l = false, start = false;
+    private boolean[] Xprimed={true};
     private boolean tapeDirectionOut = true;
     //slide
     private boolean platformGrabbed = false;
     Servo france;
-
 
     private PWMThread pwmThread;
 
@@ -39,22 +31,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         setNewGyro0();
         france = hardwareMap.get(Servo.class, "capstone");
         servoThread.setTarget(0.99);
-        /*platform_grabber.setPower(1);
-        wait(150);
-        platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        platform_grabber.setPower(0);
-        
-         */
         pwmThread = new PWMThread();
-        /*Set<Thread> keys = Thread.getAllStackTraces().keySet();
-        Log.d("All threads log start","-------------------- "+keys.size()+"Threads -----------------------");
-        for(Thread t : keys){
-            Log.d("All threads: #"+t.getId(),t.getName());
-        }
-        Log.d("All threads log end","-------------------------------------------");
-
-         */
     }
 
     @Override public void start() {
@@ -63,17 +40,12 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         pwmThread.start();
     }
 
-    @Override public void stop() {
-        pwmThread.stopThread();
-        servoThread.stopThread();
-    }
-
-
-    @Override
-    public void loop() {
+    @Override public void loop() {
 
         //toggle slow
-        if(this.gamepad1.y){YPrimed = true;}if(!this.gamepad1.y && YPrimed){YPrimed = false;
+        if(this.gamepad1.y){
+            y = true;}if(!this.gamepad1.y && y){
+            y = false;
             if(slow==1)slow=0;
             else slow=1;
         }
@@ -83,9 +55,9 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         }
         //platform grabber toggle
         if(this.gamepad1.dpad_right) {
-            DPRPrimed = true;
-        }if(!this.gamepad1.dpad_right && DPRPrimed){
-            DPRPrimed = false;
+            dpad_r = true;
+        }if(!this.gamepad1.dpad_right && dpad_r){
+            dpad_r = false;
             if(platformGrabbed){//already held
                 platformGrabbed = false;
                 platform_grabber.setPower(1);
@@ -98,7 +70,9 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         }
 
         //servo toggle
-        if(this.gamepad1.b && !this.gamepad1.left_bumper){BPrimed = true;}if(!this.gamepad1.b && BPrimed){BPrimed = false;
+        if(this.gamepad1.b && !this.gamepad1.left_bumper){
+            b = true;}if(!this.gamepad1.b && b){
+            b = false;
             if(grabber.getPosition() > (grabber_closed+grabber_open)/2){
                 grabber.setPosition(grabber_open);
             }else{
@@ -133,7 +107,9 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         }
 
         //RB toggle extender positions (not instant!)
-        if(this.gamepad1.right_bumper){RBPrimed = true;}if(!this.gamepad1.right_bumper && RBPrimed){RBPrimed = false;
+        if(this.gamepad1.right_bumper){
+            rb = true;}if(!this.gamepad1.right_bumper && rb){
+            rb = false;
          if(servoThread.lastPosition > 0.75){
                 servoThread.setTarget(grabberServoOut);
             }else{
@@ -165,15 +141,15 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
         //tape out/tape in
         if(this.gamepad1.dpad_left){
-            LPrimed = true;
+            dpad_l = true;
             if(tapeDirectionOut){
                 xOdometry.setPower(-1);
             }else{
                 xOdometry.setPower(1);
             }
         }else{
-            if(LPrimed){
-                LPrimed = false;
+            if(dpad_l){
+                dpad_l = false;
                 tapeDirectionOut = !tapeDirectionOut;
             }
             xOdometry.setPower(0);
@@ -199,6 +175,48 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         }
     }
 
+    @Override public void stop() {
+        pwmThread.stopThread();
+        servoThread.stopThread();
+    }
+
+    protected void joystickScaledMove(double vx, double vy, double vr){
+        double[] speeds = {vx - vy + vr, -vy - vx + vr, vx + vy + vr, -vx + vy + vr};
+        double absMax = 0;
+        for(double d : speeds)
+            absMax = Math.max(Math.abs(d),absMax);
+        if(Math.abs(vx) < 0.01 && Math.abs(vy) < 0.01 && Math.abs(vr) < 0.01){
+            setAllDrivePower(0);
+        }else if(absMax <= 1){
+            setAllDrivePower(speeds[0], speeds[1], speeds[2], speeds[3]);
+        }else{
+            setAllDrivePower(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
+        }
+
+    }
+
+    protected void slowModeMove(double vx, double vy, double vr){
+        double[] speeds = {vx - vy + vr, -vy - vx + vr, vx + vy + vr, -vx + vy + vr};
+        double absMax = 0;
+        for(double d : speeds)
+            absMax = Math.max(Math.abs(d),absMax);
+        if(absMax <= 1 && Math.abs(vr) < 0.01){
+            setAllDrivePowerG(speeds[0], speeds[1], speeds[2], speeds[3]);
+        }else if(Math.abs(vr) < 0.01){
+            if(showTelemetry)telemetry.addLine("SCALED power: max was "+absMax);
+            setAllDrivePowerG(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
+        }else if(absMax <= 1){
+            setNewGyro0();
+            setAllDrivePower(speeds[0], speeds[1], speeds[2], speeds[3]);
+        }else{
+            setNewGyro0();
+            setAllDrivePower(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
+        }
+        if(Math.abs(vx) < 0.01 && Math.abs(vy) < 0.01 && Math.abs(vr) < 0.01){
+            setNewGyro0();
+            setAllDrivePower(0);
+        }
+    }
 
     //-------------------------------------Multithreading---------------------------------/
     private class PWMThread extends Thread{
@@ -234,42 +252,5 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         }
     }
 
-    protected void joystickScaledMove(double vx, double vy, double vr){
-            double[] speeds = {vx - vy + vr, -vy - vx + vr, vx + vy + vr, -vx + vy + vr};
-            double absMax = 0;
-            for(double d : speeds)
-                absMax = Math.max(Math.abs(d),absMax);
-            if(Math.abs(vx) < 0.01 && Math.abs(vy) < 0.01 && Math.abs(vr) < 0.01){
-                setAllDrivePower(0);
-            }else if(absMax <= 1){
-                setAllDrivePower(speeds[0], speeds[1], speeds[2], speeds[3]);
-            }else{
-                setAllDrivePower(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
-            }
-
-    }
-
-    protected void slowModeMove(double vx, double vy, double vr){
-        double[] speeds = {vx - vy + vr, -vy - vx + vr, vx + vy + vr, -vx + vy + vr};
-        double absMax = 0;
-        for(double d : speeds)
-            absMax = Math.max(Math.abs(d),absMax);
-        if(absMax <= 1 && Math.abs(vr) < 0.01){
-            setAllDrivePowerG(speeds[0], speeds[1], speeds[2], speeds[3]);
-        }else if(Math.abs(vr) < 0.01){
-            if(showTelemetry)telemetry.addLine("SCALED power: max was "+absMax);
-            setAllDrivePowerG(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
-        }else if(absMax <= 1){
-            setNewGyro0();
-            setAllDrivePower(speeds[0], speeds[1], speeds[2], speeds[3]);
-        }else{
-            setNewGyro0();
-            setAllDrivePower(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
-        }
-        if(Math.abs(vx) < 0.01 && Math.abs(vy) < 0.01 && Math.abs(vr) < 0.01){
-            setNewGyro0();
-            setAllDrivePower(0);
-        }
-    }
 
 }

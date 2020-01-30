@@ -32,7 +32,7 @@ public class MB1242_custom_driver_test extends BaseAuto {
         state   = States.SEND_PING;
     }
 
-    private enum States{SEND_PING,ACK_PING,WAIT_REPLY,READ_RESPONSE};
+    private enum States{SEND_PING,ACK_PING,WAIT_REPLY,READ_RESPONSE}
 
     private States state;
 

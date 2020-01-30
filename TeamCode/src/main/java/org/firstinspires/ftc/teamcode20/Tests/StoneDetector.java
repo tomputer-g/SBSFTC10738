@@ -104,12 +104,7 @@ public class StoneDetector extends DogeCVDetector {
             foundRects.add(rect);
         }
 
-        if (foundRects.size() > 0) {
-            found = true;
-        }
-        else {
-            found = false;
-        }
+        found = foundRects.size() > 0;
 
         switch (stageToRenderToViewport) {
             case THRESHOLD: {

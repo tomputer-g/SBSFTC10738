@@ -1,13 +1,16 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode19.BaseOpMode;
+import java.text.DecimalFormat;
 
+
+@TeleOp
 /**
  * Created by Ziming Gao on 12/11/2017.
  */
-public class ControllerTest extends BaseOpMode {
+public class ControllerTest extends OpMode {
 
     @Override public void init() {}
     @Override public void loop() {
@@ -19,5 +22,10 @@ public class ControllerTest extends BaseOpMode {
         telemetry.addData("XYAB",(this.gamepad1.a ? " A ": "")+(this.gamepad1.b?" B ":"")+(this.gamepad1.x?" X ":"")+(this.gamepad1.y?" Y ":""));
         telemetry.addData("Other", (this.gamepad1.back?"BACK ":"")+(this.gamepad1.guide?"GUIDE ":"")+(this.gamepad1.start?"START ":""));
         telemetry.update();
+    }
+
+    protected double to3d(double d){
+        DecimalFormat df = new DecimalFormat("##0.000");
+        return Double.parseDouble(df.format(d));
     }
 }

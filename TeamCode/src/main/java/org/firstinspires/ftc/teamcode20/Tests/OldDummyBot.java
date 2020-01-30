@@ -32,9 +32,8 @@ public class OldDummyBot extends BaseOpMode {
 
     protected static boolean checkButton(boolean b, boolean[] f){
         if(b||!f[0]){
-            if(b)f[0]=false;
-            else f[0]=true;
-            if(f[0])return true;
+            f[0]= !b;
+            return f[0];
         }
         return false;
     }

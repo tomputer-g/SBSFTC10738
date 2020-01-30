@@ -29,7 +29,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode20.Tests.PIDTurnTest;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -56,32 +55,10 @@ public class BaseAuto extends BaseOpMode {
     private final float CAMERA_FORWARD_DISPLACEMENT  = 0f * mmPerInch;//2.5 in from end + 1 in correction
     private final float CAMERA_VERTICAL_DISPLACEMENT = 0f * mmPerInch;// eg: Camera is 8 Inches above ground
     private final float CAMERA_LEFT_DISPLACEMENT     = 0f * mmPerInch; // eg: Camera is ON the robot's center line
-
-    //TFOD
-    protected TFObjectDetector tfod;
-    //Sensors
-    protected ModernRoboticsI2cRangeSensor rangeSensorFront, rangeSensorSide;
-    protected Rev2mDistanceSensor left,right;
-
-    //IMU
-    protected static BNO055IMU imu;
-    protected Orientation angles;
-    protected double angle;
-    protected static double imuHeading;
-    protected static double imuAbsolute=0;
-    protected static double imuOffset=0;
-    protected static double acctarget=0;
-
-    //Vuforia
     private ElapsedTime VuforiaPositionTime;
     private double[] displacements = {2, 7};//+ = forward; + = right
     private double headingDisplacement = -90;
 
-    //Odometry
-    protected double xmult = 1430.5/72, ymult = 18.65;
-    protected double[] n_pass ={0,0};
-    private double xpre=0,y1pre=0,y2pre=0,theta=0;
-    protected CooThread cooThread;
 
     protected void initVuforia(){
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -340,6 +317,8 @@ public class BaseAuto extends BaseOpMode {
     }
 
     //TFOD
+    protected TFObjectDetector tfod;
+
     protected void initTfod() {
         if(!VuforiaInit)initVuforia();
         if(ClassFactory.getInstance().canCreateTFObjectDetector()){
@@ -360,7 +339,10 @@ public class BaseAuto extends BaseOpMode {
         }
     }
 
-    //daxie sensers
+    //Sensors
+    protected ModernRoboticsI2cRangeSensor rangeSensorFront, rangeSensorSide;
+    protected Rev2mDistanceSensor left,right;
+
     protected void initSensors(){
         rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "front");
@@ -369,23 +351,16 @@ public class BaseAuto extends BaseOpMode {
         tower_top = hardwareMap.get(Rev2mDistanceSensor.class, "tower_top");
     }
 
-    //Odometry
-    protected void initOdometry(){
-        //L2 is Y encoder
-        //platform grabber is X encoder
-        platform_grabber = hardwareMap.get(DcMotor.class, "platform");
-        platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        xOdometry = hardwareMap.get(DcMotor.class, "xOdo");
-        xOdometry.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        xOdometry.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        L2 = hardwareMap.get(DcMotor.class, "L2");
-        L2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        cooThread=new CooThread();
-    }
-
     //IMU
+    protected static BNO055IMU imu;
+    protected Orientation angles;
+    protected double angle;
+    protected static double imuHeading;
+    protected static double imuAbsolute=0;
+    protected static double imuOffset=0;
+    protected static double acctarget=0;
+
+
     protected void initIMU(){
         BNO055IMU.Parameters BNOParameters = new BNO055IMU.Parameters();
         BNOParameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
@@ -421,9 +396,11 @@ public class BaseAuto extends BaseOpMode {
         while (robotError <= -180) robotError += 360;
         return robotError;
     }
+
     protected double getError(double targetAngle) {
         return getError(targetAngle,getHeading());
     }
+
     protected boolean onHeading(double turnSpeed, double angle, double PCoeff, double threshold) {
         double   error = getError(angle), steer, speed;
         boolean  onTarget = false;
@@ -442,6 +419,35 @@ public class BaseAuto extends BaseOpMode {
         if(showTelemetry)telemetry.update();
         return onTarget;
     }
+
+    //Odometry
+    protected double xmult = 1430.5/72, ymult = 18.65;
+
+    protected void initOdometry(){
+        //L2 is Y encoder
+        //platform grabber is X encoder
+        platform_grabber = hardwareMap.get(DcMotor.class, "platform");
+        platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        xOdometry = hardwareMap.get(DcMotor.class, "xOdo");
+        xOdometry.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        xOdometry.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        L2 = hardwareMap.get(DcMotor.class, "L2");
+        L2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        cooThread=new CooThread();
+    }
+
+    //Threads
+    protected CooThread cooThread;
+
+    //Misc
+    protected double[] n_pass ={0,0};
+    private double xpre=0,y1pre=0,y2pre=0,theta=0;
+
+
+    //Movement methods
+
     protected void turn(double angle, double speed, double threshold) {
         setMode_RUN_WITHOUT_ENCODER();
         setNewGyro(theta);
@@ -682,7 +688,7 @@ public class BaseAuto extends BaseOpMode {
         wait(40+(int)(400*Math.abs(speed)));
     }
 
-    //Coordinate
+    //Coordinates
     protected void updateCoo(){
         double heading=getError(getHeading()+imuOffset,0);
         double dtheta=heading-theta;
@@ -696,6 +702,7 @@ public class BaseAuto extends BaseOpMode {
         y2pre=y2cur;
         theta=heading;
     }
+
     protected class CooThread extends Thread{
         volatile public boolean stop = false;
         @Override

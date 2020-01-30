@@ -19,6 +19,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.Set;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.round;
@@ -36,10 +37,14 @@ Make sure TeleOp2019Trident and BaseAuto can inherit needed stuff by setting the
  */
 public class BaseOpMode extends OpMode {
 
+    //Motors
+    protected ExpansionHubMotor LF, LB, RF, RB;
+
+
     protected boolean showTelemetry = false;
     protected ExpansionHubEx hub2, hub4;
     protected ServoThread servoThread;
-    protected ExpansionHubMotor LF, LB, RF, RB;
+
     protected Servo grabber;
     protected Servo grabber_extend1, grabber_extend2;
     protected DcMotor platform_grabber, xOdometry;
@@ -50,13 +55,7 @@ public class BaseOpMode extends OpMode {
 
     protected final double odometryEncYPerInch = 1324.28, odometryEncXPerInch = 1314.42;
 
-    //private String[] bFN={"this.gamepad1.left_bumper","this.gamepad1.right_bumper","this.gamepad1.dpad_up","this.gamepad1.dpad_down","this.gamepad1.dpad_left","this.gamepad1.dpad_right","this.gamepad1.a","this.gamepad1.b","this.gamepad1.x","this.gamepad1.y"};
-    //private boolean[] bFB={this.gamepad1.left_bumper,this.gamepad1.right_bumper,this.gamepad1.dpad_up,this.gamepad1.dpad_down,this.gamepad1.dpad_left,this.gamepad1.dpad_right,this.gamepad1.a,this.gamepad1.b,this.gamepad1.x,this.gamepad1.y};
-    //private boolean[] bF={true,true,true,true,true,true,true,true,true,true};
-
-
-    @Override
-    public void internalPreInit() {
+    @Override public void internalPreInit() {
         super.internalPreInit();
         msStuckDetectLoop = 30000;
         msStuckDetectInit = 30000;
@@ -217,9 +216,8 @@ public class BaseOpMode extends OpMode {
         //boolean b=bFB[index];
         //boolean c=bF[index];
         if(b||!f[0]){
-            if(b)f[0]=false;
-            else f[0]=true;
-            if(f[0])return true;
+            f[0]= !b;
+            return f[0];
         }
         return false;
     }
@@ -677,8 +675,8 @@ public class BaseOpMode extends OpMode {
             this.setName("Servo Thread "+this.getId());
             Log.i("servoThread"+this.getId(),"Started running");
             while(!isInterrupted() && !stop){
-                if(gamepad1.dpad_up){upWasHeld = true;}else{upWasHeld = false;}
-                if(gamepad1.dpad_down){downWasHeld = true;}else{downWasHeld = false;}
+                upWasHeld = gamepad1.dpad_up;
+                downWasHeld = gamepad1.dpad_down;
 
                 try {
                     sleep(delayStep);
@@ -686,8 +684,8 @@ public class BaseOpMode extends OpMode {
                     stop = true;
                 }
 
-                if(gamepad1.dpad_up){upHeld = true;}else{upHeld = false;}
-                if(gamepad1.dpad_down){downHeld = true;}else{downHeld = false;}
+                upHeld = gamepad1.dpad_up;
+                downHeld = gamepad1.dpad_down;
 
 
                 //set target if manual input
@@ -745,5 +743,14 @@ public class BaseOpMode extends OpMode {
 
     private double roundTo2Dec(double d){
         return (Math.round(100*d) / 100.0);
+    }
+
+    protected void printAllThreadsToLogcat(){
+        Set<Thread> keys = Thread.getAllStackTraces().keySet();
+        Log.d("All threads log start","-------------------- "+keys.size()+"Threads -----------------------");
+        for(Thread t : keys){
+            Log.d("All threads: #"+t.getId(),t.getName());
+        }
+        Log.d("All threads log end","-------------------------------------------");
     }
 }

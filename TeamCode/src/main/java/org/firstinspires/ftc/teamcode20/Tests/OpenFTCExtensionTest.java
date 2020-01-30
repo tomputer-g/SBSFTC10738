@@ -9,7 +9,6 @@ import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
 
-@Autonomous
 public class OpenFTCExtensionTest extends OpMode {
     ExpansionHubEx hub2, hub4;
     ExpansionHubMotor LF, LB, RF, RB, L1, L2, xOdo, platform;

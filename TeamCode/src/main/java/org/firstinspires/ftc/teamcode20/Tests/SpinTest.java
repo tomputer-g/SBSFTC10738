@@ -11,7 +11,9 @@ import org.firstinspires.ftc.teamcode20.BaseAuto;
 
 @TeleOp
 public class SpinTest extends BaseAuto {
-    private boolean a[]={true}, b[]={true}, aa[]={true};
+    private boolean[] a = {true};
+    private boolean[] b = {true};
+    private boolean[] aa = {true};
     private double last_imu, d, speed;
     ElapsedTime p  =new ElapsedTime();
 

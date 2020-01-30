@@ -5,7 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 @TeleOp
 public class GrabberExtenderTest extends BaseAuto {
-    boolean a[] = {true}, b[] = {true};
+    boolean[] a = {true};
+    boolean[] b = {true};
     double pos = 1;
     @Override
     public void init() {

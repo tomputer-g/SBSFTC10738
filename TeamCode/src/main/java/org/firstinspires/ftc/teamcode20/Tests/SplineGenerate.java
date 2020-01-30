@@ -44,7 +44,7 @@ public class SplineGenerate {
 			d[i]= (c[i+1]-c[i])/(3*h[i]);
 		}
 		//returning the parameters in pairs in formula (a+b(x-e)+c(x-e)^2+d(x-e)^3) for each two adjacent points
-		double spline[][] = new double[n][5];	
+        double[][] spline = new double[n][5];
 		for (int i = 0; i < n;i++){
 			spline[i][0] = a[i];
 			spline[i][1] = b[i];
