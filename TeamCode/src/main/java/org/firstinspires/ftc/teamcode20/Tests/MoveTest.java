@@ -65,10 +65,10 @@ public class MoveTest extends BaseAuto {
     public void loop(){
         if(zheng(this.gamepad1.dpad_left,eee))x-=2;
         if(zheng(this.gamepad1.dpad_right,fff))x+=2;
-        if(zheng(this.gamepad1.dpad_up,ee))y+=0.01;
-        if(zheng(this.gamepad1.dpad_down,ff))y+=0.01;
-        if(zheng(this.gamepad1.y,m))speed+=1;
-        if(zheng(this.gamepad1.a,mm))speed-=.01;
+        if(zheng(this.gamepad1.dpad_up,ee))y+=1;
+        if(zheng(this.gamepad1.dpad_down,ff))y+=1;
+        if(zheng(this.gamepad1.y,m))speed+=.1;
+        if(zheng(this.gamepad1.a,mm))speed-=.1;
         if(zheng(this.gamepad1.b,f))setNewGyro0();
         /*
         if(zheng(this.gamepad1.left_bumper,bF)){
@@ -109,7 +109,7 @@ public class MoveTest extends BaseAuto {
 
         }
         if(zheng(this.gamepad1.right_bumper,bF)) {
-            turn(x,speed,2);
+            moveInchesGOY(y,speed);
         }
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);

@@ -622,7 +622,6 @@ public class BaseAuto extends BaseOpMode {
             prev_speed = multiply_factor * vy;
         }
         setAllDrivePower(0);
-
     }
 
     protected void moveInchesGOX(double xInch, double speed){//0.5 only
