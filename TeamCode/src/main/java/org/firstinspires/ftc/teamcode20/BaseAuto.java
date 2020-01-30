@@ -540,7 +540,12 @@ public class BaseAuto extends BaseOpMode {
             setAllDrivePowerG(-.02 * dir - .05 * x + .02 * w, -.02 * dir + .05 * x + .02 * w, .02 * dir - 0.05 * x + .02 * w, .2 * dir + .05 * x + .2 * w);
     }
 
-    protected void moveInchesG(double xInch, double yInch, double speed,double Kp){
+    @Override
+    public void init() {
+        super.init();
+    }
+
+    protected void moveInchesG(double xInch, double yInch, double speed, double Kp){
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
         //ElapsedTime t = new ElapsedTime();

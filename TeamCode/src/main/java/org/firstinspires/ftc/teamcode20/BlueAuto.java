@@ -21,6 +21,7 @@ public class BlueAuto extends BaseAuto {
     int pos = 0;
     @Override
     public void init() {
+        super.init();
         showTelemetry = false;
         initDrivetrain();
         initIMU();
@@ -40,7 +41,7 @@ public class BlueAuto extends BaseAuto {
         telemetry.addData("pos: ", pos);
         telemetry.update();
         shutdownVuforia();
-        cooThread.start();
+        //cooThread.start();
     }
     @Override
     public void loop() {
