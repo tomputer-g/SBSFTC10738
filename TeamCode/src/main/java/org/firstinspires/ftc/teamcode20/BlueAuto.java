@@ -21,6 +21,7 @@ public class BlueAuto extends BaseAuto {
     int pos = 0;
     @Override
     public void init() {
+        super.init();
         showTelemetry = false;
         initDrivetrain();
         initIMU();
@@ -40,7 +41,7 @@ public class BlueAuto extends BaseAuto {
         telemetry.addData("pos: ", pos);
         telemetry.update();
         shutdownVuforia();
-       // cooThread.start();
+        //cooThread.start();
     }
     @Override
     public void loop() {
@@ -114,6 +115,7 @@ public class BlueAuto extends BaseAuto {
         }
         setNewGyro(180);
         setAllDrivePower(0);
+        after_dragged_foundation();
         //telemetry.addData()
         //plantation.setLocation(Florida.class);
         //plantation.addSlave(new Slave("inger","#000000"));

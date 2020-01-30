@@ -540,7 +540,12 @@ public class BaseAuto extends BaseOpMode {
             setAllDrivePowerG(-.02 * dir - .05 * x + .02 * w, -.02 * dir + .05 * x + .02 * w, .02 * dir - 0.05 * x + .02 * w, .2 * dir + .05 * x + .2 * w);
     }
 
-    protected void moveInchesG(double xInch, double yInch, double speed,double Kp){
+    @Override
+    public void init() {
+        super.init();
+    }
+
+    protected void moveInchesG(double xInch, double yInch, double speed, double Kp){
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
         //ElapsedTime t = new ElapsedTime();
@@ -725,5 +730,24 @@ public class BaseAuto extends BaseOpMode {
             stop = true;
         }
     }
+    protected void after_dragged_foundation(){
+        ElapsedTime p = new ElapsedTime();
+        moveInchesGOX(-4,0.8);
+        platform_grabber.setPower(0);
+        servoThread.setTarget(0.5);
+        PIDturn(-90,false);
+        //setAllDrivePower(0);
+        //turn(-90-getHeading(),0.5,1);
+        setNewGyro(90);
+        //setAllDrivePowerG(-.2,-.2,.2,.2);
+        moveInchesGOY(5,0.4);
+        servoThread.setTarget(0.85);
+        p.reset();
+        while (p.milliseconds()<1000);
+        setAllDrivePower(0);
+        grabber.setPosition(grabber_open);
+        //servoThread.setTarget(0.6);
+    }
+
 }
 

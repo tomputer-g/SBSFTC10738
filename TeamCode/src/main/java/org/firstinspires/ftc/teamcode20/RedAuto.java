@@ -9,6 +9,7 @@ public class RedAuto extends TractionControl {
     private boolean[] ca={true},cb={true};
     @Override
     public void init() {
+        super.init();
         initDrivetrain();
         initIMU();
         initGrabber();
