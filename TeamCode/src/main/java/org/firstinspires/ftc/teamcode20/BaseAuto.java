@@ -716,6 +716,9 @@ public class BaseAuto extends BaseOpMode {
         volatile public boolean stop = false;
         @Override
         public void run() {
+            this.setPriority(4);
+            this.setName("Coord Thread "+this.getId());
+            Log.i("coordThread"+this.getId(),"Started running");
             while (!isInterrupted() && !stop) {
                 updateCoo();
                 try {
@@ -725,6 +728,7 @@ public class BaseAuto extends BaseOpMode {
                 telemetry.addData("position:", "%.3f %.3f", n_pass[0], n_pass[1]);
                 telemetry.update();
             }
+            Log.i("coordThread"+this.getId(), "thread finished");
         }
         public void stopThread(){
             stop = true;

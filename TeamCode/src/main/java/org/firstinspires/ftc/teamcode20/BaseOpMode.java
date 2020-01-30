@@ -671,6 +671,7 @@ public class BaseOpMode extends OpMode {
         //getPosition does not actually read position. We'll have to keep track using a double
         @Override
         public void run() {
+            this.setPriority(4);
             this.setName("Servo Thread "+this.getId());
             Log.i("servoThread"+this.getId(),"Started running");
             while(!isInterrupted() && !stop){
@@ -748,7 +749,7 @@ public class BaseOpMode extends OpMode {
         Set<Thread> keys = Thread.getAllStackTraces().keySet();
         Log.d("All threads log start","-------------------- "+keys.size()+"Threads -----------------------");
         for(Thread t : keys){
-            Log.d("All threads: #"+t.getId(),t.getName()+"Priority is "+t.getPriority()+", in thread group"+t.getThreadGroup().getName());
+            Log.d("All threads: #"+t.getId(),t.getName()+" Priority is "+t.getPriority()+", in thread group "+t.getThreadGroup().getName());
         }
         Log.d("All threads log end","-------------------------------------------");
     }

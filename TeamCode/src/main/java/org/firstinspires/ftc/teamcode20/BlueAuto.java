@@ -41,6 +41,7 @@ public class BlueAuto extends BaseAuto {
         telemetry.addData("pos: ", pos);
         telemetry.update();
         shutdownVuforia();
+        printAllThreadsToLogcat();
         //cooThread.start();
     }
     @Override

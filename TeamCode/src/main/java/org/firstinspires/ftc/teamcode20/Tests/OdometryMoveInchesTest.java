@@ -18,7 +18,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
     0.6 speed: P = 0.075,   D = 1.4E-2, result: 0 in.
     0.9 speed: P = 0.0325,  D = 7.3E-3, result: spin +- 1/4 in
      */
-    private double[] params =       {0.17,  0,     0.015,       0.9,        6,           };
+    private double[] params =       {0,  0,     0,       0.6,        30.7,           };
     private String[] paramNames =   {"P",   "I",    "D",    "speed",    "targetInches"};
     private int currentSelectParamIndex = 0;
     private boolean l, r, u, d, lb, rb, y, APrimed = false, x = false, platformGrabbed = false;
@@ -42,7 +42,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
             setNewGyro0();
             LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            moveInchesGOY(params[4],params[3],params[0],params[2]);
+            moveInchesGOY(params[4], params[3]);
         }
 
         if(this.gamepad1.left_bumper){lb = true;}if(!this.gamepad1.left_bumper && lb){
@@ -111,7 +111,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
         stopLog();
         super.stop();
     }
-
+/*
     protected void moveInchesGOY(double yInch, double speed,double kP,double kD){//use 0.4 for short-dist
         yInch = -yInch;
         setNewGyro0();
@@ -144,6 +144,8 @@ public class OdometryMoveInchesTest extends BaseAuto {
 
     }
 
+
+ */
     protected void moveInchesGOX_platform(double xInch, double speed){
         if(xInch == 0)return;
         writeLogHeader("P="+params[0]+", I="+params[1]+", D="+params[2]+",speed="+speed+",target="+xInch * odometryEncXPerInch+", batt"+hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS));
