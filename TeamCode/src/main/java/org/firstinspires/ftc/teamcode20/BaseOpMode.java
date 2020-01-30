@@ -748,7 +748,7 @@ public class BaseOpMode extends OpMode {
         Set<Thread> keys = Thread.getAllStackTraces().keySet();
         Log.d("All threads log start","-------------------- "+keys.size()+"Threads -----------------------");
         for(Thread t : keys){
-            Log.d("All threads: #"+t.getId(),t.getName());
+            Log.d("All threads: #"+t.getId(),t.getName()+"Priority is "+t.getPriority()+", in thread group"+t.getThreadGroup().getName());
         }
         Log.d("All threads log end","-------------------------------------------");
     }
