@@ -198,6 +198,11 @@ public class BaseOpMode extends OpMode {
         return L2.getCurrentPosition();
     }
 
+    protected int[] bulkReadOdometry(){
+        RevBulkData bulk = hub4.getBulkInputData();
+        return new int[] {bulk.getMotorCurrentPosition(xOdometry),bulk.getMotorCurrentPosition(platform_grabber),bulk.getMotorCurrentPosition(L2)};
+    }
+
     protected void resetY1Odometry(){
         platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

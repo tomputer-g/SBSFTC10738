@@ -26,13 +26,13 @@ public class OdometryMoveInchesTest extends BaseAuto {
     protected final double odometryEncYPerInch = 1324.28, odometryEncXPerInch = 1316.38;
     @Override
     public void init() {
+        super.init();
         initDrivetrain();
         initPlatformGrabber();
         initOdometry();
         initIMU();
         initLogger("OdoMoveInchesX"+System.currentTimeMillis()+".csv");
-        hub2 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
-        hub2.setPhoneChargeEnabled(true);
+
     }
     @Override
     public void loop() {
@@ -111,7 +111,11 @@ public class OdometryMoveInchesTest extends BaseAuto {
         stopLog();
         super.stop();
     }
-/*
+
+
+
+
+
     protected void moveInchesGOY(double yInch, double speed,double kP,double kD){//use 0.4 for short-dist
         yInch = -yInch;
         setNewGyro0();
@@ -134,7 +138,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
             }else{
                 steadyCounter = 0;
             }
-            Log.d("GOY "+yInch,"steady"+steadyCounter+", position"+currentOdometry+", speed"+prev_speed);
+            Log.d("GOY "+yInch,"steady"+steadyCounter+", position"+currentOdometry+", speed"+prev_speed+", bulkSpd="+hub4.getBulkInputData().getMotorVelocity(platform_grabber));
             previousPos = currentOdometry;
             tpre=tcur;
             setAllDrivePowerG(multiply_factor*vy,multiply_factor*vy,multiply_factor*-vy,multiply_factor*-vy, params[0]);
@@ -145,7 +149,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
     }
 
 
- */
+
     protected void moveInchesGOX_platform(double xInch, double speed){
         if(xInch == 0)return;
         writeLogHeader("P="+params[0]+", I="+params[1]+", D="+params[2]+",speed="+speed+",target="+xInch * odometryEncXPerInch+", batt"+hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS));
