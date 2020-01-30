@@ -114,6 +114,7 @@ public class BlueAuto extends BaseAuto {
         }
         setNewGyro(180);
         setAllDrivePower(0);
+        after_dragged_foundation();
         //telemetry.addData()
         //plantation.setLocation(Florida.class);
         //plantation.addSlave(new Slave("inger","#000000"));
