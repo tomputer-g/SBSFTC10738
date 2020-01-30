@@ -550,12 +550,14 @@ public class BaseAuto extends BaseOpMode {
         double theta=(yInch==0)?90:Math.abs(Math.atan(xInch/yInch));
         double vx=(xInch==0)?0:xInch/Math.abs(xInch)*Math.sin(theta)*speed;
         double vy=(yInch==0)?0:(yInch/Math.abs(yInch)*Math.cos(theta)*speed);
-        boolean elf=Math.abs(-encoder_x-encoder_y)>Math.abs(-LF.getCurrentPosition()),elb=Math.abs(encoder_x-encoder_y)>Math.abs(-LB.getCurrentPosition()),erf=Math.abs(-encoder_x+encoder_y)>Math.abs(-RF.getCurrentPosition()),erb=Math.abs(encoder_x+encoder_y)>Math.abs(-RB.getCurrentPosition());
+        tmpBulkData = hub2.getBulkInputData();
+        boolean elf=Math.abs(-encoder_x-encoder_y)>Math.abs(-tmpBulkData.getMotorCurrentPosition(LF)),elb=Math.abs(encoder_x-encoder_y)>Math.abs(-tmpBulkData.getMotorCurrentPosition(LB)),erf=Math.abs(-encoder_x+encoder_y)>Math.abs(-tmpBulkData.getMotorCurrentPosition(RF)),erb=Math.abs(encoder_x+encoder_y)>Math.abs(-tmpBulkData.getMotorCurrentPosition(RB));
         while((elf|| elb|| erf|| erb)){
-            elf=Math.abs(-encoder_x-encoder_y)>Math.abs(-LF.getCurrentPosition());
-            elb=Math.abs(encoder_x-encoder_y)>Math.abs(-LB.getCurrentPosition());
-            erf=Math.abs(-encoder_x+encoder_y)>Math.abs(-RF.getCurrentPosition());
-            erb=Math.abs(encoder_x+encoder_y)>Math.abs(-RB.getCurrentPosition());
+            tmpBulkData = hub2.getBulkInputData();
+            elf=Math.abs(-encoder_x-encoder_y)>Math.abs(-tmpBulkData.getMotorCurrentPosition(LF));
+            elb=Math.abs(encoder_x-encoder_y)>Math.abs(-tmpBulkData.getMotorCurrentPosition(LB));
+            erf=Math.abs(-encoder_x+encoder_y)>Math.abs(-tmpBulkData.getMotorCurrentPosition(RF));
+            erb=Math.abs(encoder_x+encoder_y)>Math.abs(-tmpBulkData.getMotorCurrentPosition(RB));
             setAllDrivePowerG(fgt*(-vx-vy),fgt*(vx-vy),fgt*(-vx+vy),fgt*(vx+vy),Kp);
         }
         //brake
@@ -692,7 +694,8 @@ public class BaseAuto extends BaseOpMode {
     protected void updateCoo(){
         double heading=getError(getHeading()+imuOffset,0);
         double dtheta=heading-theta;
-        double xcur=getXOdometry()/odometryEncXPerInch,y1cur=-getY1Odometry()/odometryEncYPerInch,y2cur=-getY2Odometry()/odometryEncYPerInch,thetacur=heading/180*Math.PI;
+        tmpBulkData = hub4.getBulkInputData();
+        double xcur=tmpBulkData.getMotorCurrentPosition(xOdometry)/odometryEncXPerInch,y1cur=-tmpBulkData.getMotorCurrentPosition(platform_grabber)/odometryEncYPerInch,y2cur=-tmpBulkData.getMotorCurrentPosition(L2)/odometryEncYPerInch,thetacur=heading/180*Math.PI;
         double dx=(near(dtheta,0,5))?xcur-xpre:0;
         double dy=(y1cur+y2cur-y1pre-y2pre)/2;//(near(dtheta,0,5))?y1cur-y1pre:0;
         n_pass[0] += (dx * Math.cos(thetacur) + dy * Math.sin(thetacur));
