@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.R;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
+import org.openftc.revextensions2.RevBulkData;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -54,6 +55,10 @@ public class BaseOpMode extends OpMode {
     private BufferedWriter logWriter;
 
     protected final double odometryEncYPerInch = 1324.28, odometryEncXPerInch = 1314.42;
+
+
+    protected RevBulkData tmpBulkData;//use this for all bulk reads
+
 
     @Override public void internalPreInit() {
         super.internalPreInit();
@@ -288,18 +293,7 @@ public class BaseOpMode extends OpMode {
         double theta=Math.atan(xInch/yInch);
         double vy=Math.cos(theta)*speed,vx=Math.sin(theta)*speed;
         double coe=1;
-        while(Math.abs(-encoder_x-encoder_y)>Math.abs(-LF.getCurrentPosition())||Math.abs(encoder_x-encoder_y)>Math.abs(-LB.getCurrentPosition())||Math.abs(-encoder_x+encoder_y)>Math.abs(-RF.getCurrentPosition())||Math.abs(encoder_x+encoder_y)>Math.abs(-RB.getCurrentPosition())){
-            if(showTelemetry) {
-                telemetry.addData("LF", -LF.getCurrentPosition());
-                telemetry.addData("target", encoder_x - encoder_y);
-                telemetry.addData("LB", -LB.getCurrentPosition());
-                telemetry.addData("target", -encoder_x - encoder_y);
-                telemetry.addData("RF", -RF.getCurrentPosition());
-                telemetry.addData("target", encoder_x + encoder_y);
-                telemetry.addData("RB", -RB.getCurrentPosition());
-                telemetry.addData("target", -encoder_x + encoder_y);
-                telemetry.update();
-            }
+        while(Math.abs(-encoder_x-encoder_y)>Math.abs(-tmpBulkData.getMotorCurrentPosition(LF))||Math.abs(encoder_x-encoder_y)>Math.abs(-tmpBulkData.getMotorCurrentPosition(LB))||Math.abs(-encoder_x+encoder_y)>Math.abs(-tmpBulkData.getMotorCurrentPosition(RF))||Math.abs(encoder_x+encoder_y)>Math.abs(-tmpBulkData.getMotorCurrentPosition(RB))){
             //if (p_time < t.milliseconds()) break;
             setAllDrivePower(coe*(-vx-vy),coe*(vx-vy),coe*(-vx+vy),coe*(vx+vy));
             //coe+=.1;
@@ -443,8 +437,10 @@ public class BaseOpMode extends OpMode {
             speed_2-=decre_2;
             setAllDrivePower(speed_2,speed_1,speed_1,speed_2);
         }
-
-        while(!near(LF.getCurrentPosition(), LF.getTargetPosition(), 50) || !near(RF.getCurrentPosition(), RF.getTargetPosition(), 50) || !near(RB.getCurrentPosition(), RB.getTargetPosition(), 50) || !near(LB.getCurrentPosition(), LB.getTargetPosition(), 50));
+        tmpBulkData = hub2.getBulkInputData();
+        while(!near(tmpBulkData.getMotorCurrentPosition(LF), LF.getTargetPosition(), 50) || !near(tmpBulkData.getMotorCurrentPosition(RF), RF.getTargetPosition(), 50) || !near(tmpBulkData.getMotorCurrentPosition(RB), RB.getTargetPosition(), 50) || !near(tmpBulkData.getMotorCurrentPosition(LB), LB.getTargetPosition(), 50)){
+            tmpBulkData = hub2.getBulkInputData();
+        }
     }
 
     //---------------------------------------------------Logging stuff-------------------------------------------
@@ -521,6 +517,7 @@ public class BaseOpMode extends OpMode {
     }
     //---------------slide-----------------
     protected void runSlide(){
+        int L1CurrentPos = L1.getCurrentPosition();
         if(this.gamepad1.left_bumper && !near(this.gamepad1.right_stick_y, 0, 0.05)) {//long-dist
             if(servoThread.lastPosition < 0.75){//very slow?
                 holdSet = false;
@@ -533,21 +530,21 @@ public class BaseOpMode extends OpMode {
                     L2.setPower(-0.15*this.gamepad1.right_stick_y);
                 }
 
-            }else if (this.gamepad1.right_stick_y < 0 && (slideEncoderTravel > 0? L1.getCurrentPosition() < slideEncoderTravel-50 : L1.getCurrentPosition() > slideEncoderTravel+50)) {
+            }else if (this.gamepad1.right_stick_y < 0 && (slideEncoderTravel > 0? L1CurrentPos < slideEncoderTravel-50 : L1CurrentPos > slideEncoderTravel+50)) {
                 L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 holdSet = false;//up
                 L1.setPower(this.gamepad1.right_stick_y);
                 L2.setPower(-this.gamepad1.right_stick_y);
                 telemetry.addData("L1 power",this.gamepad1.right_stick_y);
-            } else if (this.gamepad1.right_stick_y > 0 && L1.getCurrentPosition() < 0) {
+            } else if (this.gamepad1.right_stick_y > 0 && L1CurrentPos < 0) {
                 holdSet = false;
                 L1.setPower(0.15*this.gamepad1.right_stick_y);
                 L2.setPower(-0.15*this.gamepad1.right_stick_y);
             } else {
-                holdSlide(L1.getCurrentPosition());
+                holdSlide(L1CurrentPos);
             }
         }else if(RTState == -1 && autoPlaceState == -1){
-            holdSlide(L1.getCurrentPosition());
+            holdSlide(L1CurrentPos);
         }
     }
 
@@ -594,8 +591,9 @@ public class BaseOpMode extends OpMode {
             case 2://just started. rise to top of tower
                 L1.setPower(-1);
                 L2.setPower(1);
-                if(tower_top.getDistance(DistanceUnit.INCH) > 20.0 || (slideEncoderTravel > 0? L1.getCurrentPosition() > slideEncoderTravel : L1.getCurrentPosition() < slideEncoderTravel)){
-                    ascendTarget = L1.getCurrentPosition() + (int)(10*slideEncoderPerInch);
+                int L1CurrentPos = L1.getCurrentPosition();
+                if(tower_top.getDistance(DistanceUnit.INCH) > 20.0 || (slideEncoderTravel > 0? L1CurrentPos > slideEncoderTravel : L1CurrentPos < slideEncoderTravel)){
+                    ascendTarget = L1CurrentPos + (int)(10*slideEncoderPerInch);
                     L1.setPower(-.7);
                     L2.setPower(.7);
                     servoThread.setTarget(grabberServoOut);
@@ -651,7 +649,8 @@ public class BaseOpMode extends OpMode {
                 L1.setPower(0.8);
                 L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                 L2.setPower(0);
-                if((slideEncoderTravel > 0? L1.getCurrentPosition() < 40: L1.getCurrentPosition() > -40)){
+                int L1CurrentPos = L1.getCurrentPosition();
+                if((slideEncoderTravel > 0? L1CurrentPos < 40: L1CurrentPos > -40)){
                     RTState = -1;
                     L1.setPower(0);
                     L2.setPower(0);
