@@ -20,7 +20,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
 
     @Override public void init() {
-        showTelemetry = true;
+        showTelemetry = false;
         initDrivetrain();
         initGrabber();
         initLinSlide();
