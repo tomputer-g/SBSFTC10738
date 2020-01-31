@@ -821,9 +821,8 @@ public class BaseAuto extends BaseOpMode {
         ElapsedTime p = new ElapsedTime();
         platform_grabber.setPower(1);
         servoThread.setTarget(0.5);
-        p.reset();
-        while (p.milliseconds()<300);
-        moveInchesGOX(-2,0.8);
+        //p.reset();
+        ///while (p.milliseconds()<300);
         PIDturnfast(-90,true);
         //setAllDrivePower(0);
         //turn(-90-getHeading(),0.5,1);
