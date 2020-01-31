@@ -88,7 +88,7 @@ public class BlueAuto extends BaseAuto {
         PIDturnfast(90,false);
         setNewGyro(90);
         p.reset();
-        moveInchesGOY((86.75+shift),0.6);
+        moveInchesGOY((86.75+shift),0.9);
         p.reset();
         while (p.milliseconds()<900)setAllDrivePowerG(-.5,.5,-.5,.5);
 
@@ -130,10 +130,10 @@ public class BlueAuto extends BaseAuto {
         setNewGyro(0);
 
         p.reset();
-        while (p.milliseconds()<1000)setAllDrivePowerG(-.5,.5,-.5,.5);
+        while (p.milliseconds()<500)setAllDrivePowerG(-.5,.5,-.5,.5);
 
-        int shiftt = 0;
-        if(pos==0)shiftt=-8;
+        int shiftt = -4;
+        if(pos==0)shiftt=-12;
         moveInchesGOX(shiftt,0.8);
 
         setAllDrivePowerG(-.5,-.5,.5,.5);
@@ -146,8 +146,9 @@ public class BlueAuto extends BaseAuto {
         moveInchesG(0,-9,0.4);
         PIDturnfast(90,false);
         setNewGyro(90);
-        moveInchesGOY(56,0.6);
+        moveInchesGOY(72,0.6);
         grabber.setPosition(grabber_open);
+        moveInchesG(0,-8,0.5);
         //telemetry.addData()
         /*
 
