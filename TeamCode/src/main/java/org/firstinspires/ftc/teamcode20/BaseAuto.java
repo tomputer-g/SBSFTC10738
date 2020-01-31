@@ -814,14 +814,14 @@ public class BaseAuto extends BaseOpMode {
         while (p.milliseconds()<500);
         moveInchesGOX(-4,0.8);
         servoThread.setTarget(0.5);
-        PIDturnfast(-90,true);
+        PIDturn(-90,true);
         //setAllDrivePower(0);
         //turn(-90-getHeading(),0.5,1);
         setNewGyro(90);
         //setAllDrivePowerG(-.2,-.2,.2,.2);
         //moveInchesGOY(5,0.4);
         p.reset();
-        while (p.milliseconds()<1500)setAllDrivePowerG(-.5,-.5,.5,.5);
+        while (p.milliseconds()<1500)setAllDrivePowerG(-.4,-.4,.4,.4);
         setAllDrivePower(0);
         servoThread.setTarget(0.75);
         p.reset();

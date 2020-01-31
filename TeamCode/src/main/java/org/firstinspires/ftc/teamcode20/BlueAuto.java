@@ -31,6 +31,8 @@ public class BlueAuto extends BaseAuto {
         initVuforia();
         //initSensors();
         initOdometry();
+        initLight();
+        setLight(true);
         setNewGyro0();
         int[] resultcounter = {0,0,0};
         //find skystone
@@ -53,6 +55,7 @@ public class BlueAuto extends BaseAuto {
         //repeat until run out of time; first on other skystones
 
         //initialization
+        setLight(false);
         servoThread.setTarget(0.95);
         platform_grabber.setPower(1);
         platform_grabber.setPower(0.0);
@@ -90,7 +93,7 @@ public class BlueAuto extends BaseAuto {
         p.reset();
         moveInchesGOY((86.75+shift),0.6);
         p.reset();
-        while (p.milliseconds()<700)setAllDrivePowerG(-.5,.5,-.5,.5);
+        while (p.milliseconds()<900)setAllDrivePowerG(-.5,.5,-.5,.5);
 
         platform_grabber.setPower(-1);
         wait(300);
@@ -120,13 +123,18 @@ public class BlueAuto extends BaseAuto {
         after_dragged_foundation();
 
         setNewGyro(90);
-        moveInchesGOY(-104,0.9);
+        p.reset();
+        while (p.milliseconds()<1200)setAllDrivePowerG(.7,.7,-.7,-.7);
+        p.reset();
+        while (p.milliseconds()<600)setAllDrivePowerG(.2,.2,-.2,-.2);
+        //moveInchesGOY(-104,0.9);
         servoThread.setTarget(0.95);
         PIDturnfast(-90,false);
         setNewGyro(0);
         moveInchesGOX(3,0.8);
 
         setAllDrivePowerG(-.5,-.5,.5,.5);
+        wait(300);
         grabber.setPosition(grabber_closed);
         wait(300);
         setAllDrivePower(0);
@@ -135,8 +143,6 @@ public class BlueAuto extends BaseAuto {
         moveInchesG(0,-6,0.4);
         PIDturnfast(90,false);
         //telemetry.addData()
-        //plantation.setLocation(Florida.class);
-        //plantation.addSlave(new Slave("inger","#000000"));
         /*
 
 
@@ -147,7 +153,6 @@ public class BlueAuto extends BaseAuto {
         wait(1000);
         setAllDrivePower(0);
         turn(90, 0.8, 4);
-
         //drag foundation forward
         setNewGyro(180);
 
@@ -181,11 +186,11 @@ public class BlueAuto extends BaseAuto {
         moveInchesG(-6.5,0,0.5);
         turn(-90,0.4,1);
         setNewGyro(90);
-       // holdSlide((int)slideEncoderPerInch/10);
+        //holdSlide((int)slideEncoderPerInch/10);
         //wait(1000);
         //moveInchesG(0,4,0.43);
         setAllDrivePowerG(-0.4,-0.4,0.4,0.4);
-       // wait(200);
+        //wait(200);
         servoThread.setTarget(.8);
         wait(1300);
         setAllDrivePower(0.0);
