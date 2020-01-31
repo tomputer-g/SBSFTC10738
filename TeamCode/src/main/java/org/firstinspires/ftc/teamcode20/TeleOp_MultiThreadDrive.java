@@ -36,7 +36,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
     @Override public void start() {
         super.start();
-        cooThread.start();
+        //cooThread.start();
         pwmThread.start();
     }
 
