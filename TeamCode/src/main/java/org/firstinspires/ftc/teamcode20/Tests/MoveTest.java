@@ -172,6 +172,7 @@ public class MoveTest extends BaseAuto {
     }
 
     protected void tunePIDturn(double target, double kp, double kd, double speed){
+        setNewGyro(acctarget);
         double e =getError(target);
         ElapsedTime t = new ElapsedTime();
         int i=0;
@@ -180,13 +181,14 @@ public class MoveTest extends BaseAuto {
             double D = kd*(e2-e)/t.milliseconds();
             t.reset();
             double P = e2*kp;
-            if(Math.abs(P)>Math.abs(speed))P=P>0?speed:-speed;
-            setAllDrivePower(P+D);
+            double power=P+D;
+            if(power!=0)
+                setAllDrivePower((power>0)?Range.clip(power,.2,speed):Range.clip(power,-speed,-.2));
             e=e2;
-            if(near(e2-e,0,0.1)&&near(e,0,2));
+            if(near(e2-e,0,0.1)&&near(e,0,2))i++;
         }
         setAllDrivePower(0);
-        acctarget+=target;
+        acctarget=getError(acctarget+target,0);
     }
 }
 
