@@ -24,6 +24,10 @@ public class SensorGrab extends BaseAuto {
         if(zheng(this.gamepad1.a,mm))speed-=.1;
         if(zheng(this.gamepad1.b,f))setNewGyro0();
 
+        if(zheng(this.gamepad1.left_bumper,e)){
+            moveInchesGOY((right.getDistance(DistanceUnit.INCH)-2.6)*ratio,speed);
+        }
+
         if(zheng(this.gamepad1.right_bumper,bF)){
             double rightd=right.getDistance(DistanceUnit.INCH);
             while(threshhold<rightd) {
@@ -39,6 +43,7 @@ public class SensorGrab extends BaseAuto {
         }
         //telemetry.addData("Imu: ",getHeading());
         telemetry.addData("Speed: ",speed);
+        telemetry.addData("Ultrasonic: ",rangeSensorSide.getDistance(DistanceUnit.INCH));
         telemetry.addData("Left: ",left.getDistance(DistanceUnit.INCH));
         telemetry.addData("Right: ",right.getDistance(DistanceUnit.INCH));
         telemetry.update();
