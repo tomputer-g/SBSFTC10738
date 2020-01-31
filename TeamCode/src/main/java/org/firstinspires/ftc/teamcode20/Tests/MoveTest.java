@@ -110,7 +110,7 @@ public class MoveTest extends BaseAuto {
         }
 
         if(zheng(this.gamepad1.right_bumper,bF)) {
-            moveInchesGOY(y,speed);
+            tunePIDturn(x,0.027,0.922,speed);
         }
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
@@ -123,14 +123,6 @@ public class MoveTest extends BaseAuto {
 
 
     }
-
-    protected double getError(double target, double cur) {
-        double robotError =target-cur;
-        while (robotError > 180) robotError -= 360;
-        while (robotError <= -180) robotError += 360;
-        return robotError;
-    }
-
 
     private class UC extends Thread{
         volatile boolean stop = false,run=false;
@@ -179,27 +171,23 @@ public class MoveTest extends BaseAuto {
         }
     }
 
-    protected void slowModeMove(double vx, double vy, double vr){
-        double[] speeds = {vx - vy + vr, -vy - vx + vr, vx + vy + vr, -vx + vy + vr};
-        double absMax = 0;
-        for(double d : speeds)
-            absMax = Math.max(Math.abs(d),absMax);
-        if(absMax <= 1 && Math.abs(vr) < 0.01){
-            setAllDrivePowerG(speeds[0], speeds[1], speeds[2], speeds[3]);
-        }else if(Math.abs(vr) < 0.01){
-            if(showTelemetry)telemetry.addLine("SCALED power: max was "+absMax);
-            setAllDrivePowerG(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
-        }else if(absMax <= 1){
-            setNewGyro0();
-            setAllDrivePower(speeds[0], speeds[1], speeds[2], speeds[3]);
-        }else{
-            setNewGyro0();
-            setAllDrivePower(speeds[0]/absMax, speeds[1]/absMax, speeds[2]/absMax,speeds[3]/absMax);
+    protected void tunePIDturn(double target, double kp, double kd, double speed){
+        double e =getError(target);
+        ElapsedTime t = new ElapsedTime();
+        int i=0;
+        while(i<5){
+            double e2 = getError(target);
+            double D = kd*(e2-e)/t.milliseconds();
+            t.reset();
+            double P = e2*kp;
+            if(Math.abs(P)>Math.abs(speed))P=P>0?speed:-speed;
+            setAllDrivePower(P+D);
+            e=e2;
+            if(near(e2-e,0,0.1)&&near(e,0,2))
+                i++;
         }
-        if(Math.abs(vx) < 0.01 && Math.abs(vy) < 0.01 && Math.abs(vr) < 0.01){
-            setNewGyro0();
-            setAllDrivePower(0);
-        }
+        setAllDrivePower(0);
+        acctarget+=target;
     }
 }
 
