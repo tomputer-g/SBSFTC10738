@@ -536,6 +536,30 @@ public class BaseAuto extends BaseOpMode {
         setNewGyro0();
     }
 
+    protected void backy(){
+        double target=180,kd=0.922,kp=0.028;
+        double e = target;
+        acctarget=0;
+        setNewGyro0();
+        ElapsedTime t = new ElapsedTime();
+        int i=0;
+        setAllDrivePower(1,1,-1,-1);
+        wait(150);
+        while(i<5){
+            double e2 = target-(getAdjustedHeading(target));
+            double D = kd*(e2-e)/t.milliseconds();
+            double P = e2*kp;
+            if(Math.abs(P)>Math.abs(1))P=P>0?1:-1;
+            double A=P+D;
+            setAllDrivePower(A);
+            e=e2;
+            if(near(e2-e,0,0.2)&&near(e,0,4))
+                i++;
+            t.reset();
+        }
+        setAllDrivePower(0);
+    }
+
 
     private double getAdjustedHeading(double target){
         double i = getHeading();

@@ -109,7 +109,6 @@ public class PIDTurnTest extends BaseAuto {
             prev_speed = multiply_factor * vy;
         }
         setAllDrivePower(0);
-
     }
 
     public void testPIDturn(double target, double kd, double kp,double speed){

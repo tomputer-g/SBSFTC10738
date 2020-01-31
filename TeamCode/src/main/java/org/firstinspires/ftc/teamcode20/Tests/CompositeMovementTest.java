@@ -113,7 +113,7 @@ public class CompositeMovementTest extends BaseAuto{
             setNewGyro(acctarget);
     }
 
-    private void backy(){
+    private void backy2(){
         double target=180,kd=0.922,kp=0.028;
         double e = target;
         acctarget=0;
