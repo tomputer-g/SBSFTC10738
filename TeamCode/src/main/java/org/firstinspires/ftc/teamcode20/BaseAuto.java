@@ -500,11 +500,11 @@ public class BaseAuto extends BaseOpMode {
             double e2 = target-(getAdjustedHeading(target));
             double D = kd*(e2-e)/t.milliseconds();
             double P = e2*kp;
-            if(Math.abs(P)>Math.abs(0.6))P=P>0?0.7:-0.7;
+            if(Math.abs(P)>Math.abs(0.7))P=P>0?0.7:-0.7;
             double A=P+D;
             setAllDrivePower(A+0.3+0.1,A-0.3+0.1,A+0.3-0.1,A-0.3-0.1);
             e=e2;
-            if(near(e2-e,0,0.2)&&near(e,0,4))
+            if(near(e2-e,0,2)&&near(e,0,6))
                 i++;
             t.reset();
         }

@@ -59,8 +59,8 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
     @Override public void start() {
         super.start();
-        cooThread.start();
-        pwmThread.start();
+        //cooThread.start();
+        //pwmThread.start();
     }
 
     @Override public void stop() {
@@ -71,6 +71,18 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
     @Override
     public void loop() {
+        //turn left move back onestep
+        if(this.gamepad1.y&&this.gamepad1.left_bumper){
+            lefty();
+        }
+
+        if(this.gamepad1.y&&this.gamepad1.right_bumper){
+            righty();
+        }
+
+        if(this.gamepad1.y&&this.gamepad1.left_trigger>0.5){
+            backy();
+        }
 
         //toggle slow
         if(this.gamepad1.y){YPrimed = true;}if(!this.gamepad1.y && YPrimed){YPrimed = false;
