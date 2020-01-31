@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode20.BaseOpMode;
 public class PIDTurnTest extends BaseAuto {
     private double[] params =       {0.17,  0,     0.015,       0.9,        -6,           };
     private String[] paramNames =   {"P",   "I",    "D",    "speed",    "targetInches"};
-    private double kP=0.028,kD=0.922;
+    private double kP=0.027,kD=0.922;
     private int magnitude=-2;
     private boolean[] du ={true}, dd={true}, dl={true},dr={true},rb={true},y={true},a={true},x={true},b={true},lb={true};
     private double imuinitvalue=0, target=90, result=0, resuuu=0;
@@ -46,7 +46,7 @@ public class PIDTurnTest extends BaseAuto {
         //telemetry.addData("result: ",result);
         //telemetry.addLine("LF: "+LF.getCurrentPosition()+" LB: "+LB.getCurrentPosition()+" RF: "+RF.getCurrentPosition()+" RB:"+RB.getCurrentPosition());
         if(zheng(this.gamepad1.left_bumper,lb)){
-            tunePIDturn(target,0.068,0.9,0.5,true);
+            tunePIDturn(target,kP,kD,1,true);
         }
     }
     //0.8, kp 0.033,kd 0.8

@@ -470,7 +470,7 @@ public class BaseAuto extends BaseOpMode {
     }
 
     protected void PIDturnfast(double target, boolean resetOffset){
-        tunePIDturn(target,0.027,0.922,1,false);
+        tunePIDturn(target,0.024,1.7,1,false);
     }
 
     protected void tunePIDturn(double target, double kp, double kd, double speed, boolean resetOffset){
@@ -480,8 +480,9 @@ public class BaseAuto extends BaseOpMode {
         }
         double e = target;
         ElapsedTime t = new ElapsedTime();
+        ElapsedTime n = new ElapsedTime();
         int i=0;
-        while(i<5){
+        while(i<5&&n.milliseconds()<2000){
             double e2 = target-(getAdjustedHeading(target));
             double D = kd*(e2-e)/t.milliseconds();
             t.reset();
