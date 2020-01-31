@@ -552,6 +552,7 @@ public class BaseAuto extends BaseOpMode {
     }
 
     protected void backy(){
+        Log.i("backY","called");
         double target=180,kd=0.922,kp=0.028;
         double e = target;
         acctarget=0;
@@ -561,6 +562,7 @@ public class BaseAuto extends BaseOpMode {
         ElapsedTime n = new ElapsedTime();
         setAllDrivePower(1,1,-1,-1);
         wait(150);
+        Log.i("backY","starting main loop");
         while(i<5&&n.milliseconds()<5000){
             double e2 = target-(getAdjustedHeading(target));
             double D = kd*(e2-e)/t.milliseconds();
@@ -569,10 +571,16 @@ public class BaseAuto extends BaseOpMode {
             double A=P+D;
             setAllDrivePower(A);
             e=e2;
-            if(near(e2-e,0,0.2)&&near(e,0,4))
+            if(near(e2-e,0,0.2)&&near(e,0,4)) {
                 i++;
+                Log.i("backY", "i is now "+i);
+            }
+            if(n.milliseconds() > 5000){
+                Log.i("backY","5s passed");
+            }
             t.reset();
         }
+        Log.i("backY","main loop ended");
         setAllDrivePower(0);
     }
 
