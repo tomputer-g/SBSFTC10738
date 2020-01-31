@@ -60,6 +60,7 @@ public class BaseAuto extends BaseOpMode {
     private double headingDisplacement = -90;
 
 
+
     protected void initVuforia(){
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
