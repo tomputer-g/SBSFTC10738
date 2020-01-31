@@ -483,13 +483,13 @@ public class BaseAuto extends BaseOpMode {
         while(i<5){
             double e2 = target-(getAdjustedHeading(target));
             double D = kd*(e2-e)/t.milliseconds();
+            t.reset();
             double P = e2*kp;
             if(Math.abs(P)>Math.abs(speed))P=P>0?speed:-speed;
             setAllDrivePower(P+D);
             e=e2;
             if(near(e2-e,0,0.1)&&near(e,0,2))
                 i++;
-            t.reset();
         }
         setAllDrivePower(0);
         acctarget+=target;
