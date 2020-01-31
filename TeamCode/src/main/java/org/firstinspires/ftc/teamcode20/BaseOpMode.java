@@ -526,7 +526,6 @@ public class BaseOpMode extends OpMode {
     protected final double ctrl_deadzone = 0.2;
     protected int slow = 0;
 
-    protected final int extenderTravel = -425;
 
     protected int autoPlaceState = -1;
 
@@ -586,7 +585,7 @@ public class BaseOpMode extends OpMode {
     private double inchApproachTarget = 10.6, approachSpeed = 0.2;
     protected Rev2mDistanceSensor tower_top;
 
-    protected final double grabberServoOut = 0.72, grabberServoIn = 0.99;
+    protected final double grabberServoOut = 0.77, grabberServoIn = 0.99;
 
     protected void autoPlace(){
         switch(autoPlaceState){
