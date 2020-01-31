@@ -59,16 +59,17 @@ public class MoveTest extends BaseAuto {
 
     @Override
     public void stop(){
+
     }
 
     @Override
     public void loop(){
         if(zheng(this.gamepad1.dpad_left,eee))x-=2;
         if(zheng(this.gamepad1.dpad_right,fff))x+=2;
-        if(zheng(this.gamepad1.dpad_up,ee))y+=0.01;
-        if(zheng(this.gamepad1.dpad_down,ff))y+=0.01;
-        if(zheng(this.gamepad1.y,m))speed+=1;
-        if(zheng(this.gamepad1.a,mm))speed-=.01;
+        if(zheng(this.gamepad1.dpad_up,ee))y+=1;
+        if(zheng(this.gamepad1.dpad_down,ff))y+=1;
+        if(zheng(this.gamepad1.y,m))speed+=.1;
+        if(zheng(this.gamepad1.a,mm))speed-=.1;
         if(zheng(this.gamepad1.b,f))setNewGyro0();
         /*
         if(zheng(this.gamepad1.left_bumper,bF)){
@@ -106,10 +107,10 @@ public class MoveTest extends BaseAuto {
             ElapsedTime p = new ElapsedTime();
             while (p.milliseconds()<1000);
             servoThread.setTarget(0.85);
-
         }
+
         if(zheng(this.gamepad1.right_bumper,bF)) {
-            turn(x,speed,2);
+            moveInchesGOY(y,speed);
         }
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
@@ -144,12 +145,24 @@ public class MoveTest extends BaseAuto {
         }
     }
 
-    private class PG extends Thread{
-        volatile boolean stop = false,run=false;
-        private double a,b,c,d,Kp;
+    private class PG extends Thread {
+        volatile boolean stop = false, run = false;
+        private double a, b, c, d, Kp;
 
-        public void PG(){ a=0;b=0;c=0;d=0;Kp=.8; }
-        public void setAllPower(double w,double x,double y,double z){ a=w;b=x;c=y;d=z; }
+        public void PG() {
+            a = 0;
+            b = 0;
+            c = 0;
+            d = 0;
+            Kp = .8;
+        }
+
+        public void setAllPower(double w, double x, double y, double z) {
+            a = w;
+            b = x;
+            c = y;
+            d = z;
+        }
 
         @Override
         public void run() {
@@ -163,8 +176,8 @@ public class MoveTest extends BaseAuto {
             }
 
 
-            }
-
+        }
+    }
 
     protected void slowModeMove(double vx, double vy, double vr){
         double[] speeds = {vx - vy + vr, -vy - vx + vr, vx + vy + vr, -vx + vy + vr};
@@ -188,39 +201,5 @@ public class MoveTest extends BaseAuto {
             setAllDrivePower(0);
         }
     }
-    //move
-    protected void moveInchesGOY(double yInch, double speed) {
-        offsetY = getY1Odometry();
-        speed = Math.abs(speed);
-        double multiply_factor = 1;
-        int odometryYGoal = offsetY + (int) (yInch * odometryEncPerInch);
-        double vx = 0;
-        double vy = (yInch == 0) ? 0 : (yInch / Math.abs(yInch) * speed);
-        long IError = 0;
-        setAllDrivePowerG((vy), (vy), (-vy), (-vy));
-        int previousPos = getY1Odometry();
-        int Dterm;
-        //platform_grabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        while (multiply_factor>0.1) {
-            multiply_factor = -Math.min(1, Math.max(-1, (kP * (getY1Odometry() - odometryYGoal) / odometryEncPerInch) + (kI * IError) + (kD * (getY1Odometry() - previousPos))));
-            Dterm = getY1Odometry() - previousPos;
-            previousPos = getY1Odometry();
-            IError += (getY1Odometry() - odometryYGoal) / odometryEncPerInch;
-            setAllDrivePowerG(multiply_factor * (-vx - vy), multiply_factor * (vx - vy), multiply_factor * (-vx + vy), multiply_factor * (vx + vy));
-            /*
-            telemetry.addData("kP", kP);
-            telemetry.addData("P term", (getY1Odometry() - odometryYGoal) / odometryEncYPerInch);
-            telemetry.addData("kI", kI);
-            telemetry.addData("I term", IError);
-            telemetry.addData("kD", kD);
-            telemetry.addData("D term", Dterm);
-            telemetry.addData("current", getY1Odometry());
-            telemetry.addData("Y goal", odometryYGoal);
-            telemetry.update();
-            */
-                }
-                setAllDrivePower(0);
-            }
-        }
-
 }
+
