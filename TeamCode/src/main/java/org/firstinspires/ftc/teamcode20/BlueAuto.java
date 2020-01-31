@@ -15,9 +15,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.ZYX;
 
 @Autonomous
 public class BlueAuto extends BaseAuto {
-    protected final double odometryEncPerInch = 1316;//4096.0/Math.PI;
-    protected int offsetY = 0;
-    private double speed = 0.3, kP = 0.5, kI = 0, kD = 0.0025;
     int pos = 0;
     @Override
     public void init() {
@@ -111,7 +108,7 @@ public class BlueAuto extends BaseAuto {
         while (curAng<70){
             curAng = getHeading();
         }
-        while (curAng<90){
+        while (curAng<88){
             curAng = getHeading();
             RF.setPower(RF.getPower()*getError(90,curAng)/20);
             LB.setPower(LB.getPower()*getError(90,curAng)/20);
@@ -131,17 +128,20 @@ public class BlueAuto extends BaseAuto {
         servoThread.setTarget(0.95);
         PIDturnfast(-90,false);
         setNewGyro(0);
-        moveInchesGOX(3,0.8);
+        int shiftt = 0;
+        if(pos==0)shiftt=-8;
+        moveInchesGOX(3+shiftt,0.8);
 
         setAllDrivePowerG(-.5,-.5,.5,.5);
-        wait(300);
+        wait(500);
         grabber.setPosition(grabber_closed);
         wait(300);
         setAllDrivePower(0);
         servoThread.setTarget(0.85);
         //setAllDrivePower(0.0);
-        moveInchesG(0,-6,0.4);
+        moveInchesG(0,-14,0.4);
         PIDturnfast(90,false);
+        setNewGyro(90);
         //telemetry.addData()
         /*
 
