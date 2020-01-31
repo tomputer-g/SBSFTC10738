@@ -46,6 +46,8 @@ public class BaseOpMode extends OpMode {
     protected ExpansionHubEx hub2, hub4;
     protected ServoThread servoThread;
 
+    protected Servo light;
+
     protected Servo grabber;
     protected Servo grabber_extend1, grabber_extend2;
     protected DcMotor platform_grabber, xOdometry;
@@ -89,6 +91,18 @@ public class BaseOpMode extends OpMode {
         L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         L1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
+    protected void initLight(){
+        light = hardwareMap.get(Servo.class, "light");
+    }
+
+    protected void setLight(boolean on){
+        if(on){
+            light.setPosition(1);
+        }else{
+            light.setPosition(0);
+        }
     }
 
     protected void moveLinSlide(double speed){

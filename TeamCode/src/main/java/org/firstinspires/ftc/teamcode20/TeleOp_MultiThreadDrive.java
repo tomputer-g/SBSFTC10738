@@ -16,7 +16,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     private boolean platformGrabbed = false;
     Servo france;
 
-    private PWMThread pwmThread;
+    //private PWMThread pwmThread;
 
 
     @Override public void init() {
@@ -196,7 +196,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     }
 
     @Override public void stop() {
-        pwmThread.stopThread();
+        //pwmThread.stopThread();
         servoThread.stopThread();
     }
 
