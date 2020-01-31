@@ -183,8 +183,7 @@ public class MoveTest extends BaseAuto {
             if(Math.abs(P)>Math.abs(speed))P=P>0?speed:-speed;
             setAllDrivePower(P+D);
             e=e2;
-            if(near(e2-e,0,0.1)&&near(e,0,2))
-                i++;
+            if(near(e2-e,0,0.1)&&near(e,0,2));
         }
         setAllDrivePower(0);
         acctarget+=target;
