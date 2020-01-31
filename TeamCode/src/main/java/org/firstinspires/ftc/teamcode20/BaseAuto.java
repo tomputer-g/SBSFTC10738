@@ -268,9 +268,9 @@ public class BaseAuto extends BaseOpMode {
             bm.copyPixelsFromBuffer(pixels);
             for(int i = -10;i<10;++i){
                 for(int j = -10;j<10;++j){
-                    curpixel_L = bm.getPixel(1030+i,320+j);//"left"
-                    curpixel_M = bm.getPixel(780+i,320+j);//"mid"
-                    curpixel_R = bm.getPixel(530+i,320+j);//"right"
+                    curpixel_L = bm.getPixel(1147+i,180+j);//"left"
+                    curpixel_M = bm.getPixel(927+i,180+j);//"mid"
+                    curpixel_R = bm.getPixel(662+i,207+j);//"right"
                     red_L+=Color.red(curpixel_L);
                     blue_L+=Color.blue(curpixel_L);
                     green_L+=Color.green(curpixel_L);
@@ -580,7 +580,7 @@ public class BaseAuto extends BaseOpMode {
 
     protected void moveInchesGOY(double yInch, double speed){//use 0.4 for short-dist
         yInch = -yInch;
-        setNewGyro0();
+        //setNewGyro0();
         double kP = 1, kD = 0.12;
         if(yInch == 0)return;
         if(Math.abs(speed) == 0.3){
@@ -736,19 +736,24 @@ public class BaseAuto extends BaseOpMode {
     }
     protected void after_dragged_foundation(){
         ElapsedTime p = new ElapsedTime();
+        platform_grabber.setPower(1);
+        p.reset();
+        while (p.milliseconds()<500);
         moveInchesGOX(-4,0.8);
-        platform_grabber.setPower(0);
         servoThread.setTarget(0.5);
         PIDturn(-90,false);
         //setAllDrivePower(0);
         //turn(-90-getHeading(),0.5,1);
         setNewGyro(90);
         //setAllDrivePowerG(-.2,-.2,.2,.2);
-        moveInchesGOY(5,0.4);
-        servoThread.setTarget(0.85);
+        //moveInchesGOY(5,0.4);
+        p.reset();
+        while (p.milliseconds()<2000)setAllDrivePowerG(-.5,-.5,.5,.5);
+        setAllDrivePower(0);
+        servoThread.setTarget(0.75);
         p.reset();
         while (p.milliseconds()<1000);
-        setAllDrivePower(0);
+        platform_grabber.setPower(0);
         grabber.setPosition(grabber_open);
         //servoThread.setTarget(0.6);
     }
