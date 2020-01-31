@@ -58,7 +58,7 @@ public class BlueAuto extends BaseAuto {
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
         grabber.setPosition(grabber_open);
-        wait(1000);
+        //wait(500);
         //shift to align to skystone
         int shift;
         if(pos == 1){
@@ -75,7 +75,7 @@ public class BlueAuto extends BaseAuto {
 
         //move forward to the skystone
         ElapsedTime p = new ElapsedTime();
-        moveInchesGOY(30.5,0.3);
+        moveInchesGOY(30.5,0.6);
         //grab 1st block
         grabber.setPosition(grabber_closed);
         wait(300);
@@ -85,12 +85,12 @@ public class BlueAuto extends BaseAuto {
 
         //move forward & approach foundation
         //turn(90, 0.5,1);
-        PIDturn(90,false);
+        PIDturnfast(90,false);
         setNewGyro(90);
         p.reset();
         moveInchesGOY((86.75+shift),0.6);
         p.reset();
-        while (p.milliseconds()<750)setAllDrivePowerG(-.5,.5,-.5,.5);
+        while (p.milliseconds()<700)setAllDrivePowerG(-.5,.5,-.5,.5);
 
         platform_grabber.setPower(-1);
         wait(300);
@@ -120,10 +120,20 @@ public class BlueAuto extends BaseAuto {
         after_dragged_foundation();
 
         setNewGyro(90);
-        moveInchesGOY(-100,0.6);
+        moveInchesGOY(-104,0.9);
         servoThread.setTarget(0.95);
-        PIDturn(-90,false);
+        PIDturnfast(-90,false);
         setNewGyro(0);
+        moveInchesGOX(3,0.8);
+
+        setAllDrivePowerG(-.5,-.5,.5,.5);
+        grabber.setPosition(grabber_closed);
+        wait(300);
+        setAllDrivePower(0);
+        servoThread.setTarget(0.85);
+        //setAllDrivePower(0.0);
+        moveInchesG(0,-6,0.4);
+        PIDturnfast(90,false);
         //telemetry.addData()
         //plantation.setLocation(Florida.class);
         //plantation.addSlave(new Slave("inger","#000000"));
