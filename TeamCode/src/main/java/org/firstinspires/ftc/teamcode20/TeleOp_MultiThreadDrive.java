@@ -31,7 +31,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         setNewGyro0();
         france = hardwareMap.get(Servo.class, "capstone");
         servoThread.setTarget(0.99);
-        pwmThread = new PWMThread();
+        //pwmThread = new PWMThread();
     }
 
     @Override public void start() {
@@ -46,23 +46,29 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         //turn left move back onestep
         if(this.gamepad1.y&&this.gamepad1.left_bumper){
             lefty();
+            slow=2;
         }
 
         if(this.gamepad1.y&&this.gamepad1.right_bumper){
             righty();
+            slow=2;
         }
 
         if(this.gamepad1.y&&this.gamepad1.left_trigger>0.5){
             backy();
+            slow=2;
         }
 
         //toggle slow
+        /*
         if(this.gamepad1.y){
             y = true;}if(!this.gamepad1.y && y){
             y = false;
             if(slow==1)slow=0;
             else slow=1;
         }
+
+         */
         if(zheng(this.gamepad1.x,Xprimed)){
             if(slow==2)slow=0;
             else slow=2;
@@ -140,7 +146,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             if (slow==0) {//only one direction at a time
                 joystickScaledMove(-this.gamepad1.left_stick_x, -this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x));
             } else if(slow==2) {
-                slowModeMove(-0.4 * this.gamepad1.left_stick_x, -0.16 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.3 * this.gamepad1.right_stick_x));
+                slowModeMove(-0.35 * this.gamepad1.left_stick_x, -0.16 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.3 * this.gamepad1.right_stick_x));
             }
         }
 

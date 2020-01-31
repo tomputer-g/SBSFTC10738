@@ -517,7 +517,7 @@ public class BaseAuto extends BaseOpMode {
             double A=P+D;
             setAllDrivePower(A+0.3+0.1,A-0.3+0.1,A+0.3-0.1,A-0.3-0.1);
             e=e2;
-            if(near(e2-e,0,2)&&near(e,0,6))
+            if(near(e2-e,0,0.2)&&near(e,0,4))
                 i++;
             t.reset();
         }
