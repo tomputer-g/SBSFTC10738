@@ -20,7 +20,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
 
     @Override public void init() {
-        showTelemetry = false;
+        showTelemetry = true;
         initDrivetrain();
         initGrabber();
         initLinSlide();
@@ -35,7 +35,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     }
 
     @Override public void start() {
-        super.start();
         //cooThread.start();
         //pwmThread.start();
     }
@@ -90,7 +89,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         }
 
         //servo toggle
-        if(this.gamepad1.b && !this.gamepad1.left_bumper){
+        if(this.gamepad1.b && !this.gamepad1.left_bumper && !this.gamepad1.y){
             b = true;}if(!this.gamepad1.b && b){
             b = false;
             if(grabber.getPosition() > (grabber_closed+grabber_open)/2){
@@ -99,11 +98,11 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                 grabber.setPosition(grabber_closed);
             }
         }
-        if(this.gamepad1.b && this.gamepad1.left_bumper){
+        if(this.gamepad1.b && this.gamepad1.left_bumper && !this.gamepad1.y){
             grabber.setPosition(0.01);
         }
 
-        if(this.gamepad1.start){start = true;}if(start && !this.gamepad1.start){
+/*        if(this.gamepad1.start){start = true;}if(start && !this.gamepad1.start){
             start = false;
             if(france.getPosition() > 0.5){
                 france.setPosition(0);
@@ -112,6 +111,8 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             }
         }
 
+ */
+
         //driver cancel LT&RT (by dpad up/dpad down/ RB/ LB+Left stick
         if(this.gamepad1.dpad_up ||this.gamepad1.dpad_down ||this.gamepad1.right_bumper ||(this.gamepad1.left_bumper && !near(this.gamepad1.right_stick_y, 0, 0.05))){
             RTState = -1; //driver interrupt auto movement
@@ -119,7 +120,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         }
 
         //RT if RT not started - cancels LT
-        if(this.gamepad1.right_trigger > 0.3 && RTState == -1){
+        if(this.gamepad1.right_trigger > 0.3 && RTState == -1 && !this.gamepad1.y){
             //when can go 12in above & extender is extended & not started
             holdSet = false;
             autoPlaceState = -1;
@@ -130,7 +131,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         if(this.gamepad1.right_bumper){
             rb = true;}if(!this.gamepad1.right_bumper && rb){
             rb = false;
-         if(servoThread.lastPosition > 0.75){
+            if(servoThread.lastPosition > 0.75){
                 servoThread.setTarget(grabberServoOut);
             }else{
                 servoThread.setTarget(grabberServoIn);
@@ -271,6 +272,4 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             stop = true;
         }
     }
-
-
 }
