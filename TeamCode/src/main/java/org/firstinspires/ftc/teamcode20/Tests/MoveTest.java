@@ -101,12 +101,21 @@ public class MoveTest extends BaseAuto {
         */
 
         if(zheng(this.gamepad1.left_bumper,lF)) {
+            /*
             setNewGyro0();
             platform_grabber.setPower(1);
             grabber.setPosition(grabber_closed);
             ElapsedTime p = new ElapsedTime();
             while (p.milliseconds()<1000);
             servoThread.setTarget(0.85);
+
+
+             */
+            ElapsedTime p = new ElapsedTime();
+            p.reset();
+            setNewGyro(0);
+            while (p.milliseconds()<1300)setAllDrivePowerG(.7,.7,-.7,-.7);
+            setAllDrivePower(0);
         }
 
         if(zheng(this.gamepad1.right_bumper,bF)) {
