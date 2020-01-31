@@ -558,9 +558,10 @@ public class BaseAuto extends BaseOpMode {
         setNewGyro0();
         ElapsedTime t = new ElapsedTime();
         int i=0;
+        ElapsedTime n = new ElapsedTime();
         setAllDrivePower(1,1,-1,-1);
         wait(150);
-        while(i<5){
+        while(i<5&&n.milliseconds()<5000){
             double e2 = target-(getAdjustedHeading(target));
             double D = kd*(e2-e)/t.milliseconds();
             double P = e2*kp;
