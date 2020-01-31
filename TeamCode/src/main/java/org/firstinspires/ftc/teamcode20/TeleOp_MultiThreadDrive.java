@@ -131,7 +131,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         if(this.gamepad1.right_bumper){
             rb = true;}if(!this.gamepad1.right_bumper && rb){
             rb = false;
-            if(servoThread.lastPosition > 0.75){
+            if(servoThread.lastPosition > (grabberServoOut+grabberServoIn)/2){
                 servoThread.setTarget(grabberServoOut);
             }else{
                 servoThread.setTarget(grabberServoIn);
