@@ -480,8 +480,9 @@ public class BaseAuto extends BaseOpMode {
         }
         double e = target;
         ElapsedTime t = new ElapsedTime();
+        ElapsedTime n = new ElapsedTime();
         int i=0;
-        while(i<5){
+        while(i<5&&n.milliseconds()<2000){
             double e2 = target-(getAdjustedHeading(target));
             double D = kd*(e2-e)/t.milliseconds();
             t.reset();
