@@ -25,7 +25,7 @@ public class SensorGrab extends BaseAuto {
         if(zheng(this.gamepad1.b,f))setNewGyro0();
 
         if(zheng(this.gamepad1.left_bumper,e)){
-            moveInchesGOY((right.getDistance(DistanceUnit.INCH)-2.6)*ratio,speed);
+            moveInchesG(0,(right.getDistance(DistanceUnit.INCH)-2.6)*ratio,speed);
         }
 
         if(zheng(this.gamepad1.right_bumper,bF)){

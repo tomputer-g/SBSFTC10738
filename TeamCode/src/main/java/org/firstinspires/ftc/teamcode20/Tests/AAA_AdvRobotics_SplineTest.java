@@ -15,10 +15,8 @@ public class AAA_AdvRobotics_SplineTest extends BaseOpMode {
 
     @Override
     public void loop() {
-
         moveCubicSpline(new int[] {0,0}, testPoints);
         //movement: protected void setAllDrivePower(double pX, double pY), where pX and pY are speeds in cartesian coordinates relative to robot
-
         requestOpModeStop();//finish
     }
 

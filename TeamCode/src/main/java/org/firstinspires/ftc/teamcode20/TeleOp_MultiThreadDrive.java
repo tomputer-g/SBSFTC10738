@@ -45,17 +45,17 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         //turn left move back onestep
         if(this.gamepad1.y&&this.gamepad1.left_bumper){
             lefty();
-            slow=2;
+            slow=1;
         }
 
         if(this.gamepad1.y&&this.gamepad1.right_bumper){
             righty();
-            slow=2;
+            slow=1;
         }
 
         if(this.gamepad1.y&&this.gamepad1.left_trigger>0.5){
             backy();
-            slow=2;
+            slow=1;
         }
 
         //toggle slow
@@ -148,7 +148,8 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                 joystickScaledMove(-this.gamepad1.left_stick_x, -this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x));
             } else if(slow==2) {
                 slowModeMove(-0.35 * this.gamepad1.left_stick_x, -0.16 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.3 * this.gamepad1.right_stick_x));
-            }
+            }else if(slow==1)
+                slowModeMove(-0.6 * this.gamepad1.left_stick_x, -0.3 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.3 * this.gamepad1.right_stick_x));
         }
 
         //LT
