@@ -25,6 +25,7 @@ import java.util.Set;
 import static java.lang.Math.pow;
 import static java.lang.Math.round;
 import static java.lang.Math.sqrt;
+import static java.lang.Thread.holdsLock;
 import static java.lang.Thread.sleep;
 
 /*
@@ -576,9 +577,13 @@ public class BaseOpMode extends OpMode {
         if(hold == 0){power = 0;}
         if(showTelemetry)telemetry.addData("holding",hold);
         if(showTelemetry)telemetry.addData("error",error);
-        if(showTelemetry)telemetry.addData("PWR", power);
-        L1.setPower(power);
-        L2.setPower(-power);
+        if(L1.getCurrentPosition() < 0) {
+            L1.setPower(power);
+            L2.setPower(-power);
+        }else{
+            L1.setPower(0);
+            L2.setPower(0);
+        }
     }
 
     private int descendTarget = 0, ascendTarget = 0;
@@ -668,11 +673,13 @@ public class BaseOpMode extends OpMode {
                 L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                 L2.setPower(0);
                 int L1CurrentPos = L1.getCurrentPosition();
-                if((slideEncoderTravel > 0? L1CurrentPos < 40: L1CurrentPos > -40)){
+                if((slideEncoderTravel > 0? L1CurrentPos < 50: L1CurrentPos > -50)){
                     RTState = -1;
                     L1.setPower(0);
                     L2.setPower(0);
                     L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    holdSet = false;
+                    holdSlide(0);
                     grabber.setPosition(grabber_open);
                 }
                 break;
