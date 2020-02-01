@@ -146,7 +146,7 @@ public class BlueAuto extends BaseAuto {
 
         //setAllDrivePowerG(-.5,-.5,.5,.5);
         //wait(300);
-        moveInchesGOY(9,0.3);
+        moveInchesGOY(12,0.3);
         //moveInchesGOY((right.getDistance(DistanceUnit.INCH)-2.6)*.69,.4);
         grabber.setPosition(grabber_closed);
         wait(300);
