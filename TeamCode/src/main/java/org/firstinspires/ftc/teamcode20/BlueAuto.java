@@ -95,11 +95,13 @@ public class BlueAuto extends BaseAuto {
         moveInchesGOY((86.75+shift),0.9);
         p.reset();
         //while (p.milliseconds()<900)setAllDrivePowerG(-.5,.5,-.5,.5);
-        moveInchesGOX(13.5-getXOdometry()/odometryEncXPerInch,.5);
+
+
+        moveInchesGOX(13.5-getXOdometry()/odometryEncXPerInch,.5); //drag +errordistance
 
         platform_grabber.setPower(-1);
         wait(300);
-        moveInchesGOX_platform(-16,0.8,1+(13.65-hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS))/13.65);
+        moveInchesGOX_platform(-19,0.8,1+(13.65-hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS))/13.65);
         int steps = 20;
         double basespeed = 0.3;
         for(int i = 10;i<=steps;++i){
