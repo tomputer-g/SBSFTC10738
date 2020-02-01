@@ -710,7 +710,7 @@ public class BaseAuto extends BaseOpMode {
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
             multiply_factor = -Math.min(1, Math.max(-1, kV*((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
-            if(near(prev_speed, multiply_factor*vy,0.001) && near(currentOdometry, odometryYGoal, odometryEncYPerInch)){
+            if(near(prev_speed, multiply_factor*vy,0.001) && near(prev_speed, 0, 0.1)){
                 steadyCounter++;
             }else{
                 steadyCounter = 0;
@@ -739,12 +739,12 @@ public class BaseAuto extends BaseOpMode {
         int previousPos = offsetX, currentOdometry, Dterm;
         double tpre = 0, tcur;
         int steadyCounter = 0;
-        while(steadyCounter < 5 && !this.gamepad1.b){
+        while(steadyCounter < 4 && !this.gamepad1.b){
             currentOdometry = getXOdometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
             multiply_factor = -Math.min(1, Math.max(-1, kV*((0.5 * (currentOdometry - odometryXGoal)/odometryEncXPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(0.05 * Dterm):0))));
-            if(near(prev_speed, multiply_factor*vx,0.001) && near(currentOdometry, odometryXGoal, odometryEncXPerInch)){
+            if(near(prev_speed, multiply_factor*vx,0.001) && near(prev_speed, 0, 0.1)){
                 steadyCounter++;
             }else{
                 steadyCounter = 0;
