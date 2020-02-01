@@ -470,7 +470,7 @@ public class BaseAuto extends BaseOpMode {
     }
 
     protected void PIDturnfast(double target, boolean resetOffset){
-        tunePIDturn(target,0.027,0.922,1,false);
+        tunePIDturn(target,0.029,2.291,1,false);
     }
 
     protected void tunePIDturn(double target, double kp, double kd, double speed, boolean resetOffset){
@@ -482,7 +482,7 @@ public class BaseAuto extends BaseOpMode {
         ElapsedTime t = new ElapsedTime();
         ElapsedTime n = new ElapsedTime();
         int i=0;
-        while(i<5&&n.milliseconds()<((speed>0.5)?1500:3000)){
+        while(i<5&&n.milliseconds()<((speed>0.5)?1200:3000)){
             double e2 = target-(getAdjustedHeading(target));
             double D = kd*(e2-e)/t.milliseconds();
             t.reset();
@@ -821,9 +821,8 @@ public class BaseAuto extends BaseOpMode {
         ElapsedTime p = new ElapsedTime();
         platform_grabber.setPower(1);
         servoThread.setTarget(0.5);
-        p.reset();
-        while (p.milliseconds()<500);
-        moveInchesGOX(-4,0.8);
+        //p.reset();
+        ///while (p.milliseconds()<300);
         PIDturnfast(-90,true);
         //setAllDrivePower(0);
         //turn(-90-getHeading(),0.5,1);
@@ -831,11 +830,11 @@ public class BaseAuto extends BaseOpMode {
         //setAllDrivePowerG(-.2,-.2,.2,.2);
         //moveInchesGOY(5,0.4);
         p.reset();
-        while (p.milliseconds()<1500)setAllDrivePowerG(-.4,-.4,.4,.4);
+        while (p.milliseconds()<1200)setAllDrivePowerG(-.4,-.4,.4,.4);
         setAllDrivePower(0);
         servoThread.setTarget(0.75);
         p.reset();
-        while (p.milliseconds()<700);
+        while (p.milliseconds()<600);
         platform_grabber.setPower(0);
         grabber.setPosition(grabber_open);
         //servoThread.setTarget(0.6);

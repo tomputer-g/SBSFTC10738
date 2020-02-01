@@ -88,7 +88,7 @@ public class BlueAuto extends BaseAuto {
         PIDturnfast(90,false);
         setNewGyro(90);
         p.reset();
-        moveInchesGOY((86.75+shift),0.6);
+        moveInchesGOY((86.75+shift),0.9);
         p.reset();
         while (p.milliseconds()<900)setAllDrivePowerG(-.5,.5,-.5,.5);
 
@@ -128,20 +128,27 @@ public class BlueAuto extends BaseAuto {
         servoThread.setTarget(0.95);
         PIDturnfast(-90,false);
         setNewGyro(0);
-        int shiftt = 0;
-        if(pos==0)shiftt=-8;
-        moveInchesGOX(3+shiftt,0.8);
+
+        p.reset();
+        while (p.milliseconds()<500)setAllDrivePowerG(-.5,.5,-.5,.5);
+
+        int shiftt = -4;
+        if(pos==0)shiftt=-12;
+        moveInchesGOX(shiftt,0.8);
 
         setAllDrivePowerG(-.5,-.5,.5,.5);
-        wait(500);
+        wait(300);
         grabber.setPosition(grabber_closed);
         wait(300);
         setAllDrivePower(0);
         servoThread.setTarget(0.85);
         //setAllDrivePower(0.0);
-        moveInchesG(0,-14,0.4);
+        moveInchesG(0,-9,0.4);
         PIDturnfast(90,false);
         setNewGyro(90);
+        moveInchesGOY(72,0.6);
+        grabber.setPosition(grabber_open);
+        moveInchesG(0,-8,0.5);
         //telemetry.addData()
         /*
 
