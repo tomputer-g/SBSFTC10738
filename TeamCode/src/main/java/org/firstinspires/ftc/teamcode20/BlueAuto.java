@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.openftc.revextensions2.ExpansionHubEx;
 
 import java.util.Locale;
 
@@ -19,6 +21,7 @@ public class BlueAuto extends BaseAuto {
     @Override
     public void init() {
         super.init();
+        hub2 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
         showTelemetry = false;
         initDrivetrain();
         initIMU();
@@ -26,7 +29,7 @@ public class BlueAuto extends BaseAuto {
         //initLinSlide();
         initPlatformGrabber();
         initVuforia();
-        //initSensors();
+        initSensors();
         initOdometry();
         initLight();
         setLight(true);
@@ -75,7 +78,7 @@ public class BlueAuto extends BaseAuto {
 
         //move forward to the skystone
         ElapsedTime p = new ElapsedTime();
-        moveInchesGOY(30.5,0.6);
+        moveInchesGOY(30.5,0.6,(1+(13.65-hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS))/13.65));
         //grab 1st block
         grabber.setPosition(grabber_closed);
         wait(300);
@@ -88,13 +91,15 @@ public class BlueAuto extends BaseAuto {
         PIDturnfast(90,false);
         setNewGyro(90);
         p.reset();
+        resetXOdometry();
         moveInchesGOY((86.75+shift),0.9);
         p.reset();
-        while (p.milliseconds()<900)setAllDrivePowerG(-.5,.5,-.5,.5);
+        //while (p.milliseconds()<900)setAllDrivePowerG(-.5,.5,-.5,.5);
+        moveInchesGOX(13.5-getXOdometry()/odometryEncXPerInch,.5);
 
         platform_grabber.setPower(-1);
         wait(300);
-        moveInchesGOX_platform(-27,0.8);
+        moveInchesGOX_platform(-16,0.8);
         int steps = 20;
         double basespeed = 0.3;
         for(int i = 10;i<=steps;++i){
@@ -138,6 +143,7 @@ public class BlueAuto extends BaseAuto {
 
         setAllDrivePowerG(-.5,-.5,.5,.5);
         wait(300);
+        //moveInchesGOY((right.getDistance(DistanceUnit.INCH)-2.6)*.69,.4);
         grabber.setPosition(grabber_closed);
         wait(300);
         setAllDrivePower(0);
@@ -149,6 +155,8 @@ public class BlueAuto extends BaseAuto {
         moveInchesGOY(72,0.6);
         grabber.setPosition(grabber_open);
         moveInchesG(0,-8,0.5);
+
+        requestOpModeStop();
         //telemetry.addData()
         /*
 
@@ -214,6 +222,5 @@ public class BlueAuto extends BaseAuto {
         platform_grabber.setPower(0);
 
         */
-        requestOpModeStop();
     }
 }

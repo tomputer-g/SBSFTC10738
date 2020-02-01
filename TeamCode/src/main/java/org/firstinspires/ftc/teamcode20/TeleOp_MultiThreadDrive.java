@@ -192,7 +192,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             telemetry.addData("ext", grabber_extend1.getPosition());
             telemetry.addData("slide 1", L1.getCurrentPosition());
             telemetry.addData("tower_top dist", tower_top.getDistance(DistanceUnit.INCH) + "in.");
-            telemetry.addData("x,y","%.2f %.2f", n_pass[0], n_pass[1]);
+            telemetry.addData("x", getXOdometry());
             telemetry.update();
         }
     }

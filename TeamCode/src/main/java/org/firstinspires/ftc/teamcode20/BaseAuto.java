@@ -43,6 +43,9 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.ZYX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
+import org.openftc.revextensions2.ExpansionHubEx;
+import org.openftc.revextensions2.RevBulkData;
+
 public class BaseAuto extends BaseOpMode {
 
     //Vuforia
@@ -662,7 +665,11 @@ public class BaseAuto extends BaseOpMode {
         moveInchesG(xInch,yInch,speed,.8);
     }
 
-    protected void moveInchesGOY(double yInch, double speed){//use 0.4 for short-dist
+    protected void moveInchesGOY(double yInch, double speed){
+        moveInchesGOY(yInch,speed,1);
+    }
+
+    protected void moveInchesGOY(double yInch, double speed,double kV){//use 0.4 for short-dist
         yInch = -yInch;
         //setNewGyro0();
         double kP = 1, kD = 0.12;
@@ -693,7 +700,7 @@ public class BaseAuto extends BaseOpMode {
             currentOdometry = getY1Odometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
-            multiply_factor = -Math.min(1, Math.max(-1, ((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
+            multiply_factor = -Math.min(1, Math.max(-1, kV*((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
             if(near(prev_speed, multiply_factor*vy,0.001) && near(currentOdometry, odometryYGoal, odometryEncYPerInch)){
                 steadyCounter++;
             }else{
@@ -708,7 +715,11 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(0);
     }
 
-    protected void moveInchesGOX(double xInch, double speed){//0.5 only
+    protected void moveInchesGOX(double xInch, double speed){
+        moveInchesGOX(xInch,speed,1);
+    }
+
+    protected void moveInchesGOX(double xInch, double speed,double kV){//0.5 only
         if(xInch == 0)return;
         ElapsedTime t = new ElapsedTime();
         int offsetX = getXOdometry();
@@ -723,7 +734,7 @@ public class BaseAuto extends BaseOpMode {
             currentOdometry = getXOdometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
-            multiply_factor = -Math.min(1, Math.max(-1, ((0.5 * (currentOdometry - odometryXGoal)/odometryEncXPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(0.05 * Dterm):0))));
+            multiply_factor = -Math.min(1, Math.max(-1, kV*((0.5 * (currentOdometry - odometryXGoal)/odometryEncXPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(0.05 * Dterm):0))));
             if(near(prev_speed, multiply_factor*vx,0.001) && near(currentOdometry, odometryXGoal, odometryEncXPerInch)){
                 steadyCounter++;
             }else{
