@@ -146,14 +146,14 @@ public class BlueAuto extends BaseAuto {
 
         //setAllDrivePowerG(-.5,-.5,.5,.5);
         //wait(300);
-        moveInchesGOY(12,0.3);
+        moveInchesGOY(9,0.3);
         //moveInchesGOY((right.getDistance(DistanceUnit.INCH)-2.6)*.69,.4);
         grabber.setPosition(grabber_closed);
         wait(300);
         setAllDrivePower(0);
         servoThread.setTarget(0.85);
         //setAllDrivePower(0.0);
-        moveInchesG(0,-13,0.4);
+        moveInchesG(0,-12,0.4);
         PIDturnfast(90,false);
         setNewGyro(90);
         moveInchesGOY(72,0.6);
