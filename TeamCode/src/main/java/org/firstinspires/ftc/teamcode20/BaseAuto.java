@@ -749,7 +749,11 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(0);
     }
 
-    protected void moveInchesGOX_platform(double xInch, double speed){//0.8 only, for doing the platform
+    protected void moveInchesGOX_platform(double xInch, double speed){
+        moveInchesGOX_platform(xInch,speed,1);
+    }
+
+    protected void moveInchesGOX_platform(double xInch, double speed,double kV){//0.8 only, for doing the platform
         double kP = 1, kD = 0.07;
         if(Math.abs(speed) == 0.8){
             kP = 1;
@@ -769,7 +773,7 @@ public class BaseAuto extends BaseOpMode {
             currentOdometry = getXOdometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
-            multiply_factor = -Math.min(1, Math.max(-1, ((kP * (currentOdometry - odometryXGoal)/odometryEncXPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
+            multiply_factor = -Math.min(1, Math.max(-1, kV*((kP * (currentOdometry - odometryXGoal)/odometryEncXPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
             if(near(prev_speed, multiply_factor*vx,0.001) && near(currentOdometry, odometryXGoal, odometryEncXPerInch)){
                 steadyCounter++;
             }else{

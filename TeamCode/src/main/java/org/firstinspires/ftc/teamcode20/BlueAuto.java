@@ -99,7 +99,7 @@ public class BlueAuto extends BaseAuto {
 
         platform_grabber.setPower(-1);
         wait(300);
-        moveInchesGOX_platform(-16,0.8);
+        moveInchesGOX_platform(-16,0.8,1+(13.65-hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS))/13.65);
         int steps = 20;
         double basespeed = 0.3;
         for(int i = 10;i<=steps;++i){
