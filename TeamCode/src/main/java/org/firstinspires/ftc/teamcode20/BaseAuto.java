@@ -739,7 +739,7 @@ public class BaseAuto extends BaseOpMode {
         int previousPos = offsetX, currentOdometry, Dterm;
         double tpre = 0, tcur;
         int steadyCounter = 0;
-        while(steadyCounter < 4 && !this.gamepad1.b){
+        while(steadyCounter < 5 && !this.gamepad1.b){
             currentOdometry = getXOdometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
