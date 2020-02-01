@@ -656,6 +656,8 @@ public class BaseOpMode extends OpMode {
         }
     }
 
+
+
     protected void handleRTState(){//call in loop; non-blocking
         switch (RTState) {
             case -1: //none

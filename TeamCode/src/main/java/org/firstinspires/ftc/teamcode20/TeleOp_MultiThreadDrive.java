@@ -167,7 +167,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
         //run LT, RT, normal control
         runSlide();
-        autoPlace();
+        //autoPlace();
         handleRTState();
 
         if(showTelemetry) {

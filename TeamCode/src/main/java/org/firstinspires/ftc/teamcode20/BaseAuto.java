@@ -353,7 +353,7 @@ public class BaseAuto extends BaseOpMode {
        // rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "front");
         //left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
        // right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
-        tower_top = hardwareMap.get(Rev2mDistanceSensor.class, "tower_top");
+        //tower_top = hardwareMap.get(Rev2mDistanceSensor.class, "tower_top");
     }
 
     //IMU
@@ -526,6 +526,7 @@ public class BaseAuto extends BaseOpMode {
                 i++;
 
             runSlide();
+            handleRTState();
             t.reset();
         }
         setAllDrivePower(0);
@@ -552,6 +553,7 @@ public class BaseAuto extends BaseOpMode {
                 i++;
 
             runSlide();
+            handleRTState();
             t.reset();
         }
         setAllDrivePower(0);
@@ -587,6 +589,7 @@ public class BaseAuto extends BaseOpMode {
             }
 
             runSlide();
+            handleRTState();
             t.reset();
         }
         Log.i("backY","main loop ended");
