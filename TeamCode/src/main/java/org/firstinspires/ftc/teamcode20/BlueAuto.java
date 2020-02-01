@@ -125,6 +125,7 @@ public class BlueAuto extends BaseAuto {
         after_dragged_foundation();
 
         setNewGyro(90);
+        moveInchesGOX(-6,0.5);
         p.reset();
         while (p.milliseconds()<1200)setAllDrivePowerG(.7,.7,-.7,-.7);
         p.reset();
