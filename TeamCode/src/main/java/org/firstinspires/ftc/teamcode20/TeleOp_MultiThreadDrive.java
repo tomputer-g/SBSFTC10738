@@ -20,11 +20,11 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
 
     @Override public void init() {
-        showTelemetry = false;
+        showTelemetry = true;
         initDrivetrain();
         initGrabber();
         initLinSlide();
-        initSensors();
+        //initSensors();
         initOdometry();
         initPlatformGrabber();
         initIMU();
@@ -58,16 +58,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             slow=1;
         }
 
-        //toggle slow
-        /*
-        if(this.gamepad1.y){
-            y = true;}if(!this.gamepad1.y && y){
-            y = false;
-            if(slow==1)slow=0;
-            else slow=1;
-        }
-
-         */
         if(zheng(this.gamepad1.x,Xprimed)){
             if(slow==2)slow=0;
             else slow=2;
@@ -102,7 +92,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             grabber.setPosition(0.01);
         }
 
-/*        if(this.gamepad1.start){start = true;}if(start && !this.gamepad1.start){
+        if(this.gamepad1.start){start = true;}if(start && !this.gamepad1.start){
             start = false;
             if(france.getPosition() > 0.5){
                 france.setPosition(0);
@@ -110,8 +100,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                 france.setPosition(1);
             }
         }
-
- */
 
         //driver cancel LT&RT (by dpad up/dpad down/ RB/ LB+Left stick
         if(this.gamepad1.dpad_up ||this.gamepad1.dpad_down ||this.gamepad1.right_bumper ||(this.gamepad1.left_bumper && !near(this.gamepad1.right_stick_y, 0, 0.05))){
@@ -183,6 +171,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         handleRTState();
 
         if(showTelemetry) {
+            telemetry.addData("slide 1", L1.getCurrentPosition());
             telemetry.addData("servoThread is",servoThread.getState());
             telemetry.addData("target",servoThread.targetPosition);
             telemetry.addData("actual",servoThread.lastPosition);
@@ -190,8 +179,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             telemetry.addData("AutoPlaceState", autoPlaceState);
             if(holdSet)telemetry.addData("Hold pos", hold);
             telemetry.addData("ext", grabber_extend1.getPosition());
-            telemetry.addData("slide 1", L1.getCurrentPosition());
-            telemetry.addData("tower_top dist", tower_top.getDistance(DistanceUnit.INCH) + "in.");
             telemetry.addData("x", getXOdometry());
             telemetry.update();
         }

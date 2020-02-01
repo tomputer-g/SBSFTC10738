@@ -350,9 +350,9 @@ public class BaseAuto extends BaseOpMode {
 
     protected void initSensors(){
         rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
-        rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "front");
-        left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
-        right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
+       // rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "front");
+        //left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
+       // right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
         tower_top = hardwareMap.get(Rev2mDistanceSensor.class, "tower_top");
     }
 
@@ -524,6 +524,8 @@ public class BaseAuto extends BaseOpMode {
             e=e2;
             if(near(e2-e,0,0.2)&&near(e,0,4))
                 i++;
+
+            runSlide();
             t.reset();
         }
         setAllDrivePower(0);
@@ -548,6 +550,8 @@ public class BaseAuto extends BaseOpMode {
             e=e2;
             if(near(e2-e,0,0.2)&&near(e,0,4))
                 i++;
+
+            runSlide();
             t.reset();
         }
         setAllDrivePower(0);
@@ -581,6 +585,8 @@ public class BaseAuto extends BaseOpMode {
             if(n.milliseconds() > 5000){
                 Log.i("backY","5s passed");
             }
+
+            runSlide();
             t.reset();
         }
         Log.i("backY","main loop ended");
