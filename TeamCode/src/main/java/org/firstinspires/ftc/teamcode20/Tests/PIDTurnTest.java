@@ -18,7 +18,7 @@ public class PIDTurnTest extends BaseAuto {
     private double kP=0.027,kD=0.922;
     private int magnitude=-2;
     private boolean[] du ={true}, dd={true}, dl={true},dr={true},rb={true},y={true},a={true},x={true},b={true},lb={true};
-    private double imuinitvalue=0, target=90, result=0, resuuu=0;
+    private double imuinitvalue=0, target=90, result=0, resuuu=0, speed=1.0;
     private double acctarget=0;
     @Override
     public void init() {
@@ -38,15 +38,23 @@ public class PIDTurnTest extends BaseAuto {
         if(zheng(this.gamepad1.b,b)){target-=5;}
         if(zheng(this.gamepad1.dpad_left,dl)){magnitude++;}
         if(zheng(this.gamepad1.dpad_right,dr)){magnitude--;}
+        if(this.gamepad1.left_trigger>0.5){speed+=0.1;}
+        if(this.gamepad1.right_trigger>0.5){speed-=0.1;}
+        if(zheng(this.gamepad1.dpad_right,dr)){magnitude--;}
         telemetry.addData("magnitude: ",Math.pow(10,magnitude));
         telemetry.addData("kP: ",kP);
         telemetry.addData("kD: ",kD);
         telemetry.addData("imu: ",getHeading());
         telemetry.addData("target:",target);
+        telemetry.addData("speed:", speed);
         //telemetry.addData("result: ",result);
         //telemetry.addLine("LF: "+LF.getCurrentPosition()+" LB: "+LB.getCurrentPosition()+" RF: "+RF.getCurrentPosition()+" RB:"+RB.getCurrentPosition());
         if(zheng(this.gamepad1.left_bumper,lb)){
-            tunePIDturn(target,kP,kD,1,true);
+            tunePIDturn(target,kP,kD,speed,false);
+        }
+        if(zheng(this.gamepad1.right_bumper,rb)){
+            acctarget=0;
+            setNewGyro0();
         }
     }
     //0.8, kp 0.033,kd 0.8

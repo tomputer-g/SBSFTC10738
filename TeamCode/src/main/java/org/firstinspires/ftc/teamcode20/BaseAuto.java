@@ -470,7 +470,7 @@ public class BaseAuto extends BaseOpMode {
     }
 
     protected void PIDturnfast(double target, boolean resetOffset){
-        tunePIDturn(target,0.023,1.665,1,false);
+        tunePIDturn(target,0.029,2.291,1,false);
     }
 
     protected void tunePIDturn(double target, double kp, double kd, double speed, boolean resetOffset){
