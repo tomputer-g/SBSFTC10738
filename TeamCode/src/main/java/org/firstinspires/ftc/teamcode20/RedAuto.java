@@ -94,10 +94,10 @@ int pos = 0;
             //rf.setPower(0);
         }
         double curAng = getHeading();
-        while (curAng<70){
+        while (curAng>-70){
             curAng = getHeading();
         }
-        while (curAng<88){
+        while (curAng>-88){
             curAng = getHeading();
             RB.setPower(RF.getPower()*getError(90,curAng)/20);
             LF.setPower(LB.getPower()*getError(90,curAng)/20);
@@ -118,7 +118,7 @@ int pos = 0;
 
          */
         int shiftt = 0;
-        if(pos == 1 || pos == 2) shiftt = -8;
+        if(pos == 0 || pos == 1) shiftt = -8;
         moveInchesGOY(-96.5+shiftt,0.6);
         servoThread.setTarget(0.95);
         PIDturnfast(90,false);
@@ -137,7 +137,7 @@ int pos = 0;
         PIDturnfast(90,false);
         setNewGyro(-90);
         int sfi = 0;
-        if(pos==0)sfi = -9;
+        if(pos==2)sfi = -9;
         moveInchesGOY(72+sfi,0.9);
         grabber.setPosition(grabber_open);
         moveInchesG(0,-8,0.5);
