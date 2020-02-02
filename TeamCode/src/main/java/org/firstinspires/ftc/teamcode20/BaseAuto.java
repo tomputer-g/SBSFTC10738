@@ -475,7 +475,10 @@ public class BaseAuto extends BaseOpMode {
     protected void PIDturnfast(double target, boolean resetOffset){
         tunePIDturn(target,0.029,2.291,1,false);
     }
-
+    protected void align(double target){
+        PIDturnfast(getError(imuAbsolute,target),false);
+        setNewGyro(target);
+    }
     protected void tunePIDturn(double target, double kp, double kd, double speed, boolean resetOffset){
         if(resetOffset){
             acctarget=0;
@@ -758,6 +761,43 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(0);
     }
 
+    protected void moveInchesGOXT(double xInch, double speed,double kV, int timer){//0.5 only
+        if(xInch == 0)return;
+        ElapsedTime t = new ElapsedTime();
+        int offsetX = getXOdometry();
+        speed=Math.abs(speed);
+        double multiply_factor, prev_speed = 0;
+        int odometryXGoal = offsetX + (int)(xInch * odometryEncXPerInch);
+        double vx = speed;//(xInch/Math.abs(xInch)*speed);//
+        int previousPos = offsetX, currentOdometry, Dterm;
+        double tpre = 0, tcur;
+        int steadyCounter = 0;
+        t.reset();
+        while(steadyCounter < 5 && !this.gamepad1.b){
+            telemetry.addData("d",t.milliseconds());
+            telemetry.update();
+            currentOdometry = getXOdometry();
+            tcur=t.milliseconds();
+            Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
+            multiply_factor = -Math.min(1, Math.max(-1, kV*((0.5 * (currentOdometry - odometryXGoal)/odometryEncXPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(0.05 * Dterm):0))));
+            if(near(prev_speed, multiply_factor*vx,0.001) && near(prev_speed, 0, 0.1)){
+                steadyCounter++;
+            }
+            else if(t.milliseconds()>timer){
+                steadyCounter = 5;
+            }
+            else{
+                steadyCounter = 0;
+            }
+            Log.d("GOX "+xInch,"steady"+steadyCounter+", position"+currentOdometry+", speed"+prev_speed);
+            previousPos = currentOdometry;
+            tpre=tcur;
+            setAllDrivePowerG(multiply_factor*-vx,multiply_factor*vx,multiply_factor*-vx,multiply_factor*vx);
+            prev_speed = multiply_factor * vx;
+        }
+        setAllDrivePower(0);
+    }
+
     protected void moveInchesGOX_platform(double xInch, double speed){
         moveInchesGOX_platform(xInch,speed,1);
     }
@@ -841,10 +881,11 @@ public class BaseAuto extends BaseOpMode {
             stop = true;
         }
     }
-    protected void after_dragged_foundation(){
+    protected void after_dragged_foundation_B(){
         ElapsedTime p = new ElapsedTime();
         platform_grabber.setPower(1);
         servoThread.setTarget(0.5);
+        wait(300);
         //p.reset();
         ///while (p.milliseconds()<300);
         PIDturnfast(-90,true);
@@ -853,6 +894,31 @@ public class BaseAuto extends BaseOpMode {
         setNewGyro(90);
         //setAllDrivePowerG(-.2,-.2,.2,.2);
         //moveInchesGOY(5,0.4);
+
+        p.reset();
+        while (p.milliseconds()<1200)setAllDrivePowerG(-.4,-.4,.4,.4);
+        setAllDrivePower(0);
+        servoThread.setTarget(0.75);
+        p.reset();
+        while (p.milliseconds()<600);
+        platform_grabber.setPower(0);
+        grabber.setPosition(grabber_open);
+        //servoThread.setTarget(0.6);
+    }
+    protected void after_dragged_foundation_R(){
+        ElapsedTime p = new ElapsedTime();
+        platform_grabber.setPower(1);
+        servoThread.setTarget(0.5);
+        wait(300);
+        //p.reset();
+        ///while (p.milliseconds()<300);
+        PIDturnfast(-90,true);
+        //setAllDrivePower(0);
+        //turn(-90-getHeading(),0.5,1);
+        setNewGyro(-90);
+        //setAllDrivePowerG(-.2,-.2,.2,.2);
+        //moveInchesGOY(5,0.4);
+
         p.reset();
         while (p.milliseconds()<1200)setAllDrivePowerG(-.4,-.4,.4,.4);
         setAllDrivePower(0);

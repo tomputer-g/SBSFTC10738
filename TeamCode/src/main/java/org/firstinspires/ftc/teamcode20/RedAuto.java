@@ -3,148 +3,144 @@ package org.firstinspires.ftc.teamcode20;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.openftc.revextensions2.ExpansionHubEx;
+
 @Autonomous
-public class RedAuto extends TractionControl {
-    private double speed = 0.4;
-    private boolean[] ca={true},cb={true};
-    @Override
+public class RedAuto extends BaseAuto {
+int pos = 0;
+@Override
     public void init() {
         super.init();
+        hub2 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
+        showTelemetry = false;
         initDrivetrain();
         initIMU();
         initGrabber();
-        initLinSlide();
+        //initLinSlide();
         initPlatformGrabber();
         initVuforia();
         initSensors();
+        initOdometry();
+        initLight();
+        setLight(true);
         setNewGyro0();
-        speed=0.3;
-        //if(showTelemetry)telemetry.setAutoClear(false);
-    }
-    @Override
-    public void loop() {
-        //go forward 1 floor mat (24")w
-        //vuforia - recognize block & move to pick up
-        //after pickup: turn 90 deg. move to platform, drop off
-        //move to platform, drag into position, release
-        //repeat until run out of time; first on other skystones
-        grabber.setPosition(0.03);
-        grabber_extend1.setPosition(1);
-        grabber_extend2.setPosition(0);
-        grabber.setPosition(0.03);
-        platform_grabber.setPower(1);
-        moveInchesG(0,12,0.3);
-        platform_grabber.setPower(0.0);
-        if(showTelemetry)telemetry.clear();
         int[] resultcounter = {0,0,0};
         //find skystone
-        for (int i = 0;i<10;++i){
-            resultcounter[new_skystoneposition()]++;
-        }
+        for (int i = 0;i<4;++i) resultcounter[new_skystoneposition()]++;
         int curmax = -1;
-        int pos = 0;
-        for (int i = 0;i<3;++i){
-            if(resultcounter[i]>curmax){pos = i;curmax=resultcounter[i];}
-        }
-
-        grabber.setPosition(grabber_open);
+        for (int i = 0;i<3;++i){ if(resultcounter[i]>curmax){pos = i;curmax=resultcounter[i];} }
+        telemetry.addData("info:", "%d %d %d",resultcounter[0],resultcounter[1],resultcounter[2]);
+        telemetry.addData("pos: ", pos);
+        telemetry.update();
         shutdownVuforia();
-
+        printAllThreadsToLogcat();
+    }
+    @Override
+    public void loop(){
+        setLight(false);
+        servoThread.setTarget(0.95);
+        platform_grabber.setPower(1);
+        platform_grabber.setPower(0.0);
+        if(showTelemetry)telemetry.clear();
+        grabber.setPosition(grabber_open);
+        //wait(500);
         //shift to align to skystone
         int shift;
         if(pos == 1){
             shift = 0;
         }
         else if (pos == 0){
-            moveInchesG(-7.5,0,0.4);
+            moveInchesGOXT(-8,0.8,1,800);
             shift=8;
         }
         else {
-            moveInchesG(8, 0, 0.4);
+            moveInchesGOXT(8,0.8,1,800);
             shift=-8;
         }
 
         //move forward to the skystone
         ElapsedTime p = new ElapsedTime();
-        reset_ENCODER();
-        setMode_RUN_WITHOUT_ENCODER();
-        grabber.setPosition(grabber_open);
-        while (p.milliseconds()<1300) setAllDrivePowerG(-0.25, -0.25, 0.25, 0.25);
-
+        moveInchesGOY(30.5,0.6,(1+(13.65-hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS))/13.65));
         //grab 1st block
         grabber.setPosition(grabber_closed);
         wait(300);
-        setAllDrivePower(0.0);
-        moveInchesG(0,-15,0.3);
+        servoThread.setTarget(0.85);
+        //setAllDrivePower(0.0);
+        moveInchesG(0,-6,0.4);
 
         //move forward & approach foundation
-        turn(90, 0.4, 0.8);
-        servoThread.setTarget(0.95);
+        //turn(90, 0.5,1);
+        PIDturnfast(90,false);
         setNewGyro(90);
         p.reset();
-        moveInchesG(0,-(88+shift-8),0.4);
-        setAllDrivePowerG(-.35,.35,-.35,.35);
-        wait(1500);
-
-
-        //turn foundation
-        platform_grabber.setPower(-.8);
-        wait(200);
-
-        setAllDrivePowerG(0.5,-0.5,0.5,-0.5);
-        wait(1000);
-        setAllDrivePower(0);
-        turn(-90, 0.85, 4);
-
-        //drag foundation forward
-        setNewGyro(0);
-        /*
-        double koe=0.75;
+        resetXOdometry();
+        moveInchesGOY(-(85.25+shift),0.9);
         p.reset();
-        while(10<rangeSensorFront.getDistance(DistanceUnit.INCH) || p.milliseconds() < 3400){
-            setAllDrivePowerG(koe*(0.25-0.55+0.37),koe*(0.25-0.55-0.37),koe*(0.25+0.55+0.37),koe*(0.22+0.5-0.37)); //turn+f0rwrd+side
+        //while (p.milliseconds()<900)setAllDrivePowerG(-.5,.5,-.5,.5);
+
+
+        moveInchesGOXT(13.5-getXOdometry()/odometryEncXPerInch,.5,1,1300); //drag +errordistance
+
+        platform_grabber.setPower(-1);
+        wait(300);
+        moveInchesGOX_platform(-19,0.8,1+(13.65-hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS))/13.65);
+        int steps = 20;
+        double basespeed = 0.3;
+        for(int i = 10;i<=steps;++i){
+            RB.setPower(  i*basespeed/steps);
+            LF.setPower(2*i*basespeed/steps);
+            LB.setPower(3*i*basespeed/steps);
+            wait(20);
+            //rf.setPower(0);
         }
-        */
+        double curAng = getHeading();
+        while (curAng<70){
+            curAng = getHeading();
+        }
+        while (curAng<88){
+            curAng = getHeading();
+            RB.setPower(RF.getPower()*getError(90,curAng)/20);
+            LF.setPower(LB.getPower()*getError(90,curAng)/20);
+            LB.setPower(LF.getPower()*getError(90,curAng)/20);
+
+        }
+        setNewGyro(0);
         setAllDrivePower(0);
+        after_dragged_foundation_R();
 
-        double tempY = getY1Odometry();
-        double targetdist = getY1Odometry()+12*1316;
-        p = new ElapsedTime();
-        while(getY1Odometry()<targetdist&&p.milliseconds()<1500)
-            setAllDrivePowerG(0.5,0.5,-0.5,-0.5,2);
-        setAllDrivePower(0);
-
-        //push it in
-        setAllDrivePowerG(-.7,.7,-.7,.7,2);
-        wait(700);
-        platform_grabber.setPower(0.0);
-
-        //strafe left to put the block
-
-        servoThread.setTarget(0.5);
-        moveInchesG(-6.5,0,0.5);
-        turn(-85,0.4,1);
         setNewGyro(-90);
-        // holdSlide((int)slideEncoderPerInch/10);
-        //wait(1000);
-        //moveInchesG(0,4,0.43);
-        setAllDrivePowerG(-0.4,-0.4,0.4,0.4);
-        // wait(200);
-        servoThread.setTarget(.75);
-        wait(1300);
+        moveInchesGOXT(6,0.5,1,1000);
+        /*
+        p.reset();
+        while (p.milliseconds()<1100)setAllDrivePowerG(.7,.7,-.7,-.7);
+        p.reset();
+        while (p.milliseconds()<600)setAllDrivePowerG(.2,.2,-.2,-.2);
+
+         */
+        int shiftt = 0;
+        if(pos == 1 || pos == 2) shiftt = -8;
+        moveInchesGOY(-96.5+shiftt,0.6);
+        servoThread.setTarget(0.95);
+        PIDturnfast(90,false);
+        setNewGyro(0);
+
+        align(0);
+
+        moveInchesGOY(7.8,0.3);
+        //moveInchesGOY((right.getDistance(DistanceUnit.INCH)-2.6)*.69,.4);
+        grabber.setPosition(grabber_closed);
+        wait(300);
         setAllDrivePower(0);
-
+        servoThread.setTarget(0.85);
+        //setAllDrivePower(0.0);
+        moveInchesG(0,-8,0.4);
+        PIDturnfast(90,false);
+        setNewGyro(-90);
+        int sfi = 0;
+        if(pos==0)sfi = -9;
+        moveInchesGOY(72+sfi,0.9);
         grabber.setPosition(grabber_open);
-        platform_grabber.setPower(1);
-        wait(500);
-        //park
-        //moveIncheszG(2.67,0,0.4);
-        moveInchesG(0,-35,0.5);
-
-        setAllDrivePower(0.0);
-        servoThread.stopThread();
-        setNewGyro0();
-        platform_grabber.setPower(0);
+        moveInchesG(0,-8,0.5);
 
         requestOpModeStop();
     }

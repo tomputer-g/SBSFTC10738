@@ -68,11 +68,11 @@ public class BlueAuto extends BaseAuto {
             shift = 0;
         }
         else if (pos == 0){
-            moveInchesG(-8,0,0.5);
+            moveInchesGOXT(-8,0.8,1,800);
             shift=-8;
         }
         else {
-            moveInchesG(8, 0,0.5);
+            moveInchesGOXT(8,0.8,1,800);
             shift=8;
         }
 
@@ -92,12 +92,12 @@ public class BlueAuto extends BaseAuto {
         setNewGyro(90);
         p.reset();
         resetXOdometry();
-        moveInchesGOY((86.75+shift),0.9);
+        moveInchesGOY((85.25+shift),0.9);
         p.reset();
         //while (p.milliseconds()<900)setAllDrivePowerG(-.5,.5,-.5,.5);
 
 
-        moveInchesGOX(13.5-getXOdometry()/odometryEncXPerInch,.5); //drag +errordistance
+        moveInchesGOXT(13.5-getXOdometry()/odometryEncXPerInch,.5,1,1300); //drag +errordistance
 
         platform_grabber.setPower(-1);
         wait(300);
@@ -124,39 +124,50 @@ public class BlueAuto extends BaseAuto {
         }
         setNewGyro(180);
         setAllDrivePower(0);
-        after_dragged_foundation();
+        after_dragged_foundation_B();
 
         setNewGyro(90);
-        moveInchesGOX(-6,0.5);
+        moveInchesGOXT(-6,0.5,1,1000);
+        /*
         p.reset();
         while (p.milliseconds()<1100)setAllDrivePowerG(.7,.7,-.7,-.7);
         p.reset();
         while (p.milliseconds()<600)setAllDrivePowerG(.2,.2,-.2,-.2);
-        //moveInchesGOY(-104,0.9);
+
+         */
+        int shiftt = 0;
+        if(pos == 1 || pos == 2) shiftt = -8;
+        moveInchesGOY(-96.5+shiftt,0.6);
         servoThread.setTarget(0.95);
         PIDturnfast(-90,false);
         setNewGyro(0);
-
+        /*
         p.reset();
-        while (p.milliseconds()<500)setAllDrivePowerG(-.5,.5,-.5,.5);
+        while (p.milliseconds()<1500)setAllDrivePowerG(-.5,.5,-.5,.5);
 
         int shiftt = -4;
         if(pos==0)shiftt=-12;
-        moveInchesGOX(shiftt,0.8);
+        moveInchesGOXT(shiftt,0.8,1,1200);
 
+
+         */
         //setAllDrivePowerG(-.5,-.5,.5,.5);
         //wait(300);
-        moveInchesGOY(9,0.3);
+        align(0);
+
+        moveInchesGOY(7.8,0.3);
         //moveInchesGOY((right.getDistance(DistanceUnit.INCH)-2.6)*.69,.4);
         grabber.setPosition(grabber_closed);
         wait(300);
         setAllDrivePower(0);
         servoThread.setTarget(0.85);
         //setAllDrivePower(0.0);
-        moveInchesG(0,-12,0.4);
+        moveInchesG(0,-8,0.4);
         PIDturnfast(90,false);
         setNewGyro(90);
-        moveInchesGOY(72,0.6);
+        int sfi = 0;
+        if(pos==0)sfi = -9;
+        moveInchesGOY(72+sfi,0.9);
         grabber.setPosition(grabber_open);
         moveInchesG(0,-8,0.5);
 
