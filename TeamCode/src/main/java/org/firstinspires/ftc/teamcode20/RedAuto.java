@@ -87,9 +87,9 @@ int pos = 0;
         int steps = 20;
         double basespeed = 0.3;
         for(int i = 10;i<=steps;++i){
-            RB.setPower(  i*basespeed/steps);
-            LF.setPower(2*i*basespeed/steps);
-            LB.setPower(3*i*basespeed/steps);
+            RB.setPower(  -i*basespeed/steps);
+            LF.setPower(-2*i*basespeed/steps);
+            LB.setPower(-3*i*basespeed/steps);
             wait(20);
             //rf.setPower(0);
         }
@@ -133,8 +133,8 @@ int pos = 0;
         setAllDrivePower(0);
         servoThread.setTarget(0.85);
         //setAllDrivePower(0.0);
-        moveInchesG(0,-8,0.4);
-        PIDturnfast(90,false);
+        moveInchesG(0,-9,0.4);
+        PIDturnfast(-90,false);
         setNewGyro(-90);
         int sfi = 0;
         if(pos==2)sfi = -9;
