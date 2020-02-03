@@ -73,7 +73,7 @@ public class BaseAuto extends BaseOpMode {
         targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565,true);
         vuforia.setFrameQueueCapacity(6);
-/*
+
         VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
         stoneTarget.setName("Stone Target");
         VuforiaTrackable blueRearBridge = targetsSkyStone.get(1);
@@ -123,7 +123,7 @@ public class BaseAuto extends BaseOpMode {
 
         for (VuforiaTrackable trackable : allTrackables)
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
-        */
+
     }
 
     protected void initVuforiaWebcam(){

@@ -5,6 +5,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 
 import static java.lang.Math.sqrt;
@@ -34,20 +42,20 @@ public class MoveTest extends BaseAuto {
     @Override
     public void init(){
         initIMU();
-        initDrivetrain();
-        initOdometry();
-        initLinSlide();
-        initGrabber();
+        //initDrivetrain();
+        //initOdometry();
+        //initLinSlide();
+        //initGrabber();
         initVuforia();
 
         //initVuforiaWebcam();
-        setNewGyro0();
-        rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
-        speed=0.3;
-        speeed = 0.03;
-        dir=1;
-        y = -90;
-        x = 0;
+        //setNewGyro0();
+        //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
+        //speed=0.3;
+        //speeed = 0.03;
+        //dir=1;
+        //y = -90;
+        //x = 0;
         // 三天之内刹了你();
     }
 
@@ -71,19 +79,19 @@ public class MoveTest extends BaseAuto {
         if(zheng(this.gamepad1.y,m))speed+=.1;
         if(zheng(this.gamepad1.a,mm))speed-=.1;
         if(zheng(this.gamepad1.b,f))setNewGyro0();
-        /*
+
         if(zheng(this.gamepad1.left_bumper,bF)){
             ElapsedTime t=new ElapsedTime();
             targetsSkyStone.activate();
-            VuforiaTrackable trackable = allTrackables.get(11);
+            VuforiaTrackable trackable = allTrackables.get(4);
             while(t.milliseconds()<50000) {
                 if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                     OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
                     if (robotLocationTransform != null) {
                         lastLocation = robotLocationTransform;
                     }
-                    if (trackable.getName().equals("Rear Perimeter 1")) {
-                        Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+                    if (trackable.getName().equals("Blue Front Bridge")) {
+                        Orientation rotation = Orientation.getOrientation(lastLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
                         telemetry.addLine("Turn " + (int) Math.abs(rotation.thirdAngle - 90) + (rotation.thirdAngle - 90 > 0 ? "deg. CW" : "deg. CCW"));
                         VectorF translation = lastLocation.getTranslation();
                         double disty = translation.get(1)/mmPerInch;
@@ -98,32 +106,13 @@ public class MoveTest extends BaseAuto {
             }
             shutdownVuforia();
         }
-        */
-
-        if(zheng(this.gamepad1.left_bumper,lF)) {
-            /*
-            setNewGyro0();
-            platform_grabber.setPower(1);
-            grabber.setPosition(grabber_closed);
-            ElapsedTime p = new ElapsedTime();
-            while (p.milliseconds()<1000);
-            servoThread.setTarget(0.85);
-
-
-             */
-            ElapsedTime p = new ElapsedTime();
-            p.reset();
-            setNewGyro(0);
-            while (p.milliseconds()<1300)setAllDrivePowerG(.7,.7,-.7,-.7);
-            setAllDrivePower(0);
-        }
 
         if(zheng(this.gamepad1.right_bumper,bF)) {
             tunePIDturn(x,0.027,0.922,speed);
         }
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
-        telemetry.addData("Imu: ","%.2f",getHeading());
+        //telemetry.addData("Imu: ","%.2f",getHeading());
         telemetry.addData("target: ",acctarget);
         telemetry.addData("Speed: ","%.2f" ,speed);
         //telemetry.addData("[x]: ","%.2f",n_pass[0]);
