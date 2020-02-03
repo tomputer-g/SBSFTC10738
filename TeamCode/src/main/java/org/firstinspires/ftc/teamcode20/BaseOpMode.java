@@ -698,7 +698,7 @@ public class BaseOpMode extends OpMode {
         //getPosition does not actually read position. We'll have to keep track using a double
         @Override
         public void run() {
-            this.setPriority(4);
+            //this.setPriority(5);
             this.setName("Servo Thread "+this.getId());
             Log.i("servoThread"+this.getId(),"Started running");
             while(!isInterrupted() && !stop){
