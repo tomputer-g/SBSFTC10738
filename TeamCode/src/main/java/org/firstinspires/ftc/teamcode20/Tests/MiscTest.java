@@ -8,14 +8,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode20.TractionControl;
-@Disabled
-
-@TeleOp(group = "Test", name = "drugtest")
+@TeleOp
 public class MiscTest extends TractionControl {
     double speed,x,y, GYRO_kp, side_distance, kp,kd,dist_target,koe,square_dist;
     boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
     ElapsedTime t=new ElapsedTime();
-    ModernRoboticsI2cRangeSensor rangeSensorSide;
+    //ModernRoboticsI2cRangeSensor rangeSensorSide;
 
     @Override
     public void init(){
@@ -37,10 +35,13 @@ public class MiscTest extends TractionControl {
         koe = 0.7;
         dist_target = 13;
         square_dist = 8.2;
+        initLight();
+        light.setPosition(.5);
     }
 
     @Override
     public void loop(){
+        /*
         //x+ left x- right y+ forward y- backward
         //getHeading();
         if(zheng(this.gamepad1.y,e))speed-=0.05;
@@ -117,7 +118,7 @@ public class MiscTest extends TractionControl {
                 else w = 0;
 
 
-                 */
+
                 if(!ll){
                     if(l<square_dist) y = -1;
                     else y = 1;
@@ -152,9 +153,10 @@ public class MiscTest extends TractionControl {
             }
             setAllDrivePower(0);
             platform_grabber.setPower(0);
-             */
+
 
         }
         telemetry.update();
+        */
     }
 }
