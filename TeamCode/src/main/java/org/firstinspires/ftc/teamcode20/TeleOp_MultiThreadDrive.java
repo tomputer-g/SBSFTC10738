@@ -31,6 +31,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         setNewGyro0();
         france = hardwareMap.get(Servo.class, "capstone");
         servoThread.setTarget(0.99);
+        grabber.setPosition(grabber_open);
         //pwmThread = new PWMThread();
     }
 
