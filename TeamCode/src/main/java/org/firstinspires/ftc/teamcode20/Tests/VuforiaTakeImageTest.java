@@ -64,9 +64,9 @@ public class VuforiaTakeImageTest extends BaseAuto {
             bm.copyPixelsFromBuffer(pixels);
             for(int i = -10;i<10;++i){
                 for(int j = -10;j<10;++j){
-                    curpixel_L = bm.getPixel(1030+i,320+j);//"left"
-                    curpixel_M = bm.getPixel(780+i,320+j);//"mid"
-                    curpixel_R = bm.getPixel(530+i,320+j);//"right"
+                    curpixel_L = bm.getPixel(1147+i,180+j);//"left"
+                    curpixel_M = bm.getPixel(927+i,180+j);//"mid"
+                    curpixel_R = bm.getPixel(662+i,207+j);//"right"
                     red_L+=Color.red(curpixel_L);
                     blue_L+=Color.blue(curpixel_L);
                     green_L+=Color.green(curpixel_L);
