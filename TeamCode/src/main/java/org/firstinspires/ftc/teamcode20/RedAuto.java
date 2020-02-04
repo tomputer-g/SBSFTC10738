@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode20;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
+import com.acmerobotics.roadrunner.control.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.vuforia.Image;
@@ -13,12 +14,14 @@ import org.openftc.revextensions2.ExpansionHubEx;
 
 import java.nio.ByteBuffer;
 
+
 @Autonomous
 public class RedAuto extends BaseAuto {
 int pos = 0, result;
 @Override
     public void init() {
         initAutonomous();
+
     }
     @Override
     public void init_loop(){
