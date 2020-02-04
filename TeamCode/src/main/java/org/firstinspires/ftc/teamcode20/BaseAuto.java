@@ -55,23 +55,22 @@ public class BaseAuto extends BaseOpMode {
     protected OpenGLMatrix lastLocation = null;
     protected VuforiaTrackables targetsSkyStone;
     protected List<VuforiaTrackable> allTrackables;
-    private final float CAMERA_FORWARD_DISPLACEMENT  = 0f * mmPerInch;//2.5 in from end + 1 in correction
+    private final float CAMERA_FORWARD_DISPLACEMENT = 0f * mmPerInch;//2.5 in from end + 1 in correction
     private final float CAMERA_VERTICAL_DISPLACEMENT = 0f * mmPerInch;// eg: Camera is 8 Inches above ground
-    private final float CAMERA_LEFT_DISPLACEMENT     = 0f * mmPerInch; // eg: Camera is ON the robot's center line
+    private final float CAMERA_LEFT_DISPLACEMENT = 0f * mmPerInch; // eg: Camera is ON the robot's center line
     private ElapsedTime VuforiaPositionTime;
     private double[] displacements = {2, 7};//+ = forward; + = right
     private double headingDisplacement = -90;
 
 
-
-    protected void initVuforia(){
+    protected void initVuforia() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         parameters.vuforiaLicenseKey = "AZlAJSf/////AAABmf5BgAyil0t8tK506wQNabJX0SH5ekkamom8UybSLKgtsYTY/0/AB5n0Db9/JRrUDLEhDRXJgx5osNHZt6kVKSIF5cdge/dE9OgOunoX6LWBqk8cHGwBlKCXl1eGuvBPwQa3OaJDC7neKLmlZf2/NJiJKMvi9VBqKEDsS74Dp0tFbJka5cJa8YpKyrJh8593SN8p2qcYxXRORCWzmdMdD2xHUJXw28foxuNOotp2onbDmpnfH7x4oegFalegxvQbJ3J0cFqOuP8pboEjoN0Zl64xFVu6ZCc2uvsnXECEgWtycA+bWmQZNG6BD4SLYN/LWVYBp6U5MrIHsNeOOQfwTAZNVDcLELke77iK1XuWnCzG";
-        parameters.cameraDirection   = BACK;
+        parameters.cameraDirection = BACK;
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
         targetsSkyStone = vuforia.loadTrackablesFromAsset("Skystone");
-        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565,true);
+        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
         vuforia.setFrameQueueCapacity(6);
 
         VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
@@ -112,13 +111,13 @@ public class BaseAuto extends BaseOpMode {
         //Set the position of the perimeter targets with relation to origin (center of field)
         red1.setLocation(OpenGLMatrix.translation(36 * mmPerInch, -72 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
         red2.setLocation(OpenGLMatrix.translation(-36 * mmPerInch, -72 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
-        front1.setLocation(OpenGLMatrix.translation(-72 * mmPerInch, -36 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
+        front1.setLocation(OpenGLMatrix.translation(-72 * mmPerInch, -36 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
         front2.setLocation(OpenGLMatrix.translation(-72 * mmPerInch, 36 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
         blue1.setLocation(OpenGLMatrix.translation(-36 * mmPerInch, 72 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
         blue2.setLocation(OpenGLMatrix.translation(36 * mmPerInch, 72 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
-        rear1.setLocation(OpenGLMatrix.translation(72 * mmPerInch, 36 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
+        rear1.setLocation(OpenGLMatrix.translation(72 * mmPerInch, 36 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
         rear2.setLocation(OpenGLMatrix.translation(72 * mmPerInch, -36 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
-        OpenGLMatrix robotFromCamera = OpenGLMatrix.translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT).multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, 0,0,0));
+        OpenGLMatrix robotFromCamera = OpenGLMatrix.translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT).multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, 0, 0, 0));
 
 
         for (VuforiaTrackable trackable : allTrackables)
@@ -126,7 +125,7 @@ public class BaseAuto extends BaseOpMode {
 
     }
 
-    protected void initVuforiaWebcam(){
+    protected void initVuforiaWebcam() {
         VuforiaInit = true;
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
@@ -173,23 +172,23 @@ public class BaseAuto extends BaseOpMode {
         //Set the position of the perimeter targets with relation to origin (center of field)
         red1.setLocation(OpenGLMatrix.translation(36 * mmPerInch, -72 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
         red2.setLocation(OpenGLMatrix.translation(-36 * mmPerInch, -72 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
-        front1.setLocation(OpenGLMatrix.translation(-72 * mmPerInch, -36 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
+        front1.setLocation(OpenGLMatrix.translation(-72 * mmPerInch, -36 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
         front2.setLocation(OpenGLMatrix.translation(-72 * mmPerInch, 36 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
         blue1.setLocation(OpenGLMatrix.translation(-36 * mmPerInch, 72 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
         blue2.setLocation(OpenGLMatrix.translation(36 * mmPerInch, 72 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
-        rear1.setLocation(OpenGLMatrix.translation(72 * mmPerInch, 36 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
+        rear1.setLocation(OpenGLMatrix.translation(72 * mmPerInch, 36 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
         rear2.setLocation(OpenGLMatrix.translation(72 * mmPerInch, -36 * mmPerInch, 6 * mmPerInch).multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
-        OpenGLMatrix robotFromCamera = OpenGLMatrix.translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT).multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, 0,0,180));
+        OpenGLMatrix robotFromCamera = OpenGLMatrix.translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT).multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, 0, 0, 180));
 
         for (VuforiaTrackable trackable : allTrackables)
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
     }
 
-    protected void shutdownVuforia(){
+    protected void shutdownVuforia() {
         targetsSkyStone.deactivate();
     }
 
-    protected int skystonePosition(){
+    protected int skystonePosition() {
         CameraManager cameraManager = (CameraManager) hardwareMap.appContext.getSystemService(Context.CAMERA_SERVICE);
         try {
             cameraManager.setTorchMode("0", true);
@@ -198,7 +197,7 @@ public class BaseAuto extends BaseOpMode {
         }
         VuforiaPositionTime = new ElapsedTime();
         targetsSkyStone.activate();
-        while(VuforiaPositionTime.milliseconds() < 2500){
+        while (VuforiaPositionTime.milliseconds() < 2500) {
             for (VuforiaTrackable trackable : allTrackables) {
                 if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                     OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
@@ -207,20 +206,24 @@ public class BaseAuto extends BaseOpMode {
                     }
                     if (trackable.getName().equals("Stone Target")) {
                         Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                        if(showTelemetry)telemetry.addLine("Turn " + (int) Math.abs(rotation.thirdAngle + headingDisplacement) + (rotation.thirdAngle + headingDisplacement > 0 ? "deg. CW" : "deg. CCW"));
+                        if (showTelemetry)
+                            telemetry.addLine("Turn " + (int) Math.abs(rotation.thirdAngle + headingDisplacement) + (rotation.thirdAngle + headingDisplacement > 0 ? "deg. CW" : "deg. CCW"));
                         VectorF translation = lastLocation.getTranslation();
                         double dist = translation.get(1) / mmPerInch + displacements[1];
-                        if(showTelemetry)telemetry.addLine("Move " + Math.abs(dist) + (dist > 0 ? "in. Right" : "in. Left"));
+                        if (showTelemetry)
+                            telemetry.addLine("Move " + Math.abs(dist) + (dist > 0 ? "in. Right" : "in. Left"));
                         if (dist > 5) {
-                            if(showTelemetry)telemetry.addData("Capture time", VuforiaPositionTime.milliseconds());
+                            if (showTelemetry)
+                                telemetry.addData("Capture time", VuforiaPositionTime.milliseconds());
                             try {
                                 cameraManager.setTorchMode("0", false);
                             } catch (CameraAccessException e) {
                                 e.printStackTrace();
                             }
                             return 2;
-                        }else{
-                            if(showTelemetry)telemetry.addData("Capture time", VuforiaPositionTime.milliseconds());
+                        } else {
+                            if (showTelemetry)
+                                telemetry.addData("Capture time", VuforiaPositionTime.milliseconds());
                             try {
                                 cameraManager.setTorchMode("0", false);
                             } catch (CameraAccessException e) {
@@ -232,35 +235,37 @@ public class BaseAuto extends BaseOpMode {
                 }
             }
         }
-        if(showTelemetry)telemetry.addLine("Vuforia exceeded 1s wait.");
+        if (showTelemetry) telemetry.addLine("Vuforia exceeded 1s wait.");
         try {
             cameraManager.setTorchMode("0", false);
-    } catch (CameraAccessException e) {
-        e.printStackTrace();
-    }
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
         return 0;
     }
 
-    protected int new_skystoneposition(){
+    protected int new_skystoneposition() {
         VuforiaLocalizer.CloseableFrame frame = null;
         Image image = null;
         int result = 0;
-        int red_L = 0, red_R = 0, blue_L=0,blue_R=0,green_L=0,green_R=0, red_M = 0,blue_M=0,green_M=0;
+        int red_L = 0, red_R = 0, blue_L = 0, blue_R = 0, green_L = 0, green_R = 0, red_M = 0, blue_M = 0, green_M = 0;
         int curpixel_L, curpixel_R, curpixel_M;
-        boolean l = true, r=true, m = true;
+        boolean l = true, r = true, m = true;
 
-        try {frame = this.vuforia.getFrameQueue().take(); }
-        catch (InterruptedException e)
-        {throw new RuntimeException(e);}
+        try {
+            frame = this.vuforia.getFrameQueue().take();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-        for(int i = 0;i<frame.getNumImages();++i){
-            if(frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565){
+        for (int i = 0; i < frame.getNumImages(); ++i) {
+            if (frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565) {
                 image = frame.getImage(i);
                 break;
             }
         }
 
-        if(image!=null){
+        if (image != null) {
             ByteBuffer pixels = image.getPixels();
             byte[] pixelArray = new byte[pixels.remaining()];
             pixels.get(pixelArray, 0, pixelArray.length);
@@ -268,57 +273,44 @@ public class BaseAuto extends BaseOpMode {
             int imageWidth = image.getWidth();
             int imageHeight = image.getHeight();
             pixels.rewind();
-            Bitmap bm = Bitmap.createBitmap(imageWidth,imageHeight,Bitmap.Config.RGB_565);
+            Bitmap bm = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.RGB_565);
             bm.copyPixelsFromBuffer(pixels);
-            for(int i = -10;i<10;++i){
-                for(int j = -10;j<10;++j){
-                    curpixel_L = bm.getPixel(1147+i,180+j);//"left"
-                    curpixel_M = bm.getPixel(927+i,180+j);//"mid"
-                    curpixel_R = bm.getPixel(662+i,207+j);//"right"
-                    red_L+=Color.red(curpixel_L);
-                    blue_L+=Color.blue(curpixel_L);
-                    green_L+=Color.green(curpixel_L);
-                    red_M+=Color.red(curpixel_M);
-                    blue_M+=Color.blue(curpixel_M);
-                    green_M+=Color.green(curpixel_M);
-                    red_R+=Color.red(curpixel_R);
-                    blue_R+=Color.blue(curpixel_R);
-                    green_R+=Color.green(curpixel_R);
+            for (int i = -10; i < 10; ++i) {
+                for (int j = -10; j < 10; ++j) {
+                    curpixel_L = bm.getPixel(1147 + i, 180 + j);//"left"
+                    curpixel_M = bm.getPixel(927 + i, 180 + j);//"mid"
+                    curpixel_R = bm.getPixel(662 + i, 207 + j);//"right"
+                    red_L += Color.red(curpixel_L);
+                    blue_L += Color.blue(curpixel_L);
+                    green_L += Color.green(curpixel_L);
+                    red_M += Color.red(curpixel_M);
+                    blue_M += Color.blue(curpixel_M);
+                    green_M += Color.green(curpixel_M);
+                    red_R += Color.red(curpixel_R);
+                    blue_R += Color.blue(curpixel_R);
+                    green_R += Color.green(curpixel_R);
                 }
             }
-            red_L/=400;red_R/=400;red_M/=400;blue_M/=400;blue_L/=400;blue_R/=400;green_M/=400;green_L/=400;green_R/=400;
+            red_L /= 400;red_R /= 400;red_M /= 400;blue_M /= 400;blue_L /= 400;blue_R /= 400;green_M /= 400;green_L /= 400;green_R /= 400;
 
-            //telemetry.addData("rgb@L" ,"red: %d blue: %d green: %d",red_L, blue_L, green_L);
-            //telemetry.addData("rgb@M" ,"red: %d blue: %d green: %d",red_M, blue_M, green_M);
-            //telemetry.addData("rgb@R" ,"red: %d blue: %d green: %d",red_R, blue_R, green_R);
-            /*
-            int a = bm.getPixel(960,180);
-            int b = bm.getPixel(640,180);
-            int reda = Color.red(a), bluea = Color.blue(a), greena = Color.green(a);
-            int redb = Color.red(b), blueb = Color.blue(b), greenb = Color.green(b);
-
-            telemetry.clear();
-            telemetry.addData("rgb@960x180" ,"red: %d blue: %d green: %d",reda, bluea, greena);
-            telemetry.addData("rgb@400x180" ,"red: %d blue: %d green: %d",redb, blueb, greenb);
-
-            telemetry.log().add("rgb@1270x710 red: %d blue: %d green: %d",reda, bluea, greena);
-            telemetry.log().add("rgb@10x10 red: %d blue: %d green: %d",redb, blueb, greenb);
-            telemetry.log().add("rgb@10x710 red: %d blue: %d green: %d",redc, bluec, greenc);
-            telemetry.log().add("rgb@1270x10 red: %d blue: %d green: %d",redd, blued, greend);
-            telemetry.update();
-            */
+            telemetry.addData("rgb@L", "red: %d blue: %d green: %d", red_L, blue_L, green_L);
+            telemetry.addData("rgb@M", "red: %d blue: %d green: %d", red_M, blue_M, green_M);
+            telemetry.addData("rgb@R", "red: %d blue: %d green: %d", red_R, blue_R, green_R);
         }
+            if (red_L > 100 && green_L > 90) l = false;
+            if (red_R > 100 && green_R > 90) r = false;
+            if (red_M > 100 && green_M > 90) m = false;
 
-        if(red_L>100&&blue_L<30&&green_L>90) l = false;
-        if(red_R>100&&blue_R<30&&green_R>90) r = false;
-        if(red_M>100&&blue_M<30&&green_M>90) m = false;
+            if (l) result = 0;
+            if (m) result = 1;
+            if (r) result = 2;
+            telemetry.addData("position: ", result);
+            telemetry.update();
 
-        if(l)result=0;
-        if(m)result=1;
-        if(r)result=2;
         frame.close();
         return result;
     }
+
 
     protected int new_skystonepositionR(){
         VuforiaLocalizer.CloseableFrame frame = null;
@@ -366,35 +358,20 @@ public class BaseAuto extends BaseOpMode {
                 }
             }
             red_L/=400;red_R/=400;red_M/=400;blue_M/=400;blue_L/=400;blue_R/=400;green_M/=400;green_L/=400;green_R/=400;
-
-            //telemetry.addData("rgb@L" ,"red: %d blue: %d green: %d",red_L, blue_L, green_L);
-            //telemetry.addData("rgb@M" ,"red: %d blue: %d green: %d",red_M, blue_M, green_M);
-            //telemetry.addData("rgb@R" ,"red: %d blue: %d green: %d",red_R, blue_R, green_R);
-            /*
-            int a = bm.getPixel(960,180);
-            int b = bm.getPixel(640,180);
-            int reda = Color.red(a), bluea = Color.blue(a), greena = Color.green(a);
-            int redb = Color.red(b), blueb = Color.blue(b), greenb = Color.green(b);
-
-            telemetry.clear();
-            telemetry.addData("rgb@960x180" ,"red: %d blue: %d green: %d",reda, bluea, greena);
-            telemetry.addData("rgb@400x180" ,"red: %d blue: %d green: %d",redb, blueb, greenb);
-
-            telemetry.log().add("rgb@1270x710 red: %d blue: %d green: %d",reda, bluea, greena);
-            telemetry.log().add("rgb@10x10 red: %d blue: %d green: %d",redb, blueb, greenb);
-            telemetry.log().add("rgb@10x710 red: %d blue: %d green: %d",redc, bluec, greenc);
-            telemetry.log().add("rgb@1270x10 red: %d blue: %d green: %d",redd, blued, greend);
-            telemetry.update();
-            */
+            telemetry.addData("rgb@L", "red: %d blue: %d green: %d", red_L, blue_L, green_L);
+            telemetry.addData("rgb@M", "red: %d blue: %d green: %d", red_M, blue_M, green_M);
+            telemetry.addData("rgb@R", "red: %d blue: %d green: %d", red_R, blue_R, green_R);
         }
 
-        if(red_L>100&&blue_L<30&&green_L>90) l = false;
-        if(red_R>100&&blue_R<30&&green_R>90) r = false;
-        if(red_M>100&&blue_M<30&&green_M>90) m = false;
+        if(red_L>100&&green_L>90) l = false;
+        if(red_R>100&&green_R>90) r = false;
+        if(red_M>100&&green_M>90) m = false;
 
         if(l)result=0;
         if(m)result=1;
         if(r)result=2;
+        telemetry.addData("position: ", result);
+        telemetry.update();
         frame.close();
         return result;
     }
