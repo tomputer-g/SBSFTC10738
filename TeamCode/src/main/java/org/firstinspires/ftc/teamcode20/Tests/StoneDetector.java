@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
+import com.acmerobotics.roadrunner.control.PIDFController;
 import com.disnodeteam.dogecv.DogeCV;
 import com.disnodeteam.dogecv.detectors.DogeCVDetector;
 import com.disnodeteam.dogecv.filters.DogeCVColorFilter;
@@ -27,7 +28,6 @@ public class StoneDetector extends DogeCVDetector {
     public DogeCVColorFilter filter = new LeviColorFilter(LeviColorFilter.ColorPreset.YELLOW, 70); //Default Yellow blackFilter
 
     public int stonesToFind = 2;
-
 
     public RatioScorer ratioScorerForShortFace = new RatioScorer(1.25, 3); // Used to find the short face of the stone
     public RatioScorer ratioScorerForLongFace = new RatioScorer(0.625, 3); // Used to find the long face of the stone

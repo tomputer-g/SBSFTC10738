@@ -20,7 +20,6 @@ public class BlueAuto extends BaseAuto {
     public void init() {
         initAutonomous();
 	}
-    
     @Override
     public void init_loop(){
         pos = new_skystoneposition();
