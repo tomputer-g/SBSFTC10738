@@ -2,43 +2,25 @@ package org.firstinspires.ftc.teamcode20;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.vuforia.Image;
 import com.vuforia.PIXEL_FORMAT;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.openftc.revextensions2.ExpansionHubEx;
 
 import java.nio.ByteBuffer;
-import java.util.Locale;
-
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.ZYX;
 
 @Autonomous
 public class BlueAuto extends BaseAuto {
     int pos = 0;
     @Override
     public void init() {
-        super.init();
-        hub2 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
-        showTelemetry = false;
-        initDrivetrain();
-        initIMU();
-        initGrabber();
-        initPlatformGrabber();
-        initSensors();
-        initOdometry();
-        setNewGyro0();
-        initVuforia();
-    }
-
+        initAutonomous();
+	}
+    
     @Override
     public void init_loop(){
         pos = new_skystoneposition();
