@@ -18,21 +18,8 @@ public class RedAuto extends BaseAuto {
 int pos = 0, result;
 @Override
     public void init() {
-        super.init();
-        hub2 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
-        showTelemetry = false;
-        initDrivetrain();
-        initIMU();
-        initGrabber();
-        //initLinSlide();
-        initPlatformGrabber();
-        initSensors();
-        initOdometry();
-        initLight();
-        setNewGyro0();
-    initVuforia();
-
-}
+        initAutonomous();
+    }
     @Override
     public void init_loop(){
         VuforiaLocalizer.CloseableFrame frame = null;
