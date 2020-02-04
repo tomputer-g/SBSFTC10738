@@ -41,6 +41,7 @@ public class MoveTest extends BaseAuto {
 
     @Override
     public void init(){
+        msStuckDetectInit = 3000000;
         initIMU();
         //initDrivetrain();
         //initOdometry();
@@ -84,7 +85,7 @@ public class MoveTest extends BaseAuto {
             ElapsedTime t=new ElapsedTime();
             targetsSkyStone.activate();
             VuforiaTrackable trackable = allTrackables.get(4);
-            while(t.milliseconds()<50000) {
+            while(t.milliseconds()<500000) {
                 if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                     OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
                     if (robotLocationTransform != null) {
@@ -106,10 +107,13 @@ public class MoveTest extends BaseAuto {
             }
             shutdownVuforia();
         }
-
+/*
         if(zheng(this.gamepad1.right_bumper,bF)) {
             tunePIDturn(x,0.027,0.922,speed);
         }
+
+ */
+        /*
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
         //telemetry.addData("Imu: ","%.2f",getHeading());
@@ -119,6 +123,8 @@ public class MoveTest extends BaseAuto {
         //telemetry.addData("[y]: ","%.2f" ,n_pass[1]);;
         telemetry.update();
 
+
+         */
 
     }
 

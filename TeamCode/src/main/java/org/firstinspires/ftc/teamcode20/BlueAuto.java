@@ -19,8 +19,7 @@ public class BlueAuto extends BaseAuto {
     @Override
     public void init() {
         initAutonomous();
-    }
-
+		}
     @Override
     public void init_loop(){
         VuforiaLocalizer.CloseableFrame frame = null;
