@@ -1,10 +1,8 @@
-
-
-
+package org.firstinspires.ftc.teamcode20.Tests;
 
 import com.acmerobotics.dashboard.config.Config;
 
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
+i
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.drive.mecanum.SampleMecanumDriveBase;
@@ -20,7 +18,7 @@ import org.firstinspires.ftc.teamcode.drive.mecanum.SampleMecanumDriveREV;
 
 @Config
 @Autonomous(group = "drive")
-public class StraightTest extends LinearOpMode {
+public class Straighttest extends LinearOpMode {
     public static double DISTANCE = 60;
     @Override
     public void runOpMode() throws InterruptedException {
