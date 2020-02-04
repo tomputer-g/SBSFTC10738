@@ -32,15 +32,12 @@ public class BlueAuto extends BaseAuto {
         initDrivetrain();
         initIMU();
         initGrabber();
-        //initLinSlide();
         initPlatformGrabber();
         initSensors();
         initOdometry();
         initLight();
-        //setLight(true);
         setNewGyro0();
         initVuforia();
-        //cooThread.start();
     }
 
     @Override
