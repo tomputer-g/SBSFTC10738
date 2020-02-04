@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode20;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -20,16 +23,33 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
 
     @Override public void init() {
+        ElapsedTime t = new ElapsedTime();
         showTelemetry = false;
+        Log.i("Teleop init", ""+t.nanoseconds()+" start drivetrain");
         initDrivetrain();
+        Log.i("Teleop init", ""+t.nanoseconds()+" start grabber");
         initGrabber();
+        Log.i("Teleop init", ""+t.nanoseconds()+" start linSlide");
         initLinSlide();
+        Log.i("Teleop init", ""+t.nanoseconds()+" start odometry");
         //initSensors();
         initOdometry();
+        Log.i("Teleop init", ""+t.nanoseconds()+" start platform");
         initPlatformGrabber();
+        Log.i("Teleop init", ""+t.nanoseconds()+" start IMU");
         initIMU();
+        Log.i("Teleop init", ""+t.nanoseconds()+" all init done");
         setNewGyro0();
         france = hardwareMap.get(Servo.class, "capstone");
+        /*2020-02-04 12:44:25.456 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 92240 start drivetrain
+          2020-02-04 12:44:25.639 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 183704394 start grabber
+          2020-02-04 12:44:25.640 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 184989237 start linSlide
+          2020-02-04 12:44:25.723 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 267567267 start odometry
+          2020-02-04 12:44:25.817 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 361695922 start platform
+          2020-02-04 12:44:25.818 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 362624672 start IMU
+          2020-02-04 12:44:27.010 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 1554783072 all init done (1.5s)
+
+         */
         servoThread.setTarget(0.99);
         grabber.setPosition(grabber_open);
         //pwmThread = new PWMThread();

@@ -62,7 +62,37 @@ public class BaseAuto extends BaseOpMode {
     private double[] displacements = {2, 7};//+ = forward; + = right
     private double headingDisplacement = -90;
 
-
+    protected void initAutonomous(){
+        AutonomousInitThread initThread = new AutonomousInitThread();
+        initThread.start();
+        Log.i("Auto init",System.currentTimeMillis()+" start hub init");
+        super.init();//uses 0.48 ms
+        showTelemetry = false;
+        Log.i("Auto init",System.currentTimeMillis()+" start drivetrain init");
+        initDrivetrain();//181.64ms
+        Log.i("Auto init",System.currentTimeMillis()+" start IMU");
+        initIMU();//!!!!!1.259s
+        Log.i("Auto init",System.currentTimeMillis()+" start grabber");
+        initGrabber();//1.14ms
+        Log.i("Auto init",System.currentTimeMillis()+" start platform");
+        initPlatformGrabber();//34.20ms
+        Log.i("Auto init",System.currentTimeMillis()+" start sensors");
+        initSensors();//0.48ms
+        Log.i("Auto init",System.currentTimeMillis()+" start odometry");
+        initOdometry();//100.89ms
+        setNewGyro0();
+        Log.i("Auto init",System.currentTimeMillis()+" done init");
+        while(initThread.isAlive());
+        Log.i("Auto init", "initThread done");
+    }
+    class AutonomousInitThread extends Thread{
+        @Override
+        public void run() {
+            Log.i("Auto init thread","started at "+System.currentTimeMillis());
+            initVuforia();
+            Log.i("Auto init thread", "finished at "+ System.currentTimeMillis());
+        }
+    }
 
     protected void initVuforia(){
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
