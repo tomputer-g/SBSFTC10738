@@ -107,12 +107,20 @@ public class MoveTest extends BaseAuto {
             }
             shutdownVuforia();
         }
-/*
-        if(zheng(this.gamepad1.right_bumper,bF)) {
-            tunePIDturn(x,0.027,0.922,speed);
+
+        if(zheng(this.gamepad1.right_bumper,lF)) {
+            int offsetX = getXOdometry();
+            double diff = 0;
+            ElapsedTime p = new ElapsedTime();
+            p.reset();
+            while (p.milliseconds()<4000){
+                diff = (getXOdometry() - offsetX)/odometryEncXPerInch/12;
+                setAllDrivePowerG(-.3 +diff,-.3 -diff ,.3 +diff ,.3 -diff);
+            }
+            setAllDrivePower(0);
         }
 
- */
+
         /*
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);

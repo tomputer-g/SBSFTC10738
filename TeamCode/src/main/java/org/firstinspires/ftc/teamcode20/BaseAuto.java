@@ -803,7 +803,7 @@ public class BaseAuto extends BaseOpMode {
             Log.d("GOY "+yInch,"steady"+steadyCounter+", position"+currentOdometry+", LF speed"+prev_speed+", OC speed="+Dterm+"bulkSpd="+hub4.getBulkInputData().getMotorVelocity(platform_grabber));
             previousPos = currentOdometry;
             tpre=tcur;
-            setAllDrivePowerG(multiply_factor*vy,multiply_factor*vy,multiply_factor*-vy,multiply_factor*-vy);
+            setAllDrivePowerG(multiply_factor*vy,multiply_factor*vy,multiply_factor*-vy,multiply_factor*-vy,1.4);
             prev_speed = multiply_factor * vy;
         }
         setAllDrivePower(0);
