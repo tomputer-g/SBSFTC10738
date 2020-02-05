@@ -40,7 +40,7 @@ import static org.firstinspires.ftc.teamcode20.Roadrunner.drive.DriveConstants.k
 @Config
 @Autonomous(group = "drive")
 public class DriveVelocityPIDTuner extends LinearOpMode {
-    public static double DISTANCE = 72;
+    public static double DISTANCE = 24;
 
     private static final String PID_VAR_NAME = "VELO_PID";
 
@@ -121,17 +121,19 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
         } else {
             dashboard.getConfigRoot().removeVariable(catName);
         }
-        dashboard.updateConfig();
+        dashboard.updateConfig();//nigga
     }
 
     @Override
     public void runOpMode() {
+        FtcDashboard.start();
+        dashboard = FtcDashboard.getInstance();
         if (!RUN_USING_ENCODER) {
             RobotLog.setGlobalErrorMsg("%s does not need to be run if the built-in motor velocity" +
                     "PID is not in use", getClass().getSimpleName());
         }
 
-        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());//fuck
 
         drive = new SampleMecanumDriveREV(hardwareMap);
 
@@ -152,7 +154,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
         double profileStart = clock.seconds();
 
 
-        while (!isStopRequested()) {
+        while (!isStopRequested() && !this.gamepad1.b) {
             // calculate and set the motor power
             double profileTime = clock.seconds() - profileStart;
 
@@ -177,6 +179,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
             }
             telemetry.update();
         }
+        FtcDashboard.stop();
 
         removePidVariable();
     }
