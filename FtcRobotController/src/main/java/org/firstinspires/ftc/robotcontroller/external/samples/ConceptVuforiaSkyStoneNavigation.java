@@ -343,7 +343,7 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
                 VectorF translation = lastLocation.getTranslation();
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch-6.5, translation.get(1) / mmPerInch+9, translation.get(2) / mmPerInch);
-                telemetry.addLine("Distance to back up")
+                telemetry.addLine("Distance to back up");
 
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
