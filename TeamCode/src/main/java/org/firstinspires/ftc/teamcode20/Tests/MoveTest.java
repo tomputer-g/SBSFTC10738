@@ -42,21 +42,13 @@ public class MoveTest extends BaseAuto {
     @Override
     public void init(){
         msStuckDetectInit = 3000000;
-        initIMU();
-        //initDrivetrain();
-        //initOdometry();
-        //initLinSlide();
-        //initGrabber();
-        initVuforia();
-
-        //initVuforiaWebcam();
-        //setNewGyro0();
+        initAutonomous();
         //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
-        //speed=0.3;
-        //speeed = 0.03;
-        //dir=1;
-        //y = -90;
-        //x = 0;
+        speed=0.3;
+        speeed = 0.03;
+        dir=1;
+        y = -90;
+        x = 0;
         // 三天之内刹了你();
     }
 
@@ -79,7 +71,7 @@ public class MoveTest extends BaseAuto {
         if(zheng(this.gamepad1.dpad_down,ff))y+=1;
         if(zheng(this.gamepad1.y,m))speed+=.1;
         if(zheng(this.gamepad1.a,mm))speed-=.1;
-        if(zheng(this.gamepad1.b,f))setNewGyro0();
+        if(zheng(this.gamepad1.b,f))moveInchesGOY_XF(48,0.3,1);
 
         if(zheng(this.gamepad1.left_bumper,bF)){
             ElapsedTime t=new ElapsedTime();
@@ -113,7 +105,7 @@ public class MoveTest extends BaseAuto {
             double diff = 0;
             ElapsedTime p = new ElapsedTime();
             p.reset();
-            while (p.milliseconds()<4000){
+            while (p.milliseconds()<3500){
                 diff = (getXOdometry() - offsetX)/odometryEncXPerInch/12;
                 setAllDrivePowerG(-.3 +diff,-.3 -diff ,.3 +diff ,.3 -diff);
             }
@@ -125,9 +117,9 @@ public class MoveTest extends BaseAuto {
             double diff = 0;
             ElapsedTime p = new ElapsedTime();
             p.reset();
-            while (p.milliseconds()<4000){
+            while (p.milliseconds()<5500){
                 diff = (getY1Odometry() - offsetY)/odometryEncYPerInch/12;
-                setAllDrivePowerG(-.3 -diff,.3 -diff ,-.3 +diff ,.3 +diff);
+                setAllDrivePowerG(-.5 -diff,.5 -diff ,-.5 +diff ,.5 +diff);
             }
             setAllDrivePower(0);
         }

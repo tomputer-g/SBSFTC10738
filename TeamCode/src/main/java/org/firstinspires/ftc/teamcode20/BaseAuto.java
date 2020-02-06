@@ -783,6 +783,8 @@ public class BaseAuto extends BaseOpMode {
         }
         ElapsedTime t = new ElapsedTime();
         int offsetY = getY1Odometry();
+        int offsetX = getXOdometry();
+        double diff = 0;
         speed=Math.abs(speed);
         double multiply_factor, prev_speed = 0;
         int odometryYGoal = offsetY + (int)(yInch * odometryEncYPerInch);
@@ -791,6 +793,7 @@ public class BaseAuto extends BaseOpMode {
         double tpre = 0, tcur;
         int steadyCounter = 0;
         while(steadyCounter < 5 && !this.gamepad1.b){//b is there so we can break out of loop anytime
+            diff = (getXOdometry() - offsetX)/odometryEncXPerInch/10;
             currentOdometry = getY1Odometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
@@ -803,7 +806,7 @@ public class BaseAuto extends BaseOpMode {
             Log.d("GOY "+yInch,"steady"+steadyCounter+", position"+currentOdometry+", LF speed"+prev_speed+", OC speed="+Dterm+"bulkSpd="+hub4.getBulkInputData().getMotorVelocity(platform_grabber));
             previousPos = currentOdometry;
             tpre=tcur;
-            setAllDrivePowerG(multiply_factor*vy,multiply_factor*vy,multiply_factor*-vy,multiply_factor*-vy,1.4);
+            setAllDrivePowerG(multiply_factor*vy + diff,multiply_factor*vy - diff,multiply_factor*-vy + diff,multiply_factor*-vy - diff,1.4);
             prev_speed = multiply_factor * vy;
         }
         setAllDrivePower(0);
