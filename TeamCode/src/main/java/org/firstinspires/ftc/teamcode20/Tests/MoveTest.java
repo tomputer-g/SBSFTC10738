@@ -73,7 +73,7 @@ public class MoveTest extends BaseAuto {
 
     @Override
     public void loop(){
-        if(zheng(this.gamepad1.dpad_left,eee))x-=2;
+        //if(zheng(this.gamepad1.dpad_left,eee))x-=2;
         if(zheng(this.gamepad1.dpad_right,fff))x+=2;
         if(zheng(this.gamepad1.dpad_up,ee))y+=1;
         if(zheng(this.gamepad1.dpad_down,ff))y+=1;
@@ -120,6 +120,17 @@ public class MoveTest extends BaseAuto {
             setAllDrivePower(0);
         }
 
+        if(zheng(this.gamepad1.dpad_left,e)) {
+            int offsetY = getY1Odometry();
+            double diff = 0;
+            ElapsedTime p = new ElapsedTime();
+            p.reset();
+            while (p.milliseconds()<4000){
+                diff = (getY1Odometry() - offsetY)/odometryEncYPerInch/12;
+                setAllDrivePowerG(-.3 -diff,.3 -diff ,-.3 +diff ,.3 +diff);
+            }
+            setAllDrivePower(0);
+        }
 
         /*
         telemetry.addData("x: ",x);
