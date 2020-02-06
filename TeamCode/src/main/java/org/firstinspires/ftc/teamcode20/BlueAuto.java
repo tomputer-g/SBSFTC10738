@@ -70,7 +70,7 @@ public class BlueAuto extends BaseAuto {
         setNewGyro(90);
         p.reset();
         resetXOdometry();
-        moveInchesGOY((85.25+shift),0.9);
+        moveInchesGOY_XF((85.25+shift),0.9,1);
         p.reset();
 
         moveInchesGOXT(13.5-getXOdometry()/odometryEncXPerInch,.5,1,1300); //drag +errordistance
@@ -107,14 +107,14 @@ public class BlueAuto extends BaseAuto {
 
         int shiftt = 0;
         if(pos == 1 || pos == 2) shiftt = -8;
-        moveInchesGOY(-96.5+shiftt,0.6);
+        moveInchesGOY_XF(-96.5+shiftt,0.6,1);
         servoThread.setTarget(0.95);
         PIDturnfast(-90,false);
         setNewGyro(0);
 
         align(0);
         if(pos==1||pos==2)moveInchesGOXT(4,0.8,1,1000);
-        moveInchesGOY(10,0.3);
+        moveInchesGOY_XF(10,0.3,1);
         //moveInchesGOY((right.getDistance(DistanceUnit.INCH)-2.6)*.69,.4);
         grabber.setPosition(grabber_closed);
         wait(300);
@@ -126,7 +126,7 @@ public class BlueAuto extends BaseAuto {
         setNewGyro(90);
         int sfi = 0;
         if(pos==0)sfi = -9;
-        moveInchesGOY(77+sfi,0.9);
+        moveInchesGOY_XF(77+sfi,0.9,1);
         grabber.setPosition(grabber_open);
         moveInchesG(0,-13,0.5);
 
