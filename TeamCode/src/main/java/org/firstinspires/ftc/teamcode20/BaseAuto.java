@@ -841,8 +841,8 @@ public class BaseAuto extends BaseOpMode {
         double tpre = 0, tcur;
         int steadyCounter = 0;
         while(steadyCounter < 5 && !this.gamepad1.b){//b is there so we can break out of loop anytime
-            //telemetry.addData("x",getXOdometry());
-            //telemetry.update();
+            telemetry.addData("x",getXOdometry());
+            telemetry.update();
             diff = (getXOdometry() - offsetX)/odometryEncXPerInch/4;
             currentOdometry = getY1Odometry();
             tcur=t.milliseconds();

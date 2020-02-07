@@ -17,8 +17,8 @@ public class BackAndForthTest extends BaseAuto {
     public void loop() {
         if(zheng(this.gamepad1.a,d)){
             for(int i = 0;i<3;++i){
-                moveInchesGOY_XF_F(-88,0.3,1,ops);
-                moveInchesGOY_XF_F(+88,0.3,1,ops);
+                moveInchesGOY_XF_F(-88,0.6,1,ops);
+                moveInchesGOY_XF_F(+88,0.6,1,ops);
             }
         }
     }
