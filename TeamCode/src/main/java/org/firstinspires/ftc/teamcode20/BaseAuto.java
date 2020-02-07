@@ -811,7 +811,54 @@ public class BaseAuto extends BaseOpMode {
         }
         setAllDrivePower(0);
     }
-
+    protected void moveInchesGOY_XF_F(double yInch, double speed,double kV, int FixXOffset){//use 0.4 for short-dist
+        yInch = -yInch;
+        //setNewGyro0();
+        double kP = 1, kD = 0.12;
+        if(yInch == 0)return;
+        if(Math.abs(speed) == 0.3){
+            kP = 1;
+            kD = 0.12;
+        }else if(Math.abs(speed) == 0.4){
+            kP = 0.27;
+            kD = 0.03;
+        }else if(Math.abs(speed) == 0.6){
+            kP = 0.075;
+            kD = 1.4E-2;
+        }else if(Math.abs(speed) == 0.9){
+            kP = 0.0325;
+            kD = 7.3E-3;
+        }
+        ElapsedTime t = new ElapsedTime();
+        int offsetY = getY1Odometry();
+        int offsetX = FixXOffset;
+        double diff = 0;
+        speed=Math.abs(speed);
+        double multiply_factor, prev_speed = 0;
+        int odometryYGoal = offsetY + (int)(yInch * odometryEncYPerInch);
+        double vy = speed;
+        int previousPos = offsetY, currentOdometry, Dterm;
+        double tpre = 0, tcur;
+        int steadyCounter = 0;
+        while(steadyCounter < 5 && !this.gamepad1.b){//b is there so we can break out of loop anytime
+            diff = (getXOdometry() - offsetX)/odometryEncXPerInch/4;
+            currentOdometry = getY1Odometry();
+            tcur=t.milliseconds();
+            Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
+            multiply_factor = -Math.min(1, Math.max(-1, kV*((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
+            if(near(prev_speed, multiply_factor*vy,0.001) && near(prev_speed, 0, 0.1)){
+                steadyCounter++;
+            }else{
+                steadyCounter = 0;
+            }
+            Log.d("GOY "+yInch,"steady"+steadyCounter+", position"+currentOdometry+", LF speed"+prev_speed+", OC speed="+Dterm+"bulkSpd="+hub4.getBulkInputData().getMotorVelocity(platform_grabber));
+            previousPos = currentOdometry;
+            tpre=tcur;
+            setAllDrivePowerG(multiply_factor*vy + diff,multiply_factor*vy - diff,multiply_factor*-vy + diff,multiply_factor*-vy - diff,1.4);
+            prev_speed = multiply_factor * vy;
+        }
+        setAllDrivePower(0);
+    }
     protected void moveInchesGOX(double xInch, double speed){
         moveInchesGOX(xInch,speed,1);
     }
