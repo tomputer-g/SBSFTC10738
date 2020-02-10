@@ -121,7 +121,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
         } else {
             dashboard.getConfigRoot().removeVariable(catName);
         }
-        dashboard.updateConfig();//nigga
+        dashboard.updateConfig();
     }
 
     @Override
