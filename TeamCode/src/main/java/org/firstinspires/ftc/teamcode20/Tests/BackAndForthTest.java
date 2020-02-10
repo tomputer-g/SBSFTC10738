@@ -21,5 +21,6 @@ public class BackAndForthTest extends BaseAuto {
                 moveInchesGOY_XF_F(+88,0.6,1,ops);
             }
         }
+        telemetry.addData("x",getXOdometry());
     }
 }
