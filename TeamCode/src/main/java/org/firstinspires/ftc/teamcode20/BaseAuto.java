@@ -71,11 +71,7 @@ public class BaseAuto extends BaseOpMode {
     private static final float bridgeRotY = 59;                                 // Units are degrees
     private static final float bridgeRotZ = 180;
 
-
     private VuforiaTrackable rear1,front1;//from kuaishou.com
-    private VuforiaTrackable rear1,front1;
-
-
     // Constants for perimeter targets
     private static final float halfField = 72 * mmPerInch;
     private static final float quadField  = 36 * mmPerInch;
@@ -165,8 +161,6 @@ public class BaseAuto extends BaseOpMode {
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
         allTrackables.addAll(targetsSkyStone);
     }
-
-
 
     protected double[] adjustToViewMark(boolean isBlue){
         double[] xy=new double[2];
