@@ -22,6 +22,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -54,7 +55,7 @@ public class BaseAuto extends BaseOpMode {
     protected static final float mmPerInch = 25.4f;
     protected OpenGLMatrix lastLocation = null;
     protected VuforiaTrackables targetsSkyStone;
-    protected List<VuforiaTrackable> allTrackables;
+    protected List<VuforiaTrackable> allTrackables= new ArrayList<VuforiaTrackable>();
     private final float CAMERA_FORWARD_DISPLACEMENT = 0f * mmPerInch;//2.5 in from end + 1 in correction
     private final float CAMERA_VERTICAL_DISPLACEMENT = 0f * mmPerInch;// eg: Camera is 8 Inches above ground
     private final float CAMERA_LEFT_DISPLACEMENT = 0f * mmPerInch; // eg: Camera is ON the robot's center line
@@ -70,7 +71,7 @@ public class BaseAuto extends BaseOpMode {
     private static final float bridgeRotY = 59;                                 // Units are degrees
     private static final float bridgeRotZ = 180;
 
-    private VuforiaTrackable rear1,rear2;
+    private VuforiaTrackable rear1,front1;
 
     // Constants for perimeter targets
     private static final float halfField = 72 * mmPerInch;
@@ -122,20 +123,21 @@ public class BaseAuto extends BaseOpMode {
     }
 
     protected void initViewMarks(){
+        targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
         rear1 = targetsSkyStone.get(11);
         rear1.setName("Rear Perimeter 1");
-        rear2 = targetsSkyStone.get(12);
-        rear2.setName("Rear Perimeter 2");
+        front1 = targetsSkyStone.get(7);
+        front1.setName("Front Perimeter 1");
         rear1.setLocation(OpenGLMatrix
                 .translation(halfField, quadField, mmTargetHeight)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
-
-        rear2.setLocation(OpenGLMatrix
-                .translation(halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+        front1.setLocation(OpenGLMatrix
+                .translation(-halfField, -quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
+        allTrackables.addAll(targetsSkyStone);
     }
 
-    protected double[] adjustToViewMark(boolean isBlue,int skystonepos){
+    protected double[] adjustToViewMark(boolean isBlue){
         double[] xy=new double[2];
         double x,y;
         targetsSkyStone.activate();
@@ -144,12 +146,11 @@ public class BaseAuto extends BaseOpMode {
         if(isBlue)
             trackable=rear1;
         else
-            trackable=rear2;
+            trackable=front1;
 
         ElapsedTime ti=new ElapsedTime();
-        while ((!targetVisible) && ti.milliseconds()<3000) {
+        while ((!targetVisible) && ti.milliseconds()<1000) {
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                telemetry.addData("Visible Target", trackable.getName());
                 targetVisible = true;
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
                 if (robotLocationTransform != null) {
@@ -157,21 +158,14 @@ public class BaseAuto extends BaseOpMode {
                 }
             }
         }
-
-            // Provide feedback as to where the robot is located (if we know).
         if (targetVisible) {
-            // express position (translation) of robot in inches.
             VectorF translation = lastLocation.getTranslation();
             x=translation.get(0) / mmPerInch-6.5; y= translation.get(1) / mmPerInch+9;
-            telemetry.addLine("xy: "+x+" "+y);
         }
         else {
-            telemetry.addLine("not found");
             x=0;y=0;
+    
         }
-            telemetry.update();
-
-        // Disable Tracking when we are done;
         targetsSkyStone.deactivate();
         xy[0]=x;
         xy[1]=y;
@@ -352,15 +346,22 @@ public class BaseAuto extends BaseOpMode {
             telemetry.addData("rgb@M", "red: %d blue: %d green: %d", red_M, blue_M, green_M);
             telemetry.addData("rgb@R", "red: %d blue: %d green: %d", red_R, blue_R, green_R);
         }
-            if (red_L > 100 && green_L > 90) l = false;
-            if (red_R > 100 && green_R > 90) r = false;
-            if (red_M > 100 && green_M > 90) m = false;
+        double L = red_L+blue_L+green_L, R = red_R+blue_R+green_R, M = red_M+blue_M+green_M;
+        /*
+        if (red_L > 100 && green_L > 90) l = false;
+        if (red_R > 100 && green_R > 90) r = false;
+        if (red_M > 100 && green_M > 90) m = false;
 
-            if (l) result = 0;
-            if (m) result = 1;
-            if (r) result = 2;
-            telemetry.addData("position: ", result);
-            telemetry.update();
+        if (l) result = 0;
+        if (m) result = 1;
+        if (r) result = 2;
+        */
+        if(L<M&&L<R)result = 0;
+        else if(M<L&&M<R)result = 1;
+        else if(R<M&&R<L)result = 2;
+
+        telemetry.addData("position: ", result);
+        telemetry.update();
 
         frame.close();
         return result;
