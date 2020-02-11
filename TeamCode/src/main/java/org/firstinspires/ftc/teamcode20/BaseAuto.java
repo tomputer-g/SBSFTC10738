@@ -137,7 +137,7 @@ public class BaseAuto extends BaseOpMode {
         allTrackables.addAll(targetsSkyStone);
     }
 
-    protected double[] adjustToViewMark(boolean isBlue,int skystonepos){
+    protected double[] adjustToViewMark(boolean isBlue){
         double[] xy=new double[2];
         double x,y;
         targetsSkyStone.activate();
