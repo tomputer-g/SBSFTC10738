@@ -73,11 +73,11 @@ public class MoveTest extends BaseAuto {
         //if(zheng(this.gamepad1.dpad_up,ee))y+=1;
         //if(zheng(this.gamepad1.dpad_down,ff))y+=1;
         //if(zheng(this.gamepad1.y,m))speed+=.1;
-        double[] a = adjustToViewMark(true,1);
+        double[] a = adjustToViewMark(true);
         xxx=a[0];
         yyy=a[1];
         if(zheng(this.gamepad1.b,f)){
-         a = adjustToViewMark(true,1);
+         a = adjustToViewMark(true);
                 xxx=a[0];
                 yyy=a[1];
         }
