@@ -22,7 +22,7 @@ public class OdometryWheelLocalizer extends ThreeTrackingWheelLocalizer {
 
 
     public OdometryWheelLocalizer(HardwareMap hardwareMap) {
-
+        super(null);
         //1: L2
         //2: xodo
         //3: platform
@@ -30,7 +30,7 @@ public class OdometryWheelLocalizer extends ThreeTrackingWheelLocalizer {
         //x: 100 back, 4 left (mms)
 
 
-        hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
+       // hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
     }
 
 

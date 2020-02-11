@@ -123,32 +123,6 @@ public class BaseAuto extends BaseOpMode {
 
     protected void initViewMarks(){
         targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
-        VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
-        VuforiaTrackable blueRearBridge = targetsSkyStone.get(1);
-        VuforiaTrackable redRearBridge = targetsSkyStone.get(2);
-        VuforiaTrackable redFrontBridge = targetsSkyStone.get(3);
-        VuforiaTrackable blueFrontBridge = targetsSkyStone.get(4);
-        VuforiaTrackable red1 = targetsSkyStone.get(5);
-        VuforiaTrackable red2 = targetsSkyStone.get(6);
-        VuforiaTrackable front1 = targetsSkyStone.get(7);
-        VuforiaTrackable front2 = targetsSkyStone.get(8);
-        VuforiaTrackable blue1 = targetsSkyStone.get(9);
-        VuforiaTrackable blue2 = targetsSkyStone.get(10);
-        VuforiaTrackable rear1 = targetsSkyStone.get(11);
-        VuforiaTrackable rear2 = targetsSkyStone.get(12);
-
-        stoneTarget.setName("Stone Target");
-        blueRearBridge.setName("Blue Rear Bridge");
-        redRearBridge.setName("Red Rear Bridge");
-        redFrontBridge.setName("Red Front Bridge");
-        blueFrontBridge.setName("Blue Front Bridge");
-        red1.setName("Red Perimeter 1");
-        red2.setName("Red Perimeter 2");
-        front1.setName("Front Perimeter 1");
-        front2.setName("Front Perimeter 2");
-        blue1.setName("Blue Perimeter 1");
-        blue2.setName("Blue Perimeter 2");
-
         rear1 = targetsSkyStone.get(11);
         rear1.setName("Rear Perimeter 1");
         front1 = targetsSkyStone.get(7);
