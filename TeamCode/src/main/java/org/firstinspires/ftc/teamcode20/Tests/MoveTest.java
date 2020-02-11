@@ -13,7 +13,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
+import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveBase;
+import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveREV;
 
 import static java.lang.Math.sqrt;
 
@@ -25,6 +28,7 @@ public class MoveTest extends BaseAuto {
     private ElapsedTime t=new ElapsedTime();
     private double speedLF=0,speedLB=0,speedRF=0,speedRB=0;
     private double  kP = 0.5, kI = 0, kD = 0.0025;
+    private SampleMecanumDriveREV drive;
     int WaitingTime = 300;
     int steps = 20;
     double basespeed = 0.2;
@@ -42,9 +46,7 @@ public class MoveTest extends BaseAuto {
     @Override
     public void init(){
         msStuckDetectInit = 3000000;
-        initAutonomous();
-        //initVuforia();
-        initViewMarks();
+        drive=new SampleMecanumDriveREV(hardwareMap);
         //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         speed=0.3;
         speeed = 0.03;
@@ -110,29 +112,17 @@ public class MoveTest extends BaseAuto {
         }
 
         if(zheng(this.gamepad1.right_bumper,lF)) {
-            int offsetX = getXOdometry();
-            double diff = 0;
-            ElapsedTime p = new ElapsedTime();
-            p.reset();
-            while (p.milliseconds()<3500){
-                diff = (getXOdometry() - offsetX)/odometryEncXPerInch/12;
-                setAllDrivePowerG(-.3 +diff,-.3 -diff ,.3 +diff ,.3 -diff);
-            }
-            setAllDrivePower(0);
+
         }
 
         if(zheng(this.gamepad1.dpad_left,e)) {
-            int offsetY = getY1Odometry();
-            double diff = 0;
-            ElapsedTime p = new ElapsedTime();
-            p.reset();
-            while (p.milliseconds()<5500){
-                diff = (getY1Odometry() - offsetY)/odometryEncYPerInch/12;
-                setAllDrivePowerG(-.5 -diff,.5 -diff ,-.5 +diff ,.5 +diff);
-            }
-            setAllDrivePower(0);
+
         }
 
+        //for(DcMotorEx m: drive.getMotors())
+        //    telemetry.addData("Enc",m.getCurrentPosition());
+        for(double p: drive.getWheelPositions())
+            telemetry.addData("Pos",p);
         /*
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
@@ -141,10 +131,8 @@ public class MoveTest extends BaseAuto {
         telemetry.addData("Speed: ","%.2f" ,speed);
         //telemetry.addData("[x]: ","%.2f",n_pass[0]);
         //telemetry.addData("[y]: ","%.2f" ,n_pass[1]);;
-        telemetry.update();
-
-
          */
+        telemetry.update();
 
     }
 

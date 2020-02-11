@@ -23,7 +23,6 @@ public class OdometryWheelLocalizer extends ThreeTrackingWheelLocalizer {
 
     public OdometryWheelLocalizer(HardwareMap hardwareMap) {
         super(null);
-
         //1: L2
         //2: xodo
         //3: platform
