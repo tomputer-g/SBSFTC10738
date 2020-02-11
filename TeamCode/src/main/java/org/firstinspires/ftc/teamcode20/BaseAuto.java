@@ -71,7 +71,7 @@ public class BaseAuto extends BaseOpMode {
     private static final float bridgeRotY = 59;                                 // Units are degrees
     private static final float bridgeRotZ = 180;
 
-    private VuforiaTrackable rear1,rear2;
+    private VuforiaTrackable rear1,front1;
 
     // Constants for perimeter targets
     private static final float halfField = 72 * mmPerInch;
@@ -126,15 +126,14 @@ public class BaseAuto extends BaseOpMode {
         targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
         rear1 = targetsSkyStone.get(11);
         rear1.setName("Rear Perimeter 1");
-        rear2 = targetsSkyStone.get(12);
-        rear2.setName("Rear Perimeter 2");
+        front1 = targetsSkyStone.get(7);
+        front1.setName("Front Perimeter 1");
         rear1.setLocation(OpenGLMatrix
                 .translation(halfField, quadField, mmTargetHeight)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
-
-        rear2.setLocation(OpenGLMatrix
-                .translation(halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+        front1.setLocation(OpenGLMatrix
+                .translation(-halfField, -quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
         allTrackables.addAll(targetsSkyStone);
     }
 
@@ -147,12 +146,11 @@ public class BaseAuto extends BaseOpMode {
         if(isBlue)
             trackable=rear1;
         else
-            trackable=rear2;
+            trackable=front1;
 
         ElapsedTime ti=new ElapsedTime();
-        while ((!targetVisible) && ti.milliseconds()<3000) {
+        while ((!targetVisible) && ti.milliseconds()<1000) {
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                telemetry.addData("Visible Target", trackable.getName());
                 targetVisible = true;
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
                 if (robotLocationTransform != null) {
@@ -160,21 +158,14 @@ public class BaseAuto extends BaseOpMode {
                 }
             }
         }
-
-            // Provide feedback as to where the robot is located (if we know).
         if (targetVisible) {
-            // express position (translation) of robot in inches.
             VectorF translation = lastLocation.getTranslation();
             x=translation.get(0) / mmPerInch-6.5; y= translation.get(1) / mmPerInch+9;
-            telemetry.addLine("xy: "+x+" "+y);
         }
         else {
-            telemetry.addLine("not found");
             x=0;y=0;
+    
         }
-            telemetry.update();
-
-        // Disable Tracking when we are done;
         targetsSkyStone.deactivate();
         xy[0]=x;
         xy[1]=y;
