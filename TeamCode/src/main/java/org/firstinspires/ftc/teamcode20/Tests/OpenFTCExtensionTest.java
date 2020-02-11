@@ -43,6 +43,7 @@ public class OpenFTCExtensionTest extends OpMode {
             ElapsedTime t = new ElapsedTime();
             for(int i = 0;i < 100; i++){
                 RevBulkData dataTmp = hub2.getBulkInputData();
+
             }
             bulk100 = t.milliseconds();
             t.reset();

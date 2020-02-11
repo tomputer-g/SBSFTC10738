@@ -40,7 +40,7 @@ import static org.firstinspires.ftc.teamcode20.Roadrunner.drive.DriveConstants.k
 @Config
 @Autonomous(group = "drive")
 public class DriveVelocityPIDTuner extends LinearOpMode {
-    public static double DISTANCE = 24;
+    public static double DISTANCE = 48;
 
     private static final String PID_VAR_NAME = "VELO_PID";
 
@@ -173,6 +173,8 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
             // update telemetry
             telemetry.addData("targetVelocity", motionState.getV());
+            //telemetry.addData("En")
+            telemetry.addData("curPos",drive.getWheelPositions().get(0));
             for (int i = 0; i < velocities.size(); i++) {
                 telemetry.addData("velocity" + i, velocities.get(i));
                 telemetry.addData("error" + i, motionState.getV() - velocities.get(i));
@@ -180,7 +182,6 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
             telemetry.update();
         }
         FtcDashboard.stop();
-
         removePidVariable();
     }
 }
