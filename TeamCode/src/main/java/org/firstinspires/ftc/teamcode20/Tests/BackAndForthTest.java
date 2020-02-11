@@ -15,6 +15,8 @@ public class BackAndForthTest extends BaseAuto {
         super.init();
         initAutonomous();
         initViewMarks();
+        //initVuMarksFull();
+        //kuaishou.comkuaishou.comkuaishou.comkuaishou.comkuaishou.comkuaishou.comkuaishou.comkuaishou.comkuaishou.comkuaishou.com
     }
 
     @Override
@@ -22,13 +24,27 @@ public class BackAndForthTest extends BaseAuto {
         if(this.gamepad1.a){a = true;}if(!this.gamepad1.a && a){
             a = false;
             params[1] = getXOdometry();
-            double origin[] = adjustToViewMark(true), dd[]=adjustToViewMark(true);
+            double origin[] = {0,39}, dd[]=adjustToViewMark(true), realPOS[] = {0,0};
             //telemetry.addData("posX","%.2f" ,origin[0]);
             telemetry.addData("posY", "%.2f",origin[1]);
             telemetry.update();
             for(int i = 0;i<4;++i){
                 align(0);
                 moveInchesGOY_XF_F(-71.75,0.6,1,(int) (-(origin[1]-dd[1])*odometryEncXPerInch));
+                //realPOS = vuMarkPos();
+
+                //telemetry.addData("x",realPOS[0]);
+                //telemetry.addData("y",realPOS[1]);
+                telemetry.addData("xodo",getXOdometry());
+                align(-90);
+                wait(500);
+                align(0);
+                //telemetry.addData("x1",realPOS[0]);
+                //telemetry.addData("y2",realPOS[1]);
+                telemetry.addData("xodo",getXOdometry());
+
+                telemetry.update();
+                wait(3000);
                 moveInchesGOY_XF_F(+71.75,0.6,1,(int) (-(origin[1]-dd[1])*odometryEncXPerInch));
                 dd=adjustToViewMark(true);
                 //telemetry.addData("posX","%.2f" ,dd[0]);
