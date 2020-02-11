@@ -71,7 +71,11 @@ public class BaseAuto extends BaseOpMode {
     private static final float bridgeRotY = 59;                                 // Units are degrees
     private static final float bridgeRotZ = 180;
 
+<<<<<<< HEAD
     private VuforiaTrackable rear1,front1;//from kuaishou.com
+=======
+    private VuforiaTrackable rear1,front1;
+>>>>>>> parent of 0fe19ed... asd
 
     // Constants for perimeter targets
     private static final float halfField = 72 * mmPerInch;
@@ -79,8 +83,6 @@ public class BaseAuto extends BaseOpMode {
     private ElapsedTime VuforiaPositionTime;
     private double[] displacements = {2, 7};//+ = forward; + = right
     private double headingDisplacement = -90;
-
-
 
     protected void initAutonomous(){
         AutonomousInitThread initThread = new AutonomousInitThread();
@@ -126,6 +128,7 @@ public class BaseAuto extends BaseOpMode {
 
     protected void initViewMarks(){
         targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
+<<<<<<< HEAD
         VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
         VuforiaTrackable blueRearBridge = targetsSkyStone.get(1);
         VuforiaTrackable redRearBridge = targetsSkyStone.get(2);
@@ -151,72 +154,26 @@ public class BaseAuto extends BaseOpMode {
         front2.setName("Front Perimeter 2");
         blue1.setName("Blue Perimeter 1");
         blue2.setName("Blue Perimeter 2");
+=======
+        rear1 = targetsSkyStone.get(11);
+>>>>>>> parent of 0fe19ed... asd
         rear1.setName("Rear Perimeter 1");
-        rear2.setName("Rear Perimeter 2");
+        front1 = targetsSkyStone.get(7);
+        front1.setName("Front Perimeter 1");
         rear1.setLocation(OpenGLMatrix
                 .translation(halfField, quadField, mmTargetHeight)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
         front1.setLocation(OpenGLMatrix
                 .translation(-halfField, -quadField, mmTargetHeight)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
-        stoneTarget.setLocation(OpenGLMatrix
-                .translation(0, 0, stoneZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
-
-        //Set the position of the bridge support targets with relation to origin (center of field)
-        blueFrontBridge.setLocation(OpenGLMatrix
-                .translation(-bridgeX, bridgeY, bridgeZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, bridgeRotY, bridgeRotZ)));
-
-        blueRearBridge.setLocation(OpenGLMatrix
-                .translation(-bridgeX, bridgeY, bridgeZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, -bridgeRotY, bridgeRotZ)));
-
-        redFrontBridge.setLocation(OpenGLMatrix
-                .translation(-bridgeX, -bridgeY, bridgeZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, -bridgeRotY, 0)));
-
-        redRearBridge.setLocation(OpenGLMatrix
-                .translation(bridgeX, -bridgeY, bridgeZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, bridgeRotY, 0)));
-
-        //Set the position of the perimeter targets with relation to origin (center of field)
-        red1.setLocation(OpenGLMatrix
-                .translation(quadField, -halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
-
-        red2.setLocation(OpenGLMatrix
-                .translation(-quadField, -halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
-
-        front1.setLocation(OpenGLMatrix
-                .translation(-halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
-
-        front2.setLocation(OpenGLMatrix
-                .translation(-halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
-
-        blue1.setLocation(OpenGLMatrix
-                .translation(-quadField, halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
-
-        blue2.setLocation(OpenGLMatrix
-                .translation(quadField, halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
-
-        rear1.setLocation(OpenGLMatrix
-                .translation(halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
-
-        rear2.setLocation(OpenGLMatrix
-                .translation(halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
         allTrackables.addAll(targetsSkyStone);
     }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> parent of 0fe19ed... asd
     protected double[] adjustToViewMark(boolean isBlue){
         double[] xy=new double[2];
         double x,y;
@@ -252,36 +209,7 @@ public class BaseAuto extends BaseOpMode {
         return xy;
     }
 
-     protected double[] vuMarkPos(){
-         double[] xy=new double[2];
-         double x,y;
-         targetsSkyStone.activate();
-         boolean targetVisible=false;
-         ElapsedTime ti=new ElapsedTime();
-         for (VuforiaTrackable trackable : allTrackables) {
-             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                 targetVisible = true;
-                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
-                 if (robotLocationTransform != null) {
-                     lastLocation = robotLocationTransform;
-                 }
-             }
-         }
-         if (targetVisible) {
-             VectorF translation = lastLocation.getTranslation();
-             x=translation.get(0) / mmPerInch-6.5; y= translation.get(1) / mmPerInch+9;
-         }
-         else {
-             x=0;y=0;
-
-         }
-         targetsSkyStone.deactivate();
-         xy[0]=x;
-         xy[1]=y;
-         return xy;
-     }
-
-   /*protected void initVuforiaWebcam(){
+    /*protected void initVuforiaWebcam(){
         VuforiaInit = true;
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
