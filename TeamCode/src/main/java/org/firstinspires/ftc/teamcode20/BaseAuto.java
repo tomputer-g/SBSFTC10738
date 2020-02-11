@@ -917,10 +917,10 @@ public class BaseAuto extends BaseOpMode {
         double tpre = 0, tcur;
         int steadyCounter = 0;
         while(steadyCounter < 5 && !this.gamepad1.b){//b is there so we can break out of loop anytime
-            telemetry.addData("x",getXOdometry());
-            telemetry.addData("yL",getY1Odometry());
-            telemetry.addData("yR",getY2Odometry());
-            telemetry.update();
+            //telemetry.addData("x",getXOdometry());
+            //telemetry.addData("yL",getY1Odometry());
+            //telemetry.addData("yR",getY2Odometry());
+            //telemetry.update();
             currentOdometry = getY1Odometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
