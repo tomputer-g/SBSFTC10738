@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveREV;
+import org.openftc.revextensions2.ExpansionHubEx;
+import org.openftc.revextensions2.RevBulkData;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
@@ -28,9 +30,11 @@ public class LocalizationTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
+        SampleMecanumDriveREV drive = new SampleMecanumDriveREV(hardwareMap);
 
         waitForStart();
+        ExpansionHubEx hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
+
 
         while (!isStopRequested()) {
             Pose2d baseVel = new Pose2d(
@@ -57,11 +61,16 @@ public class LocalizationTest extends LinearOpMode {
             drive.setDrivePower(vel);
 
             drive.update();
+            RevBulkData bulk = hub4.getBulkInputData();
+
 
             Pose2d poseEstimate = drive.getPoseEstimate();
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.addData("heading", Math.toDegrees(poseEstimate.getHeading()));
+            telemetry.addData("Xodo",bulk.getMotorCurrentPosition(2));
+            telemetry.addData("L2",bulk.getMotorCurrentPosition(1));
+            telemetry.addData("platform",bulk.getMotorCurrentPosition(3));
             telemetry.update();
         }
     }
