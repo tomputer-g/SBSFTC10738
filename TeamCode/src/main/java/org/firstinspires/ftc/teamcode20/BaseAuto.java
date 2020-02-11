@@ -352,15 +352,22 @@ public class BaseAuto extends BaseOpMode {
             telemetry.addData("rgb@M", "red: %d blue: %d green: %d", red_M, blue_M, green_M);
             telemetry.addData("rgb@R", "red: %d blue: %d green: %d", red_R, blue_R, green_R);
         }
-            if (red_L > 100 && green_L > 90) l = false;
-            if (red_R > 100 && green_R > 90) r = false;
-            if (red_M > 100 && green_M > 90) m = false;
+        double L = red_L+blue_L+green_L, R = red_R+blue_R+green_R, M = red_M+blue_M+green_M;
+        /*
+        if (red_L > 100 && green_L > 90) l = false;
+        if (red_R > 100 && green_R > 90) r = false;
+        if (red_M > 100 && green_M > 90) m = false;
 
-            if (l) result = 0;
-            if (m) result = 1;
-            if (r) result = 2;
-            telemetry.addData("position: ", result);
-            telemetry.update();
+        if (l) result = 0;
+        if (m) result = 1;
+        if (r) result = 2;
+        */
+        if(L<M&&L<R)result = 0;
+        else if(M<L&&M<R)result = 1;
+        else if(R<M&&R<L)result = 2;
+
+        telemetry.addData("position: ", result);
+        telemetry.update();
 
         frame.close();
         return result;

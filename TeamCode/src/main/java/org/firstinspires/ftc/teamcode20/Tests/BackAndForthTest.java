@@ -21,7 +21,9 @@ public class BackAndForthTest extends BaseAuto {
         if(this.gamepad1.a){a = true;}if(!this.gamepad1.a && a){
             a = false;
             params[1] = getXOdometry();
+            double dd[];
             for(int i = 0;i<3;++i){
+                dd = adjustToViewMark();
                 moveInchesGOY_XF_F(-88,0.6,params[0],(int)params[1]);
                 moveInchesGOY_XF_F(+88,0.6,params[0],(int)params[1]);
             }
