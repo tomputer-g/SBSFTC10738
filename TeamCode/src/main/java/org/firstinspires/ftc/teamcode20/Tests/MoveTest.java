@@ -83,8 +83,8 @@ public class MoveTest extends BaseAuto {
 
         }
 
-        for(DcMotorEx m: drive.getMotors())
-            telemetry.addData("Enc",m.getCurrentPosition());
+        //for(DcMotorEx m: drive.getMotors())
+        //    telemetry.addData("Enc",m.getCurrentPosition());
         for(double p: drive.getWheelPositions())
             telemetry.addData("Pos",p);
         /*
