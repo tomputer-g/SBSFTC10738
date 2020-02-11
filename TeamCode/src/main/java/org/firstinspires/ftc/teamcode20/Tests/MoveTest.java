@@ -43,6 +43,7 @@ public class MoveTest extends BaseAuto {
     public void init(){
         msStuckDetectInit = 3000000;
         initAutonomous();
+        initViewMarks();
         //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         speed=0.3;
         speeed = 0.03;
@@ -65,14 +66,19 @@ public class MoveTest extends BaseAuto {
 
     @Override
     public void loop(){
+        double xxx=0,yyy=0;
         //if(zheng(this.gamepad1.dpad_left,eee))x-=2;
         if(zheng(this.gamepad1.dpad_right,fff))x+=2;
         if(zheng(this.gamepad1.dpad_up,ee))y+=1;
         if(zheng(this.gamepad1.dpad_down,ff))y+=1;
         if(zheng(this.gamepad1.y,m))speed+=.1;
-        if(zheng(this.gamepad1.a,mm))speed-=.1;
+            double[] a = adjustToViewMark(true,1);
+            xxx=a[0];
+            yyy=a[1];
         if(zheng(this.gamepad1.b,f))moveInchesGOY_XF(48,0.3,1);
-
+        telemetry.addData("x: ",xxx);
+        telemetry.addData("y: ",yyy);
+        telemetry.update();
         if(zheng(this.gamepad1.left_bumper,bF)){
             ElapsedTime t=new ElapsedTime();
             targetsSkyStone.activate();

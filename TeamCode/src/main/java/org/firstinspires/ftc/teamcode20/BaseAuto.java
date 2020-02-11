@@ -58,6 +58,23 @@ public class BaseAuto extends BaseOpMode {
     private final float CAMERA_FORWARD_DISPLACEMENT = 0f * mmPerInch;//2.5 in from end + 1 in correction
     private final float CAMERA_VERTICAL_DISPLACEMENT = 0f * mmPerInch;// eg: Camera is 8 Inches above ground
     private final float CAMERA_LEFT_DISPLACEMENT = 0f * mmPerInch; // eg: Camera is ON the robot's center line
+    private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
+
+    // Constant for Stone Target
+    private static final float stoneZ = 2.00f * mmPerInch;
+
+    // Constants for the center support targets
+    private static final float bridgeZ = 6.42f * mmPerInch;
+    private static final float bridgeY = 23 * mmPerInch;
+    private static final float bridgeX = 5.18f * mmPerInch;
+    private static final float bridgeRotY = 59;                                 // Units are degrees
+    private static final float bridgeRotZ = 180;
+
+    private VuforiaTrackable rear1,rear2;
+
+    // Constants for perimeter targets
+    private static final float halfField = 72 * mmPerInch;
+    private static final float quadField  = 36 * mmPerInch;
     private ElapsedTime VuforiaPositionTime;
     private double[] displacements = {2, 7};//+ = forward; + = right
     private double headingDisplacement = -90;
@@ -102,6 +119,63 @@ public class BaseAuto extends BaseOpMode {
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
         vuforia.setFrameQueueCapacity(6);
+    }
+
+    protected void initViewMarks(){
+        rear1 = targetsSkyStone.get(11);
+        rear1.setName("Rear Perimeter 1");
+        rear2 = targetsSkyStone.get(12);
+        rear2.setName("Rear Perimeter 2");
+        rear1.setLocation(OpenGLMatrix
+                .translation(halfField, quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
+
+        rear2.setLocation(OpenGLMatrix
+                .translation(halfField, -quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+    }
+
+    protected double[] adjustToViewMark(boolean isBlue,int skystonepos){
+        double[] xy=new double[2];
+        double x,y;
+        targetsSkyStone.activate();
+        boolean targetVisible=false;
+        VuforiaTrackable trackable;
+        if(isBlue)
+            trackable=rear1;
+        else
+            trackable=rear2;
+
+        ElapsedTime ti=new ElapsedTime();
+        while ((!targetVisible) && ti.milliseconds()<3000) {
+            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+                telemetry.addData("Visible Target", trackable.getName());
+                targetVisible = true;
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                if (robotLocationTransform != null) {
+                    lastLocation = robotLocationTransform;
+                }
+            }
+        }
+
+            // Provide feedback as to where the robot is located (if we know).
+        if (targetVisible) {
+            // express position (translation) of robot in inches.
+            VectorF translation = lastLocation.getTranslation();
+            x=translation.get(0) / mmPerInch-6.5; y= translation.get(1) / mmPerInch+9;
+            telemetry.addLine("xy: "+x+" "+y);
+        }
+        else {
+            telemetry.addLine("not found");
+            x=0;y=0;
+        }
+            telemetry.update();
+
+        // Disable Tracking when we are done;
+        targetsSkyStone.deactivate();
+        xy[0]=x;
+        xy[1]=y;
+        return xy;
     }
 
     /*protected void initVuforiaWebcam(){
@@ -829,6 +903,7 @@ public class BaseAuto extends BaseOpMode {
             kP = 0.0325;
             kD = 7.3E-3;
         }
+        double kPx = 0.25, kDx = 0;
         ElapsedTime t = new ElapsedTime();
         int offsetY = getY1Odometry();
         int offsetX = FixXOffset;
@@ -837,16 +912,19 @@ public class BaseAuto extends BaseOpMode {
         double multiply_factor, prev_speed = 0;
         int odometryYGoal = offsetY + (int)(yInch * odometryEncYPerInch);
         double vy = speed;
-        int previousPos = offsetY, currentOdometry, Dterm;
+        int previousPos = offsetY, currentOdometry, Dterm, DtermX;
         double tpre = 0, tcur;
         int steadyCounter = 0;
         while(steadyCounter < 5 && !this.gamepad1.b){//b is there so we can break out of loop anytime
             telemetry.addData("x",getXOdometry());
+            telemetry.addData("yL",getY1Odometry());
+            telemetry.addData("yR",getY2Odometry());
             telemetry.update();
-            diff = (getXOdometry() - offsetX)/odometryEncXPerInch/4;
             currentOdometry = getY1Odometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
+            DtermX = (int)((getXOdometry() - previousPos)/(tcur-tpre));
+            diff = (getXOdometry() - offsetX)/odometryEncXPerInch*kPx + (near(DtermX,0,speed * 5000 / 0.3)?(kDx *DtermX):0);
             multiply_factor = -Math.min(1, Math.max(-1, kV*((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
             if(near(prev_speed, multiply_factor*vy,0.001) && near(prev_speed, 0, 0.1)){
                 steadyCounter++;

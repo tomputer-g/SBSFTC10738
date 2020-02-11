@@ -64,6 +64,7 @@ public class BackAndForthTest extends BaseAuto {
         telemetry.addData("parameters",params[0]+", "+params[1]);
         telemetry.addData("now changing", paramNames[currentSelectParamIndex]);
         telemetry.update();
+        telemetry.addData("x",getXOdometry());
     }
 
 }
