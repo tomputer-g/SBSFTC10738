@@ -14,6 +14,7 @@ public class BackAndForthTest extends BaseAuto {
     public void init() {
         super.init();
         initAutonomous();
+        initViewMarks();
     }
 
     @Override
@@ -21,11 +22,14 @@ public class BackAndForthTest extends BaseAuto {
         if(this.gamepad1.a){a = true;}if(!this.gamepad1.a && a){
             a = false;
             params[1] = getXOdometry();
-            double dd[];
+            double origin[] = adjustToViewMark(true), dd[]=new double[2];
             for(int i = 0;i<3;++i){
-                dd = adjustToViewMark();
-                moveInchesGOY_XF_F(-88,0.6,params[0],(int)params[1]);
-                moveInchesGOY_XF_F(+88,0.6,params[0],(int)params[1]);
+                dd = adjustToViewMark(true);
+                telemetry.addData("pos", dd[0]);
+                telemetry.addData("pos", dd[1]);
+                telemetry.update();
+                moveInchesGOY_XF_F(-88,0.6,1,(int)params[1]);
+                moveInchesGOY_XF_F(+88,0.6,1,(int)params[1]);
             }
         }
         if(this.gamepad1.left_bumper){lb = true;}if(!this.gamepad1.left_bumper && lb){
