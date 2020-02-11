@@ -71,11 +71,10 @@ public class BaseAuto extends BaseOpMode {
     private static final float bridgeRotY = 59;                                 // Units are degrees
     private static final float bridgeRotZ = 180;
 
-<<<<<<< HEAD
+
     private VuforiaTrackable rear1,front1;//from kuaishou.com
-=======
     private VuforiaTrackable rear1,front1;
->>>>>>> parent of 0fe19ed... asd
+
 
     // Constants for perimeter targets
     private static final float halfField = 72 * mmPerInch;
@@ -128,7 +127,6 @@ public class BaseAuto extends BaseOpMode {
 
     protected void initViewMarks(){
         targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
-<<<<<<< HEAD
         VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
         VuforiaTrackable blueRearBridge = targetsSkyStone.get(1);
         VuforiaTrackable redRearBridge = targetsSkyStone.get(2);
@@ -154,9 +152,8 @@ public class BaseAuto extends BaseOpMode {
         front2.setName("Front Perimeter 2");
         blue1.setName("Blue Perimeter 1");
         blue2.setName("Blue Perimeter 2");
-=======
+
         rear1 = targetsSkyStone.get(11);
->>>>>>> parent of 0fe19ed... asd
         rear1.setName("Rear Perimeter 1");
         front1 = targetsSkyStone.get(7);
         front1.setName("Front Perimeter 1");
@@ -169,11 +166,8 @@ public class BaseAuto extends BaseOpMode {
         allTrackables.addAll(targetsSkyStone);
     }
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> parent of 0fe19ed... asd
     protected double[] adjustToViewMark(boolean isBlue){
         double[] xy=new double[2];
         double x,y;
