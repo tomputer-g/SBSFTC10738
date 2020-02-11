@@ -22,30 +22,42 @@ public class BackAndForthTest extends BaseAuto {
     @Override
     public void loop() {
         if(this.gamepad1.a){a = true;}if(!this.gamepad1.a && a){
+            servoThread.setTarget(0.95);
+            platform_grabber.setPower(1);
+            platform_grabber.setPower(0.0);
+            if(showTelemetry)telemetry.clear();
+            grabber.setPosition(grabber_open);
             a = false;
             params[1] = getXOdometry();
-            double origin[] = {0,39}, dd[]=adjustToViewMark(true), realPOS[] = {0,0};
+            double origin[] = {0,41}, dd[]=adjustToViewMark(true), realPOS[] = {0,0};
             //telemetry.addData("posX","%.2f" ,origin[0]);
             telemetry.addData("posY", "%.2f",origin[1]);
             telemetry.update();
             for(int i = 0;i<4;++i){
                 align(0);
-                moveInchesGOY_XF_F(-71.75,0.6,1,(int) (-(origin[1]-dd[1])*odometryEncXPerInch));
+                moveInchesGOY_XF_F(-71.75-8*i,0.6,1,(int) (-(origin[1]-dd[1])*odometryEncXPerInch));
                 //realPOS = vuMarkPos();
 
                 //telemetry.addData("x",realPOS[0]);
                 //telemetry.addData("y",realPOS[1]);
                 telemetry.addData("xodo",getXOdometry());
-                align(-90);
-                wait(500);
-                align(0);
+                align(90);
+                setNewGyro(-90);
+                moveInchesGOY(6,0.4,1);
+                grabber.setPosition(grabber_closed);
+                wait(300);
+                servoThread.setTarget(0.85);
+                //setAllDrivePower(0.0);
+                moveInchesG(0,-6,0.4);
+                PIDturnfast(90,false);
+                setNewGyro(0);
                 //telemetry.addData("x1",realPOS[0]);
                 //telemetry.addData("y2",realPOS[1]);
                 telemetry.addData("xodo",getXOdometry());
 
                 telemetry.update();
-                wait(3000);
-                moveInchesGOY_XF_F(+71.75,0.6,1,(int) (-(origin[1]-dd[1])*odometryEncXPerInch));
+                wait(500);
+                moveInchesGOY_XF_F(i*8+71.75,0.6,1,(int) (-(origin[1]-dd[1])*odometryEncXPerInch));
                 dd=adjustToViewMark(true);
                 //telemetry.addData("posX","%.2f" ,dd[0]);
                 telemetry.addData("original", "%.2f",origin[1]);
