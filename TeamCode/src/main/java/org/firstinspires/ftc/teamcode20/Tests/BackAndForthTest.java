@@ -22,14 +22,19 @@ public class BackAndForthTest extends BaseAuto {
         if(this.gamepad1.a){a = true;}if(!this.gamepad1.a && a){
             a = false;
             params[1] = getXOdometry();
-            double origin[] = adjustToViewMark(true), dd[]=new double[2];
-            for(int i = 0;i<3;++i){
-                dd = adjustToViewMark(true);
-                telemetry.addData("pos", dd[0]);
-                telemetry.addData("pos", dd[1]);
+            double origin[] = adjustToViewMark(true), dd[]=adjustToViewMark(true);
+            //telemetry.addData("posX","%.2f" ,origin[0]);
+            telemetry.addData("posY", "%.2f",origin[1]);
+            telemetry.update();
+            for(int i = 0;i<4;++i){
+                align(0);
+                moveInchesGOY_XF_F(-71.75,0.6,1,(int) (-(origin[1]-dd[1])*odometryEncXPerInch));
+                moveInchesGOY_XF_F(+71.75,0.6,1,(int) (-(origin[1]-dd[1])*odometryEncXPerInch));
+                dd=adjustToViewMark(true);
+                //telemetry.addData("posX","%.2f" ,dd[0]);
+                telemetry.addData("original", "%.2f",origin[1]);
+                telemetry.addData("current", "%.2f",dd[1]);
                 telemetry.update();
-                moveInchesGOY_XF_F(-88,0.6,1,(int)params[1]);
-                moveInchesGOY_XF_F(+88,0.6,1,(int)params[1]);
             }
         }
         if(this.gamepad1.left_bumper){lb = true;}if(!this.gamepad1.left_bumper && lb){
@@ -67,10 +72,10 @@ public class BackAndForthTest extends BaseAuto {
 
         }
 
-        telemetry.addData("parameters",params[0]+", "+params[1]);
-        telemetry.addData("now changing", paramNames[currentSelectParamIndex]);
-        telemetry.update();
-        telemetry.addData("x",getXOdometry());
+        //telemetry.addData("parameters",params[0]+", "+params[1]);
+        //telemetry.addData("now changing", paramNames[currentSelectParamIndex]);
+        //telemetry.update();
+        //telemetry.addData("x",getXOdometry());
     }
 
 }

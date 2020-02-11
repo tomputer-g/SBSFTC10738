@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum;
 import android.support.annotation.NonNull;
 
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.motors.GoBILDA5202Series;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,7 +13,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode20.Roadrunner.drive.localizer.OdometryWheelLocalizer;
 import org.firstinspires.ftc.teamcode20.Roadrunner.util.LynxModuleUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,6 +69,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
         // TODO: if desired, use setLocalizer() to change the localization method
+        setLocalizer(new OdometryWheelLocalizer(hardwareMap));
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
     }
 
