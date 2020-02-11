@@ -52,16 +52,6 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         rightRear = hardwareMap.get(DcMotorEx.class, "RB");
         rightFront = hardwareMap.get(DcMotorEx.class, "RF");
 
-        leftFront.setMotorType(MotorConfigurationType.getMotorType(GoBILDA5202Series.class));
-        leftRear.setMotorType(MotorConfigurationType.getMotorType(GoBILDA5202Series.class));
-        rightFront.setMotorType(MotorConfigurationType.getMotorType(GoBILDA5202Series.class));
-        rightRear.setMotorType(MotorConfigurationType.getMotorType(GoBILDA5202Series.class));
-
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
-        // reverse any motors using DcMotor.setDirection()
-
-
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
         for (DcMotorEx motor : motors) {
@@ -74,7 +64,9 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
             setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
-
+        // reverse any motors using DcMotor.setDirection()
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
     }
