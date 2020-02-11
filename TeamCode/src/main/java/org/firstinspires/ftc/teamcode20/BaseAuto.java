@@ -22,6 +22,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -54,7 +55,7 @@ public class BaseAuto extends BaseOpMode {
     protected static final float mmPerInch = 25.4f;
     protected OpenGLMatrix lastLocation = null;
     protected VuforiaTrackables targetsSkyStone;
-    protected List<VuforiaTrackable> allTrackables;
+    protected List<VuforiaTrackable> allTrackables= new ArrayList<VuforiaTrackable>();
     private final float CAMERA_FORWARD_DISPLACEMENT = 0f * mmPerInch;//2.5 in from end + 1 in correction
     private final float CAMERA_VERTICAL_DISPLACEMENT = 0f * mmPerInch;// eg: Camera is 8 Inches above ground
     private final float CAMERA_LEFT_DISPLACEMENT = 0f * mmPerInch; // eg: Camera is ON the robot's center line
@@ -122,6 +123,7 @@ public class BaseAuto extends BaseOpMode {
     }
 
     protected void initViewMarks(){
+        targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
         rear1 = targetsSkyStone.get(11);
         rear1.setName("Rear Perimeter 1");
         rear2 = targetsSkyStone.get(12);
@@ -133,6 +135,7 @@ public class BaseAuto extends BaseOpMode {
         rear2.setLocation(OpenGLMatrix
                 .translation(halfField, -quadField, mmTargetHeight)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+        allTrackables.addAll(targetsSkyStone);
     }
 
     protected double[] adjustToViewMark(boolean isBlue,int skystonepos){

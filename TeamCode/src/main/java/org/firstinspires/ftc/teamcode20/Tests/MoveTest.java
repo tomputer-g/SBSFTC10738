@@ -43,6 +43,7 @@ public class MoveTest extends BaseAuto {
     public void init(){
         msStuckDetectInit = 3000000;
         initAutonomous();
+        //initVuforia();
         initViewMarks();
         //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         speed=0.3;
@@ -72,10 +73,14 @@ public class MoveTest extends BaseAuto {
         if(zheng(this.gamepad1.dpad_up,ee))y+=1;
         if(zheng(this.gamepad1.dpad_down,ff))y+=1;
         if(zheng(this.gamepad1.y,m))speed+=.1;
-            double[] a = adjustToViewMark(true,1);
-            xxx=a[0];
-            yyy=a[1];
-        if(zheng(this.gamepad1.b,f))moveInchesGOY_XF(48,0.3,1);
+        double[] a = adjustToViewMark(true,1);
+        xxx=a[0];
+        yyy=a[1];
+        if(zheng(this.gamepad1.b,f)){
+         a = adjustToViewMark(true,1);
+                xxx=a[0];
+                yyy=a[1];
+        }
         telemetry.addData("x: ",xxx);
         telemetry.addData("y: ",yyy);
         telemetry.update();
@@ -89,7 +94,6 @@ public class MoveTest extends BaseAuto {
                     if (robotLocationTransform != null) {
                         lastLocation = robotLocationTransform;
                     }
-                    if (trackable.getName().equals("Blue Front Bridge")) {
                         Orientation rotation = Orientation.getOrientation(lastLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
                         telemetry.addLine("Turn " + (int) Math.abs(rotation.thirdAngle - 90) + (rotation.thirdAngle - 90 > 0 ? "deg. CW" : "deg. CCW"));
                         VectorF translation = lastLocation.getTranslation();
@@ -99,7 +103,6 @@ public class MoveTest extends BaseAuto {
                         telemetry.addData("x: ",distx);
                         telemetry.addData("y: ",disty);
                         telemetry.addData("z: ",distz);
-                    }
                     telemetry.update();
                 }
             }
