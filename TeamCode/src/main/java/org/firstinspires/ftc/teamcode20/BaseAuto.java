@@ -586,7 +586,7 @@ public class BaseAuto extends BaseOpMode {
         tunePIDturn(target,0.029,2.291,1,false);
     }
     protected void align(double target){
-        PIDturnfast(getError(imuAbsolute,target),false);
+        PIDturnfast(-getError(imuAbsolute,target),false);
         setNewGyro(target);
     }
     protected void tunePIDturn(double target, double kp, double kd, double speed, boolean resetOffset){
@@ -598,7 +598,7 @@ public class BaseAuto extends BaseOpMode {
         ElapsedTime t = new ElapsedTime();
         ElapsedTime n = new ElapsedTime();
         int i=0;
-        while(i<5&&n.milliseconds()<((speed>0.5)?1200:3000)){
+        while(i<5&&n.milliseconds()<((speed>0.5)?800:2000)){
             double e2 = target-(getAdjustedHeading(target));
             double D = kd*(e2-e)/t.milliseconds();
             t.reset();
@@ -606,7 +606,7 @@ public class BaseAuto extends BaseOpMode {
             if(Math.abs(P)>Math.abs(speed))P=P>0?speed:-speed;
             setAllDrivePower(P+D);
             e=e2;
-            if(near(e2-e,0,0.1)&&near(e,0,2))
+            if(near(e2-e,0,0.3)&&near(e2,0,3))
                 i++;
         }
         setAllDrivePower(0);
