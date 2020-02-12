@@ -40,7 +40,7 @@ import static org.firstinspires.ftc.teamcode20.Roadrunner.drive.DriveConstants.k
 @Config
 @Autonomous(group = "drive")
 public class DriveVelocityPIDTuner extends LinearOpMode {
-    public static double DISTANCE = 48;
+    public static double DISTANCE = 24;
 
     private static final String PID_VAR_NAME = "VELO_PID";
 

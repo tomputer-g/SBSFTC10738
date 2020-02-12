@@ -87,9 +87,9 @@ public class MoveTest extends BaseAuto {
         }
 
         if(zheng(this.gamepad1.dpad_left,e)) {
-
+            drive.turn(Math.PI/2);
         }
-        drive.setMotorPowers(-.3,-.3,.3,.3);
+        //drive.setMotorPowers(-.3,-.3,.3,.3);
         drive.update();
         for(DcMotorEx m: drive.getMotors())
             telemetry.addData("Enc",m.getCurrentPosition());
