@@ -7,6 +7,8 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveREV;
@@ -32,9 +34,19 @@ public class LocalizationTest extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         SampleMecanumDriveREV drive = new SampleMecanumDriveREV(hardwareMap);
+        ExpansionHubEx hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
+        DcMotorEx L2 = hardwareMap.get(DcMotorEx.class,"L2");
+        L2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        DcMotorEx platform = hardwareMap.get(DcMotorEx.class, "platform");
+        platform.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        platform.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        DcMotorEx xOdo = hardwareMap.get(DcMotorEx.class, "xOdo");
+        xOdo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        xOdo.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();
-        ExpansionHubEx hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
+
 
         while (!isStopRequested()) {
             Pose2d baseVel = new Pose2d(
@@ -61,17 +73,22 @@ public class LocalizationTest extends LinearOpMode {
             drive.setDrivePower(vel);
 
             drive.update();
-            RevBulkData bulk = hub4.getBulkInputData();
+            //RevBulkData bulk = hub4.getBulkInputData();
 
 
             Pose2d poseEstimate = drive.getPoseEstimate();
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", Math.toDegrees(poseEstimate.getHeading()));
-            telemetry.addData("Xodo",bulk.getMotorCurrentPosition(2));
+
+            /*telemetry.addData("Xodo",bulk.getMotorCurrentPosition(2));
             telemetry.addData("L2",bulk.getMotorCurrentPosition(1));
             telemetry.addData("platform",bulk.getMotorCurrentPosition(3));
+            */
             telemetry.update();
+
+
+
         }
     }
 }
