@@ -29,9 +29,10 @@ public class OdometryWheelLocalizer extends ThreeTrackingWheelLocalizer {
         //y: 44 forward, 149 side
         //x: 100 back, 4 left (mms)
         super(Arrays.asList(//x and y are reversed
+                new Pose2d(-100/25.4, 4/25.4, Math.toRadians(90)),
                 new Pose2d(44/25.4, -149/25.4, Math.toRadians(0)),
-                new Pose2d(44/25.4, 149/25.4, Math.toRadians(0)),
-                new Pose2d(-100/25.4, 4/25.4, Math.toRadians(90))
+                new Pose2d(44/25.4, 149/25.4, Math.toRadians(0))
+
         ));
 
         hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
@@ -45,9 +46,10 @@ public class OdometryWheelLocalizer extends ThreeTrackingWheelLocalizer {
     @NotNull @Override public List<Double> getWheelPositions() {
         RevBulkData bulk = hub4.getBulkInputData();
         return Arrays.asList(
+                encoderTicksToInches(bulk.getMotorCurrentPosition(2)),
                 encoderTicksToInches(bulk.getMotorCurrentPosition(1)),
-                encoderTicksToInches(bulk.getMotorCurrentPosition(3)),
-                encoderTicksToInches(bulk.getMotorCurrentPosition(2))
+                encoderTicksToInches(bulk.getMotorCurrentPosition(3))
+
         );
     }
 }

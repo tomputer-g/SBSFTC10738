@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode20.Roadrunner.drive.GoBildaMotor1150;
 import org.firstinspires.ftc.teamcode20.Roadrunner.drive.localizer.OdometryWheelLocalizer;
 import org.firstinspires.ftc.teamcode20.Roadrunner.util.LynxModuleUtil;
 import org.jetbrains.annotations.NotNull;
@@ -61,6 +62,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
             if (RUN_USING_ENCODER) {
                 motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
+            motor.setMotorType(MotorConfigurationType.getMotorType(GoBildaMotor1150.class));
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
@@ -71,7 +73,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
         // TODO: if desired, use setLocalizer() to change the localization method
-        setLocalizer(new OdometryWheelLocalizer(hardwareMap));
+       // setLocalizer(new OdometryWheelLocalizer(hardwareMap));
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
     }
 

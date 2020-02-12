@@ -28,12 +28,12 @@ public class DriveConstants {
      * @DeviceProperties and @MotorType annotations.
      */
     private static final MotorConfigurationType MOTOR_CONFIG =
-            MotorConfigurationType.getMotorType(GoBILDA5202Series.class);
+            MotorConfigurationType.getMotorType(GoBildaMotor1150.class);
 
     /*
      * Set the first flag appropriately. If using the built-in motor velocity PID,TODO: update MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.
      */
-    public static final boolean RUN_USING_ENCODER = true;
+    public static final boolean RUN_USING_ENCODER = false;
     public static final PIDCoefficients MOTOR_VELO_PID = null;
 
     /*
