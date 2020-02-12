@@ -118,7 +118,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             if(france.getPosition() >.5){
                 france.setPosition(0);
             }else{
-                france.setPosition(1);
+                france.setPosition(.5);
             }
         }
 
