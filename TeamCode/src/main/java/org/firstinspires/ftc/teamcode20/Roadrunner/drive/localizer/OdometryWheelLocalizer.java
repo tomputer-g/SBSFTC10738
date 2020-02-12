@@ -22,17 +22,15 @@ public class OdometryWheelLocalizer extends ThreeTrackingWheelLocalizer {
 
 
     public OdometryWheelLocalizer(HardwareMap hardwareMap) {
-        //1: L2
-        //2: xodo
-        //3: platform
-        //y: 44 forward, 149 side
-        //x: 100 back, 4 left (mms)
         super(Arrays.asList(//x and y are reversed
                 new Pose2d(44/25.4, -149/25.4, Math.toRadians(0)),
                 new Pose2d(44/25.4, 149/25.4, Math.toRadians(0)),
                 new Pose2d(-100/25.4, 4/25.4, Math.toRadians(90))
         ));
         hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
+
+
+       // hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
     }
 
 
