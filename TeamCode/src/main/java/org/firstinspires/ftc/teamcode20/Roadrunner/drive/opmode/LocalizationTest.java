@@ -44,7 +44,7 @@ public class LocalizationTest extends LinearOpMode {
         DcMotorEx xOdo = hardwareMap.get(DcMotorEx.class, "xOdo");
         xOdo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         xOdo.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+        drive.setPoseEstimate(new Pose2d(-63,63,0));
         waitForStart();
 
 
