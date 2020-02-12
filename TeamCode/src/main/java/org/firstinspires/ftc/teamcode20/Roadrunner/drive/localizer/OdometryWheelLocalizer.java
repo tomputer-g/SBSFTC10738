@@ -15,7 +15,6 @@ import java.util.List;
 public class OdometryWheelLocalizer extends ThreeTrackingWheelLocalizer {
     private ExpansionHubEx hub4;
 
-
     public static double TICKS_PER_REV = 8192;
     public static double WHEEL_RADIUS = 1; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
@@ -23,15 +22,12 @@ public class OdometryWheelLocalizer extends ThreeTrackingWheelLocalizer {
 
     public OdometryWheelLocalizer(HardwareMap hardwareMap) {
         super(Arrays.asList(//x and y are reversed
-                new Pose2d(-100/25.4, 4/25.4, Math.toRadians(90)),
-                new Pose2d(44/25.4, -149/25.4, Math.toRadians(0)),
-                new Pose2d(44/25.4, 149/25.4, Math.toRadians(0))
+                new Pose2d(44/25.4, -149/25.4, 0),
+                new Pose2d(-100/25.4, 4/25.4, Math.toRadians(270)),
+                new Pose2d(44/25.4, 149/25.4, 0)
 
         ));
         hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
-
-
-       // hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
     }
 
 
@@ -42,8 +38,8 @@ public class OdometryWheelLocalizer extends ThreeTrackingWheelLocalizer {
     @NotNull @Override public List<Double> getWheelPositions() {
         RevBulkData bulk = hub4.getBulkInputData();
         return Arrays.asList(
-                encoderTicksToInches(bulk.getMotorCurrentPosition(2)),
                 encoderTicksToInches(bulk.getMotorCurrentPosition(1)),
+                encoderTicksToInches(bulk.getMotorCurrentPosition(2)),
                 encoderTicksToInches(bulk.getMotorCurrentPosition(3))
 
         );

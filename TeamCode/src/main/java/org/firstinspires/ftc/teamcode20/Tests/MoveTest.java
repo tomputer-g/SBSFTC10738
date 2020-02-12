@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode20.Tests;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -51,6 +52,7 @@ public class MoveTest extends BaseAuto {
         msStuckDetectInit = 3000000;
         drive=new SampleMecanumDriveREV(hardwareMap);
         dashboard=FtcDashboard.getInstance();
+        drive.setPoseEstimate(new Pose2d(63,63,-Math.PI/2));
         //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         speed=0.3;
         speeed = 0.03;
@@ -86,11 +88,12 @@ public class MoveTest extends BaseAuto {
         if(zheng(this.gamepad1.dpad_left,e)) {
 
         }
+        drive.update();
         for(DcMotorEx m: drive.getMotors())
             telemetry.addData("Enc",m.getCurrentPosition());
         for(double p: drive.getWheelPositions())
             telemetry.addData("Pos",p);
-        telemetry.addData("Heading",drive.getPoseEstimate().component1());
+        //telemetry.addData("Heading",drive.getPoseEstimate().component1());
         /*
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
