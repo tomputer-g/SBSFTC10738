@@ -36,7 +36,7 @@ public class DriveConstants {
     /*
      * Set the first flag appropriately. If using the built-in motor velocity PID,TODO: update MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.
      */
-    public static final boolean RUN_USING_ENCODER = true;
+    public static final boolean RUN_USING_ENCODER = false;
     public static final PIDCoefficients MOTOR_VELO_PID = null;
 
     /*
