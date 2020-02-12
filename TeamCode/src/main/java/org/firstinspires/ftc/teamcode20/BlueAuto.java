@@ -87,16 +87,14 @@ public class BlueAuto extends BaseAuto {
             wait(20);
             //LB.setPower(0);
         }
-        double curAng = getHeading();
-        while (curAng<70){
-            curAng = getHeading();
-        }
-        while (curAng<88){
-            curAng = getHeading();
-            RF.setPower(RF.getPower()*getError(90,curAng)/20);
-            LB.setPower(LB.getPower()*getError(90,curAng)/20);
-            LF.setPower(LF.getPower()*getError(90,curAng)/20);
 
+        while (imuAbsolute<160){ getHeading(); }
+        p.reset();
+        while (imuAbsolute<175&&p.milliseconds()<3000){
+            getHeading();
+            RF.setPower(RF.getPower()*getError(180,imuAbsolute)/20);
+            LB.setPower(LB.getPower()*getError(180,imuAbsolute)/20);
+            LF.setPower(LF.getPower()*getError(180,imuAbsolute)/20);
         }
         setNewGyro(180);
         setAllDrivePower(0);
