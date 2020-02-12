@@ -131,6 +131,9 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
 
         TelemetryPacket packet = new TelemetryPacket();
         Canvas fieldOverlay = packet.fieldOverlay();
+        DashboardUtil.drawRobot(fieldOverlay, currentPose);
+        fieldOverlay.setStrokeWidth(1);
+        fieldOverlay.setStroke("4CAF50");
 
         packet.put("mode", mode);
 

@@ -167,14 +167,14 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
             MotionState motionState = activeProfile.get(profileTime);
             double targetPower = kV * motionState.getV();
-            drive.setDrivePower(new Pose2d(targetPower, 0, 0));
+            //drive.setDrivePower(new Pose2d(targetPower, 0, 0));
 
             List<Double> velocities = drive.getWheelVelocities();
 
             // update telemetry
             telemetry.addData("targetVelocity", motionState.getV());
-            //telemetry.addData("En")
-            telemetry.addData("curPos",drive.getWheelPositions().get(0));
+            for(double i: drive.getWheelPositions())
+                telemetry.addData("Pos",i);
             for (int i = 0; i < velocities.size(); i++) {
                 telemetry.addData("velocity" + i, velocities.get(i));
                 telemetry.addData("error" + i, motionState.getV() - velocities.get(i));

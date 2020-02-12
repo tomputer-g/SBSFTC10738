@@ -8,6 +8,8 @@ import com.qualcomm.hardware.motors.Matrix12vMotor;
 import com.qualcomm.hardware.motors.NeveRest20Gearmotor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode20.GoBILDA5202Series1150;
+
 /*
  * Constants shared between multiple drive types.
  *
@@ -29,7 +31,7 @@ public class DriveConstants {
      * @DeviceProperties and @MotorType annotations.
      */
     private static final MotorConfigurationType MOTOR_CONFIG =
-            MotorConfigurationType.getMotorType(GoBILDA5202Series.class);
+            MotorConfigurationType.getMotorType(GoBILDA5202Series1150.class);
 
     /*
      * Set the first flag appropriately. If using the built-in motor velocity PID,TODO: update MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.

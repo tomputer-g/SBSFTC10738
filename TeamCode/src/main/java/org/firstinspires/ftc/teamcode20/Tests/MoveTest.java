@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -29,6 +31,7 @@ public class MoveTest extends BaseAuto {
     private double speedLF=0,speedLB=0,speedRF=0,speedRB=0;
     private double  kP = 0.5, kI = 0, kD = 0.0025;
     private SampleMecanumDriveREV drive;
+    private FtcDashboard dashboard;
     int WaitingTime = 300;
     int steps = 20;
     double basespeed = 0.2;
@@ -47,6 +50,7 @@ public class MoveTest extends BaseAuto {
     public void init(){
         msStuckDetectInit = 3000000;
         drive=new SampleMecanumDriveREV(hardwareMap);
+        dashboard=FtcDashboard.getInstance();
         //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         speed=0.3;
         speeed = 0.03;
@@ -69,47 +73,11 @@ public class MoveTest extends BaseAuto {
 
     @Override
     public void loop(){
-        double xxx=0,yyy=0;
         //if(zheng(this.gamepad1.dpad_left,eee))x-=2;
         //if(zheng(this.gamepad1.dpad_right,fff))x+=2;
         //if(zheng(this.gamepad1.dpad_up,ee))y+=1;
         //if(zheng(this.gamepad1.dpad_down,ff))y+=1;
         //if(zheng(this.gamepad1.y,m))speed+=.1;
-        double[] a = adjustToViewMark(true);
-        xxx=a[0];
-        yyy=a[1];
-        if(zheng(this.gamepad1.b,f)){
-         a = adjustToViewMark(true);
-                xxx=a[0];
-                yyy=a[1];
-        }
-        telemetry.addData("x: ",xxx);
-        telemetry.addData("y: ",yyy);
-        telemetry.update();
-        if(zheng(this.gamepad1.left_bumper,bF)){
-            ElapsedTime t=new ElapsedTime();
-            targetsSkyStone.activate();
-            VuforiaTrackable trackable = allTrackables.get(4);
-            while(t.milliseconds()<500000) {
-                if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
-                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
-                    if (robotLocationTransform != null) {
-                        lastLocation = robotLocationTransform;
-                    }
-                        Orientation rotation = Orientation.getOrientation(lastLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
-                        telemetry.addLine("Turn " + (int) Math.abs(rotation.thirdAngle - 90) + (rotation.thirdAngle - 90 > 0 ? "deg. CW" : "deg. CCW"));
-                        VectorF translation = lastLocation.getTranslation();
-                        double disty = translation.get(1)/mmPerInch;
-                        double distx = translation.get(0)/mmPerInch;
-                        double distz = translation.get(2)/mmPerInch;
-                        telemetry.addData("x: ",distx);
-                        telemetry.addData("y: ",disty);
-                        telemetry.addData("z: ",distz);
-                    telemetry.update();
-                }
-            }
-            shutdownVuforia();
-        }
 
         if(zheng(this.gamepad1.right_bumper,lF)) {
 
@@ -118,11 +86,11 @@ public class MoveTest extends BaseAuto {
         if(zheng(this.gamepad1.dpad_left,e)) {
 
         }
-
         for(DcMotorEx m: drive.getMotors())
             telemetry.addData("Enc",m.getCurrentPosition());
         for(double p: drive.getWheelPositions())
             telemetry.addData("Pos",p);
+        telemetry.addData("Heading",drive.getPoseEstimate().component1());
         /*
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
