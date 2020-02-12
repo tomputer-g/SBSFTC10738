@@ -19,6 +19,7 @@ public class BlueAuto extends BaseAuto {
     @Override
     public void init() {
         initAutonomous();
+        initViewMarks();
 	}
     @Override
     public void init_loop(){
@@ -66,8 +67,7 @@ public class BlueAuto extends BaseAuto {
         moveInchesG(0,-6,0.4);
 
         //move forward & approach foundation
-        PIDturnfast(90,false);
-        setNewGyro(90);
+        align(90);
         p.reset();
         resetXOdometry();
         moveInchesGOY_XF((85.25+shift),0.9,1);
@@ -101,8 +101,10 @@ public class BlueAuto extends BaseAuto {
         setNewGyro(180);
         setAllDrivePower(0);
         after_dragged_foundation_B();
-
         setNewGyro(90);
+
+        second_and_more_B(pos);
+        /*
         moveInchesGOXT(-6,0.5,1,1000);
 
         int shiftt = 0;
@@ -130,6 +132,9 @@ public class BlueAuto extends BaseAuto {
         grabber.setPosition(grabber_open);
         moveInchesG(0,-13,0.5);
 
+
+         */
+        moveInchesGOY_XF_F(-44,0.6,1,(int) (getXOdometry() - (41 - adjustToViewMark(true)[1]) * odometryEncXPerInch));
         requestOpModeStop();
     }
 }

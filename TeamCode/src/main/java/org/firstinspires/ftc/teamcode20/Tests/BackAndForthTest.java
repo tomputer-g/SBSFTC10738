@@ -24,7 +24,7 @@ public class BackAndForthTest extends BaseAuto {
             a = false;
 
             double curX;
-            params[1] = getXOdometry();
+            //params[1] = getXOdometry();
             double origin[] = {0,41}, dd[]=adjustToViewMark(true);
             //telemetry.addData("posX","%.2f" ,origin[0]);
             telemetry.addData("posY", "%.2f",origin[1]);
@@ -35,14 +35,10 @@ public class BackAndForthTest extends BaseAuto {
                 if(i>0)servoThread.setTarget(0.75);
                 grabber.setPosition(grabber_open);
                 align(0);
-                moveInchesGOY_XF_F(-71.75-24*i,0.6,1,(int) (curX-(origin[1]-dd[1])*odometryEncXPerInch));
+                moveInchesGOY_XF_F(-74.75-24*i,0.6,1,(int) (curX-(origin[1]-dd[1])*odometryEncXPerInch));
                 servoThread.setTarget(0.98);
                 align(-90);
-                /*
-                moveInchesGOY(8,0.3,1);
 
-                moveInchesGOY(-8,0.3,1);
-                 */
                 double yorigin = getY1Odometry();
                 while((getY1Odometry()-yorigin)*-1 < odometryEncYPerInch*4){
                     setAllDrivePowerG(-.3,-.3,.3,.3);
@@ -59,7 +55,7 @@ public class BackAndForthTest extends BaseAuto {
                 setAllDrivePower(0);
                 align(0);
                 servoThread.setTarget(0.6);
-                moveInchesGOY_XF_F(24*i+70,0.6,1,(int) (curX-(origin[1]-dd[1])*odometryEncXPerInch));
+                moveInchesGOY_XF_F(24*i+74,0.6,1,(int) (curX-(origin[1]-dd[1])*odometryEncXPerInch));
                 dd=adjustToViewMark(true);
                 //telemetry.addData("original", "%.2f",origin[1]);
                 //telemetry.addData("current", "%.2f",dd[1]);
