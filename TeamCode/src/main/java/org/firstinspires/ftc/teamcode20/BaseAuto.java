@@ -80,10 +80,10 @@ public class BaseAuto extends BaseOpMode {
     private double headingDisplacement = -90;
 
     protected void initAutonomous(){
-        AutonomousInitThread initThread = new AutonomousInitThread();
-        initThread.start();
+        //AutonomousInitThread initThread = new AutonomousInitThread();
+        //initThread.start();
         Log.i("Auto init",System.currentTimeMillis()+" start hub init");
-        super.init();//uses 0.48 ms
+        //super.init();//uses 0.48 ms
         showTelemetry = false;
         Log.i("Auto init",System.currentTimeMillis()+" start drivetrain init");
         initDrivetrain();//181.64ms
@@ -100,7 +100,9 @@ public class BaseAuto extends BaseOpMode {
         setNewGyro0();
         Log.i("Auto init",System.currentTimeMillis()+" done init");
         initHubs();
-        while(initThread.isAlive());
+        initVuforia();
+        initViewMarks();
+        //while(initThread.isAlive());
         Log.i("Auto init", "initThread done");
     }
 
@@ -113,7 +115,6 @@ public class BaseAuto extends BaseOpMode {
         @Override
         public void run() {
             Log.i("Auto init thread","started at "+System.currentTimeMillis());
-            initVuforia();
             Log.i("Auto init thread", "finished at "+ System.currentTimeMillis());
         }
     }

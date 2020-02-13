@@ -24,9 +24,8 @@ public class RedAuto extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {
         initAutonomous();
-        initViewMarks();
 
-        while(!isStarted()){
+        while(!isStarted() && !isStopRequested()){
             pos = new_skystoneposition();
             wait(200);
         }
