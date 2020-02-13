@@ -55,13 +55,13 @@ public class RedAuto extends BaseAuto {
         ElapsedTime p = new ElapsedTime();
         //moveInchesGOY(30.5,0.6,(1+(13.65-hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS))/13.65));
         //grab 1st block
-        while(-getY1Odometry() < 28*odometryEncYPerInch)setAllDrivePowerG(-.6,-.6,.6,.6);
+        while(-getY1Odometry() < 25*odometryEncYPerInch)setAllDrivePowerG(-.3,-.3,.3,.3);
         setAllDrivePowerG(-.1,-.1,.1,.1);
         grabber.setPosition(grabber_closed);
         wait(300);
         servoThread.setTarget(0.85);
 
-        while(-getY1Odometry()> 25*odometryEncYPerInch)setAllDrivePowerG(.3,.3,-.3,-.3);
+        while(-getY1Odometry()> 26*odometryEncYPerInch)setAllDrivePowerG(.3,.3,-.3,-.3);
         setAllDrivePower(0);
         //move forward & approach foundation
         //turn(90, 0.5,1);
@@ -73,7 +73,7 @@ public class RedAuto extends BaseAuto {
         //while (p.milliseconds()<900)setAllDrivePowerG(-.5,.5,-.5,.5);
 
 
-        moveInchesGOXT(15-getXOdometry()/odometryEncXPerInch,.5,1,1300); //drag +errordistance
+        moveInchesGOXT(18-getXOdometry()/odometryEncXPerInch,.5,1,2000); //drag +errordistance
 
         platform_grabber.setPower(-1);
         wait(300);
