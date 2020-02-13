@@ -16,8 +16,9 @@ public class MiscTest extends TractionControl {
     ElapsedTime t=new ElapsedTime();
     //ModernRoboticsI2cRangeSensor rangeSensorSide;
 
+
     @Override
-    public void init(){
+    public void runOpMode() throws InterruptedException {
         /*
         initIMU();
         initDrivetrain();
@@ -38,11 +39,9 @@ public class MiscTest extends TractionControl {
         square_dist = 8.2;
         initLight();
         light.setPosition(.5);
-    }
-
-    @Override
-    public void loop(){
-        /*
+        waitForStart();
+        while(opModeIsActive()){
+             /*
         //x+ left x- right y+ forward y- backward
         //getHeading();
         if(zheng(this.gamepad1.y,e))speed-=0.05;
@@ -159,5 +158,6 @@ public class MiscTest extends TractionControl {
         }
         telemetry.update();
         */
+        }
     }
 }

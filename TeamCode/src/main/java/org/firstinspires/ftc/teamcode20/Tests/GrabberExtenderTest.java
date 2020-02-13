@@ -8,23 +8,23 @@ public class GrabberExtenderTest extends BaseAuto {
     boolean[] a = {true};
     boolean[] b = {true};
     double pos = 1;
+
     @Override
-    public void init() {
+    public void runOpMode() throws InterruptedException {
         initGrabber();
         pos = 1;
         servoThread.setTarget(pos);
-    }
-
-    @Override
-    public void loop() {
-        if(zheng(this.gamepad1.dpad_down, a)){
-            pos+=0.01;
+        waitForStart();
+        while(opModeIsActive()){
+            if(zheng(this.gamepad1.dpad_down, a)){
+                pos+=0.01;
+            }
+            if(zheng(this.gamepad1.dpad_up, b)){
+                pos-=0.01;
+            }
+            servoThread.setTarget(pos);
+            telemetry.addData("pos", pos);
+            telemetry.update();
         }
-        if(zheng(this.gamepad1.dpad_up, b)){
-            pos-=0.01;
-        }
-        servoThread.setTarget(pos);
-        telemetry.addData("pos", pos);
-        telemetry.update();
     }
 }

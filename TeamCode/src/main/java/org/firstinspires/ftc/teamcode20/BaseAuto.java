@@ -99,8 +99,15 @@ public class BaseAuto extends BaseOpMode {
         initOdometry();//100.89ms
         setNewGyro0();
         Log.i("Auto init",System.currentTimeMillis()+" done init");
+        initHubs();
         while(initThread.isAlive());
         Log.i("Auto init", "initThread done");
+    }
+
+    protected void initHubs(){
+        hub2 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
+        hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
+
     }
     class AutonomousInitThread extends Thread{
         @Override
@@ -735,24 +742,20 @@ public class BaseAuto extends BaseOpMode {
             w *= 1.6;
             double highp = 0.03 / .18,cyclems=200;
             if(w!=0)setNewGyro0();
-            try {
-                sleep(0, (int) (cyclems * (1 - highp)));
-            } catch (InterruptedException e) {
-                telemetry.addLine("Error0");
-            }
-            setAllDrivePowerG(-.2 * dir - .5 * x + .2 * w, -.2 * dir + .5 * x + .2 * w, .2 * dir - .5 * x + .2 * w, .2 * dir + .5 * x + .2 * w);
-            try {
-                sleep(0, (int) (cyclems * highp));
-            } catch (InterruptedException e) {
-                telemetry.addLine("Error1");
-            }
-            setAllDrivePowerG(-.02 * dir - .05 * x + .02 * w, -.02 * dir + .05 * x + .02 * w, .02 * dir - 0.05 * x + .02 * w, .2 * dir + .05 * x + .2 * w);
+        try {
+            Thread.sleep(0, (int) (cyclems * (1 - highp)));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        setAllDrivePowerG(-.2 * dir - .5 * x + .2 * w, -.2 * dir + .5 * x + .2 * w, .2 * dir - .5 * x + .2 * w, .2 * dir + .5 * x + .2 * w);
+        try {
+            Thread.sleep(0, (int) (cyclems * highp));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        setAllDrivePowerG(-.02 * dir - .05 * x + .02 * w, -.02 * dir + .05 * x + .02 * w, .02 * dir - 0.05 * x + .02 * w, .2 * dir + .05 * x + .2 * w);
     }
 
-    @Override
-    public void init() {
-        super.init();
-    }
 
     protected void moveInchesG(double xInch, double yInch, double speed, double Kp){
         reset_ENCODER();
