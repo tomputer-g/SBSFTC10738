@@ -31,7 +31,7 @@ public class DriveConstants {
     /*
      * Set the first flag appropriately. If using the built-in motor velocity PID,TODO: update MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.
      */
-    public static final boolean RUN_USING_ENCODER = true;
+    public static final boolean RUN_USING_ENCODER = false;
     public static final PIDCoefficients MOTOR_VELO_PID = null;
 
     /*
@@ -40,7 +40,7 @@ public class DriveConstants {
      * free to chose whichever linear distance unit they would like so long as it is consistently
      * used. The default values were selected with inches in mind. Road runner uses radians for
      * angular distances although most angular parameters are wrapped in Math.toRadians() for
-     * convenience. TODO: Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
+     * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
     public static double WHEEL_RADIUS = 2;//inches
     public static double GEAR_RATIO = 8.0/14.0; // output (wheel) speed / input (motor) speed
@@ -52,9 +52,9 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 1.0 / rpmToVelocity(getMaxRpm());
-    public static double kA = 0;
-    public static double kStatic = 0;
+    public static double kV = 0.01616;//1.0 / rpmToVelocity(getMaxRpm());//0.01607,0.01628,0.01614
+    public static double kA = 0.0008;//low r2
+    public static double kStatic = 0.20228;//0.21295,0.19345,0.20044
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
