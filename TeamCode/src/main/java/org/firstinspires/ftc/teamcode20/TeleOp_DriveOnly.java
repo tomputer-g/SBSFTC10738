@@ -7,35 +7,24 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class TeleOp_DriveOnly extends BaseAuto {
     private OdometryThread thread = new OdometryThread();
 
+
     @Override
-    public void init() {
+    public void runOpMode() throws InterruptedException {
         initIMU();
         initDrivetrain();
         initOdometry();
-        //LF.setPower(1);
-    }
+        waitForStart();
+        while(opModeIsActive()){
+            //for old bot only
+            //move(-this.gamepad1.left_stick_x, this.gamepad1.left_stick_y, -this.gamepad1.right_stick_x);
+            //new bot
+            updateCoo();
+            telemetry.addLine("(x,y): (" + (int)(n_pass[0]) + "," + (int)(n_pass[1]) + ")");
+            telemetry.update();
+            joystickScaledMove(-this.gamepad1.left_stick_x, -this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x));
+        }
 
-    @Override
-    public void loop() {
-        //for old bot only
-        //move(-this.gamepad1.left_stick_x, this.gamepad1.left_stick_y, -this.gamepad1.right_stick_x);
-        //new bot
-        updateCoo();
-        telemetry.addLine("(x,y): (" + (int)(n_pass[0]) + "," + (int)(n_pass[1]) + ")");
-        telemetry.update();
-        joystickScaledMove(-this.gamepad1.left_stick_x, -this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x));
-    }
-
-    @Override
-    public void start() {
-        super.start();
-        //thread.start();
-    }
-
-    @Override
-    public void stop() {
         thread.stopThread();
-        super.stop();
     }
 
     private class OdometryThread extends Thread {

@@ -24,68 +24,64 @@ public class MoveEncoderSpeed extends BaseOpMode {
     private double lowCycleTimeMS = 10;
 
     @Override
-    public void init() {
+    public void runOpMode() throws InterruptedException {
         initDrivetrain();
         LF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         LB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         RF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         RB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-    }
-
-    @Override
-    public void loop() {
-        if(encoderTimer.milliseconds() >= 500){
-            encoderDisplayTmp = ( (encoderTmp - LF.getCurrentPosition()) / (encoderTimer.nanoseconds()/1000000.0) ) / yEncPerInch;
-            encoderTimer.reset();
-            encoderTmp = LF.getCurrentPosition();
-        }
-        if(this.gamepad1.dpad_up){upP = true;}if(upP && !this.gamepad1.dpad_up){upP = false;
-            moveEncSpeed += 0.01;
-        }
-        if(this.gamepad1.dpad_down){downP = true;}if(downP && !this.gamepad1.dpad_down) {downP = false;
-            moveEncSpeed -= 0.01;
-        }
-        if(this.gamepad1.dpad_left){leftP = true;}if(leftP && !this.gamepad1.dpad_left) {leftP = false;
-            if(this.gamepad1.left_bumper){
-                lowSpeed -= 0.01;
-            }else if(this.gamepad1.right_bumper){
-                kickstartSpeed -= 0.01;
-            }else{
-                cycleTimeMS -= 1;
-            }
-        }
-        if(this.gamepad1.dpad_right){rightP = true;}if(rightP && !this.gamepad1.dpad_right) {rightP = false;
-            if(this.gamepad1.left_bumper){
-                lowSpeed += 0.01;
-            }else if(this.gamepad1.right_bumper){
-                kickstartSpeed += 0.01;
-            }else{
-                cycleTimeMS += 1;
-            }
-        }
-
-        telemetry.addData("loop time", cycleTime.milliseconds());//0.05ms
-        try {
-            movePWM(moveEncSpeed);
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        cycleTime.reset();
-        telemetry.addLine("speeds: ("+lowSpeed+", "+kickstartSpeed+")");
-        telemetry.addData("enc timer", encoderTimer.nanoseconds());
-        telemetry.addData("PWM cycle time", cycleTimeMS);
-        telemetry.addData("speed", moveEncSpeed);
-        telemetry.addData("inch/s",encoderDisplayTmp);
-        telemetry.update();
-    }
-
-    @Override
-    public void start() {
+        waitForStart();
         encoderTimer = new ElapsedTime();
         cycleTime = new ElapsedTime();
         lowCycleTimer = new ElapsedTime();
+        while(opModeIsActive()){
+            if(encoderTimer.milliseconds() >= 500){
+                encoderDisplayTmp = ( (encoderTmp - LF.getCurrentPosition()) / (encoderTimer.nanoseconds()/1000000.0) ) / yEncPerInch;
+                encoderTimer.reset();
+                encoderTmp = LF.getCurrentPosition();
+            }
+            if(this.gamepad1.dpad_up){upP = true;}if(upP && !this.gamepad1.dpad_up){upP = false;
+                moveEncSpeed += 0.01;
+            }
+            if(this.gamepad1.dpad_down){downP = true;}if(downP && !this.gamepad1.dpad_down) {downP = false;
+                moveEncSpeed -= 0.01;
+            }
+            if(this.gamepad1.dpad_left){leftP = true;}if(leftP && !this.gamepad1.dpad_left) {leftP = false;
+                if(this.gamepad1.left_bumper){
+                    lowSpeed -= 0.01;
+                }else if(this.gamepad1.right_bumper){
+                    kickstartSpeed -= 0.01;
+                }else{
+                    cycleTimeMS -= 1;
+                }
+            }
+            if(this.gamepad1.dpad_right){rightP = true;}if(rightP && !this.gamepad1.dpad_right) {rightP = false;
+                if(this.gamepad1.left_bumper){
+                    lowSpeed += 0.01;
+                }else if(this.gamepad1.right_bumper){
+                    kickstartSpeed += 0.01;
+                }else{
+                    cycleTimeMS += 1;
+                }
+            }
+
+            telemetry.addData("loop time", cycleTime.milliseconds());//0.05ms
+            try {
+                movePWM(moveEncSpeed);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            cycleTime.reset();
+            telemetry.addLine("speeds: ("+lowSpeed+", "+kickstartSpeed+")");
+            telemetry.addData("enc timer", encoderTimer.nanoseconds());
+            telemetry.addData("PWM cycle time", cycleTimeMS);
+            telemetry.addData("speed", moveEncSpeed);
+            telemetry.addData("inch/s",encoderDisplayTmp);
+            telemetry.update();
+        }
     }
+
 
     private void moveYByEncoder(double vy){//1 inch per second
         encoderTimer.reset();
@@ -106,9 +102,9 @@ public class MoveEncoderSpeed extends BaseOpMode {
             telemetry.addLine("PWM move active");//set 20; change delay between 20 and 0
             double dutyPercent = (vy - lowSpeed) / (kickstartSpeed-lowSpeed);
             telemetry.addLine("Duty "+(int)(100*dutyPercent)+"%; high "+to3d(dutyPercent * cycleTimeMS)+", low "+to3d((1-dutyPercent) * cycleTimeMS));
-            sleep(0, (int)lowCycleTimeMS*1000);
+            Thread.sleep(0, (int)lowCycleTimeMS*1000);
             setAllDrivePower(-kickstartSpeed, -kickstartSpeed, kickstartSpeed, kickstartSpeed);
-            sleep(0,(int)(1000 * dutyPercent * cycleTimeMS));
+            Thread.sleep(0,(int)(1000 * dutyPercent * cycleTimeMS));
             setAllDrivePower(-lowSpeed, -lowSpeed, lowSpeed, lowSpeed);
             lowCycleTimer.reset();
             lowCycleTimeMS = (1-dutyPercent) * cycleTimeMS;

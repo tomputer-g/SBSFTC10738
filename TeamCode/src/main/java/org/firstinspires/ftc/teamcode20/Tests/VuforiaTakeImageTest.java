@@ -27,62 +27,62 @@ import java.util.Arrays;
 @TeleOp
 public class VuforiaTakeImageTest extends BaseAuto {
     protected ElapsedTime p = new ElapsedTime();
-    public void init(){
-        initVuforia();
-    }
 
     @Override
-    public void loop(){
-        p.reset();
-        VuforiaLocalizer.CloseableFrame frame = null;
-        Image image = null;
-        int result = 0;
-        int red_L = 0, red_R = 0, blue_L=0,blue_R=0,green_L=0,green_R=0, red_M = 0,blue_M=0,green_M=0;
-        int curpixel_L, curpixel_R, curpixel_M;
-        boolean l = true, r=true, m = true;
+    public void runOpMode() throws InterruptedException {
+        initVuforia();
+        waitForStart();
+        while(opModeIsActive()){
+            p.reset();
+            VuforiaLocalizer.CloseableFrame frame = null;
+            Image image = null;
+            int result = 0;
+            int red_L = 0, red_R = 0, blue_L=0,blue_R=0,green_L=0,green_R=0, red_M = 0,blue_M=0,green_M=0;
+            int curpixel_L, curpixel_R, curpixel_M;
+            boolean l = true, r=true, m = true;
 
-        try {frame = this.vuforia.getFrameQueue().take(); }
-        catch (InterruptedException e)
-        {throw new RuntimeException(e);}
+            try {frame = this.vuforia.getFrameQueue().take(); }
+            catch (InterruptedException e)
+            {throw new RuntimeException(e);}
 
-        for(int i = 0;i<frame.getNumImages();++i){
-            if(frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565){
-                image = frame.getImage(i);
-                break;
-            }
-        }
-
-        if(image!=null){
-            ByteBuffer pixels = image.getPixels();
-            byte[] pixelArray = new byte[pixels.remaining()];
-            pixels.get(pixelArray, 0, pixelArray.length);
-            //1280x720
-            int imageWidth = image.getWidth();
-            int imageHeight = image.getHeight();
-            pixels.rewind();
-            Bitmap bm = Bitmap.createBitmap(imageWidth,imageHeight,Bitmap.Config.RGB_565);
-            bm.copyPixelsFromBuffer(pixels);
-            for(int i = -10;i<10;++i){
-                for(int j = -10;j<10;++j){
-                    curpixel_L = bm.getPixel(1147+i,180+j);//"left"
-                    curpixel_M = bm.getPixel(927+i,180+j);//"mid"
-                    curpixel_R = bm.getPixel(662+i,207+j);//"right"
-                    red_L+=Color.red(curpixel_L);
-                    blue_L+=Color.blue(curpixel_L);
-                    green_L+=Color.green(curpixel_L);
-                    red_M+=Color.red(curpixel_M);
-                    blue_M+=Color.blue(curpixel_M);
-                    green_M+=Color.green(curpixel_M);
-                    red_R+=Color.red(curpixel_R);
-                    blue_R+=Color.blue(curpixel_R);
-                    green_R+=Color.green(curpixel_R);
+            for(int i = 0;i<frame.getNumImages();++i){
+                if(frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565){
+                    image = frame.getImage(i);
+                    break;
                 }
             }
-            red_L/=400;red_R/=400;red_M/=400;blue_M/=400;blue_L/=400;blue_R/=400;green_M/=400;green_L/=400;green_R/=400;
 
-            telemetry.addData("rgb@L" ,"red: %d blue: %d green: %d",red_L, blue_L, green_L);
-            telemetry.addData("rgb@M" ,"red: %d blue: %d green: %d",red_M, blue_M, green_M);
-            telemetry.addData("rgb@R" ,"red: %d blue: %d green: %d",red_R, blue_R, green_R);
+            if(image!=null){
+                ByteBuffer pixels = image.getPixels();
+                byte[] pixelArray = new byte[pixels.remaining()];
+                pixels.get(pixelArray, 0, pixelArray.length);
+                //1280x720
+                int imageWidth = image.getWidth();
+                int imageHeight = image.getHeight();
+                pixels.rewind();
+                Bitmap bm = Bitmap.createBitmap(imageWidth,imageHeight,Bitmap.Config.RGB_565);
+                bm.copyPixelsFromBuffer(pixels);
+                for(int i = -10;i<10;++i){
+                    for(int j = -10;j<10;++j){
+                        curpixel_L = bm.getPixel(1147+i,180+j);//"left"
+                        curpixel_M = bm.getPixel(927+i,180+j);//"mid"
+                        curpixel_R = bm.getPixel(662+i,207+j);//"right"
+                        red_L+=Color.red(curpixel_L);
+                        blue_L+=Color.blue(curpixel_L);
+                        green_L+=Color.green(curpixel_L);
+                        red_M+=Color.red(curpixel_M);
+                        blue_M+=Color.blue(curpixel_M);
+                        green_M+=Color.green(curpixel_M);
+                        red_R+=Color.red(curpixel_R);
+                        blue_R+=Color.blue(curpixel_R);
+                        green_R+=Color.green(curpixel_R);
+                    }
+                }
+                red_L/=400;red_R/=400;red_M/=400;blue_M/=400;blue_L/=400;blue_R/=400;green_M/=400;green_L/=400;green_R/=400;
+
+                telemetry.addData("rgb@L" ,"red: %d blue: %d green: %d",red_L, blue_L, green_L);
+                telemetry.addData("rgb@M" ,"red: %d blue: %d green: %d",red_M, blue_M, green_M);
+                telemetry.addData("rgb@R" ,"red: %d blue: %d green: %d",red_R, blue_R, green_R);
             /*
             int a = bm.getPixel(960,180);
             int b = bm.getPixel(640,180);
@@ -99,22 +99,22 @@ public class VuforiaTakeImageTest extends BaseAuto {
             telemetry.log().add("rgb@1270x10 red: %d blue: %d green: %d",redd, blued, greend);
             telemetry.update();
             */
+            }
+
+            if(red_L>100&&blue_L<30&&green_L>90) l = false;
+            if(red_R>100&&blue_R<30&&green_R>90) r = false;
+            if(red_M>100&&blue_M<30&&green_M>90) m = false;
+
+            if(l)result=0;
+            if(m)result=1;
+            if(r)result=2;
+            telemetry.addData("position: ", result);
+            telemetry.addData("time in ms: ", p.milliseconds());
+
+            telemetry.update();
+            frame.close();
+            wait(500);
         }
-
-        if(red_L>100&&blue_L<30&&green_L>90) l = false;
-        if(red_R>100&&blue_R<30&&green_R>90) r = false;
-        if(red_M>100&&blue_M<30&&green_M>90) m = false;
-
-        if(l)result=0;
-        if(m)result=1;
-        if(r)result=2;
-        telemetry.addData("position: ", result);
-        telemetry.addData("time in ms: ", p.milliseconds());
-
-        telemetry.update();
-        frame.close();
-        wait(500);
-        //requestOpModeStop();
     }
 
 }

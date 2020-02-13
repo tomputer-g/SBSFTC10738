@@ -31,7 +31,7 @@ public class NoSlipDrive extends BaseAuto {
     double od2c=0; int om2c;
 
     @Override
-    public void init() {
+    public void runOpMode() throws InterruptedException {
         initDrivetrain();
         initPlatformGrabber();
         initIMU();
@@ -49,38 +49,36 @@ public class NoSlipDrive extends BaseAuto {
         wait(300);
         platform_grabber.setPower(0.0);
         speed=.5;
-    }
-    @Override
-    public  void init_loop(){
-        if(zheng(this.gamepad1.y,xx)){speed+=.1;}
-        if(zheng(this.gamepad1.a,yy)){speed-=.1;}
-        if(zheng(this.gamepad1.left_bumper,lb)){dist+=4;}
-        if(zheng(this.gamepad1.right_bumper,rb)){dist-=1;}
-        telemetry.addData("speed: ",speed);
-        telemetry.addData("dist: ",dist);
-        telemetry.update();
-    }
-    @Override
-    public void loop() {
-        if(zheng(this.gamepad1.left_bumper,lb)){//odobrake();
-            phase=1;
+        while (!isStarted()){
+            if(zheng(this.gamepad1.y,xx)){speed+=.1;}
+            if(zheng(this.gamepad1.a,yy)){speed-=.1;}
+            if(zheng(this.gamepad1.left_bumper,lb)){dist+=4;}
+            if(zheng(this.gamepad1.right_bumper,rb)){dist-=1;}
+            telemetry.addData("speed: ",speed);
+            telemetry.addData("dist: ",dist);
+            telemetry.update();
         }
-        //telemetry.addLine(LF.getCurrentPosition()+" "+RF.getCurrentPosition()+" "+LB.getCurrentPosition()+" "+RB.getCurrentPosition()+" "+L2.getCurrentPosition());
-        if(phase==1){
-            //setNewGyro0();
-            //reset_ENCODER();
-            double target1 = -1313*Math.max((1-speed/2)*dist,dist*0.78);
-            while(platform_grabber.getCurrentPosition()>target1)
-                setAllDrivePowerG(-speed,-speed,speed,speed);
-            double target2 = -1313*(dist-1);
-            while(platform_grabber.getCurrentPosition()>target2)
-                setAllDrivePowerG(0,0,0,0);
-            odobrake();
-            phase=0;
-        }
-        telemetry.addLine("haha");
-        //t.reset();
-        //scaledMove(-this.gamepad1.left_stick_x * 0.3, -this.gamepad1.left_stick_y * 0.15, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x * 0.2));
+
+        while (opModeIsActive()){
+            if(zheng(this.gamepad1.left_bumper,lb)){//odobrake();
+                phase=1;
+            }
+            //telemetry.addLine(LF.getCurrentPosition()+" "+RF.getCurrentPosition()+" "+LB.getCurrentPosition()+" "+RB.getCurrentPosition()+" "+L2.getCurrentPosition());
+            if(phase==1){
+                //setNewGyro0();
+                //reset_ENCODER();
+                double target1 = -1313*Math.max((1-speed/2)*dist,dist*0.78);
+                while(platform_grabber.getCurrentPosition()>target1)
+                    setAllDrivePowerG(-speed,-speed,speed,speed);
+                double target2 = -1313*(dist-1);
+                while(platform_grabber.getCurrentPosition()>target2)
+                    setAllDrivePowerG(0,0,0,0);
+                odobrake();
+                phase=0;
+            }
+            telemetry.addLine("haha");
+            //t.reset();
+            //scaledMove(-this.gamepad1.left_stick_x * 0.3, -this.gamepad1.left_stick_y * 0.15, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x * 0.2));
         /*3
         if(zheng(this.gamepad1.right_bumper,rb)){
             phase = 1;
@@ -136,7 +134,9 @@ public class NoSlipDrive extends BaseAuto {
             platform_grabber.setPower(0.0);
         }
         */
+        }
     }
+
 
     protected void noslippower(double lf,double lb, double rf, double rb){
         setAllDrivePower(lfdc>=odc?0.1:lf,lbdc>=odc?0.1:lb,rfdc>=odc?0.1:rf,rbdc>=odc?0.1:rb);

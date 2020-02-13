@@ -11,16 +11,16 @@ public class BackAndForthTest extends BaseAuto {
     private int currentSelectParamIndex = 0;
     private boolean a, l, r, u, d, lb, rb;
     private double speed = 0.1;
-    public void init() {
-        super.init();
+
+    @Override
+    public void runOpMode() throws InterruptedException {
         initAutonomous();
         initViewMarks();
         //initVuMarksFull();
-    }
-
-    @Override
-    public void loop() {
-        if(this.gamepad1.a){a = true;}if(!this.gamepad1.a && a){
+        waitForStart();
+        while(opModeIsActive())
+        {
+            if(this.gamepad1.a){a = true;}if(!this.gamepad1.a && a){
             a = false;
 
             double curX;
@@ -62,7 +62,7 @@ public class BackAndForthTest extends BaseAuto {
                 //telemetry.update();
             }
         }
-        if(this.gamepad1.left_bumper){lb = true;}if(!this.gamepad1.left_bumper && lb){
+            if(this.gamepad1.left_bumper){lb = true;}if(!this.gamepad1.left_bumper && lb){
             lb = false;
             speed-=0.01;
             /*
@@ -73,7 +73,7 @@ public class BackAndForthTest extends BaseAuto {
 
              */
         }
-        if(this.gamepad1.right_bumper){rb = true;}if(!this.gamepad1.right_bumper && rb){
+            if(this.gamepad1.right_bumper){rb = true;}if(!this.gamepad1.right_bumper && rb){
             rb = false;
             speed+=0.01;
             /*
@@ -84,31 +84,33 @@ public class BackAndForthTest extends BaseAuto {
 
              */
         }
-        if(this.gamepad1.dpad_left){l = true;}if(!this.gamepad1.dpad_left && l){
+            if(this.gamepad1.dpad_left){l = true;}if(!this.gamepad1.dpad_left && l){
             l = false;
             params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] - 1) * 1E6) / 1E6;
 
         }
-        if(this.gamepad1.dpad_right){r = true;}if(!this.gamepad1.dpad_right && r){
+            if(this.gamepad1.dpad_right){r = true;}if(!this.gamepad1.dpad_right && r){
             r = false;
             params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] + 1) * 1E6) / 1E6;
 
         }
-        if(this.gamepad1.dpad_up){u = true;}if(!this.gamepad1.dpad_up && u){
+            if(this.gamepad1.dpad_up){u = true;}if(!this.gamepad1.dpad_up && u){
             u = false;
             params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] * 10.0) * 1E6) / 1E6;
 
         }
-        if(this.gamepad1.dpad_down){d = true;}if(!this.gamepad1.dpad_down && d){
+            if(this.gamepad1.dpad_down){d = true;}if(!this.gamepad1.dpad_down && d){
             d = false;
             params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] / 10.0) * 1E6) / 1E6;
 
         }
-        telemetry.addData("s,",speed);
-        //telemetry.addData("parameters",params[0]+", "+params[1]);
-        //telemetry.addData("now changing", paramNames[currentSelectParamIndex]);
-        telemetry.update();
-        //telemetry.addData("x",getXOdometry());
+            telemetry.addData("s,",speed);
+            //telemetry.addData("parameters",params[0]+", "+params[1]);
+            //telemetry.addData("now changing", paramNames[currentSelectParamIndex]);
+            telemetry.update();
+            //telemetry.addData("x",getXOdometry());
+        }
     }
+
 
 }

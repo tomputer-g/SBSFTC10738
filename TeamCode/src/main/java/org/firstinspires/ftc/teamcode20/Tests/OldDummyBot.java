@@ -11,22 +11,21 @@ public class OldDummyBot extends BaseOpMode {
     Servo servo;
     boolean[] B = {false};
     @Override
-    public void init() {
+    public void runOpMode() throws InterruptedException {
         initDrivetrain();
         servo = hardwareMap.get(Servo.class, "servo");
         servo.setPosition(.4);
-    }
-
-    @Override
-    public void loop() {
-        if(checkButton(this.gamepad1.b,B)){
-            if(servo.getPosition() < 0.2){
-                servo.setPosition(.4);
-            }else{
-                servo.setPosition(0);
+        waitForStart();
+        while(opModeIsActive()){
+            if(checkButton(this.gamepad1.b,B)){
+                if(servo.getPosition() < 0.2){
+                    servo.setPosition(.4);
+                }else{
+                    servo.setPosition(0);
+                }
             }
+            move(-this.gamepad1.left_stick_x, this.gamepad1.left_stick_y, -this.gamepad1.right_stick_x);
         }
-        move(-this.gamepad1.left_stick_x, this.gamepad1.left_stick_y, -this.gamepad1.right_stick_x);
     }
 
 

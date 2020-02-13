@@ -48,7 +48,7 @@ public class MoveTest extends BaseAuto {
     }
 
     @Override
-    public void init(){
+    public void runOpMode() throws InterruptedException {
         msStuckDetectInit = 3000000;
         //drive=new SampleMecanumDriveREV(hardwareMap);
         //drive.setPoseEstimate(new Pose2d(36,63,-Math.PI/2));
@@ -63,21 +63,10 @@ public class MoveTest extends BaseAuto {
         initVuforia();
         initViewMarks();
         // 三天之内刹了你();
-    }
 
-    @Override
-    public void start(){
+        waitForStart();
         //pg.start();
         //uc.start();
-    }
-
-    @Override
-    public void stop(){
-
-    }
-
-    @Override
-    public void loop(){
         //if(zheng(this.gamepad1.dpad_left,eee))x-=2;
         //if(zheng(this.gamepad1.dpad_right,fff))x+=2;
         //if(zheng(this.gamepad1.dpad_up,ee))y+=1;

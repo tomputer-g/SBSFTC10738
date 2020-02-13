@@ -13,8 +13,9 @@ import org.firstinspires.ftc.teamcode20.BaseOpMode;
 public class RunToPositionRevisited extends BaseOpMode{
 
     protected DcMotor LF, LB, RF, RB;//all four are backwards?
+
     @Override
-    public void init() {
+    public void runOpMode() throws InterruptedException {
         Log.d("RunToPositionRevisited","Log starts here");
         LF = hardwareMap.get(DcMotor.class, "LF");
         LF.setMotorType(MotorConfigurationType.getMotorType(GoBILDA5202Series.class));
@@ -31,10 +32,9 @@ public class RunToPositionRevisited extends BaseOpMode{
         //Log.d("RunToPositionRevisited","Name: "+LB.getMotorType().getName());//"GoBILDA 5202 series"
         //Log.d("RunToPositionRevisited","Desc: "+LB.getMotorType().getDescription());//""
         //Log.d("RunToPositionRevisited", "XML Tag: "+LB.getMotorType().getXmlTag());//"goBILDA5202SeriesMotor"
-    }
 
-    @Override
-    public void start() {
+        waitForStart();
+
         LF.setTargetPosition(1000);
         LF.setPower(.1);
         LF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -50,15 +50,14 @@ public class RunToPositionRevisited extends BaseOpMode{
         RB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
          */
-    }
 
-    @Override
-    public void loop() {
-        telemetry.addData("LF enc", LF.getCurrentPosition());
-        telemetry.addData("LF pwr", LF.getPower());
-        telemetry.update();
-        if(this.gamepad1.a){
+        while(opModeIsActive()){
+            telemetry.addData("LF enc", LF.getCurrentPosition());
+            telemetry.addData("LF pwr", LF.getPower());
+            telemetry.update();
+            if(this.gamepad1.a){
 
+            }
         }
     }
 }

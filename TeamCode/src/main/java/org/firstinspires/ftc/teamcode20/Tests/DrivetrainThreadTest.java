@@ -8,15 +8,15 @@ import org.openftc.revextensions2.RevBulkData;
 public class DrivetrainThreadTest extends BaseAuto {
     DrivetrainThread drivetrainThread;
 
+
     @Override
-    public void init() {
+    public void runOpMode() throws InterruptedException {
         drivetrainThread = new DrivetrainThread();
         initOdometry();
-    }
+        waitForStart();
+        while(opModeIsActive()){
 
-    @Override
-    public void loop() {
-
+        }
     }
 
     class DrivetrainThread extends Thread{
