@@ -17,86 +17,81 @@ public class CorrectiveTurnTest extends BaseAuto {
     private int currentSelectParamIndex = 0;
     private boolean l, r, u, d, lb, rb, a, y;
 
+
     @Override
-    public void init() {
+    public void runOpMode() throws InterruptedException {
         initDrivetrain();
         initLogger("CorrectiveTurnTest"+System.currentTimeMillis()+".csv");
         hub2 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
-    }
-
-    @Override
-    public void loop() {
-
-        if(this.gamepad1.a){a = true;}if(!this.gamepad1.a && a){
-            a = false;
-            correctiveTurn(params[1], params[0]);
-            //correctiveTurn(params[1],params[0],params[2]);
-        }
+        waitForStart();
+        while(opModeIsActive()){
+            if(this.gamepad1.a){a = true;}if(!this.gamepad1.a && a){
+                a = false;
+                correctiveTurn(params[1], params[0]);
+                //correctiveTurn(params[1],params[0],params[2]);
+            }
         /*if(this.gamepad1.y){y = true;}if(!this.gamepad1.y && y){
             y = false;
             runToPositionSpeed(params[1]);
         }
 
          */
-        if(this.gamepad1.b){
-            LF.setPower(0);
-            LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            LF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            LB.setPower(0);
-            LB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            LB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            RF.setPower(0);
-            RF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            RF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            RB.setPower(0);
-            RB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            RB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-        if(this.gamepad1.left_bumper){lb = true;}if(!this.gamepad1.left_bumper && lb){
-            lb = false;
-            currentSelectParamIndex--;
-            if(currentSelectParamIndex < 0){
-                currentSelectParamIndex = params.length - 1;
+            if(this.gamepad1.b){
+                LF.setPower(0);
+                LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                LF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                LB.setPower(0);
+                LB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                LB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                RF.setPower(0);
+                RF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                RF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                RB.setPower(0);
+                RB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                RB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
-        }
-        if(this.gamepad1.right_bumper){rb = true;}if(!this.gamepad1.right_bumper && rb){
-            rb = false;
-            currentSelectParamIndex++;
-            if(currentSelectParamIndex >= params.length){
-                currentSelectParamIndex = 0;
+            if(this.gamepad1.left_bumper){lb = true;}if(!this.gamepad1.left_bumper && lb){
+                lb = false;
+                currentSelectParamIndex--;
+                if(currentSelectParamIndex < 0){
+                    currentSelectParamIndex = params.length - 1;
+                }
             }
+            if(this.gamepad1.right_bumper){rb = true;}if(!this.gamepad1.right_bumper && rb){
+                rb = false;
+                currentSelectParamIndex++;
+                if(currentSelectParamIndex >= params.length){
+                    currentSelectParamIndex = 0;
+                }
+            }
+            if(this.gamepad1.dpad_left){l = true;}if(!this.gamepad1.dpad_left && l){
+                l = false;
+                params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] - 1) * 1E6) / 1E6;
+
+            }
+            if(this.gamepad1.dpad_right){r = true;}if(!this.gamepad1.dpad_right && r){
+                r = false;
+                params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] + 1) * 1E6) / 1E6;
+
+            }
+            if(this.gamepad1.dpad_up){u = true;}if(!this.gamepad1.dpad_up && u){
+                u = false;
+                params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] * 10.0) * 1E6) / 1E6;
+
+            }
+            if(this.gamepad1.dpad_down){d = true;}if(!this.gamepad1.dpad_down && d){
+                d = false;
+                params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] / 10.0) * 1E6) / 1E6;
+
+            }
+
+            telemetry.addData("parameters",params[0]+", "+params[1]+", "+params[2]+","+params[3]+","+params[4]);
+            telemetry.addData("now changing", paramNames[currentSelectParamIndex]);
+            telemetry.update();
         }
-        if(this.gamepad1.dpad_left){l = true;}if(!this.gamepad1.dpad_left && l){
-            l = false;
-            params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] - 1) * 1E6) / 1E6;
-
-        }
-        if(this.gamepad1.dpad_right){r = true;}if(!this.gamepad1.dpad_right && r){
-            r = false;
-            params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] + 1) * 1E6) / 1E6;
-
-        }
-        if(this.gamepad1.dpad_up){u = true;}if(!this.gamepad1.dpad_up && u){
-            u = false;
-            params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] * 10.0) * 1E6) / 1E6;
-
-        }
-        if(this.gamepad1.dpad_down){d = true;}if(!this.gamepad1.dpad_down && d){
-            d = false;
-            params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] / 10.0) * 1E6) / 1E6;
-
-        }
-
-        telemetry.addData("parameters",params[0]+", "+params[1]+", "+params[2]+","+params[3]+","+params[4]);
-        telemetry.addData("now changing", paramNames[currentSelectParamIndex]);
-        telemetry.update();
-    }
-
-    @Override
-    public void stop() {
         stopLog();
-        super.stop();
     }
+
 
     private void correctiveTurn(double angle, double OCspeed){
         writeLogHeader("P="+params[2]+",D="+params[3]+",target="+OCspeed+",angle"+angle+",batt "+hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)+"V");

@@ -12,10 +12,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 @Autonomous
 public class AutonInitTest extends BaseAuto {
-    @Override
-    public void init() {
-        initAutonomous();
-        /*
+    /*
 
         normal, linear, before: 6.188s
         2020-02-04 12:51:37.642 9232-9602/com.qualcomm.ftcrobotcontroller I/Auto init: 43229 start hub init
@@ -69,11 +66,9 @@ public class AutonInitTest extends BaseAuto {
 
 
 
-        //Without useless stuff: 3.89s (JUST vuforia)
-        //2020-02-04 13:05:39.513 11748-12127/com.qualcomm.ftcrobotcontroller I/Auto init: 1557207759 start vuforia
-        //2020-02-04 13:05:43.400 11748-12127/com.qualcomm.ftcrobotcontroller I/Auto init: 5444309396 done init
-    }
-
+    //Without useless stuff: 3.89s (JUST vuforia)
+    //2020-02-04 13:05:39.513 11748-12127/com.qualcomm.ftcrobotcontroller I/Auto init: 1557207759 start vuforia
+    //2020-02-04 13:05:43.400 11748-12127/com.qualcomm.ftcrobotcontroller I/Auto init: 5444309396 done init
     class AutonomousInitThread extends Thread{
         @Override
         public void run() {
@@ -82,8 +77,6 @@ public class AutonInitTest extends BaseAuto {
             Log.i("Auto init thread", "finished at "+ System.currentTimeMillis());
         }
     }
-
-
 
     protected void initVuforia(){
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -147,9 +140,12 @@ public class AutonInitTest extends BaseAuto {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
 */
     }
+
     @Override
-    public void stop() {
+    public void runOpMode() throws InterruptedException {
+        initAutonomous();
+        waitForStart();
         servoThread.stopThread();
-        super.stop();
     }
+
 }

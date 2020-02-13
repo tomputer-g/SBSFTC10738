@@ -6,18 +6,19 @@ import org.firstinspires.ftc.teamcode20.BaseOpMode;
 
 
 public class LightstripTest extends BaseOpMode {
-    @Override
-    public void init() {
-        initLight();
-    }
 
     @Override
-    public void loop() {
-        if(this.gamepad1.a){
-            setLight(true);
-        }
-        if(this.gamepad1.b){
-            setLight(false);
+    public void runOpMode() throws InterruptedException {
+        initLight();
+        waitForStart();
+        while(opModeIsActive()){
+            if(this.gamepad1.a){
+                setLight(true);
+            }
+            if(this.gamepad1.b){
+                setLight(false);
+            }
         }
     }
+
 }

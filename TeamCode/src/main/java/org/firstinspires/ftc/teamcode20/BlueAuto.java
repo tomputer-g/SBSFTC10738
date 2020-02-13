@@ -16,19 +16,16 @@ import java.nio.ByteBuffer;
 @Autonomous
 public class BlueAuto extends BaseAuto {
     int pos = 0;
-    @Override
-    public void init() {
-        initAutonomous();
-        initViewMarks();
-	}
-    @Override
-    public void init_loop(){
-        pos = new_skystoneposition();
-        wait(200);
-    }
+
 
     @Override
-    public void loop() {
+    public void runOpMode() throws InterruptedException {
+        initAutonomous();
+
+        while(!isStarted() && !isStopRequested()){
+            pos = new_skystoneposition();
+            wait(200);
+        }
         //go forward 1 floor mat (24")w
         //vuforia - recognize block & move to pick up
         //after pickup: turn 90 deg. move to platform, drop off
@@ -36,7 +33,7 @@ public class BlueAuto extends BaseAuto {
         //repeat until run out of time; first on other skystones
 
         //initialization
-        servoThread.setTarget(0.95);
+        servoThread.setTarget(0.98);
         platform_grabber.setPower(1);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
@@ -87,16 +84,14 @@ public class BlueAuto extends BaseAuto {
             wait(20);
             //LB.setPower(0);
         }
-        double curAng = getHeading();
-        while (curAng<70){
-            curAng = getHeading();
-        }
-        while (curAng<88){
-            curAng = getHeading();
-            RF.setPower(RF.getPower()*getError(90,curAng)/20);
-            LB.setPower(LB.getPower()*getError(90,curAng)/20);
-            LF.setPower(LF.getPower()*getError(90,curAng)/20);
 
+        while (imuAbsolute<160){ getHeading(); }
+        p.reset();
+        while (imuAbsolute<170&&p.milliseconds()<3000){
+            getHeading();
+            RF.setPower(RF.getPower()*getError(180,imuAbsolute)/20);
+            LB.setPower(LB.getPower()*getError(180,imuAbsolute)/20);
+            LF.setPower(LF.getPower()*getError(180,imuAbsolute)/20);
         }
         setNewGyro(180);
         setAllDrivePower(0);

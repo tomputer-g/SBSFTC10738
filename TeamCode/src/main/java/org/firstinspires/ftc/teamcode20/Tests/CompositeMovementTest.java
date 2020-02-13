@@ -17,37 +17,38 @@ public class CompositeMovementTest extends BaseAuto{
     private double imuinitvalue=0, target=90, result=0, resuuu=0;
     private double acctarget=0;
 
+
     @Override
-    public void init() {
+    public void runOpMode() throws InterruptedException {
         initDrivetrain();
         initIMU();
         initOdometry();
         wait(200);
         setNewGyro0();
-    }
-    @Override
-    public void loop() {
-        if(zheng(this.gamepad1.dpad_up,du)){kP+=Math.pow(10,magnitude);}
-        if(zheng(this.gamepad1.dpad_down,dd)){kP-=Math.pow(10,magnitude);}
-        if(zheng(this.gamepad1.y,y)){kD+=Math.pow(10,magnitude);}
-        if(zheng(this.gamepad1.a,a)){kD-=Math.pow(10,magnitude);}
-        if(zheng(this.gamepad1.x,x)){ssas+=Math.pow(10,magnitude);}
-        if(zheng(this.gamepad1.b,b)){ssas-=Math.pow(10,magnitude);}
-        if(zheng(this.gamepad1.dpad_left,dl)){magnitude++;}
-        if(zheng(this.gamepad1.dpad_right,dr)){magnitude--;}
-        telemetry.addData("magnitude: ",Math.pow(10,magnitude));
-        telemetry.addData("kP: ",kP);
-        telemetry.addData("kD: ",kD);
-        telemetry.addData("imu: ",getHeading());
-        telemetry.addData("ssas: ",ssas);
-        if(zheng(this.gamepad1.left_bumper,lb)){
-            lefty();
-        }
-        if(zheng(this.gamepad1.right_bumper,rb)){
-            righty();
-        }
-        if(zheng(this.gamepad1.start,st)){
-            backy();
+        waitForStart();
+        while(opModeIsActive()){
+            if(zheng(this.gamepad1.dpad_up,du)){kP+=Math.pow(10,magnitude);}
+            if(zheng(this.gamepad1.dpad_down,dd)){kP-=Math.pow(10,magnitude);}
+            if(zheng(this.gamepad1.y,y)){kD+=Math.pow(10,magnitude);}
+            if(zheng(this.gamepad1.a,a)){kD-=Math.pow(10,magnitude);}
+            if(zheng(this.gamepad1.x,x)){ssas+=Math.pow(10,magnitude);}
+            if(zheng(this.gamepad1.b,b)){ssas-=Math.pow(10,magnitude);}
+            if(zheng(this.gamepad1.dpad_left,dl)){magnitude++;}
+            if(zheng(this.gamepad1.dpad_right,dr)){magnitude--;}
+            telemetry.addData("magnitude: ",Math.pow(10,magnitude));
+            telemetry.addData("kP: ",kP);
+            telemetry.addData("kD: ",kD);
+            telemetry.addData("imu: ",getHeading());
+            telemetry.addData("ssas: ",ssas);
+            if(zheng(this.gamepad1.left_bumper,lb)){
+                lefty();
+            }
+            if(zheng(this.gamepad1.right_bumper,rb)){
+                righty();
+            }
+            if(zheng(this.gamepad1.start,st)){
+                backy();
+            }
         }
     }
     private void taunePIDturn(double target, double kp, double kd, double spe, boolean resetOffset){

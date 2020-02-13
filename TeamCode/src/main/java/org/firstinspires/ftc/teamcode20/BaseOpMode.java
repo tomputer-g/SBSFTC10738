@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.qualcomm.hardware.motors.GoBILDA5202Series;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -37,7 +38,7 @@ Vacuum set (2 motors)
 
 Make sure TeleOp2019Trident and BaseAuto can inherit needed stuff by setting them to *protected*!
  */
-public class BaseOpMode extends OpMode {
+public class BaseOpMode extends LinearOpMode {
 
     //Motors
     protected ExpansionHubMotor LF, LB, RF, RB;
@@ -53,7 +54,7 @@ public class BaseOpMode extends OpMode {
     protected Servo grabber_extend1, grabber_extend2;
     protected DcMotor platform_grabber, xOdometry;
     protected DcMotor L1, L2;
-    protected final double grabber_open = 0.4, grabber_closed = 0.7;
+    protected final double grabber_open = 0.35, grabber_closed = 0.7;
     private final String logPrefix = "/sdcard/";
     private BufferedWriter logWriter;
 
@@ -69,14 +70,13 @@ public class BaseOpMode extends OpMode {
         msStuckDetectInit = 30000;
     }
 
-    @Override public void init() {
+
+    @Override
+    public void runOpMode() throws InterruptedException {
         hub2 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
         hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
     }
 
-    @Override public void loop() {
-
-    }
 
     protected void initPlatformGrabber(){
         platform_grabber = hardwareMap.get(DcMotor.class, "platform");
@@ -178,7 +178,7 @@ public class BaseOpMode extends OpMode {
     }
 
     protected void wait(int time){
-        try {sleep(time);} catch (InterruptedException e) {e.printStackTrace();}
+        sleep(time);
     }
 
     protected boolean near(double value, double target, double tolerance){

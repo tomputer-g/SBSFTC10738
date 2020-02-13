@@ -44,7 +44,7 @@ public class LocalizationTest extends LinearOpMode {
         DcMotorEx xOdo = hardwareMap.get(DcMotorEx.class, "xOdo");
         xOdo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         xOdo.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+        drive.setPoseEstimate(new Pose2d(-63,63,0));
         waitForStart();
 
 
@@ -73,18 +73,17 @@ public class LocalizationTest extends LinearOpMode {
             drive.setDrivePower(vel);
 
             drive.update();
-            //RevBulkData bulk = hub4.getBulkInputData();
+            RevBulkData bulk = hub4.getBulkInputData();
 
 
             Pose2d poseEstimate = drive.getPoseEstimate();
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", Math.toDegrees(poseEstimate.getHeading()));
-
-            /*telemetry.addData("Xodo",bulk.getMotorCurrentPosition(2));
+            telemetry.addData("Xodo",bulk.getMotorCurrentPosition(2));
             telemetry.addData("L2",bulk.getMotorCurrentPosition(1));
             telemetry.addData("platform",bulk.getMotorCurrentPosition(3));
-            */
+
             telemetry.update();
 
 

@@ -20,69 +20,74 @@ public class OdometrySpeedRunningTest extends BaseAuto {
 
     protected final double odometryEncPerInch = 1324.28;
 
+
     @Override
-    public void init() {
+    public void runOpMode() throws InterruptedException {
         initDrivetrain();
         initOdometry();
         initLogger("OdoSpeedTest"+System.currentTimeMillis()+".csv");
         odometrySpeedThread = new OdometrySpeedThread();
         odometrySpeedThread.start();
+        waitForStart();
+        while(opModeIsActive()){
+            if(this.gamepad1.b){BPrimed = true;}if(!this.gamepad1.b && BPrimed) {
+                BPrimed = false;
+                runOdoSpeed = !runOdoSpeed;
+            }
+            if(this.gamepad1.left_bumper){lb = true;}if(!this.gamepad1.left_bumper && lb){
+                lb = false;
+                currentSelectParamIndex--;
+                if(currentSelectParamIndex < 0){
+                    currentSelectParamIndex = params.length - 1;
+                }
+            }
+            if(this.gamepad1.right_bumper){rb = true;}if(!this.gamepad1.right_bumper && rb){
+                rb = false;
+                currentSelectParamIndex++;
+                if(currentSelectParamIndex >= params.length){
+                    currentSelectParamIndex = 0;
+                }
+            }
+            if(this.gamepad1.dpad_left){l = true;}if(!this.gamepad1.dpad_left && l){
+                l = false;
+                if(currentSelectParamIndex == 2){
+                    params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] - 1E4) * 1E9) / 1E9;
+                }else {
+                    params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] - 1E-6) * 1E9) / 1E9;
+                }
+            }
+            if(this.gamepad1.dpad_right){r = true;}if(!this.gamepad1.dpad_right && r){
+                r = false;
+                if(currentSelectParamIndex == 2){
+                    params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] + 1E4) * 1E9) / 1E9;
+                }else {
+                    params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] + 1E-6) * 1E9) / 1E9;
+                }
+            }
+            if(this.gamepad1.dpad_up){u = true;}if(!this.gamepad1.dpad_up && u){
+                u = false;
+                params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] * 10.0) * 1E9) / 1E9;
+
+            }
+            if(this.gamepad1.dpad_down){d = true;}if(!this.gamepad1.dpad_down && d){
+                d = false;
+                params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] / 10.0) * 1E9) / 1E9;
+
+            }
+
+            telemetry.addData("parameters",params[0]+", "+params[1]+", "+params[2]);
+            telemetry.addData("now changing", paramNames[currentSelectParamIndex]);
+            if(runOdoSpeed)telemetry.addLine("Odometry speed running");
+            telemetry.addData("Actual speed (enc/s)",odometrySpeedThread.lastSpeed);
+            telemetry.addData("Actual speed (power)",odometrySpeedThread.setPower);
+            telemetry.update();
+        }
+        stopLog();
     }
 
-    @Override
-    public void loop() {
-        if(this.gamepad1.b){BPrimed = true;}if(!this.gamepad1.b && BPrimed) {
-            BPrimed = false;
-            runOdoSpeed = !runOdoSpeed;
-        }
-        if(this.gamepad1.left_bumper){lb = true;}if(!this.gamepad1.left_bumper && lb){
-            lb = false;
-            currentSelectParamIndex--;
-            if(currentSelectParamIndex < 0){
-                currentSelectParamIndex = params.length - 1;
-            }
-        }
-        if(this.gamepad1.right_bumper){rb = true;}if(!this.gamepad1.right_bumper && rb){
-            rb = false;
-            currentSelectParamIndex++;
-            if(currentSelectParamIndex >= params.length){
-                currentSelectParamIndex = 0;
-            }
-        }
-        if(this.gamepad1.dpad_left){l = true;}if(!this.gamepad1.dpad_left && l){
-            l = false;
-            if(currentSelectParamIndex == 2){
-                params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] - 1E4) * 1E9) / 1E9;
-            }else {
-                params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] - 1E-6) * 1E9) / 1E9;
-            }
-        }
-        if(this.gamepad1.dpad_right){r = true;}if(!this.gamepad1.dpad_right && r){
-            r = false;
-            if(currentSelectParamIndex == 2){
-                params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] + 1E4) * 1E9) / 1E9;
-            }else {
-                params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] + 1E-6) * 1E9) / 1E9;
-            }
-        }
-        if(this.gamepad1.dpad_up){u = true;}if(!this.gamepad1.dpad_up && u){
-            u = false;
-            params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] * 10.0) * 1E9) / 1E9;
 
-        }
-        if(this.gamepad1.dpad_down){d = true;}if(!this.gamepad1.dpad_down && d){
-            d = false;
-            params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] / 10.0) * 1E9) / 1E9;
 
-        }
 
-        telemetry.addData("parameters",params[0]+", "+params[1]+", "+params[2]);
-        telemetry.addData("now changing", paramNames[currentSelectParamIndex]);
-        if(runOdoSpeed)telemetry.addLine("Odometry speed running");
-        telemetry.addData("Actual speed (enc/s)",odometrySpeedThread.lastSpeed);
-        telemetry.addData("Actual speed (power)",odometrySpeedThread.setPower);
-        telemetry.update();
-    }
 
 
     private class OdometrySpeedThread extends Thread{
@@ -134,8 +139,4 @@ public class OdometrySpeedRunningTest extends BaseAuto {
         }
     }
 
-    @Override
-    public void stop() {
-        stopLog();
-    }
 }
