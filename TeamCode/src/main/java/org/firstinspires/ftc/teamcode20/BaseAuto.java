@@ -71,7 +71,7 @@ public class BaseAuto extends BaseOpMode {
     private static final float bridgeRotY = 59;                                 // Units are degrees
     private static final float bridgeRotZ = 180;
 
-    private VuforiaTrackable rear1,front1;//from kuaishou.com
+    private VuforiaTrackable rear1,rear2;//from kuaishou.com
     // Constants for perimeter targets
     private static final float halfField = 72 * mmPerInch;
     private static final float quadField  = 36 * mmPerInch;
@@ -125,12 +125,12 @@ public class BaseAuto extends BaseOpMode {
         targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
         rear1 = targetsSkyStone.get(11);
         rear1.setName("Rear Perimeter 1");
-        front1 = targetsSkyStone.get(7);
-        front1.setName("Front Perimeter 1");
+        rear2 = targetsSkyStone.get(12);
+        rear2.setName("Rear Perimeter 2");
         rear1.setLocation(OpenGLMatrix
                 .translation(halfField, quadField, mmTargetHeight)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
-        front1.setLocation(OpenGLMatrix
+        rear2.setLocation(OpenGLMatrix
                 .translation(-halfField, -quadField, mmTargetHeight)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
         allTrackables.addAll(targetsSkyStone);
@@ -145,7 +145,7 @@ public class BaseAuto extends BaseOpMode {
         if(isBlue)
             trackable=rear1;
         else
-            trackable=front1;
+            trackable=rear2;
 
         ElapsedTime ti=new ElapsedTime();
         while ((!targetVisible) && ti.milliseconds()<1000) {
@@ -162,8 +162,8 @@ public class BaseAuto extends BaseOpMode {
             x=translation.get(0) / mmPerInch-6.5; y= translation.get(1) / mmPerInch+9;
         }
         else {
-            x=0;y=0;
-    
+            if(isBlue){ x=38;y=44.5;}
+            else{ x=-55.35;y=-24.7;}
         }
         targetsSkyStone.deactivate();
         xy[0]=x;
@@ -1191,6 +1191,42 @@ public class BaseAuto extends BaseOpMode {
             servoThread.setTarget(0.65);
             moveInchesGOY_XF_F(info[result+2]-1, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
             dd = adjustToViewMark(true);
+        }
+        grabber.setPosition(grabber_open);
+    }
+
+    protected void second_and_more_R(int result) {
+        double curX;
+        double info[] = {78.75,78.75+8,78.75+16,78.75+24,78.75+24,78.75+24};
+        double origin[] = {0, -38.5}, dd[] = adjustToViewMark(false);
+        for (int i = 0; i < 1; ++i) {
+            setAllDrivePower(0);
+            curX = getXOdometry();
+            if (i > 0) servoThread.setTarget(0.75);
+            grabber.setPosition(grabber_open);
+            align(-90);
+            moveInchesGOY_XF_F(-info[result+2], 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
+            servoThread.setTarget(0.98);
+            align(0);
+
+            double yorigin = getY1Odometry();
+            while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 4) {
+                setAllDrivePowerG(-.3, -.3, .3, .3);
+            }
+            while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 8) {
+                setAllDrivePowerG(-.1, -.1, .1, .1);
+            }
+            grabber.setPosition(grabber_closed);
+            wait(300);
+            servoThread.setTarget(0.85);
+            while ((getY1Odometry() - yorigin) * -1 > odometryEncYPerInch * 2) {
+                setAllDrivePowerG(.3, .3, -.3, -.3);
+            }
+            setAllDrivePower(0);
+            align(-90);
+            servoThread.setTarget(0.65);
+            moveInchesGOY_XF_F(info[result+2]-1, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
+            dd = adjustToViewMark(false);
         }
         grabber.setPosition(grabber_open);
     }
