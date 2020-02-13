@@ -14,30 +14,31 @@ public class OdometryIKMoveInchesTest extends BaseAuto {
 
     //FOR 0.3: use P = 0.7, D = 0.003
 
+
     @Override
-    public void init() {
+    public void runOpMode() throws InterruptedException {
         initDrivetrain();
         initOdometry();
         initIMU();
         initLogger("PIDtest"+System.currentTimeMillis()+".csv");
 
-    }
-    @Override
-    public void loop() {
-        if(this.gamepad1.a){APrimed = true;}if(APrimed && !this.gamepad1.a){ APrimed = false;
-            resetY1Odometry();
-            moveInchesGOY(targetInches,speed);
-        }
-        if(this.gamepad1.dpad_left){leftP = true;}if(leftP && !this.gamepad1.dpad_left){ leftP = false;
-            //speed -= 0.05;
-            kP -= 1E-3;
-        }
-        if(this.gamepad1.dpad_right){rightP = true;}if(rightP && !this.gamepad1.dpad_right){ rightP = false;
-            //speed += 0.05;
-            kP += 1E-3;
-        }
-        if(this.gamepad1.dpad_down){downP = true;}if(downP && !this.gamepad1.dpad_down){ downP = false;
-            kP /= 10.0;
+
+        waitForStart();
+        while(opModeIsActive()){
+            if(this.gamepad1.a){APrimed = true;}if(APrimed && !this.gamepad1.a){ APrimed = false;
+                resetY1Odometry();
+                moveInchesGOY(targetInches,speed);
+            }
+            if(this.gamepad1.dpad_left){leftP = true;}if(leftP && !this.gamepad1.dpad_left){ leftP = false;
+                //speed -= 0.05;
+                kP -= 1E-3;
+            }
+            if(this.gamepad1.dpad_right){rightP = true;}if(rightP && !this.gamepad1.dpad_right){ rightP = false;
+                //speed += 0.05;
+                kP += 1E-3;
+            }
+            if(this.gamepad1.dpad_down){downP = true;}if(downP && !this.gamepad1.dpad_down){ downP = false;
+                kP /= 10.0;
             /*if(this.gamepad1.left_bumper){
                 //kP -= 0.001;
                 //kD /= 10.0;
@@ -50,9 +51,9 @@ public class OdometryIKMoveInchesTest extends BaseAuto {
             }
 
              */
-        }
-        if(this.gamepad1.dpad_up){upP = true;}if(upP && !this.gamepad1.dpad_up){ upP = false;
-            kP *= 10.0;
+            }
+            if(this.gamepad1.dpad_up){upP = true;}if(upP && !this.gamepad1.dpad_up){ upP = false;
+                kP *= 10.0;
             /*if(this.gamepad1.left_bumper){
                 //kP += 0.001;
                 //kD *= 10.0;
@@ -65,31 +66,28 @@ public class OdometryIKMoveInchesTest extends BaseAuto {
             }
 
              */
+            }
+            brakeSpeed = Math.round(brakeSpeed * 100) / 100.0;
+            kP = Math.round(kP * 10000) / 10000.0;
+            kI = Math.round(kI * 1E9) / 1.0E9;
+            kD = Math.round(kD * 1E9) / 1.0E9;
+            k = Math.round(k * 100) / 100.0;
+            telemetry.addData("enc Y", getY1Odometry());
+            telemetry.addData("target", targetInches * odometryEncPerInch);
+            telemetry.addData("speed", speed);
+            telemetry.addData("kP", kP);
+            telemetry.addData("kI", kI);
+            telemetry.addData("kD", kD);
+            telemetry.addData("k",k);
+            telemetry.addData("braking dist",brakeDist);
+            telemetry.update();
         }
-        brakeSpeed = Math.round(brakeSpeed * 100) / 100.0;
-        kP = Math.round(kP * 10000) / 10000.0;
-        kI = Math.round(kI * 1E9) / 1.0E9;
-        kD = Math.round(kD * 1E9) / 1.0E9;
-        k = Math.round(k * 100) / 100.0;
-        telemetry.addData("enc Y", getY1Odometry());
-        telemetry.addData("target", targetInches * odometryEncPerInch);
-        telemetry.addData("speed", speed);
-        telemetry.addData("kP", kP);
-        telemetry.addData("kI", kI);
-        telemetry.addData("kD", kD);
-        telemetry.addData("k",k);
-        telemetry.addData("braking dist",brakeDist);
-        telemetry.update();
+        stopLog();
+
     }
+
     protected final double odometryEncPerInch = 1316;//4096.0/Math.PI;
     protected int offsetY = 0;
-
-    @Override
-    public void stop() {
-        stopLog();
-        super.stop();
-
-    }
 
     protected void moveInchesGOY(double yInch, double speed){
 

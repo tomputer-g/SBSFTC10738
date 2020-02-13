@@ -17,19 +17,18 @@ import java.nio.ByteBuffer;
 
 @Autonomous
 public class RedAuto extends BaseAuto {
+
+
     int pos = 0;
+
     @Override
-    public void init() {
+    public void runOpMode() throws InterruptedException {
         initAutonomous();
         initViewMarks();
-    }
-    @Override
-    public void init_loop(){
-        pos = new_skystoneposition();
-        wait(200);
-    }
-    @Override
-    public void loop(){
+        while(!isStarted()){
+            pos = new_skystoneposition();
+            wait(200);
+        }
         //shutdownVuforia();
         servoThread.setTarget(0.98);
         platform_grabber.setPower(1);
@@ -100,9 +99,27 @@ public class RedAuto extends BaseAuto {
         after_dragged_foundation_R();
         setNewGyro(-90);
 
-        second_and_more_R(pos);
+        second_and_more_R(pos);//???????
 
+
+        align(0);
+        if(pos==1 || pos==0)moveInchesGOXT(-4,0.8,1,1000);
+        else moveInchesGOXT(4,0.8,1,1000);
+        moveInchesGOY(14,0.3);
+        //moveInchesGOY((right.getDistance(DistanceUnit.INCH)-2.6)*.69,.4);
+        grabber.setPosition(grabber_closed);
+        wait(300);
+        setAllDrivePower(0);
+        servoThread.setTarget(0.85);
+        //setAllDrivePower(0.0);
+        moveInchesG(0,-9,0.4);
+        PIDturnfast(-90,false);
+        setNewGyro(-90);
+        int sfi = 0;
+        if(pos==2)sfi = -9;
+        moveInchesGOY(74+sfi,0.9);
+        grabber.setPosition(grabber_open);
+        moveInchesG(0,-9,0.5);
         moveInchesGOY_XF_F(-44,0.6,1,(int) (getXOdometry() - (-38.5 - adjustToViewMark(false)[1]) * odometryEncXPerInch));
-        requestOpModeStop();
     }
 }

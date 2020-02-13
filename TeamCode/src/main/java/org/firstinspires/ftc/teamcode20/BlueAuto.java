@@ -16,19 +16,17 @@ import java.nio.ByteBuffer;
 @Autonomous
 public class BlueAuto extends BaseAuto {
     int pos = 0;
-    @Override
-    public void init() {
-        initAutonomous();
-        initViewMarks();
-	}
-    @Override
-    public void init_loop(){
-        pos = new_skystoneposition();
-        wait(200);
-    }
+
 
     @Override
-    public void loop() {
+    public void runOpMode() throws InterruptedException {
+        initAutonomous();
+        initViewMarks();
+
+        while(!isStarted()){
+            pos = new_skystoneposition();
+            wait(200);
+        }
         //go forward 1 floor mat (24")w
         //vuforia - recognize block & move to pick up
         //after pickup: turn 90 deg. move to platform, drop off
@@ -129,10 +127,8 @@ public class BlueAuto extends BaseAuto {
         moveInchesGOY_XF(77+sfi,0.9,1);
         grabber.setPosition(grabber_open);
         moveInchesG(0,-13,0.5);
-
-
          */
+        moveInchesG(0,-13,0.5);//?????
         moveInchesGOY_XF_F(-44,0.6,1,(int) (getXOdometry() - (41 - adjustToViewMark(true)[1]) * odometryEncXPerInch));
-        requestOpModeStop();
     }
 }

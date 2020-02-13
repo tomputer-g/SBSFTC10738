@@ -24,97 +24,86 @@ public class OdometryMoveInchesTest extends BaseAuto {
     private boolean l, r, u, d, lb, rb, y, APrimed = false, x = false, platformGrabbed = false;
 
     protected final double odometryEncYPerInch = 1324.28, odometryEncXPerInch = 1316.38;
+
     @Override
-    public void init() {
-        super.init();
+    public void runOpMode() throws InterruptedException {
         initDrivetrain();
         initPlatformGrabber();
         initOdometry();
         initIMU();
         initLogger("OdoMoveInchesX"+System.currentTimeMillis()+".csv");
-
-    }
-    @Override
-    public void loop() {
-        if(this.gamepad1.a){APrimed = true;}if(APrimed && !this.gamepad1.a){ APrimed = false;
-            resetY1Odometry();
-            resetXOdometry();
-            setNewGyro0();
-            LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            moveInchesGOY(params[4], params[3]);
-        }
-
-        if(this.gamepad1.left_bumper){lb = true;}if(!this.gamepad1.left_bumper && lb){
-            lb = false;
-            currentSelectParamIndex--;
-            if(currentSelectParamIndex < 0){
-                currentSelectParamIndex = params.length - 1;
+        waitForStart();
+        while(opModeIsActive()){
+            if(this.gamepad1.a){APrimed = true;}if(APrimed && !this.gamepad1.a){ APrimed = false;
+                resetY1Odometry();
+                resetXOdometry();
+                setNewGyro0();
+                LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                moveInchesGOY(params[4], params[3]);
             }
-        }
-        if(this.gamepad1.right_bumper){rb = true;}if(!this.gamepad1.right_bumper && rb){
-            rb = false;
-            currentSelectParamIndex++;
-            if(currentSelectParamIndex >= params.length){
-                currentSelectParamIndex = 0;
+
+            if(this.gamepad1.left_bumper){lb = true;}if(!this.gamepad1.left_bumper && lb){
+                lb = false;
+                currentSelectParamIndex--;
+                if(currentSelectParamIndex < 0){
+                    currentSelectParamIndex = params.length - 1;
+                }
             }
-        }
-        if(this.gamepad1.dpad_left){l = true;}if(!this.gamepad1.dpad_left && l){
-            l = false;
-            params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] - 1) * 1E9) / 1E9;
-
-        }
-        if(this.gamepad1.dpad_right){r = true;}if(!this.gamepad1.dpad_right && r){
-            r = false;
-            params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] + 1) * 1E9) / 1E9;
-
-        }
-        if(this.gamepad1.dpad_up){u = true;}if(!this.gamepad1.dpad_up && u){
-            u = false;
-            params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] * 10.0) * 1E9) / 1E9;
-
-        }
-        if(this.gamepad1.dpad_down){d = true;}if(!this.gamepad1.dpad_down && d){
-            d = false;
-            params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] / 10.0) * 1E9) / 1E9;
-
-        }
-        if(this.gamepad1.y){y = true;}if(!this.gamepad1.y && y){
-            y=false;
-            params[currentSelectParamIndex] = -params[currentSelectParamIndex];
-        }
-
-        if(this.gamepad1.x) {
-            x = true;
-        }if(!this.gamepad1.x && x){
-            x = false;
-            if(platformGrabbed){//already held
-                platformGrabbed = false;
-                platform_grabber.setPower(1);
-                wait(100);//TODO: blocks thread?
-                platform_grabber.setPower(0);
-            }else{
-                platformGrabbed = true;
-                platform_grabber.setPower(-0.4);
+            if(this.gamepad1.right_bumper){rb = true;}if(!this.gamepad1.right_bumper && rb){
+                rb = false;
+                currentSelectParamIndex++;
+                if(currentSelectParamIndex >= params.length){
+                    currentSelectParamIndex = 0;
+                }
             }
+            if(this.gamepad1.dpad_left){l = true;}if(!this.gamepad1.dpad_left && l){
+                l = false;
+                params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] - 1) * 1E9) / 1E9;
+
+            }
+            if(this.gamepad1.dpad_right){r = true;}if(!this.gamepad1.dpad_right && r){
+                r = false;
+                params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] + 1) * 1E9) / 1E9;
+
+            }
+            if(this.gamepad1.dpad_up){u = true;}if(!this.gamepad1.dpad_up && u){
+                u = false;
+                params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] * 10.0) * 1E9) / 1E9;
+
+            }
+            if(this.gamepad1.dpad_down){d = true;}if(!this.gamepad1.dpad_down && d){
+                d = false;
+                params[currentSelectParamIndex] = Math.round((params[currentSelectParamIndex] / 10.0) * 1E9) / 1E9;
+
+            }
+            if(this.gamepad1.y){y = true;}if(!this.gamepad1.y && y){
+                y=false;
+                params[currentSelectParamIndex] = -params[currentSelectParamIndex];
+            }
+
+            if(this.gamepad1.x) {
+                x = true;
+            }if(!this.gamepad1.x && x){
+                x = false;
+                if(platformGrabbed){//already held
+                    platformGrabbed = false;
+                    platform_grabber.setPower(1);
+                    wait(100);//TODO: blocks thread?
+                    platform_grabber.setPower(0);
+                }else{
+                    platformGrabbed = true;
+                    platform_grabber.setPower(-0.4);
+                }
+            }
+            telemetry.addData("parameters",params[0]+", "+params[1]+", "+params[2]);
+            telemetry.addData("now changing", paramNames[currentSelectParamIndex]);
+            telemetry.addData("enc X", getXOdometry());
+            telemetry.addData("enc Y1",getY1Odometry());
+            telemetry.update();
         }
-        telemetry.addData("parameters",params[0]+", "+params[1]+", "+params[2]);
-        telemetry.addData("now changing", paramNames[currentSelectParamIndex]);
-        telemetry.addData("enc X", getXOdometry());
-        telemetry.addData("enc Y1",getY1Odometry());
-        telemetry.update();
-    }
-
-
-    @Override
-    public void stop() {
         stopLog();
-        super.stop();
     }
-
-
-
-
 
     protected void moveInchesGOY(double yInch, double speed,double kP,double kD){//use 0.4 for short-dist
         yInch = -yInch;
