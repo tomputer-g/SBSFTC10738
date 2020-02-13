@@ -53,7 +53,7 @@ public class RedAuto extends BaseAuto {
 
         //move forward to the skystone
         ElapsedTime p = new ElapsedTime();
-        moveInchesGOY(30.5,0.6,(1+(13.65-hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS))/13.65));
+        //moveInchesGOY(30.5,0.6,(1+(13.65-hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS))/13.65));
         //grab 1st block
         while(-getY1Odometry() < 28*odometryEncYPerInch)setAllDrivePowerG(-.6,-.6,.6,.6);
         setAllDrivePowerG(-.1,-.1,.1,.1);
@@ -102,7 +102,7 @@ public class RedAuto extends BaseAuto {
 
         second_and_more_R(pos);
 
-        moveInchesGOY_XF_F(-44,0.6,1,(int) (getXOdometry() - (-38.5 - adjustToViewMark(true)[1]) * odometryEncXPerInch));
+        moveInchesGOY_XF_F(-44,0.6,1,(int) (getXOdometry() - (-38.5 - adjustToViewMark(false)[1]) * odometryEncXPerInch));
         requestOpModeStop();
     }
 }
