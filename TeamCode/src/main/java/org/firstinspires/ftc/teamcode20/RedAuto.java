@@ -31,7 +31,7 @@ public class RedAuto extends BaseAuto {
     @Override
     public void loop(){
         //shutdownVuforia();
-        servoThread.setTarget(0.95);
+        servoThread.setTarget(0.98);
         platform_grabber.setPower(1);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
@@ -55,12 +55,14 @@ public class RedAuto extends BaseAuto {
         ElapsedTime p = new ElapsedTime();
         moveInchesGOY(30.5,0.6,(1+(13.65-hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS))/13.65));
         //grab 1st block
+        while(-getY1Odometry() < 28*odometryEncYPerInch)setAllDrivePowerG(-.6,-.6,.6,.6);
+        setAllDrivePowerG(-.1,-.1,.1,.1);
         grabber.setPosition(grabber_closed);
         wait(300);
         servoThread.setTarget(0.85);
-        //setAllDrivePower(0.0);
-        moveInchesG(0,-6,0.4);
 
+        while(-getY1Odometry()> 25*odometryEncYPerInch)setAllDrivePowerG(.3,.3,-.3,-.3);
+        setAllDrivePower(0);
         //move forward & approach foundation
         //turn(90, 0.5,1);
         align(90);
@@ -87,7 +89,7 @@ public class RedAuto extends BaseAuto {
         }
         while (imuAbsolute>20){ getHeading(); }
         p.reset();
-        while (imuAbsolute>5 && p.milliseconds()<3000){
+        while (imuAbsolute>10 && p.milliseconds()<3000){
             getHeading();
             RB.setPower(RF.getPower()*getError(imuAbsolute,0)/20);
             LF.setPower(LB.getPower()*getError(imuAbsolute,0)/20);

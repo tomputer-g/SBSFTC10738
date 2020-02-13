@@ -162,7 +162,7 @@ public class BaseAuto extends BaseOpMode {
             x=translation.get(0) / mmPerInch-6.5; y= translation.get(1) / mmPerInch+9;
         }
         else {
-            if(isBlue){ x=0;y=0;}
+            if(isBlue){ x=38;y=44.5;}
             else{ x=-55.35;y=-24.7;}
         }
         targetsSkyStone.deactivate();

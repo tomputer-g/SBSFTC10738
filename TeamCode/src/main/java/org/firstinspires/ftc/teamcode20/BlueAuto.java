@@ -36,7 +36,7 @@ public class BlueAuto extends BaseAuto {
         //repeat until run out of time; first on other skystones
 
         //initialization
-        servoThread.setTarget(0.95);
+        servoThread.setTarget(0.98);
         platform_grabber.setPower(1);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
@@ -90,7 +90,7 @@ public class BlueAuto extends BaseAuto {
 
         while (imuAbsolute<160){ getHeading(); }
         p.reset();
-        while (imuAbsolute<175&&p.milliseconds()<3000){
+        while (imuAbsolute<170&&p.milliseconds()<3000){
             getHeading();
             RF.setPower(RF.getPower()*getError(180,imuAbsolute)/20);
             LB.setPower(LB.getPower()*getError(180,imuAbsolute)/20);
