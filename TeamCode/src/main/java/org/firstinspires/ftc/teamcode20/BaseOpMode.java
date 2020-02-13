@@ -54,7 +54,7 @@ public class BaseOpMode extends LinearOpMode {
     protected Servo grabber_extend1, grabber_extend2;
     protected DcMotor platform_grabber, xOdometry;
     protected DcMotor L1, L2;
-    protected final double grabber_open = 0.4, grabber_closed = 0.7;
+    protected final double grabber_open = 0.25, grabber_closed = 0.7;
     private final String logPrefix = "/sdcard/";
     private BufferedWriter logWriter;
 

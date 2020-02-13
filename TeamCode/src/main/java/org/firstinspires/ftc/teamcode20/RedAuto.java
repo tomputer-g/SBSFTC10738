@@ -72,7 +72,7 @@ public class RedAuto extends BaseAuto {
         //while (p.milliseconds()<900)setAllDrivePowerG(-.5,.5,-.5,.5);
 
 
-        moveInchesGOXT(18-getXOdometry()/odometryEncXPerInch,.5,1,2000); //drag +errordistance
+        moveInchesGOXT(20-getXOdometry()/odometryEncXPerInch,.5,1,2000); //drag +errordistance
 
         platform_grabber.setPower(-1);
         wait(300);
@@ -101,7 +101,8 @@ public class RedAuto extends BaseAuto {
 
         second_and_more_R(pos);
 
-        moveInchesGOY_XF_F(-44,0.6,1,(int) (getXOdometry() - (-38.5 - adjustToViewMark(false)[1]) * odometryEncXPerInch));
+        //moveInchesGOY_XF_F(-44,0.6,1,(int) (getXOdometry() - (-38.5 - adjustToViewMark(false)[1]) * odometryEncXPerInch));
+        moveInchesGOY(-44,0.6);
         requestOpModeStop();
     }
 }
