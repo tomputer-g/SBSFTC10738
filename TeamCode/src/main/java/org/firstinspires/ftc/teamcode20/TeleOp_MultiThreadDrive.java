@@ -12,7 +12,7 @@ import static java.lang.Thread.sleep;
 
 @TeleOp(group = "Final")
 public class TeleOp_MultiThreadDrive extends BaseAuto {
-    private boolean b = false, rb = false, y = false, dpad_r = false, dpad_l = false, start = false, a = false;
+    private boolean b = false, rb = false, y = false, dpad_r = false, dpad_l = false, start = false, a = false, a_lt = false, a_rt = false;
     private boolean[] Xprimed={true};
     private boolean tapeDirectionOut = true;
     //slide
@@ -27,7 +27,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {
         ElapsedTime t = new ElapsedTime();
-        showTelemetry = false;
+        showTelemetry = true;
         Log.i("Teleop init", ""+t.nanoseconds()+" start drivetrain");
         initDrivetrain();
         Log.i("Teleop init", ""+t.nanoseconds()+" start grabber");
@@ -97,16 +97,38 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             }
 
 
-            if(this.gamepad1.a && this.gamepad1.left_trigger>0.5){
+            /*if(this.gamepad1.a && this.gamepad1.left_trigger>0.5){
                 autoPlaceLevel();
             }else if(this.gamepad1.a && this.gamepad1.right_trigger > 0.5){
                 placeLevel = 0;
                 autoPlaceLevel();
             }
 
-            if(this.gamepad1.a){a = true;}if(!this.gamepad1.a && a){
+             */
+
+            if(this.gamepad1.a){
+                a = true;
+                if(this.gamepad1.left_trigger > 0.5){
+                    a_lt = true;
+                    telemetry.addLine("LT");
+                }
+                if(this.gamepad1.right_trigger > 0.5){
+                    a_rt = true;
+                    telemetry.addLine("RT");
+                }
+
+            }if(!this.gamepad1.a && a){
                 a = false;
-                placeLevel++;
+                if(a_lt){
+                    //remain the same level
+                }else if(a_rt){
+                    //reset
+                    placeLevel = 0;
+                }else {
+                    placeLevel++;
+                }
+                a_lt = false;
+                a_rt = false;
                 autoPlaceLevel();
             }
 
@@ -126,7 +148,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
             if(this.gamepad1.start){start = true;}if(start && !this.gamepad1.start){
                 start = false;
-                if(france.getPosition() >.5){
+                if(france.getPosition() >.25){
                     france.setPosition(0);
                 }else{
                     france.setPosition(.5);
