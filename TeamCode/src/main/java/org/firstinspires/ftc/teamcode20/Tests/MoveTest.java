@@ -50,16 +50,18 @@ public class MoveTest extends BaseAuto {
     @Override
     public void init(){
         msStuckDetectInit = 3000000;
-        drive=new SampleMecanumDriveREV(hardwareMap);
-        drive.setPoseEstimate(new Pose2d(36,63,-Math.PI/2));
+        //drive=new SampleMecanumDriveREV(hardwareMap);
+        //drive.setPoseEstimate(new Pose2d(36,63,-Math.PI/2));
         dashboard=FtcDashboard.getInstance();
-        drive.setPoseEstimate(new Pose2d(63,63,-Math.PI/2));
+        //drive.setPoseEstimate(new Pose2d(63,63,-Math.PI/2));
         //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         speed=0.3;
         speeed = 0.03;
         dir=1;
         y = -90;
         x = 0;
+        initVuforia();
+        initViewMarks();
         // 三天之内刹了你();
     }
 
@@ -81,31 +83,9 @@ public class MoveTest extends BaseAuto {
         //if(zheng(this.gamepad1.dpad_up,ee))y+=1;
         //if(zheng(this.gamepad1.dpad_down,ff))y+=1;
         //if(zheng(this.gamepad1.y,m))speed+=.1;
-
-        if(zheng(this.gamepad1.right_bumper,lF)) {
-
-        }
-
-        if(zheng(this.gamepad1.dpad_left,e)) {
-            drive.turn(Math.PI/2);
-        }
-        //drive.setMotorPowers(-.3,-.3,.3,.3);
-        drive.update();
-        for(DcMotorEx m: drive.getMotors())
-            telemetry.addData("Enc",m.getCurrentPosition());
-        for(double p: drive.getWheelPositions())
-            telemetry.addData("Pos",p);
-        /*
-        telemetry.addData("x: ",x);
-        telemetry.addData("y: ",y);
-        //telemetry.addData("Imu: ","%.2f",getHeading());
-        telemetry.addData("target: ",acctarget);
-        telemetry.addData("Speed: ","%.2f" ,speed);
-        //telemetry.addData("[x]: ","%.2f",n_pass[0]);
-        //telemetry.addData("[y]: ","%.2f" ,n_pass[1]);;
-         */
+        double dd[] = adjustToViewMark(true);
+        telemetry.addLine(dd[0]+" "+dd[1]);
         telemetry.update();
-
     }
 
     private class UC extends Thread{

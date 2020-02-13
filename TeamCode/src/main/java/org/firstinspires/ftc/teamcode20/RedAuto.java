@@ -71,7 +71,7 @@ public class RedAuto extends BaseAuto {
         //while (p.milliseconds()<900)setAllDrivePowerG(-.5,.5,-.5,.5);
 
 
-        moveInchesGOXT(13.5-getXOdometry()/odometryEncXPerInch,.5,1,1200); //drag +errordistance
+        moveInchesGOXT(15-getXOdometry()/odometryEncXPerInch,.5,1,1300); //drag +errordistance
 
         platform_grabber.setPower(-1);
         wait(300);
@@ -99,43 +99,7 @@ public class RedAuto extends BaseAuto {
         setNewGyro(-90);
 
         second_and_more_R(pos);
-        /*
 
-        moveInchesGOXT(8,0.8,1,1500);
-
-        p.reset();
-        while (p.milliseconds()<1100)setAllDrivePowerG(.7,.7,-.7,-.7);
-        p.reset();
-        while (p.milliseconds()<600)setAllDrivePowerG(.2,.2,-.2,-.2);
-
-
-        int shiftt = 0;
-        if(pos == 0 || pos == 1) shiftt = -8;
-        moveInchesGOY(-96.5+shiftt,0.6);
-        servoThread.setTarget(0.95);
-        PIDturnfast(90,false);
-        setNewGyro(0);
-
-        align(0);
-        if(pos==1 || pos==0)moveInchesGOXT(-4,0.8,1,1000);
-        else moveInchesGOXT(4,0.8,1,1000);
-        moveInchesGOY(14,0.3);
-        //moveInchesGOY((right.getDistance(DistanceUnit.INCH)-2.6)*.69,.4);
-        grabber.setPosition(grabber_closed);
-        wait(300);
-        setAllDrivePower(0);
-        servoThread.setTarget(0.85);
-        //setAllDrivePower(0.0);
-        moveInchesG(0,-9,0.4);
-        PIDturnfast(-90,false);
-        setNewGyro(-90);
-        int sfi = 0;
-        if(pos==2)sfi = -9;
-        moveInchesGOY(74+sfi,0.9);
-        grabber.setPosition(grabber_open);
-        moveInchesG(0,-9,0.5);
-
-        */
         moveInchesGOY_XF_F(-44,0.6,1,(int) (getXOdometry() - (-38.5 - adjustToViewMark(true)[1]) * odometryEncXPerInch));
         requestOpModeStop();
     }
