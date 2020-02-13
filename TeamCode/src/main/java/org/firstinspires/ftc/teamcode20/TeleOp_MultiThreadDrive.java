@@ -115,7 +115,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
         if(this.gamepad1.start){start = true;}if(start && !this.gamepad1.start){
             start = false;
-            if(france.getPosition() >.5){
+            if(france.getPosition() >.25){
                 france.setPosition(0);
             }else{
                 france.setPosition(.5);
