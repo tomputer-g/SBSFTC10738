@@ -31,7 +31,7 @@ public class MoveTest extends BaseAuto {
     private ElapsedTime t=new ElapsedTime();
     private double speedLF=0,speedLB=0,speedRF=0,speedRB=0;
     private double  kP = 0.5, kI = 0, kD = 0.0025;
-    private SampleMecanumDriveREV drive=new SampleMecanumDriveREV(hardwareMap);
+    private SampleMecanumDriveREV drive;
     private FtcDashboard dashboard;
     int WaitingTime = 300;
     int steps = 20;
@@ -39,7 +39,7 @@ public class MoveTest extends BaseAuto {
 
 
     private PG pg=new PG();
-    private UC uc=new UC();
+    private Thread uc=new UC();
     int dir;
     private void 三天之内刹了你(){
         setAllDrivePower(1,1,-1,-1);
@@ -50,8 +50,10 @@ public class MoveTest extends BaseAuto {
     @Override
     public void init(){
         msStuckDetectInit = 3000000;
+        drive=new SampleMecanumDriveREV(hardwareMap);
+        drive.setPoseEstimate(new Pose2d(36,63,-Math.PI/2));
         dashboard=FtcDashboard.getInstance();
-        drive.setPoseEstimate(new Pose2d(-36,-72,Math.PI/2));
+        drive.setPoseEstimate(new Pose2d(63,63,-Math.PI/2));
         //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         speed=0.3;
         speeed = 0.03;
@@ -69,7 +71,7 @@ public class MoveTest extends BaseAuto {
 
     @Override
     public void stop(){
-        uc.stopThread();
+
     }
 
     @Override
@@ -81,22 +83,19 @@ public class MoveTest extends BaseAuto {
         //if(zheng(this.gamepad1.y,m))speed+=.1;
 
         if(zheng(this.gamepad1.right_bumper,lF)) {
-            drive.setMotorPowers(-.3,-.3,.3,.3);
+
         }
+
         if(zheng(this.gamepad1.dpad_left,e)) {
             drive.turn(Math.PI/2);
         }
-        drive.update();
-        Pose2d poseEstimate = drive.getPoseEstimate();
-        telemetry.addData("x", poseEstimate.getX());
-        telemetry.addData("y", poseEstimate.getY());
-        telemetry.addData("heading", Math.toDegrees(poseEstimate.getHeading()));
-        /*
+        //drive.setMotorPowers(-.3,-.3,.3,.3);
         drive.update();
         for(DcMotorEx m: drive.getMotors())
             telemetry.addData("Enc",m.getCurrentPosition());
         for(double p: drive.getWheelPositions())
             telemetry.addData("Pos",p);
+        /*
         telemetry.addData("x: ",x);
         telemetry.addData("y: ",y);
         //telemetry.addData("Imu: ","%.2f",getHeading());
@@ -106,16 +105,15 @@ public class MoveTest extends BaseAuto {
         //telemetry.addData("[y]: ","%.2f" ,n_pass[1]);;
          */
         telemetry.update();
+
     }
 
     private class UC extends Thread{
         volatile boolean stop = false,run=false;
         @Override
         public void run() {
-            dashboard=FtcDashboard.getInstance();
-            drive.setPoseEstimate(new Pose2d(-36,-72,Math.PI/2));
             while(!isInterrupted()&&!stop){
-                drive.update();
+                updateCoo();
             }
         }
         public void stopThread(){

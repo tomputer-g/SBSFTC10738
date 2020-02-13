@@ -3,40 +3,28 @@ package org.firstinspires.ftc.teamcode20;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.vuforia.Image;
 import com.vuforia.PIXEL_FORMAT;
 
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveBase;
-import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveREV;
 import org.openftc.revextensions2.ExpansionHubEx;
 
 import java.nio.ByteBuffer;
 
 @Autonomous
 public class BlueAuto extends BaseAuto {
-    private int pos = 0;
-    private CThread cthread;
-    private SampleMecanumDriveREV drive;
+    int pos = 0;
     @Override
     public void init() {
         initAutonomous();
         initViewMarks();
-        drive=new SampleMecanumDriveREV(hardwareMap);
-        drive.setPoseEstimate(new Pose2d(-36,72,-Math.PI/2));
-        cthread=new CThread();
 	}
     @Override
     public void init_loop(){
         pos = new_skystoneposition();
         wait(200);
-    }
-
-    @Override
-    public void start(){
     }
 
     @Override
@@ -48,7 +36,7 @@ public class BlueAuto extends BaseAuto {
         //repeat until run out of time; first on other skystones
 
         //initialization
-        servoThread.setTarget(0.98);
+        servoThread.setTarget(0.95);
         platform_grabber.setPower(1);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
@@ -148,28 +136,5 @@ public class BlueAuto extends BaseAuto {
          */
         moveInchesGOY_XF_F(-44,0.6,1,(int) (getXOdometry() - (41 - adjustToViewMark(true)[1]) * odometryEncXPerInch));
         requestOpModeStop();
-    }
-
-    @Override
-    public void stop(){
-        cthread.stopThread();
-    }
-
-    private class CThread extends Thread{
-        volatile boolean stop = false;
-        @Override
-        public void run() {
-            while(!isInterrupted()&&!stop){
-                drive.update();
-                Pose2d poseEstimate = drive.getPoseEstimate();
-                telemetry.addData("x", poseEstimate.getX());
-                telemetry.addData("y", poseEstimate.getY());
-                telemetry.addData("heading", Math.toDegrees(poseEstimate.getHeading()));
-                telemetry.update();
-            }
-        }
-        public void stopThread(){
-            stop = true;
-        }
     }
 }

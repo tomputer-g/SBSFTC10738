@@ -46,7 +46,7 @@ public class LocalizationTest extends LinearOpMode {
         xOdo.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();
-        drive.setPoseEstimate(new Pose2d(-63,-63,Math.PI/2));
+
 
         while (!isStopRequested()) {
             Pose2d baseVel = new Pose2d(
