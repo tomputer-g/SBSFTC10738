@@ -12,11 +12,16 @@ import static java.lang.Thread.sleep;
 
 @TeleOp(group = "Final")
 public class TeleOp_MultiThreadDrive extends BaseAuto {
-    private boolean b = false, rb = false, y = false, dpad_r = false, dpad_l = false, start = false;
+    private boolean b = false, rb = false, y = false, dpad_r = false, dpad_l = false, start = false, a = false;
     private boolean[] Xprimed={true};
     private boolean tapeDirectionOut = true;
     //slide
     private boolean platformGrabbed = false;
+
+
+    private int placeLevel = 0;
+    private double groundHeightEnc = 2.25 * slideEncoderPerInch;//1 higher placing + 1.25 base height
+
     Servo france;
 
     //private PWMThread pwmThread;
@@ -24,7 +29,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
     @Override public void init() {
         ElapsedTime t = new ElapsedTime();
-        showTelemetry = false;
+        showTelemetry = true;
         Log.i("Teleop init", ""+t.nanoseconds()+" start drivetrain");
         initDrivetrain();
         Log.i("Teleop init", ""+t.nanoseconds()+" start grabber");
@@ -97,6 +102,20 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                 platformGrabbed = true;
                 platform_grabber.setPower(-0.4);
             }
+        }
+
+
+        if(this.gamepad1.a && this.gamepad1.left_trigger>0.5){
+            autoPlaceLevel();
+        }else if(this.gamepad1.a && this.gamepad1.right_trigger > 0.5){
+            placeLevel = 0;
+            autoPlaceLevel();
+        }
+
+        if(this.gamepad1.a){a = true;}if(!this.gamepad1.a && a){
+            a = false;
+            placeLevel++;
+            autoPlaceLevel();
         }
 
         //servo toggle
@@ -193,16 +212,18 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
         if(showTelemetry) {
             telemetry.addData("slide 1", L1.getCurrentPosition());
-            telemetry.addData("servoThread is",servoThread.getState());
-            telemetry.addData("target",servoThread.targetPosition);
-            telemetry.addData("actual",servoThread.lastPosition);
+            telemetry.addData("slide auto level",placeLevel);
+            telemetry.addData("servo actual",servoThread.lastPosition);
             telemetry.addData("RT state", RTState);
-            telemetry.addData("AutoPlaceState", autoPlaceState);
             if(holdSet)telemetry.addData("Hold pos", hold);
-            telemetry.addData("ext", grabber_extend1.getPosition());
-            telemetry.addData("x", getXOdometry());
             telemetry.update();
         }
+    }
+
+    private void autoPlaceLevel(){
+        int goalEnc = (int)(slideEncoderPerInch * 4 * placeLevel + groundHeightEnc);//per inch is already neg.
+        holdSet = false;
+        holdSlide(goalEnc);
     }
 
     @Override public void stop() {
