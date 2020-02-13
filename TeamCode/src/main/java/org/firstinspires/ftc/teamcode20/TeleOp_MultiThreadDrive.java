@@ -25,8 +25,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
     Servo france;
 
-    private int placeLevel = 0;
-    private double groundHeightEnc = 2.25 * slideEncoderPerInch;
     //private PWMThread pwmThread;
 
 
