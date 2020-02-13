@@ -100,7 +100,8 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                 }
             }
 
-
+        //Level-based auto
+            /*
             if(this.gamepad1.a){
                 a = true;
                 if(this.gamepad1.left_trigger > 0.5){
@@ -125,8 +126,9 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                 a_lt = false;
                 a_rt = false;
                 autoPlaceLevel();
-
             }
+
+             */
 
             //servo toggle
             if(this.gamepad1.b && !this.gamepad1.left_bumper && !this.gamepad1.y){
@@ -190,15 +192,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                     slowModeMove(-0.6 * this.gamepad1.left_stick_x, -0.3 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.3 * this.gamepad1.right_stick_x));
             }
 
-            //LT
-        /*if(this.gamepad1.left_trigger  > .5 && autoPlaceState == -1){//dependent on other things?
-            autoPlaceState = 0;
-            RTState = -1;
-        }
-
-         */
-
-
             //tape out/tape in
             if(this.gamepad1.dpad_left){
                 dpad_l = true;
@@ -234,6 +227,9 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         servoThread.stopThread();
     }
 
+    private void handleTape(){
+
+    }
 
 
     private void autoPlaceLevel(){
@@ -241,7 +237,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         holdSet = false;
         holdSlide(goalEnc);
     }
-
 
     protected void joystickScaledMove(double vx, double vy, double vr){
         double[] speeds = {vx - vy + vr, -vy - vx + vr, vx + vy + vr, -vx + vy + vr};
@@ -282,6 +277,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     }
 
     //-------------------------------------Multithreading---------------------------------/
+    /*
     private class PWMThread extends Thread{
         volatile boolean stop = false;
         @Override
@@ -314,4 +310,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             stop = true;
         }
     }
+
+     */
 }
