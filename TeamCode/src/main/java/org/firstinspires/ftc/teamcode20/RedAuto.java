@@ -29,7 +29,6 @@ public class RedAuto extends BaseAuto {
             pos = new_skystoneposition();
             wait(200);
         }
-        //shutdownVuforia();
         servoThread.setTarget(0.98);
         platform_grabber.setPower(1);
         platform_grabber.setPower(0.0);
@@ -52,18 +51,9 @@ public class RedAuto extends BaseAuto {
 
         //move forward to the skystone
         ElapsedTime p = new ElapsedTime();
-        //moveInchesGOY(30.5,0.6,(1+(13.65-hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS))/13.65));
-        //grab 1st block
-        while(-getY1Odometry() < 25*odometryEncYPerInch)setAllDrivePowerG(-.3,-.3,.3,.3);
-        setAllDrivePowerG(-.1,-.1,.1,.1);
-        grabber.setPosition(grabber_closed);
-        wait(300);
-        servoThread.setTarget(0.85);
+        first_block();
 
-        while(-getY1Odometry()> 26*odometryEncYPerInch)setAllDrivePowerG(.3,.3,-.3,-.3);
-        setAllDrivePower(0);
         //move forward & approach foundation
-        //turn(90, 0.5,1);
         align(90);
         p.reset();
         resetXOdometry();
@@ -76,7 +66,7 @@ public class RedAuto extends BaseAuto {
 
         platform_grabber.setPower(-1);
         wait(300);
-        moveInchesGOX_platform(-16,1,1+(13.65-hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS))/13.65);
+        moveInchesGOX_platform(-22,1,1+(13.65-hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS))/13.65);
         int steps = 20;
         double basespeed = 0.33;
         for(int i = 10;i<=steps;++i){

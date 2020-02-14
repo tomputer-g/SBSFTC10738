@@ -55,13 +55,7 @@ public class BlueAuto extends BaseAuto {
 
         //move forward to the skystone
         ElapsedTime p = new ElapsedTime();
-        moveInchesGOY(30.5,0.6,(1+(13.65-hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS))/13.65));
-        //grab 1st block
-        grabber.setPosition(grabber_closed);
-        wait(300);
-        servoThread.setTarget(0.85);
-        //setAllDrivePower(0.0);
-        moveInchesG(0,-6,0.4);
+        first_block();
 
         //move forward & approach foundation
         align(90);
@@ -99,36 +93,7 @@ public class BlueAuto extends BaseAuto {
         setNewGyro(90);
 
         second_and_more_B(pos);
-        /*
-        moveInchesGOXT(-6,0.5,1,1000);
 
-        int shiftt = 0;
-        if(pos == 1 || pos == 2) shiftt = -8;
-        moveInchesGOY_XF(-96.5+shiftt,0.6,1);
-        servoThread.setTarget(0.95);
-        PIDturnfast(-90,false);
-        setNewGyro(0);
-
-        align(0);
-        if(pos==1||pos==2)moveInchesGOXT(4,0.8,1,1000);
-        moveInchesGOY_XF(10,0.3,1);
-        //moveInchesGOY((right.getDistance(DistanceUnit.INCH)-2.6)*.69,.4);
-        grabber.setPosition(grabber_closed);
-        wait(300);
-        setAllDrivePower(0);
-        servoThread.setTarget(0.85);
-        //setAllDrivePower(0.0);
-        moveInchesG(0,-9.5,0.4);
-        PIDturnfast(90,false);
-        setNewGyro(90);
-        int sfi = 0;
-        if(pos==0)sfi = -9;
-        moveInchesGOY_XF(77+sfi,0.9,1);
-        grabber.setPosition(grabber_open);
-        moveInchesG(0,-13,0.5);
-
-
-         */
         moveInchesGOY_XF_F(-44,0.6,1,(int) (getXOdometry() - (41 - adjustToViewMark(true)[1]) * odometryEncXPerInch));
         requestOpModeStop();
     }

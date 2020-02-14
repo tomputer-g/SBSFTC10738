@@ -1234,5 +1234,15 @@ public class BaseAuto extends BaseOpMode {
         grabber.setPosition(grabber_open);
     }
 
+    protected void first_block(){
+    //move forward to the skystone
+    while(-getY1Odometry() < 27*odometryEncYPerInch){setAllDrivePowerG(-.3,-.3,.3,.3);}
+    setAllDrivePowerG(-.1,-.1,.1,.1);
+    grabber.setPosition(grabber_closed);
+    wait(300);
+    servoThread.setTarget(0.85);
+    while(-getY1Odometry()> 29*odometryEncYPerInch){setAllDrivePowerG(.3,.3,-.3,-.3);}
+    setAllDrivePower(0);
+    }
 }
 
