@@ -167,7 +167,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
             MotionState motionState = activeProfile.get(profileTime);
             double targetPower = kV * motionState.getV();
-            //drive.setDrivePower(new Pose2d(targetPower, 0, 0));
+            drive.setDrivePower(new Pose2d(targetPower, 0, 0));
 
             List<Double> velocities = drive.getWheelVelocities();
 
