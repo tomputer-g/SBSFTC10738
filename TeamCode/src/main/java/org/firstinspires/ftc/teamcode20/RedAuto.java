@@ -72,7 +72,7 @@ public class RedAuto extends BaseAuto {
         //while (p.milliseconds()<900)setAllDrivePowerG(-.5,.5,-.5,.5);
 
 
-        moveInchesGOXT(20-getXOdometry()/odometryEncXPerInch,.5,1,2000); //drag +errordistance
+        moveInchesGOXT(19-getXOdometry()/odometryEncXPerInch,.5,1,2000); //drag +errordistance
 
         platform_grabber.setPower(-1);
         wait(300);

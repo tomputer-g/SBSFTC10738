@@ -1194,7 +1194,6 @@ public class BaseAuto extends BaseOpMode {
             align(90);
             servoThread.setTarget(0.65);
             moveInchesGOY_XF_F(info[result+2]-1, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
-            dd = adjustToViewMark(true);
         }
         grabber.setPosition(grabber_open);
     }
