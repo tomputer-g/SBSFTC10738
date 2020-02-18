@@ -20,7 +20,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     private boolean platformGrabbed = false;
 
 
-    private int placeLevel = 0;
+    private int placeLevel = 2;
     private double groundHeightEnc = 2.25 * slideEncoderPerInch;//1 higher placing + 1.25 base height
 
     Servo france;
@@ -110,16 +110,16 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                 } else {
                     france.setPosition(.5);
                     //Level-based auto
-            /*
+
             if(this.gamepad1.a){
                 a = true;
                 if(this.gamepad1.left_trigger > 0.5){
                     a_lt = true;
-                    telemetry.addLine("LT");
+                    //telemetry.addLine("LT");
                 }
                 if(this.gamepad1.right_trigger > 0.5){
                     a_rt = true;
-                    telemetry.addLine("RT");
+                    //telemetry.addLine("RT");
                 }
 
             }if(!this.gamepad1.a && a){
@@ -128,7 +128,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                     //remain the same level
                 }else if(a_rt){
                     //reset
-                    placeLevel = 0;
+                    placeLevel = 2;
                 }else {
                     placeLevel++;
                 }
@@ -136,8 +136,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                 a_rt = false;
                 autoPlaceLevel();
             }
-
-             */
 
                     //servo toggle
                     if (this.gamepad1.b && !this.gamepad1.left_bumper && !this.gamepad1.y) {
