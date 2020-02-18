@@ -1,22 +1,13 @@
 package org.firstinspires.ftc.teamcode20;
 
-import android.graphics.Bitmap;
-import android.graphics.Color;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.vuforia.Image;
-import com.vuforia.PIXEL_FORMAT;
 
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.openftc.revextensions2.ExpansionHubEx;
-
-import java.nio.ByteBuffer;
 
 @Autonomous
 public class BlueAuto extends BaseAuto {
     int pos = 0;
-
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -33,25 +24,13 @@ public class BlueAuto extends BaseAuto {
         //repeat until run out of time; first on other skystones
 
         //initialization
-        servoThread.setTarget(0.98);
-        platform_grabber.setPower(1);
-        platform_grabber.setPower(0.0);
-        if(showTelemetry)telemetry.clear();
-        grabber.setPosition(grabber_open);
-        //wait(500);
+        before_start();
+
         //shift to align to skystone
         int shift;
-        if(pos == 1){
-            shift = 0;
-        }
-        else if (pos == 0){
-            moveInchesGOXT(-8,0.8,1,1200);
-            shift=-8;
-        }
-        else {
-            moveInchesGOXT(8,0.8,1,1200);
-            shift=8;
-        }
+        if(pos == 1){ shift = 0; }
+        else if (pos == 0){ moveInchesGOXT(-8,0.8,1,1200);shift=-8; }
+        else { moveInchesGOXT(8,0.8,1,1200);shift=8; }
 
         //move forward to the skystone
         ElapsedTime p = new ElapsedTime();
@@ -89,8 +68,8 @@ public class BlueAuto extends BaseAuto {
         }
         setNewGyro(180);
         setAllDrivePower(0);
+
         after_dragged_foundation_B();
-        setNewGyro(90);
 
         second_and_more_B(pos);
 

@@ -1244,5 +1244,13 @@ public class BaseAuto extends BaseOpMode {
     while(-getY1Odometry()> 29*odometryEncYPerInch){setAllDrivePowerG(.3,.3,-.3,-.3);}
     setAllDrivePower(0);
     }
+
+    protected void before_start(){
+        servoThread.setTarget(0.98);
+        platform_grabber.setPower(1);
+        platform_grabber.setPower(0.0);
+        if(showTelemetry)telemetry.clear();
+        grabber.setPosition(grabber_open);
+    }
 }
 

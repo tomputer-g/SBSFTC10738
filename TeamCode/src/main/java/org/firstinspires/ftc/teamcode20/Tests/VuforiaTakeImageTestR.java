@@ -21,20 +21,21 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 /*
-   created by Lucien Liu on Jan 22 2020
+   created by Lucien Liu on Feb 18 2020
  */
 
 @TeleOp
-public class VuforiaTakeImageTest extends BaseAuto {
+public class VuforiaTakeImageTestR extends BaseAuto {
     protected ElapsedTime p = new ElapsedTime();
     double i;
+
     @Override
     public void runOpMode() throws InterruptedException {
         initVuforia();
         waitForStart();
         while(opModeIsActive()){
             p.reset();
-            new_skystoneposition();
+            new_skystonepositionR();
             i = p.milliseconds();
             wait(1500);
             telemetry.addData("time", i);
