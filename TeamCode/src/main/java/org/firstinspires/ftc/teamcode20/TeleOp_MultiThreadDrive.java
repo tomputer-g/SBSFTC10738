@@ -103,147 +103,152 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             if (this.gamepad1.start) {
                 start = true;
             }
+
+            if (start && !this.gamepad1.start) {
+                start = false;
+                if (france.getPosition() > .25) {
+                    france.setPosition(0);
+                }
+                else {
+                    france.setPosition(.5);
+                }
+            }
+
+            if(this.gamepad1.a) {
+                a = true;
+                if (this.gamepad1.left_trigger > 0.5) {
+                    a_lt = true;
+                    //telemetry.addLine("LT");
+                }
+                if (this.gamepad1.right_trigger > 0.5) {
+                    a_rt = true;
+                    //telemetry.addLine("RT");
+                }
+                if (!this.gamepad1.a && a) {
+                    a = false;
+                    if (a_lt) {
+                        //remain the same level
+                    } else if (a_rt) {
+                        //reset
+                        placeLevel = 2;
+                    } else {
+                        placeLevel++;
+                    }
+
+                    a_lt = false;
+                    a_rt = false;
+                    autoPlaceLevel();
+                }
+            }
+
+            //servo toggle
+            if (this.gamepad1.b && !this.gamepad1.left_bumper && !this.gamepad1.y) {
+                b = true;
+            }
+            if (!this.gamepad1.b && b) {
+                b = false;
+                if (grabber.getPosition() > (grabber_closed + grabber_open) / 2) {
+                    grabber.setPosition(grabber_open);
+                } else {
+                    grabber.setPosition(grabber_closed);
+                }
+            }
+            if (this.gamepad1.b && this.gamepad1.left_bumper && !this.gamepad1.y) {
+                grabber.setPosition(0.01);
+            }
+
+            if (this.gamepad1.start) {
+                start = true;
+            }
             if (start && !this.gamepad1.start) {
                 start = false;
                 if (france.getPosition() > .25) {
                     france.setPosition(0);
                 } else {
                     france.setPosition(.5);
-                    //Level-based auto
-
-            if(this.gamepad1.a){
-                a = true;
-                if(this.gamepad1.left_trigger > 0.5){
-                    a_lt = true;
-                    //telemetry.addLine("LT");
                 }
-                if(this.gamepad1.right_trigger > 0.5){
-                    a_rt = true;
-                    //telemetry.addLine("RT");
-                }
-
-            }if(!this.gamepad1.a && a){
-                a = false;
-                if(a_lt){
-                    //remain the same level
-                }else if(a_rt){
-                    //reset
-                    placeLevel = 2;
-                }else {
-                    placeLevel++;
-                }
-                a_lt = false;
-                a_rt = false;
-                autoPlaceLevel();
             }
 
-                    //servo toggle
-                    if (this.gamepad1.b && !this.gamepad1.left_bumper && !this.gamepad1.y) {
-                        b = true;
-                    }
-                    if (!this.gamepad1.b && b) {
-                        b = false;
-                        if (grabber.getPosition() > (grabber_closed + grabber_open) / 2) {
-                            grabber.setPosition(grabber_open);
-                        } else {
-                            grabber.setPosition(grabber_closed);
-                        }
-                    }
-                    if (this.gamepad1.b && this.gamepad1.left_bumper && !this.gamepad1.y) {
-                        grabber.setPosition(0.01);
-                    }
+            //driver cancel LT&RT (by dpad up/dpad down/ RB/ LB+Left stick
+            if (this.gamepad1.dpad_up || this.gamepad1.dpad_down || this.gamepad1.right_bumper || (this.gamepad1.left_bumper && !near(this.gamepad1.right_stick_y, 0, 0.05))) {
+                RTState = -1; //driver interrupt auto movement
+                autoPlaceState = -1;
+            }
 
-                    if (this.gamepad1.start) {
-                        start = true;
-                    }
-                    if (start && !this.gamepad1.start) {
-                        start = false;
-                        if (france.getPosition() > .25) {
-                            france.setPosition(0);
-                        } else {
-                            france.setPosition(.5);
-                        }
-                    }
+            //RT if RT not started - cancels LT
+            if (this.gamepad1.right_trigger > 0.3 && RTState == -1 && !this.gamepad1.y) {
+                //when can go 12in above & extender is extended & not started
+                holdSet = false;
+                autoPlaceState = -1;
+                RTState = 0;
+            }
 
-                    //driver cancel LT&RT (by dpad up/dpad down/ RB/ LB+Left stick
-                    if (this.gamepad1.dpad_up || this.gamepad1.dpad_down || this.gamepad1.right_bumper || (this.gamepad1.left_bumper && !near(this.gamepad1.right_stick_y, 0, 0.05))) {
-                        RTState = -1; //driver interrupt auto movement
-                        autoPlaceState = -1;
-                    }
-
-                    //RT if RT not started - cancels LT
-                    if (this.gamepad1.right_trigger > 0.3 && RTState == -1 && !this.gamepad1.y) {
-                        //when can go 12in above & extender is extended & not started
-                        holdSet = false;
-                        autoPlaceState = -1;
-                        RTState = 0;
-                    }
-
-                    //RB toggle extender positions (not instant!)
-                    if (this.gamepad1.right_bumper) {
-                        rb = true;
-                    }
-                    if (!this.gamepad1.right_bumper && rb) {
-                        rb = false;
-                        if (servoThread.lastPosition > (grabberServoOut + grabberServoIn) / 2) {
-                            servoThread.setTarget(grabberServoOut);
-                        } else {
-                            servoThread.setTarget(grabberServoIn);
-                        }
-                    }
-
-                    //DUP/DDOWN manual extender movement
-                    //manual extender movement is now in servoThread.
-
-
-                    //If not PWM: run full speed
-                    if (autoPlaceState != 1) {
-                        if (slow == 0) {//only one direction at a time
-                            joystickScaledMove(-this.gamepad1.left_stick_x, -this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x));
-                        } else if (slow == 2) {
-                            slowModeMove(-0.35 * this.gamepad1.left_stick_x, -0.16 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.3 * this.gamepad1.right_stick_x));
-                        } else if (slow == 1)
-                            slowModeMove(-0.6 * this.gamepad1.left_stick_x, -0.3 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.3 * this.gamepad1.right_stick_x));
-                    }
-
-                    //tape out/tape in
-                    if (this.gamepad1.dpad_left) {
-                        dpad_l = true;
-                        if (tapeDirectionOut) {
-                            xOdometry.setPower(-1);
-                        } else {
-                            xOdometry.setPower(1);
-                        }
-                    } else {
-                        if (dpad_l) {
-                            dpad_l = false;
-                            tapeDirectionOut = !tapeDirectionOut;
-                        }
-                        xOdometry.setPower(0);
-                    }
-
-
-                    //run LT, RT, normal control
-                    runSlide();
-                    //autoPlace();
-                    handleRTState();
-
-                    if (showTelemetry) {
-                        telemetry.addData("slide 1", L1.getCurrentPosition());
-                        telemetry.addData("slide auto level", placeLevel);
-                        telemetry.addData("servo actual", servoThread.lastPosition);
-                        telemetry.addData("RT state", RTState);
-                        if (holdSet) telemetry.addData("Hold pos", hold);
-                        telemetry.update();
-                    }
+            //RB toggle extender positions (not instant!)
+            if (this.gamepad1.right_bumper) {
+                rb = true;
+            }
+            if (!this.gamepad1.right_bumper && rb) {
+                rb = false;
+                if (servoThread.lastPosition > (grabberServoOut + grabberServoIn) / 2) {
+                    servoThread.setTarget(grabberServoOut);
+                } else {
+                    servoThread.setTarget(grabberServoIn);
                 }
-                //pwmThread.stopThread();
-                servoThread.stopThread();
+            }
+
+            //DUP/DDOWN manual extender movement
+            //manual extender movement is now in servoThread.
+
+
+            //If not PWM: run full speed
+            if (autoPlaceState != 1) {
+                if (slow == 0) {//only one direction at a time
+                    joystickScaledMove(-this.gamepad1.left_stick_x, -this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -this.gamepad1.right_stick_x));
+                } else if (slow == 2) {
+                    slowModeMove(-0.35 * this.gamepad1.left_stick_x, -0.16 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.3 * this.gamepad1.right_stick_x));
+                } else if (slow == 1)
+                    slowModeMove(-0.6 * this.gamepad1.left_stick_x, -0.3 * this.gamepad1.left_stick_y, (this.gamepad1.left_bumper ? 0 : -0.3 * this.gamepad1.right_stick_x));
+            }
+
+            //tape out/tape in
+            if (this.gamepad1.dpad_left) {
+                dpad_l = true;
+                if (tapeDirectionOut) {
+                    xOdometry.setPower(-1);
+                } else {
+                    xOdometry.setPower(1);
+                }
+            }
+            else {
+                if (dpad_l) {
+                    dpad_l = false;
+                    tapeDirectionOut = !tapeDirectionOut;
+                }
+                xOdometry.setPower(0);
             }
 
 
+            //run LT, RT, normal control
+            runSlide();
+            //autoPlace();
+            handleRTState();
 
-            //-------------------------------------Multithreading---------------------------------/
+            if (showTelemetry) {
+                telemetry.addData("slide 1", L1.getCurrentPosition());
+                telemetry.addData("slide auto level", placeLevel);
+                telemetry.addData("servo actual", servoThread.lastPosition);
+                telemetry.addData("RT state", RTState);
+                if (holdSet) telemetry.addData("Hold pos", hold);
+                telemetry.update();
+            }
+        }
+        //pwmThread.stopThread();
+        servoThread.stopThread();
+    }
+
+
+
+    //-------------------------------------Multithreading---------------------------------/
     /*
     private class PWMThread extends Thread{
         volatile boolean stop = false;
@@ -279,8 +284,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     }
 
      */
-        }
-    }
+
     private void handleTape () {
 
     }
