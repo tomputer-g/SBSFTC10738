@@ -20,7 +20,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     private boolean platformGrabbed = false;
 
 
-    private int placeLevel = 2;
+    private int placeLevel = 0;
     private double groundHeightEnc = 2.25 * slideEncoderPerInch;//1 higher placing + 1.25 base height
 
     Servo france;
@@ -52,7 +52,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
           2020-02-04 12:44:25.639 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 183704394 start grabber
           2020-02-04 12:44:25.640 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 184989237 start linSlide
           2020-02-04 12:44:25.723 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 267567267 start odometry
-          2020-02-04 12:44:25.817 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 361695922 start platform
+          2020-02-04 12::25.817 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 361695922 start platform
           2020-02-04 12:44:25.818 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 362624672 start IMU
           2020-02-04 12:44:27.010 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 1554783072 all init done (1.5s)
 
@@ -124,21 +124,21 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                     a_rt = true;
                     //telemetry.addLine("RT");
                 }
-                if (!this.gamepad1.a && a) {
-                    a = false;
-                    if (a_lt) {
-                        //remain the same level
-                    } else if (a_rt) {
-                        //reset
-                        placeLevel = 2;
-                    } else {
-                        placeLevel++;
-                    }
-
-                    a_lt = false;
-                    a_rt = false;
-                    autoPlaceLevel();
+                if (a_lt) {
+                    //remain the same level
+                } else if (a_rt) {
+                    //reset
+                    placeLevel = 0;
+                } else {
+                    placeLevel++;
                 }
+                a_lt = false;
+                a_rt = false;
+                runSlidetoBlock(placeLevel);
+            }
+
+            if (!this.gamepad1.a && a) {
+                a=false;
             }
 
             //servo toggle
@@ -176,7 +176,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             }
 
             //RT if RT not started - cancels LT
-            if (this.gamepad1.right_trigger > 0.3 && RTState == -1 && !this.gamepad1.y) {
+            if (this.gamepad1.right_trigger > 0.3 && RTState == -1 && !this.gamepad1.y &&!this.gamepad1.a) {
                 //when can go 12in above & extender is extended & not started
                 holdSet = false;
                 autoPlaceState = -1;
@@ -289,6 +289,17 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
     }
 
+    private void runSlidetoBlock(int block){
+        int goalEnc = (int) (slideEncoderPerInch * 4 * placeLevel + 2.25 * slideEncoderPerInch);
+        while(L1.getCurrentPosition()>goalEnc){
+            L1.setPower(-1);
+            L2.setPower(1);
+        }
+        L1.setPower(0);
+        L2.setPower(0);
+        holdSet = false;
+        holdSlide(goalEnc);
+    }
 
     private void autoPlaceLevel () {
         int goalEnc = (int) (slideEncoderPerInch * 4 * placeLevel + groundHeightEnc);//per inch is already neg.
