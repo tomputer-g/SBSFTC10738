@@ -522,7 +522,9 @@ public class BaseOpMode extends LinearOpMode {
 
     protected final int slideEncoderTravel = -5156;//IMPORTANT: if up is negative, this is negative
     protected final double slideInchTravel = 72.0;//inch of slide travel
-    protected final double slideEncoderPerInch = slideEncoderTravel / slideInchTravel;
+
+    //value changed
+    protected final double slideEncoderPerInch = -83.615*1.0192;
     protected int RTState = -1;
     protected final double ctrl_deadzone = 0.2;
     protected int slow = 0;

@@ -15,6 +15,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
     private boolean b = false, rb = false, y = false, dpad_r = false, dpad_l = false, start = false, a = false, a_lt = false, a_rt = false;
     private boolean[] Xprimed = {true};
+    private boolean autoLevel = false;
     private boolean tapeDirectionOut = true;
     //slide
     private boolean platformGrabbed = false;
@@ -63,21 +64,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
         waitForStart();
         while (opModeIsActive()) {
-            //turn left move back onestep
-            if (this.gamepad1.y && this.gamepad1.left_bumper) {
-                lefty();
-                slow = 1;
-            }
-
-            if (this.gamepad1.y && this.gamepad1.right_bumper) {
-                righty();
-                slow = 1;
-            }
-
-            if (this.gamepad1.y && this.gamepad1.left_trigger > 0.5) {
-                backy();
-                slow = 1;
-            }
 
             if (zheng(this.gamepad1.x, Xprimed)) {
                 if (slow == 2) slow = 0;
@@ -114,27 +100,30 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                 }
             }
 
-            if(this.gamepad1.a) {
-                a = true;
-                if (this.gamepad1.left_trigger > 0.5) {
-                    a_lt = true;
-                    //telemetry.addLine("LT");
-                }
-                if (this.gamepad1.right_trigger > 0.5) {
-                    a_rt = true;
-                    //telemetry.addLine("RT");
-                }
-                if (a_lt) {
-                    //remain the same level
-                } else if (a_rt) {
-                    //reset
-                    placeLevel = 0;
-                } else {
+            if(this.gamepad1.y&&!y){
+                y=true;
+                if(placeLevel<15)
                     placeLevel++;
-                }
-                a_lt = false;
-                a_rt = false;
-                runSlidetoBlock(placeLevel);
+                autoLevel=true;
+                holdSet=false;
+                L1.setPower(-1);
+                L2.setPower(1);
+            }
+
+            if(!this.gamepad1.y&&y){
+                y=false;
+            }
+
+            if(this.gamepad1.a&&!a&&this.gamepad1.left_bumper) {
+                a=true;
+                placeLevel--;
+                autoLevel=false;
+            }
+
+            if(this.gamepad1.a&&!a&&this.gamepad1.left_trigger>0.5) {
+                a=true;
+                placeLevel=0;
+                autoLevel=false;
             }
 
             if (!this.gamepad1.a && a) {
@@ -229,7 +218,9 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
 
             //run LT, RT, normal control
-            runSlide();
+            runSlidetoBlock(placeLevel);
+            if(!autoLevel)
+                runSlide();
             //autoPlace();
             handleRTState();
 
@@ -290,15 +281,16 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     }
 
     private void runSlidetoBlock(int block){
-        int goalEnc = (int) (slideEncoderPerInch * 4 * placeLevel + 2.25 * slideEncoderPerInch);
-        while(L1.getCurrentPosition()>goalEnc){
-            L1.setPower(-1);
-            L2.setPower(1);
+        int goalEnc = (int) (slideEncoderPerInch * 4 * placeLevel + 2 * slideEncoderPerInch);
+        if(autoLevel) {
+            if (L1.getCurrentPosition() < goalEnc) {
+                autoLevel=false;
+                L1.setPower(0);
+                L2.setPower(0);
+                holdSet = false;
+                holdSlide(goalEnc);
+            }
         }
-        L1.setPower(0);
-        L2.setPower(0);
-        holdSet = false;
-        holdSlide(goalEnc);
     }
 
     private void autoPlaceLevel () {
