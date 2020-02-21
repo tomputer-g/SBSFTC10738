@@ -907,7 +907,7 @@ public class BaseAuto extends BaseOpMode {
             kP = 0.0325;
             kD = 7.3E-3;
         }
-        double kPx = 0.25, kDx = 0;
+        double kPx = 0.25, kDx = 0.1;
         ElapsedTime t = new ElapsedTime();
         int offsetY = getY1Odometry();
         int offsetX = FixXOffset;
@@ -916,7 +916,7 @@ public class BaseAuto extends BaseOpMode {
         double multiply_factor, prev_speed = 0;
         int odometryYGoal = offsetY + (int)(yInch * odometryEncYPerInch);
         double vy = speed;
-        int previousPos = offsetY, currentOdometry, Dterm, DtermX;
+        int previousPos = offsetY, previousPosX = offsetX, currentOdometry, currentOdometryX, Dterm, DtermX;
         double tpre = 0, tcur;
         int steadyCounter = 0;
         while(steadyCounter < 5 && !this.gamepad1.b){//b is there so we can break out of loop anytime
@@ -925,10 +925,11 @@ public class BaseAuto extends BaseOpMode {
             //telemetry.addData("yR",getY2Odometry());
             //telemetry.update();
             currentOdometry = getY1Odometry();
+            currentOdometryX = getXOdometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
-            DtermX = (int)((getXOdometry() - previousPos)/(tcur-tpre));
-            diff = (getXOdometry() - offsetX)/odometryEncXPerInch*kPx + (near(DtermX,0,speed * 5000 / 0.3)?(kDx *DtermX):0);
+            DtermX = (int)((currentOdometryX - previousPosX)/(tcur-tpre));
+            diff = (currentOdometryX - offsetX)/odometryEncXPerInch*kPx + (near(DtermX,0,speed * 5000 / 0.3)?(kDx *DtermX):0);
             multiply_factor = -Math.min(1, Math.max(-1, kV*((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
             if(near(prev_speed, multiply_factor*vy,0.001) && near(prev_speed, 0, 0.1)){
                 steadyCounter++;
@@ -937,6 +938,7 @@ public class BaseAuto extends BaseOpMode {
             }
             Log.d("GOY "+yInch,"steady"+steadyCounter+", position"+currentOdometry+", LF speed"+prev_speed+", OC speed="+Dterm+"bulkSpd="+hub4.getBulkInputData().getMotorVelocity(platform_grabber));
             previousPos = currentOdometry;
+            previousPosX = currentOdometryX;
             tpre=tcur;
             setAllDrivePowerG(multiply_factor*vy + diff,multiply_factor*vy - diff,multiply_factor*-vy + diff,multiply_factor*-vy - diff,1.4);
             prev_speed = multiply_factor * vy;
