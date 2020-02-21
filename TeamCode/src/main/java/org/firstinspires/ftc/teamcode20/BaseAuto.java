@@ -1163,11 +1163,11 @@ public class BaseAuto extends BaseOpMode {
         for (int i = 0;i<3;++i){ if(resultcounter[i]>curmax){poss = i;curmax=resultcounter[i];} }
         return poss;
     }
-    protected void second_and_more_B(int result) {
+    protected void second_and_more_B(int result, int times) {
         double curX;
         double info[] = {78.75,78.75+8,78.75+16,78.75+24,78.75+24,78.75+24};
         double origin[] = {0, 41}, dd[] = adjustToViewMark(true);
-        for (int i = 0; i < 1; ++i) {
+        for (int i = 0; i < times; ++i) {
             setAllDrivePower(0);
             curX = getXOdometry();
             if (i > 0) servoThread.setTarget(0.75);
@@ -1198,11 +1198,11 @@ public class BaseAuto extends BaseOpMode {
         grabber.setPosition(grabber_open);
     }
 
-    protected void second_and_more_R(int result) {
+    protected void second_and_more_R(int result, int times) {
         double curX;
         double info[] = {78.75,78.75+8,78.75+16,78.75+24,78.75+24,78.75+24};
         double origin[] = {0, -38.5}, dd[] = adjustToViewMark(false);
-        for (int i = 0; i < 1; ++i) {
+        for (int i = 0; i < times; ++i) {
             setAllDrivePower(0);
             curX = getXOdometry();
             if (i > 0) servoThread.setTarget(0.75);

@@ -71,7 +71,7 @@ public class BlueAuto extends BaseAuto {
 
         after_dragged_foundation_B();
 
-        second_and_more_B(pos);
+        second_and_more_B(pos, 1);
 
         moveInchesGOY_XF_F(-44,0.6,1,(int) (getXOdometry() - (41 - adjustToViewMark(true)[1]) * odometryEncXPerInch));
         requestOpModeStop();

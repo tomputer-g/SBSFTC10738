@@ -65,7 +65,7 @@ public class RedAuto extends BaseAuto {
 
         after_dragged_foundation_R();
 
-        second_and_more_R(pos);
+        second_and_more_R(pos, 1);
 
         //moveInchesGOY_XF_F(-44,0.6,1,(int) (getXOdometry() - (-38.5 - adjustToViewMark(false)[1]) * odometryEncXPerInch));
         moveInchesGOY(-44,0.6);
