@@ -35,14 +35,15 @@ public class RedAuto extends BaseAuto {
         align(90);
         p.reset();
         resetXOdometry();
-        moveInchesGOY(-(85.25+shift),0.6);
+        int xx = getXOdometry();
+        moveInchesGOY(-(85.25+shift),0.6,1);
         p.reset();
 
-        moveInchesGOXT(19-getXOdometry()/odometryEncXPerInch,.5,1,2000); //drag +errordistance
+        moveInchesGOXT(10,.5,1,2500); //drag +errordistance
 
         platform_grabber.setPower(-1);
         wait(300);
-        moveInchesGOX_platform(-22,1,1+(13.65-hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS))/13.65);
+        moveInchesGOX_platform(-15,1,1+(13.65-hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS))/13.65);
         int steps = 20;
         double basespeed = 0.33;
         for(int i = 10;i<=steps;++i){

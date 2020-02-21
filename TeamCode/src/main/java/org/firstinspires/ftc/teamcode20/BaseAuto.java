@@ -907,7 +907,7 @@ public class BaseAuto extends BaseOpMode {
             kP = 0.0325;
             kD = 7.3E-3;
         }
-        double kPx = 0.25, kDx = 0.1;
+        double kPx = 0.25, kDx = -0.0025;
         ElapsedTime t = new ElapsedTime();
         int offsetY = getY1Odometry();
         int offsetX = FixXOffset;
@@ -1001,7 +1001,7 @@ public class BaseAuto extends BaseOpMode {
             if(near(prev_speed, multiply_factor*vx,0.001) && near(prev_speed, 0, 0.1)){
                 steadyCounter++;
             }
-            else if(t.milliseconds()>timer){
+            else if(tcur>timer){
                 steadyCounter = 5;
             }
             else{
@@ -1238,12 +1238,13 @@ public class BaseAuto extends BaseOpMode {
 
     protected void first_block(){
     //move forward to the skystone
-    while(-getY1Odometry() < 27*odometryEncYPerInch){setAllDrivePowerG(-.3,-.3,.3,.3);}
+    while(-getY1Odometry() < 20*odometryEncYPerInch){setAllDrivePowerG(-.3,-.3,.3,.3);}
+    while(-getY1Odometry() < 27*odometryEncYPerInch){setAllDrivePowerG(-.2,-.2,.2,.2);}
     setAllDrivePowerG(-.1,-.1,.1,.1);
     grabber.setPosition(grabber_closed);
-    wait(300);
+    wait(100);
     servoThread.setTarget(0.85);
-    while(-getY1Odometry()> 29*odometryEncYPerInch){setAllDrivePowerG(.3,.3,-.3,-.3);}
+    while(-getY1Odometry()> 27*odometryEncYPerInch){setAllDrivePowerG(.3,.3,-.3,-.3);}
     setAllDrivePower(0);
     }
 
