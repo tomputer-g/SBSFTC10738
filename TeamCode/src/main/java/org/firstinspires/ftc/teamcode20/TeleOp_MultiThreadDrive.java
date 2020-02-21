@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode20;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -14,16 +15,16 @@ import static java.lang.Thread.sleep;
 public class TeleOp_MultiThreadDrive extends BaseAuto {
 
     private boolean b = false, rb = false, y = false, dpad_r = false, dpad_l = false, start = false, a = false, a_lt = false, a_rt = false;
-    private boolean[] Xprimed = {true};
+    private boolean[] Xprimed = {true},leftStickButtonPrimed = {true},rightStickButtonPrimed = {true};
     private boolean autoLevel = false;
     private boolean tapeDirectionOut = true;
     //slide
     private boolean platformGrabbed = false;
 
-
     private int placeLevel = 0;
-    private double groundHeightEnc = 2.25 * slideEncoderPerInch;//1 higher placing + 1.25 base height
-
+    private double groundHeightEnc = 2 * slideEncoderPerInch;//1 higher placing + 1.25 base height
+    private int autoplacemode = 0;
+    private double grabberOutSwitch = 0.77;
     Servo france;
 
     //private PWMThread pwmThread;
@@ -32,7 +33,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {
         ElapsedTime t = new ElapsedTime();
-        showTelemetry = true;
+        showTelemetry = false;
         Log.i("Teleop init", "" + t.nanoseconds() + " start drivetrain");
         initDrivetrain();
         Log.i("Teleop init", "" + t.nanoseconds() + " start grabber");
@@ -64,6 +65,27 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
         waitForStart();
         while (opModeIsActive()) {
+            if(zheng(this.gamepad1.left_stick_button,leftStickButtonPrimed)){
+                L1.setPower(-0.2);
+                wait(700);
+                L1.setPower(0);
+                L1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                L1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+
+            //switch between autoplace on first and second block
+            if(zheng(this.gamepad1.right_stick_button,rightStickButtonPrimed)){
+                if(autoplacemode==0){
+                    grabberOutSwitch=0.89;
+                    groundHeightEnc=(2+1.18+1)*slideEncoderPerInch;
+                    autoplacemode=1;
+                }
+                else{
+                    autoplacemode=0;
+                    groundHeightEnc=(2)*slideEncoderPerInch;
+                    grabberOutSwitch=0.77;
+                }
+            }
 
             if (zheng(this.gamepad1.x, Xprimed)) {
                 if (slow == 2) slow = 0;
@@ -178,8 +200,8 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             }
             if (!this.gamepad1.right_bumper && rb) {
                 rb = false;
-                if (servoThread.lastPosition > (grabberServoOut + grabberServoIn) / 2) {
-                    servoThread.setTarget(grabberServoOut);
+                if (servoThread.lastPosition > (grabberOutSwitch + grabberServoIn) / 2) {
+                    servoThread.setTarget(grabberOutSwitch);
                 } else {
                     servoThread.setTarget(grabberServoIn);
                 }
@@ -281,7 +303,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     }
 
     private void runSlidetoBlock(int block){
-        int goalEnc = (int) (slideEncoderPerInch * 4 * placeLevel + 2 * slideEncoderPerInch);
+        int goalEnc = (int) (slideEncoderPerInch * 4 * placeLevel + groundHeightEnc);
         if(autoLevel) {
             if (L1.getCurrentPosition() < goalEnc) {
                 autoLevel=false;
