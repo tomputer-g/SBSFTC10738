@@ -24,7 +24,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     private int placeLevel = 0;
     private double groundHeightEnc = 2 * slideEncoderPerInch;//1 higher placing + 1.25 base height
     private int autoplacemode = 0;
-    private double grabberOutSwitch = 0.77;
+    private double grabberOutSwitch = 0.80;
     Servo france;
 
     //private PWMThread pwmThread;
@@ -33,7 +33,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {
         ElapsedTime t = new ElapsedTime();
-        showTelemetry = false;
+        showTelemetry = true;
         Log.i("Teleop init", "" + t.nanoseconds() + " start drivetrain");
         initDrivetrain();
         Log.i("Teleop init", "" + t.nanoseconds() + " start grabber");
@@ -83,7 +83,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                 else{
                     autoplacemode=0;
                     groundHeightEnc=(2)*slideEncoderPerInch;
-                    grabberOutSwitch=0.77;
+                    grabberOutSwitch=0.80;
                 }
             }
 
