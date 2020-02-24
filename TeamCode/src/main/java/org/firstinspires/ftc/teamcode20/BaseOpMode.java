@@ -687,6 +687,7 @@ public class BaseOpMode extends LinearOpMode {
                     grabber.setPosition(grabber_open);
                     servoThread.setTarget(grabberServoGrab);
                 }
+                servoThread.setTarget(grabberServoGrab);
                 break;
         }
     }
