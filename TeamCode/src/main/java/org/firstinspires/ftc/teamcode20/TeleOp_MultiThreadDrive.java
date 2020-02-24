@@ -24,7 +24,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     private int placeLevel = 0;
     private double groundHeightEnc = 2 * slideEncoderPerInch;//1 higher placing + 1.25 base height
     private int autoplacemode = 0;
-    private double grabberOutSwitch = 0.80;
+    private double grabberOutSwitch = 0.73;
     Servo france;
 
     //private PWMThread pwmThread;
@@ -59,11 +59,12 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
           2020-02-04 12:44:27.010 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 1554783072 all init done (1.5s)
 
          */
-        servoThread.setTarget(0.99);
+
         grabber.setPosition(grabber_open);
         //pwmThread = new PWMThread();
 
         waitForStart();
+        servoThread.setTarget(grabberServoGrab);
         while (opModeIsActive()) {
             if(zheng(this.gamepad1.left_stick_button,leftStickButtonPrimed)){
                 L1.setPower(-0.2);
@@ -83,7 +84,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                 else{
                     autoplacemode=0;
                     groundHeightEnc=(2)*slideEncoderPerInch;
-                    grabberOutSwitch=0.80;
+                    grabberOutSwitch=0.73;
                 }
             }
 
@@ -200,10 +201,10 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             }
             if (!this.gamepad1.right_bumper && rb) {
                 rb = false;
-                if (servoThread.lastPosition > (grabberOutSwitch + grabberServoIn) / 2) {
+                if (servoThread.lastPosition > (grabberOutSwitch + grabberServoGrab) / 2) {
                     servoThread.setTarget(grabberOutSwitch);
                 } else {
-                    servoThread.setTarget(grabberServoIn);
+                    servoThread.setTarget(grabberServoGrab);
                 }
             }
 

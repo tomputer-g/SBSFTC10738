@@ -1249,7 +1249,7 @@ public class BaseAuto extends BaseOpMode {
     }
 
     protected void before_start(){
-        servoThread.setTarget(0.98);
+        servoThread.setTarget(0.88);
         platform_grabber.setPower(1);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
