@@ -592,7 +592,7 @@ public class BaseOpMode extends LinearOpMode {
     private double inchApproachTarget = 10.6, approachSpeed = 0.2;
     protected Rev2mDistanceSensor tower_top;
 
-    protected final double grabberServoOut = 0.73, grabberServoIn = 0.99, grabberServoGrab = 0.88;
+    protected final double grabberServoOut = 0.6, grabberServoIn = 0.99, grabberServoGrab = 0.76;
 
     protected void autoPlace(){
         switch(autoPlaceState){
