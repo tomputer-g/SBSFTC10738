@@ -138,9 +138,10 @@ public class BaseAuto extends BaseOpMode {
         rear1.setLocation(OpenGLMatrix
                 .translation(halfField, quadField, mmTargetHeight)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
+
         rear2.setLocation(OpenGLMatrix
-                .translation(-halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
+                .translation(halfField, -quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
         allTrackables.addAll(targetsSkyStone);
     }
 
@@ -150,10 +151,8 @@ public class BaseAuto extends BaseOpMode {
         targetsSkyStone.activate();
         boolean targetVisible=false;
         VuforiaTrackable trackable;
-        if(isBlue)
-            trackable=rear1;
-        else
-            trackable=rear2;
+        if(isBlue) trackable=rear1;
+        else trackable=rear2;
 
         ElapsedTime ti=new ElapsedTime();
         while ((!targetVisible) && ti.milliseconds()<1000) {
