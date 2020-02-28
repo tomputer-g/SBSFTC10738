@@ -129,6 +129,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                     placeLevel++;
                 autoLevel=true;
                 holdSet=false;
+                servoThread.setTarget(grabberOutSwitch);
                 L1.setPower(-1);
                 L2.setPower(1);
             }
@@ -163,10 +164,13 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                     grabber.setPosition(grabber_open);
                 } else {
                     grabber.setPosition(grabber_closed);
+                    if(near(servoThread.lastPosition,grabberServoGrab,0.1));
+                    servoThread.setTarget(0.72);
                 }
             }
             if (this.gamepad1.b && this.gamepad1.left_bumper && !this.gamepad1.y) {
                 grabber.setPosition(0.01);
+                servoThread.setTarget(0.99);
             }
 
             if (this.gamepad1.start) {
@@ -185,7 +189,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             if (this.gamepad1.dpad_up || this.gamepad1.dpad_down || this.gamepad1.right_bumper || (this.gamepad1.left_bumper && !near(this.gamepad1.right_stick_y, 0, 0.05))) {
                 RTState = -1; //driver interrupt auto movement
                 autoPlaceState = -1;
-                autoLevel=false;
             }
 
             //RT if RT not started - cancels LT
