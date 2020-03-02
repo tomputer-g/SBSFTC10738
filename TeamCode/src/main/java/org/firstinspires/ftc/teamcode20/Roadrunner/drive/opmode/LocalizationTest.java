@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.teamcode20.BaseAuto;
 import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveREV;
 import org.openftc.revextensions2.ExpansionHubEx;
@@ -24,37 +25,31 @@ import org.openftc.revextensions2.RevBulkData;
  */
 @Config
 @TeleOp(group = "drive")
-public class LocalizationTest extends LinearOpMode {
+public class LocalizationTest extends BaseAuto {
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
 
+    public Pose2d PosCalibrate(){
+
+        return new Pose2d(0,0,0);
+    }
+
     @Override
     public void runOpMode() throws InterruptedException {
+        initViewMarks();
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
         SampleMecanumDriveREV drive = new SampleMecanumDriveREV(hardwareMap);
         ExpansionHubEx hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
-        DcMotorEx L2 = hardwareMap.get(DcMotorEx.class,"L2");
-        L2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        DcMotorEx platform = hardwareMap.get(DcMotorEx.class, "platform");
-        platform.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        platform.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        DcMotorEx xOdo = hardwareMap.get(DcMotorEx.class, "xOdo");
-        xOdo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        xOdo.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        initOdometry();
         drive.setPoseEstimate(new Pose2d(-63,63,0));
         waitForStart();
-
-
         while (!isStopRequested()) {
             Pose2d baseVel = new Pose2d(
                     -gamepad1.left_stick_y,
                     -gamepad1.left_stick_x,
                     -gamepad1.right_stick_x
             );
-
             Pose2d vel;
             if (Math.abs(baseVel.getX()) + Math.abs(baseVel.getY()) + Math.abs(baseVel.getHeading()) > 1) {
                 // re-normalize the powers according to the weights
@@ -69,13 +64,9 @@ public class LocalizationTest extends LinearOpMode {
             } else {
                 vel = baseVel;
             }
-
             drive.setDrivePower(vel);
-
             drive.update();
             RevBulkData bulk = hub4.getBulkInputData();
-
-
             Pose2d poseEstimate = drive.getPoseEstimate();
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
@@ -83,11 +74,7 @@ public class LocalizationTest extends LinearOpMode {
             telemetry.addData("Xodo",bulk.getMotorCurrentPosition(2));
             telemetry.addData("L2",bulk.getMotorCurrentPosition(1));
             telemetry.addData("platform",bulk.getMotorCurrentPosition(3));
-
             telemetry.update();
-
-
-
         }
     }
 }
