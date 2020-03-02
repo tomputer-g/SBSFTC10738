@@ -37,7 +37,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {
         ExpansionHubEx hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
-        initOdometry();
         drive=new SampleMecanumDriveREV(hardwareMap);
         drive.setPoseEstimate(new Pose2d(0,0,0));
         ElapsedTime t = new ElapsedTime();
