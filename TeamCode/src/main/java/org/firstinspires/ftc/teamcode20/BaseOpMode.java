@@ -26,18 +26,11 @@ import java.util.Set;
 import static java.lang.Math.pow;
 import static java.lang.Math.round;
 import static java.lang.Math.sqrt;
+import static java.lang.Thread.dumpStack;
+import static java.lang.Thread.getAllStackTraces;
 import static java.lang.Thread.holdsLock;
 import static java.lang.Thread.sleep;
 
-/*
-BaseOpMode should have:
-
-Mecanum driving & encoders (LF, RF, LB, RB)
-Lander-grabber set (definitely 1 motor + maybe 1 motor/servo)
-Vacuum set (2 motors)
-
-Make sure TeleOp2019Trident and BaseAuto can inherit needed stuff by setting them to *protected*!
- */
 public class BaseOpMode extends LinearOpMode {
 
     //Motors
@@ -48,9 +41,7 @@ public class BaseOpMode extends LinearOpMode {
     protected ExpansionHubEx hub2, hub4;
     protected ServoThread servoThread;
 
-    protected Servo light;
-
-    protected Servo grabber;
+    protected Servo grabber, france;
     protected Servo grabber_extend1, grabber_extend2;
     protected DcMotor platform_grabber, xOdometry;
     protected DcMotor L1, L2;
@@ -62,6 +53,38 @@ public class BaseOpMode extends LinearOpMode {
 
 
     protected RevBulkData tmpBulkData;//use this for all bulk reads
+
+
+    protected void kill(){
+        kill("");
+    }
+
+    protected void kill(String message){
+        //Drivetrain
+        if(LF != null && LB != null && RF != null && RB != null)setAllDrivePower(0);
+        //Slide Motors TODO: better stopping method?
+        if(L1 != null)L1.setPower(0);
+        if(L2 != null)L2.setPower(0);
+        //On slide: Servos (+ kill servo thread)
+        if(servoThread != null && servoThread.isAlive())servoThread.stopThread();
+        if(grabber_extend1 != null)grabber_extend1.setPosition(0.99);//TODO: Better stopping method?
+        if(grabber_extend2 != null)grabber_extend2.setPosition(0.01);
+        if(france != null)france.setPosition(0);
+        if(grabber != null)grabber.setPosition(0.01);
+        //tape
+        if(xOdometry != null)xOdometry.setPower(0);
+        //platform grabber
+        if(platform_grabber != null)platform_grabber.setPower(0);
+
+        //Non-physical dependencies:
+        //Logger
+        if(logWriter != null)stopLog();
+
+        Log.w("Kill()","Message: "+message+". Printing stack:\n");
+        dumpStack();
+        stop();
+    }
+
 
 
     @Override public void internalPreInit() {
@@ -94,17 +117,6 @@ public class BaseOpMode extends LinearOpMode {
         L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    protected void initLight(){
-        light = hardwareMap.get(Servo.class, "light");
-    }
-
-    protected void setLight(boolean on){
-        if(on){
-            light.setPosition(1);
-        }else{
-            light.setPosition(0);
-        }
-    }
 
     protected void moveLinSlide(double speed){
         L1.setPower(speed);
