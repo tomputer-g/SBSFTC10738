@@ -308,17 +308,11 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
      */
 
-    private void handleTape () {
-
-    }
-
     private void runSlidetoBlock(int block){
         int goalEnc = (int) (slideEncoderPerInch * 4 * placeLevel + groundHeightEnc);
         if(autoLevel) {
             if (L1.getCurrentPosition() < goalEnc) {
                 autoLevel=false;
-                L1.setPower(0);
-                L2.setPower(0);
                 holdSet = false;
                 holdSlide(goalEnc);
             }
