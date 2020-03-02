@@ -2,12 +2,14 @@ package org.firstinspires.ftc.teamcode20;
 
 import android.util.Log;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveREV;
 
 import static java.lang.Thread.sleep;
 
@@ -26,12 +28,14 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     private int autoplacemode = 0;
     private double grabberOutSwitch = 0.6;
     Servo france;
-
+    private SampleMecanumDriveREV drive;
     //private PWMThread pwmThread;
 
 
     @Override
     public void runOpMode() throws InterruptedException {
+        drive=new SampleMecanumDriveREV(hardwareMap);
+        drive.setPoseEstimate(new Pose2d(0,0,0));
         ElapsedTime t = new ElapsedTime();
         showTelemetry = true;
         Log.i("Teleop init", "" + t.nanoseconds() + " start drivetrain");
@@ -66,6 +70,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         waitForStart();
         servoThread.setTarget(grabberServoGrab);
         while (opModeIsActive()) {
+            drive.update();
             if(zheng(this.gamepad1.left_stick_button,leftStickButtonPrimed)){
                 L1.setPower(-0.2);
                 wait(700);
