@@ -37,6 +37,7 @@ public class LocalizationTest extends BaseAuto {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        initVuforia();
         initViewMarks();
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         SampleMecanumDriveREV drive = new SampleMecanumDriveREV(hardwareMap);
