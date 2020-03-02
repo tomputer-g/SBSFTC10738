@@ -765,7 +765,7 @@ public class BaseOpMode extends LinearOpMode {
         public void setDelay(int delayPerStep){
             delayStep = delayPerStep;
         }
-
+        public void servoWait(int milisec){try {Thread.sleep(milisec);} catch (Exception e) {} }
         public void stopThread(){
             stop = true;
         }
