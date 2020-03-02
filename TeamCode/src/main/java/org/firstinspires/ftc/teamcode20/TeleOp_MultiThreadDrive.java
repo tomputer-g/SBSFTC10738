@@ -169,7 +169,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                     grabber.setPosition(grabber_open);
                 } else {
                     grabber.setPosition(grabber_closed);
-                    if(near(servoThread.lastPosition,grabberServoGrab,0.1));
+                    servoThread.servoWait(300);
                     servoThread.setTarget(0.72);
                 }
             }
