@@ -110,7 +110,7 @@ public class LocalizationTest extends BaseAuto {
         }
         if (targetVisible) {
             VectorF translation = lastLocation.getTranslation();
-            return new Pose2d(translation.get(0)/mmPerInch,translation.get(1)/mmPerInch,Math.toRadians(getHeading()));
+            return new Pose2d(translation.get(0)/mmPerInch,translation.get(1)/mmPerInch, Math.toRadians(getHeading()));
         }
         return null;
     }

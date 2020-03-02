@@ -109,8 +109,8 @@ public class BaseAuto extends BaseOpMode {
     protected void initHubs(){
         hub2 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
         hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
-
     }
+
     class AutonomousInitThread extends Thread{
         @Override
         public void run() {
