@@ -29,15 +29,6 @@ import static java.lang.Math.sqrt;
 import static java.lang.Thread.holdsLock;
 import static java.lang.Thread.sleep;
 
-/*
-BaseOpMode should have:
-
-Mecanum driving & encoders (LF, RF, LB, RB)
-Lander-grabber set (definitely 1 motor + maybe 1 motor/servo)
-Vacuum set (2 motors)
-
-Make sure TeleOp2019Trident and BaseAuto can inherit needed stuff by setting them to *protected*!
- */
 public class BaseOpMode extends LinearOpMode {
 
     //Motors
@@ -47,8 +38,6 @@ public class BaseOpMode extends LinearOpMode {
     protected boolean showTelemetry = false;
     protected ExpansionHubEx hub2, hub4;
     protected ServoThread servoThread;
-
-    protected Servo light;
 
     protected Servo grabber;
     protected Servo grabber_extend1, grabber_extend2;
@@ -63,6 +52,12 @@ public class BaseOpMode extends LinearOpMode {
 
     protected RevBulkData tmpBulkData;//use this for all bulk reads
 
+
+    protected void kill(){
+        //Drivetrain
+        setAllDrivePower(0);
+
+    }
 
     @Override public void internalPreInit() {
         super.internalPreInit();
@@ -94,17 +89,6 @@ public class BaseOpMode extends LinearOpMode {
         L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    protected void initLight(){
-        light = hardwareMap.get(Servo.class, "light");
-    }
-
-    protected void setLight(boolean on){
-        if(on){
-            light.setPosition(1);
-        }else{
-            light.setPosition(0);
-        }
-    }
 
     protected void moveLinSlide(double speed){
         L1.setPower(speed);

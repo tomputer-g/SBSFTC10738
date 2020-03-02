@@ -37,8 +37,6 @@ public class MiscTest extends TractionControl {
         koe = 0.7;
         dist_target = 13;
         square_dist = 8.2;
-        initLight();
-        light.setPosition(.5);
         waitForStart();
         while(opModeIsActive()){
              /*
