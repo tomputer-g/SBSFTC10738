@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveREV;
+import org.openftc.revextensions2.ExpansionHubEx;
 
 import static java.lang.Thread.sleep;
 
@@ -35,15 +36,8 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        DcMotorEx L2 = hardwareMap.get(DcMotorEx.class,"L2");
-        L2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        DcMotorEx platform = hardwareMap.get(DcMotorEx.class, "platform");
-        platform.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        platform.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        DcMotorEx xOdo = hardwareMap.get(DcMotorEx.class, "xOdo");
-        xOdo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);// hello
-        xOdo.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        ExpansionHubEx hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
+        initOdometry();
         drive=new SampleMecanumDriveREV(hardwareMap);
         drive.setPoseEstimate(new Pose2d(0,0,0));
         ElapsedTime t = new ElapsedTime();
