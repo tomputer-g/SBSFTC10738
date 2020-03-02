@@ -79,6 +79,12 @@ public class BaseAuto extends BaseOpMode {
     private double[] displacements = {2, 7};//+ = forward; + = right
     private double headingDisplacement = -90;
 
+    protected void check30s(){
+        if(this.time > 30.0){
+            kill("30s timeout");
+        }
+    }
+
     protected void initAutonomous(){
         //AutonomousInitThread initThread = new AutonomousInitThread();
         //initThread.start();
