@@ -1242,7 +1242,7 @@ public class BaseAuto extends BaseOpMode {
             }
             setAllDrivePower(0);
             align(90);
-            servoThread.setExtTarget(0.65);
+            servoThread.setExtTarget(0.4);
             moveInchesGOY_XF_F(info[result+2]-1, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
         }
         grabber.setPosition(grabber_open);
