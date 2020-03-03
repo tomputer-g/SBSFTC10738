@@ -53,7 +53,6 @@ public class LocalizationTest extends BaseAuto {
     private static final float quadField  = 36 * mmPerInch;
 
     public void initV(){
-        initIMU();
         initVuforia();
         VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
         VuforiaTrackable red1 = targetsSkyStone.get(5);

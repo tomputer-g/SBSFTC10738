@@ -49,25 +49,11 @@ public class BaseAuto extends BaseOpMode {
 
     //Vuforia
     protected VuforiaLocalizer vuforia;
-    private boolean VuforiaInit = false;
     protected static final float mmPerInch = 25.4f;
     protected OpenGLMatrix lastLocation = null;
     protected VuforiaTrackables targetsSkyStone;
     protected List<VuforiaTrackable> allTrackables= new ArrayList<VuforiaTrackable>();
-    private final float CAMERA_FORWARD_DISPLACEMENT = 0f * mmPerInch;//2.5 in from end + 1 in correction
-    private final float CAMERA_VERTICAL_DISPLACEMENT = 0f * mmPerInch;// eg: Camera is 8 Inches above ground
-    private final float CAMERA_LEFT_DISPLACEMENT = 0f * mmPerInch; // eg: Camera is ON the robot's center line
     private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
-
-    // Constant for Stone Target
-    private static final float stoneZ = 2.00f * mmPerInch;
-
-    // Constants for the center support targets
-    private static final float bridgeZ = 6.42f * mmPerInch;
-    private static final float bridgeY = 23 * mmPerInch;
-    private static final float bridgeX = 5.18f * mmPerInch;
-    private static final float bridgeRotY = 59;                                 // Units are degrees
-    private static final float bridgeRotZ = 180;
 
     private VuforiaTrackable rear1,rear2;//from kuaishou.com
     // Constants for perimeter targets
@@ -79,7 +65,7 @@ public class BaseAuto extends BaseOpMode {
 
     //Roadrunner
     protected SampleMecanumDriveREV drive;
-
+/*
     class StopHandlerThread extends Thread{
         private Thread parentRef; //for calling interrupt
         public StopHandlerThread(Thread parentRef) {
@@ -93,7 +79,7 @@ public class BaseAuto extends BaseOpMode {
         }
     }
 
-
+ */
     protected void initAutonomous() throws InterruptedException{
         //AutonomousInitThread initThread = new AutonomousInitThread();
         //initThread.start();
@@ -142,6 +128,7 @@ public class BaseAuto extends BaseOpMode {
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
         vuforia.setFrameQueueCapacity(6);
+
         cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
@@ -485,7 +472,7 @@ public class BaseAuto extends BaseOpMode {
         frame.close();
         return result;
     }
-
+/*
     //TFOD
     protected TFObjectDetector tfod;
 
@@ -509,6 +496,8 @@ public class BaseAuto extends BaseOpMode {
         }
     }
 
+
+ */
     //Sensors
     protected ModernRoboticsI2cRangeSensor rangeSensorFront, rangeSensorSide;
     protected Rev2mDistanceSensor left,right;
@@ -727,7 +716,6 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(0);
         setNewGyro0();
     }
-
     protected void backy(){
         Log.i("backY","called");
         double target=180,kd=0.922,kp=0.028;
@@ -1296,87 +1284,6 @@ public class BaseAuto extends BaseOpMode {
         if(showTelemetry)telemetry.clear();
         grabber.setPosition(grabber_open);
         platform_grabber.setPower(0.0);
-    }
-
-    public void initV(){
-        initVuforia();
-        VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
-        VuforiaTrackable red1 = targetsSkyStone.get(5);
-        red1.setName("Red Perimeter 1");
-        VuforiaTrackable red2 = targetsSkyStone.get(6);
-        red2.setName("Red Perimeter 2");
-        VuforiaTrackable front1 = targetsSkyStone.get(7);
-        front1.setName("Front Perimeter 1");
-        VuforiaTrackable front2 = targetsSkyStone.get(8);
-        front2.setName("Front Perimeter 2");
-        VuforiaTrackable blue1 = targetsSkyStone.get(9);
-        blue1.setName("Blue Perimeter 1");
-        VuforiaTrackable blue2 = targetsSkyStone.get(10);
-        blue2.setName("Blue Perimeter 2");
-        VuforiaTrackable rear1 = targetsSkyStone.get(11);
-        rear1.setName("Rear Perimeter 1");
-        VuforiaTrackable rear2 = targetsSkyStone.get(12);
-        rear2.setName("Rear Perimeter 2");
-        allTrackables.addAll(targetsSkyStone);
-        //Set the position of the perimeter targets with relation to origin (center of field)
-        red1.setLocation(OpenGLMatrix
-                .translation(quadField, -halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
-        red2.setLocation(OpenGLMatrix
-                .translation(-quadField, -halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
-        front1.setLocation(OpenGLMatrix
-                .translation(-halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
-        front2.setLocation(OpenGLMatrix
-                .translation(-halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
-        blue1.setLocation(OpenGLMatrix
-                .translation(-quadField, halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
-        blue2.setLocation(OpenGLMatrix
-                .translation(quadField, halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
-        rear1.setLocation(OpenGLMatrix
-                .translation(halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
-        rear2.setLocation(OpenGLMatrix
-                .translation(halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
-
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-        boolean PHONE_IS_PORTRAIT = false  ;
-        float phoneXRotate    = 0;
-        float phoneYRotate    = 0;
-        float phoneZRotate    = 0;
-        if (CAMERA_CHOICE == BACK) {
-            phoneYRotate = -90;
-        } else {
-            phoneYRotate = 90;
-        }
-
-        // Rotate the phone vertical about the X axis if it's in portrait mode
-        if (PHONE_IS_PORTRAIT) {
-            phoneXRotate = 90 ;
-        }
-
-        // Next, translate the camera lens to where it is on the robot.
-        // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
-        final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
-        final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT     = 9f * mmPerInch;     // eg: Camera is ON the robot's center line
-
-        OpenGLMatrix robotFromCamera = OpenGLMatrix
-                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
-
-        /**  Let all the trackable listeners know where the phone is.  */
-        for (VuforiaTrackable trackable : allTrackables) {
-            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
-        }
-        targetsSkyStone.activate();
     }
 }
 

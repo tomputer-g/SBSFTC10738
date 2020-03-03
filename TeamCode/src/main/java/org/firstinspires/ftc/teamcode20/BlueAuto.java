@@ -12,7 +12,7 @@ public class BlueAuto extends BaseAuto {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        new StopHandlerThread(Thread.currentThread());
+        //new StopHandlerThread(Thread.currentThread());
         initAutonomous();
         drive=new SampleMecanumDriveREV(hardwareMap);
         //cooThread.start();
