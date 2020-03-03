@@ -97,7 +97,7 @@ public class BlueAuto extends BaseAuto {
 
             //new StopHandlerThread(Thread.currentThread());
             initAutonomous();
-            hub4.setLedColor(255,192,203);
+            hub4.setLedColor(255,20,147);
             drive = new SampleMecanumDriveREV(hardwareMap);
             //cooThread.start();
             int pos = 0;
@@ -164,6 +164,7 @@ public class BlueAuto extends BaseAuto {
 
             //after_dragged_foundation_B();
             second_and_more_B(pos, 1);
+            hub4.setLedColor(255,20,147);
             moveInchesGOY_XF_F(-44, 0.6, 1, (int) (getXOdometry() - (41 - adjustToViewMark(true)[1]) * odometryEncXPerInch));
         }
     }
