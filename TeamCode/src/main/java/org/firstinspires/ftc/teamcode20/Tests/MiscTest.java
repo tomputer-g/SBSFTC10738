@@ -1,14 +1,8 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode20.TractionControl;
-import com.acmerobotics.roadrunner.drive.MecanumDrive.MecanumLocalizer.*;
 @TeleOp
 public class MiscTest extends TractionControl {
     double speed,x,y, GYRO_kp, side_distance, kp,kd,dist_target,koe,square_dist;

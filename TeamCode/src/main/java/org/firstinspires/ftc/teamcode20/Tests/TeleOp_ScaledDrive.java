@@ -1,6 +1,8 @@
-package org.firstinspires.ftc.teamcode20;
+package org.firstinspires.ftc.teamcode20.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode20.BaseOpMode;
 
 public class TeleOp_ScaledDrive extends BaseOpMode {
 

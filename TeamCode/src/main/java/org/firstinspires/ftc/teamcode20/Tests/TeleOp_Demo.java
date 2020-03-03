@@ -1,10 +1,11 @@
-package org.firstinspires.ftc.teamcode20;
+package org.firstinspires.ftc.teamcode20.Tests;
 
 import android.util.Log;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode20.BaseAuto;
 
 import java.util.Set;
 

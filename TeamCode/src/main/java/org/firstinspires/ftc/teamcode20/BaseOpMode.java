@@ -77,20 +77,8 @@ public class BaseOpMode extends LinearOpMode {
     }
  */
 
-
-    @Override public void internalPreInit() {
-        super.internalPreInit();
-        msStuckDetectLoop = 30000;
-        msStuckDetectInit = 30000;
-    }
-
-
     @Override
-    public void runOpMode() throws InterruptedException {
-        hub2 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
-        hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
-    }
-
+    public void runOpMode() throws InterruptedException {}
 
     protected void initPlatformGrabber(){
         platform_grabber = hardwareMap.get(DcMotor.class, "platform");
@@ -106,12 +94,6 @@ public class BaseOpMode extends LinearOpMode {
         L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         L1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    }
-
-
-    protected void moveLinSlide(double speed){
-        L1.setPower(speed);
-        L2.setPower(-speed);
     }
 
     protected void initGrabber(){
@@ -237,12 +219,6 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     protected boolean zheng(boolean b, boolean[] f){
-        //chzch butt on press
-        //淦 --yeah
-        //微笑着面对它
-        //int index=bFN.indexOf(s);
-        //boolean b=bFB[index];
-        //boolean c=bF[index];
         if(b||!f[0]){
             f[0]= !b;
             return f[0];
@@ -257,6 +233,7 @@ public class BaseOpMode extends LinearOpMode {
         RB.setPower(-0.5 * (-vx + vy + vr));
     }
 
+    /*
     private double sigmoid(double x){
         return (1.8/(1+pow(Math.E,5*x)))-0.9;
     }
@@ -267,6 +244,8 @@ public class BaseOpMode extends LinearOpMode {
         if(showTelemetry)telemetry.addLine("-----------------------");
         if(showTelemetry)telemetry.addLine(""+to3dstr(LB)+"  |  "+to3dstr(RB));
     }
+
+     */
 
     protected String to3dstr(double d){
         DecimalFormat df = new DecimalFormat("##0.000");
@@ -297,9 +276,11 @@ public class BaseOpMode extends LinearOpMode {
         setAllDrivePower(0);
     }
 
-    protected void setAllDrivePower1(double a, double b, double c, double d){
+    /*protected void setAllDrivePower1(double a, double b, double c, double d){
         setAllDrivePower(-a,-b,c,d);
     }
+
+     */
 
     protected void moveInches(double xInch, double yInch, double speed){
         /*
@@ -309,8 +290,6 @@ public class BaseOpMode extends LinearOpMode {
         */
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
-        ElapsedTime t = new ElapsedTime();
-        int p_time = (int) (sqrt(xInch*xInch + yInch*yInch)*100);
         double xmult = 232.5088/12, ymult = 232.7551/12;
         int encoder_x=(int)(xInch*xmult),encoder_y=(int)(yInch*ymult);
         double theta=Math.atan(xInch/yInch);
@@ -527,11 +506,10 @@ public class BaseOpMode extends LinearOpMode {
     protected final double slideInchTravel = 72.0;//inch of slide travel
 
     //value changed
-    protected final double slideEncoderPerInch = -83.615*1.0192;
+    protected final double slideEncoderPerInch = -85.2204;
     protected int RTState = -1;
     protected final double ctrl_deadzone = 0.2;
     protected int slow = 0;
-
 
     protected int autoPlaceState = -1;
 
@@ -591,8 +569,8 @@ public class BaseOpMode extends LinearOpMode {
         }
     }
 
-    private int descendTarget = 0, ascendTarget = 0;
-    private double inchApproachTarget = 10.6, approachSpeed = 0.2;
+    //private int descendTarget = 0, ascendTarget = 0;
+    //private double inchApproachTarget = 10.6, approachSpeed = 0.2;
     protected Rev2mDistanceSensor tower_top;
 
     protected final double grabberServoOut = 0.6, grabberServoIn = 0.99, grabberServoGrab = 0.76;
@@ -662,8 +640,6 @@ public class BaseOpMode extends LinearOpMode {
         }
     }
      */
-
-
 
     protected void handleRTState(){//call in loop; non-blocking
         switch (RTState) {
