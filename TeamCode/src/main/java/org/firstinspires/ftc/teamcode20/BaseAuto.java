@@ -1266,7 +1266,6 @@ public class BaseAuto extends BaseOpMode {
     }
 
     public void initV(){
-        initIMU();
         initVuforia();
         VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
         VuforiaTrackable red1 = targetsSkyStone.get(5);
