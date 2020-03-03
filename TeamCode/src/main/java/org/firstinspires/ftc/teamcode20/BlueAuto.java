@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode20;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveREV;
 import org.openftc.revextensions2.ExpansionHubEx;
 
 @Autonomous
@@ -13,7 +14,8 @@ public class BlueAuto extends BaseAuto {
     public void runOpMode() throws InterruptedException {
         new StopHandlerThread(Thread.currentThread());
         initAutonomous();
-
+        drive=new SampleMecanumDriveREV(hardwareMap);
+        //cooThread.start();
         while(!isStarted() && !isStopRequested()){
             pos = new_skystoneposition();
             wait(200);
@@ -52,7 +54,7 @@ public class BlueAuto extends BaseAuto {
                 moveInchesGOY_XF((85.25 + shift), 0.9, 1);
                 p.reset();
 
-                moveInchesGOXT(13, .8, 1, 3000); //drag +errordistance
+                moveInchesGOXT(13, .65, 1, 3000); //drag +errordistance
 
                 platform_grabber.setPower(-1);
                 wait(300);
