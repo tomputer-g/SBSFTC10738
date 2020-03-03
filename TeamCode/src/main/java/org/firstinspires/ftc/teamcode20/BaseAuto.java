@@ -52,11 +52,10 @@ public class BaseAuto extends BaseOpMode {
     protected static final float mmPerInch = 25.4f;
     protected OpenGLMatrix lastLocation = null;
     protected VuforiaTrackables targetsSkyStone;
-    protected List<VuforiaTrackable> allTrackables= new ArrayList<VuforiaTrackable>();
+    protected List<VuforiaTrackable> allTrackables= new ArrayList<>();
     private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
-
     private VuforiaTrackable rear1,rear2;//from kuaishou.com
-    // Constants for perimeter targets
+        // Constants for perimeter targets
     private static final float halfField = 72 * mmPerInch;
     private static final float quadField  = 36 * mmPerInch;
     private ElapsedTime VuforiaPositionTime;
@@ -65,6 +64,27 @@ public class BaseAuto extends BaseOpMode {
 
     //Roadrunner
     protected SampleMecanumDriveREV drive;
+
+    //IMU
+    protected static BNO055IMU imu;
+    protected Orientation angles;
+    protected double angle;
+    protected static double imuHeading;
+    protected static double imuAbsolute=0;
+    protected static double imuOffset=0;
+    protected static double acctarget=0;
+
+    //Odometry
+    protected double xmult = 1430.5/72, ymult = 18.65;
+
+    //Threads
+    protected CooThread cooThread=new CooThread();
+
+    //Misc
+    protected double[] n_pass ={0,0};
+    private double xpre=0,y1pre=0,y2pre=0,theta=0;
+
+    //-------------------------------------------------------------Multithreading------------------------------------------------------------------
 /*
     class StopHandlerThread extends Thread{
         private Thread parentRef; //for calling interrupt
@@ -79,7 +99,19 @@ public class BaseAuto extends BaseOpMode {
         }
     }
 
+
+
+    class AutonomousInitThread extends Thread{
+        @Override
+        public void run() {
+            Log.i("Auto init thread","started at "+System.currentTimeMillis());
+            Log.i("Auto init thread", "finished at "+ System.currentTimeMillis());
+        }
+    }
+
  */
+
+    //------------------------------------------------------------------Init-----------------------------------------------------------------------
     protected void initAutonomous() throws InterruptedException{
         //AutonomousInitThread initThread = new AutonomousInitThread();
         //initThread.start();
@@ -112,13 +144,7 @@ public class BaseAuto extends BaseOpMode {
         hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
     }
 
-    class AutonomousInitThread extends Thread{
-        @Override
-        public void run() {
-            Log.i("Auto init thread","started at "+System.currentTimeMillis());
-            Log.i("Auto init thread", "finished at "+ System.currentTimeMillis());
-        }
-    }
+    //----------------------------------------------------------------Vuforia----------------------------------------------------------------------
 
     protected void initVuforia(){
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -273,7 +299,6 @@ public class BaseAuto extends BaseOpMode {
     }
 
      */
-
     protected void shutdownVuforia(){
         targetsSkyStone.deactivate();
     }
@@ -408,7 +433,6 @@ public class BaseAuto extends BaseOpMode {
         return result;
     }
 
-
     protected int new_skystonepositionR(){
         VuforiaLocalizer.CloseableFrame frame = null;
         Image image = null;
@@ -472,7 +496,9 @@ public class BaseAuto extends BaseOpMode {
         frame.close();
         return result;
     }
-/*
+
+    //------------------------------------------------------------------TFOD------------------------------------------------------------------------
+    /*
     //TFOD
     protected TFObjectDetector tfod;
 
@@ -498,7 +524,8 @@ public class BaseAuto extends BaseOpMode {
 
 
  */
-    //Sensors
+
+    //-----------------------------------------------------------------Sensors----------------------------------------------------------------------
     protected ModernRoboticsI2cRangeSensor rangeSensorFront, rangeSensorSide;
     protected Rev2mDistanceSensor left,right;
 
@@ -510,15 +537,7 @@ public class BaseAuto extends BaseOpMode {
         //tower_top = hardwareMap.get(Rev2mDistanceSensor.class, "tower_top");
     }
 
-    //IMU
-    protected static BNO055IMU imu;
-    protected Orientation angles;
-    protected double angle;
-    protected static double imuHeading;
-    protected static double imuAbsolute=0;
-    protected static double imuOffset=0;
-    protected static double acctarget=0;
-
+    //-------------------------------------------------------------------IMU-----------------------------------------------------------------------
 
     protected void initIMU(){
         BNO055IMU.Parameters BNOParameters = new BNO055IMU.Parameters();
@@ -579,8 +598,7 @@ public class BaseAuto extends BaseOpMode {
         return onTarget;
     }
 
-    //Odometry
-    protected double xmult = 1430.5/72, ymult = 18.65;
+    //-----------------------------------------------------------------Odometry-------------------------------------------------------------------
 
     protected void initOdometry(){
         //L2 is Y encoder
@@ -597,71 +615,40 @@ public class BaseAuto extends BaseOpMode {
         cooThread=new CooThread();
     }
 
-    //Threads
-    protected CooThread cooThread=new CooThread();
-
-    //Misc
-    protected double[] n_pass ={0,0};
-    private double xpre=0,y1pre=0,y2pre=0,theta=0;
-
-
-    //Movement methods
-
-    protected void turn(double angle, double speed, double threshold) {
-        setMode_RUN_WITHOUT_ENCODER();
-        setNewGyro(theta);
-        double p_TURN = 6;
-        //double Ie=0;
-
-        double rangle = angle;
-        if(angle>25)rangle-=2;
-        else if(angle<-25)rangle+=1;
-
-        while(!onHeading(speed, rangle, p_TURN, threshold));
-        theta=getError(theta+angle,0);
-        //setNewGyro(angle);
+    protected void updateCoo(){
+        double heading=getError(getHeading()+imuOffset,0);
+        double dtheta=heading-theta;
+        tmpBulkData = hub4.getBulkInputData();
+        double xcur=tmpBulkData.getMotorCurrentPosition(xOdometry)/odometryEncXPerInch,y1cur=-tmpBulkData.getMotorCurrentPosition(platform_grabber)/odometryEncYPerInch,y2cur=-tmpBulkData.getMotorCurrentPosition(L2)/odometryEncYPerInch,thetacur=heading/180*Math.PI;
+        double dx=(near(dtheta,0,5))?xcur-xpre:0;
+        double dy=(y1cur+y2cur-y1pre-y2pre)/2;//(near(dtheta,0,5))?y1cur-y1pre:0;
+        n_pass[0] += (dx * Math.cos(thetacur) + dy * Math.sin(thetacur));
+        n_pass[1] += (dx * Math.sin(thetacur) + dy * Math.cos(thetacur));
+        xpre=xcur;
+        y1pre=y1cur;
+        y2pre=y2cur;
+        theta=heading;
     }
 
-    protected void PIDturn(double target, boolean resetOffset){
-        tunePIDturn(target,0.068,0.9,0.5,resetOffset);
-    }
-
-    protected void PIDturnfast(double target, boolean resetOffset){
-        tunePIDturn(target,0.029,2.291,1,false);
-    }
-    protected void align(double target){
-        PIDturnfast(-getError(imuAbsolute,target),false);
-        setNewGyro(target);
-    }
-    protected void tunePIDturn(double target, double kp, double kd, double speed, boolean resetOffset){
-        if(resetOffset){
-            acctarget=0;
-            setNewGyro0();
+    protected class CooThread extends Thread{
+        volatile public boolean stop = false;
+        @Override
+        public void run() {
+            //this.setPriority(4);
+            this.setName("Coord Thread "+this.getId());
+            Log.i("coordThread"+this.getId(),"Started running");
+            while (!isInterrupted() && !stop) {
+                drive.update();
+            }
+            Log.i("coordThread"+this.getId(), "thread finished");
         }
-        double e = target;
-        ElapsedTime t = new ElapsedTime();
-        ElapsedTime n = new ElapsedTime();
-        int i=0;
-        while(i<5&&n.milliseconds()<((speed>0.5)?800:2000)){
-            double e2 = target-(getAdjustedHeading(target));
-            double D = kd*(e2-e)/t.milliseconds();
-            t.reset();
-            double P = e2*kp;
-            if(Math.abs(P)>Math.abs(speed))P=P>0?speed:-speed;
-            setAllDrivePower(P+D);
-            e=e2;
-            if(near(e2-e,0,0.3)&&near(e2,0,3))
-                i++;
+        public void stopThread(){
+            stop = true;
         }
-        setAllDrivePower(0);
-        acctarget+=target;
-        if(resetOffset) {
-            acctarget = 0;
-            setNewGyro0();
-        }
-        else
-            setNewGyro(acctarget);
     }
+
+    //-------------------------------------------------------------Movement methods---------------------------------------------------------------
+
     protected void lefty(){
         double target=90,kd=0.922,kp=0.028;
         acctarget=0;
@@ -752,6 +739,63 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(0);
     }
 
+    protected void turn(double angle, double speed, double threshold) {
+        setMode_RUN_WITHOUT_ENCODER();
+        setNewGyro(theta);
+        double p_TURN = 6;
+        //double Ie=0;
+
+        double rangle = angle;
+        if(angle>25)rangle-=2;
+        else if(angle<-25)rangle+=1;
+
+        while(!onHeading(speed, rangle, p_TURN, threshold));
+        theta=getError(theta+angle,0);
+        //setNewGyro(angle);
+    }
+
+    protected void PIDturn(double target, boolean resetOffset){
+        tunePIDturn(target,0.068,0.9,0.5,resetOffset);
+    }
+
+    protected void PIDturnfast(double target, boolean resetOffset){
+        tunePIDturn(target,0.029,2.291,1,false);
+    }
+
+    protected void align(double target){
+        PIDturnfast(-getError(imuAbsolute,target),false);
+        setNewGyro(target);
+    }
+
+    protected void tunePIDturn(double target, double kp, double kd, double speed, boolean resetOffset){
+        if(resetOffset){
+            acctarget=0;
+            setNewGyro0();
+        }
+        double e = target;
+        ElapsedTime t = new ElapsedTime();
+        ElapsedTime n = new ElapsedTime();
+        int i=0;
+        while(i<5&&n.milliseconds()<((speed>0.5)?800:2000)){
+            double e2 = target-(getAdjustedHeading(target));
+            double D = kd*(e2-e)/t.milliseconds();
+            t.reset();
+            double P = e2*kp;
+            if(Math.abs(P)>Math.abs(speed))P=P>0?speed:-speed;
+            setAllDrivePower(P+D);
+            e=e2;
+            if(near(e2-e,0,0.3)&&near(e2,0,3))
+                i++;
+        }
+        setAllDrivePower(0);
+        acctarget+=target;
+        if(resetOffset) {
+            acctarget = 0;
+            setNewGyro0();
+        }
+        else
+            setNewGyro(acctarget);
+    }
 
     private double getAdjustedHeading(double target){
         double i = getHeading();
@@ -792,7 +836,6 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePowerG(-.02 * dir - .05 * x + .02 * w, -.02 * dir + .05 * x + .02 * w, .02 * dir - 0.05 * x + .02 * w, .2 * dir + .05 * x + .2 * w);
     }
 
-
     protected void moveInchesG(double xInch, double yInch, double speed, double Kp){
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
@@ -822,7 +865,7 @@ public class BaseAuto extends BaseOpMode {
         setMode_RUN_WITHOUT_ENCODER();
     }
 
-    public void moveInchesG(double xInch, double yInch, double speed){
+    protected void moveInchesG(double xInch, double yInch, double speed){
         moveInchesG(xInch,yInch,speed,.8);
     }
 
@@ -924,6 +967,7 @@ public class BaseAuto extends BaseOpMode {
         }
         setAllDrivePower(0);
     }
+
     protected void moveInchesGOY_XF_F(double yInch, double speed,double kV, int FixXOffset){//use 0.4 for short-dist
         yInch = -yInch;
         //setNewGyro0();
@@ -980,6 +1024,7 @@ public class BaseAuto extends BaseOpMode {
         }
         setAllDrivePower(0);
     }
+
     protected void moveInchesGOX(double xInch, double speed){
         moveInchesGOX(xInch,speed,1);
     }
@@ -1091,44 +1136,13 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(0);
     }
 
-    public void brake(){
+    protected void brake(){
         double speed = LF.getPower();
         setAllDrivePower(-speed,-speed,speed,speed);
         wait(40+(int)(400*Math.abs(speed)));
     }
 
-    //Coordinates
-    protected void updateCoo(){
-        double heading=getError(getHeading()+imuOffset,0);
-        double dtheta=heading-theta;
-        tmpBulkData = hub4.getBulkInputData();
-        double xcur=tmpBulkData.getMotorCurrentPosition(xOdometry)/odometryEncXPerInch,y1cur=-tmpBulkData.getMotorCurrentPosition(platform_grabber)/odometryEncYPerInch,y2cur=-tmpBulkData.getMotorCurrentPosition(L2)/odometryEncYPerInch,thetacur=heading/180*Math.PI;
-        double dx=(near(dtheta,0,5))?xcur-xpre:0;
-        double dy=(y1cur+y2cur-y1pre-y2pre)/2;//(near(dtheta,0,5))?y1cur-y1pre:0;
-        n_pass[0] += (dx * Math.cos(thetacur) + dy * Math.sin(thetacur));
-        n_pass[1] += (dx * Math.sin(thetacur) + dy * Math.cos(thetacur));
-        xpre=xcur;
-        y1pre=y1cur;
-        y2pre=y2cur;
-        theta=heading;
-    }
-
-    protected class CooThread extends Thread{
-        volatile public boolean stop = false;
-        @Override
-        public void run() {
-            //this.setPriority(4);
-            this.setName("Coord Thread "+this.getId());
-            Log.i("coordThread"+this.getId(),"Started running");
-            while (!isInterrupted() && !stop) {
-                drive.update();
-            }
-            Log.i("coordThread"+this.getId(), "thread finished");
-        }
-        public void stopThread(){
-            stop = true;
-        }
-    }
+    //---------------------------------------------------------Autonomous methods-------------------------------------------------
     protected void after_dragged_foundation_B(){
         ElapsedTime p = new ElapsedTime();
         platform_grabber.setPower(1);
@@ -1153,6 +1167,7 @@ public class BaseAuto extends BaseOpMode {
         grabber.setPosition(grabber_open);
         //servoThread.setTarget(0.6);
     }
+
     protected void after_dragged_foundation_R(){
         ElapsedTime p = new ElapsedTime();
         platform_grabber.setPower(1);
@@ -1177,6 +1192,7 @@ public class BaseAuto extends BaseOpMode {
         grabber.setPosition(grabber_open);
         //servoThread.setTarget(0.6);
     }
+
     protected int Ultra_get_position(){
         int poss = 0;
         int[] resultcounter = {0,0,0};
@@ -1186,6 +1202,7 @@ public class BaseAuto extends BaseOpMode {
         for (int i = 0;i<3;++i){ if(resultcounter[i]>curmax){poss = i;curmax=resultcounter[i];} }
         return poss;
     }
+
     protected int Ultra_get_positionR(){
         int poss = 0;
         int[] resultcounter = {0,0,0};
@@ -1195,6 +1212,7 @@ public class BaseAuto extends BaseOpMode {
         for (int i = 0;i<3;++i){ if(resultcounter[i]>curmax){poss = i;curmax=resultcounter[i];} }
         return poss;
     }
+
     protected void second_and_more_B(int result, int times) {
         double curX;
         double info[] = {78.75,78.75+8,78.75+16,78.75+24,78.75+24,78.75+24};
@@ -1285,6 +1303,5 @@ public class BaseAuto extends BaseOpMode {
         grabber.setPosition(grabber_open);
         platform_grabber.setPower(0.0);
     }
-
 }
 
