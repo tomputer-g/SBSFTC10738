@@ -55,11 +55,7 @@ public class BaseOpMode extends LinearOpMode {
     protected RevBulkData tmpBulkData;//use this for all bulk reads
 
 
-    protected void kill(){
-        kill("");
-    }
-
-    protected void kill(String message){
+/*    protected void kill(String message){
         //Drivetrain
         if(LF != null && LB != null && RF != null && RB != null)setAllDrivePower(0);
         //Slide Motors TODO: better stopping method?
@@ -84,7 +80,7 @@ public class BaseOpMode extends LinearOpMode {
         dumpStack();
         stop();
     }
-
+ */
 
 
     @Override public void internalPreInit() {
