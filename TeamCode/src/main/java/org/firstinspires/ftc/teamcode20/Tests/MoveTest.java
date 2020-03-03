@@ -50,7 +50,6 @@ public class MoveTest extends BaseAuto {
         msStuckDetectInit = 3000000;
         //drive=new SampleMecanumDriveREV(hardwareMap);
         //drive.setPoseEstimate(new Pose2d(36,63,-Math.PI/2));
-        dashboard=FtcDashboard.getInstance();
         //drive.setPoseEstimate(new Pose2d(63,63,-Math.PI/2));
         //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         speed=0.3;
@@ -58,8 +57,6 @@ public class MoveTest extends BaseAuto {
         dir=1;
         y = -90;
         x = 0;
-        initVuforia();
-        initViewMarks();
         // 三天之内刹了你();
         cooThread.start();
         waitForStart();
