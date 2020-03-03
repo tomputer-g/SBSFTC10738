@@ -52,7 +52,7 @@ public class BlueAuto extends BaseAuto {
                 moveInchesGOY_XF((85.25 + shift), 0.9, 1);
                 p.reset();
 
-                moveInchesGOXT(13, .8, 1, 3000); //drag +errordistance
+                moveInchesGOXT(13, .65, 1, 3000); //drag +errordistance
 
                 platform_grabber.setPower(-1);
                 wait(300);
