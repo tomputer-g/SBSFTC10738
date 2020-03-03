@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode20;
+package org.firstinspires.ftc.teamcode20.Tests;
 
 import android.util.Log;
 
@@ -8,6 +8,8 @@ import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.teamcode20.BaseAuto;
+
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 @Autonomous

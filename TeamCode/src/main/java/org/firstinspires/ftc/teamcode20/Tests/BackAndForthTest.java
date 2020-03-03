@@ -85,25 +85,25 @@ public class BackAndForthTest extends BaseAuto {
         waitForStart();
         while(opModeIsActive())
         {
-            if(this.gamepad1.a){a = true;}if(!this.gamepad1.a && a){
+            if(this.gamepad1.a){a = true;}if(!this.gamepad1.a && a)
+            {
             a = false;
             grabber.setPosition(grabber_open);
             double curX;
             //params[1] = getXOdometry();
             double origin[] = {0,-41}, dd[]=adjustToViewMark(false);
-            //telemetry.addData("posX","%.2f" ,dd[0]);
             telemetry.addData("posY", "%.2f",dd[1]);
             telemetry.update();
             wait(500);
 
-            for(int i = 0;i<1;++i){
+            for(int i = 0;i<2;++i){
                 setAllDrivePower(0);
                 curX = getXOdometry();
-                if(i>0)servoThread.setTarget(0.75);
-                grabber.setPosition(grabber_open);
+                //if(i>0)servoThread.setTarget(0.75);
+                //grabber.setPosition(grabber_open);
                 align(0);
-                moveInchesGOY_XF_F_T(-74.75,0.3,1,(int) (curX-(origin[1]-dd[1])*odometryEncXPerInch));
-                servoThread.setTarget(0.98);
+                moveInchesGOY_XF_F_T(-50,0.3,1,(int) (curX-(origin[1]-dd[1])*odometryEncXPerInch));
+                //servoThread.setTarget(0.98);
                 /*
                 align(-90);
 
@@ -127,7 +127,7 @@ public class BackAndForthTest extends BaseAuto {
 
                  */
 
-                moveInchesGOY_XF_F_T(74,0.3,1,(int) (curX-(origin[1]-dd[1])*odometryEncXPerInch));
+                moveInchesGOY_XF_F_T(50,0.3,1,(int) (curX-(origin[1]-dd[1])*odometryEncXPerInch));
                 dd=adjustToViewMark(false);
                 //telemetry.addData("original", "%.2f",origin[1]);
                 //telemetry.addData("current", "%.2f",dd[1]);

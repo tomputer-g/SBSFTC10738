@@ -11,6 +11,7 @@ public class BlueAuto extends BaseAuto {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        new StopHandlerThread(Thread.currentThread());
         initAutonomous();
 
         while(!isStarted() && !isStopRequested()){
@@ -24,56 +25,71 @@ public class BlueAuto extends BaseAuto {
         //repeat until run out of time; first on other skystones
 
         //initialization
-        before_start();
+        main:{
+            try{
+                before_start();
 
-        //shift to align to skystone
-        int shift;
-        if(pos == 1){ shift = 0; }
-        else if (pos == 0){ moveInchesGOXT(-8,0.8,1,1200);shift=-8; }
-        else { moveInchesGOXT(8,0.8,1,1200);shift=8; }
 
-        //move forward to the skystone
-        ElapsedTime p = new ElapsedTime();
-        first_block();
+                //shift to align to skystone
+                int shift;
+                if (pos == 1) {
+                    shift = 0;
+                } else if (pos == 0) {
+                    moveInchesGOXT(-8, 0.8, 1, 1200);
+                    shift = -8;
+                } else {
+                    moveInchesGOXT(8, 0.8, 1, 1200);
+                    shift = 8;
+                }
 
-        //move forward & approach foundation
-        align(90);
-        p.reset();
-        resetXOdometry();
-        moveInchesGOY_XF((85.25+shift),0.9,1);
-        p.reset();
+                //move forward to the skystone
+                ElapsedTime p = new ElapsedTime();
+                first_block();
 
-        moveInchesGOXT(10,.5,1,2000); //drag +errordistance
+                //move forward & approach foundation
+                align(90);
+                p.reset();
+                resetXOdometry();
+                moveInchesGOY_XF((85.25 + shift), 0.9, 1);
+                p.reset();
 
-        platform_grabber.setPower(-1);
-        wait(300);
-        moveInchesGOX_platform(-15,0.8,1+(13.65-hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS))/13.65);
-        int steps = 20;
-        double basespeed = 0.3;
-        for(int i = 10;i<=steps;++i){
-            RF.setPower(  i*basespeed/steps);
-            LB.setPower(2*i*basespeed/steps);
-            LF.setPower(3*i*basespeed/steps);
-            wait(20);
-            //LB.setPower(0);
+                moveInchesGOXT(10, .5, 1, 2000); //drag +errordistance
+
+                platform_grabber.setPower(-1);
+                wait(300);
+                moveInchesGOX_platform(-15, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
+                int steps = 20;
+                double basespeed = 0.3;
+                for (int i = 10; i <= steps; ++i) {
+                    RF.setPower(i * basespeed / steps);
+                    LB.setPower(2 * i * basespeed / steps);
+                    LF.setPower(3 * i * basespeed / steps);
+                    wait(20);
+                    //LB.setPower(0);
+                }
+
+                while (imuAbsolute < 160) {
+                    getHeading();
+                }
+                p.reset();
+                while (imuAbsolute < 170 && p.milliseconds() < 3000) {
+                    getHeading();
+                    RF.setPower(RF.getPower() * getError(180, imuAbsolute) / 20);
+                    LB.setPower(LB.getPower() * getError(180, imuAbsolute) / 20);
+                    LF.setPower(LF.getPower() * getError(180, imuAbsolute) / 20);
+                }
+                setNewGyro(180);
+                setAllDrivePower(0);
+
+                after_dragged_foundation_B();
+
+                second_and_more_B(pos, 1);
+
+                moveInchesGOY_XF_F(-44, 0.6, 1, (int) (getXOdometry() - (41 - adjustToViewMark(true)[1]) * odometryEncXPerInch));
+            }catch (InterruptedException e){
+                break main;
+            }
         }
-
-        while (imuAbsolute<160){ getHeading(); }
-        p.reset();
-        while (imuAbsolute<170&&p.milliseconds()<3000){
-            getHeading();
-            RF.setPower(RF.getPower()*getError(180,imuAbsolute)/20);
-            LB.setPower(LB.getPower()*getError(180,imuAbsolute)/20);
-            LF.setPower(LF.getPower()*getError(180,imuAbsolute)/20);
-        }
-        setNewGyro(180);
-        setAllDrivePower(0);
-
-        after_dragged_foundation_B();
-
-        second_and_more_B(pos, 1);
-
-        moveInchesGOY_XF_F(-44,0.6,1,(int) (getXOdometry() - (41 - adjustToViewMark(true)[1]) * odometryEncXPerInch));
         requestOpModeStop();
     }
 }

@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode20;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.openftc.revextensions2.ExpansionHubEx;
-
 @Autonomous
 public class BlueAuto_NoF extends BaseAuto {
     int pos = 0;
@@ -50,11 +48,11 @@ public class BlueAuto_NoF extends BaseAuto {
         for (int i = 0; i < 1; ++i) {
             setAllDrivePower(0);
             curX = getXOdometry();
-            if (i > 0) servoThread.setTarget(0.75);
+            if (i > 0) servoThread.setExtTarget(0.75);
             grabber.setPosition(grabber_open);
             align(90);
             moveInchesGOY_XF_F(-info[pos+2], 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
-            servoThread.setTarget(0.98);
+            servoThread.setExtTarget(0.98);
             align(0);
 
             double yorigin = getY1Odometry();
@@ -66,13 +64,13 @@ public class BlueAuto_NoF extends BaseAuto {
             }
             grabber.setPosition(grabber_closed);
             wait(300);
-            servoThread.setTarget(0.85);
+            servoThread.setExtTarget(0.85);
             while ((getY1Odometry() - yorigin) * -1 > odometryEncYPerInch * 2) {
                 setAllDrivePowerG(.3, .3, -.3, -.3);
             }
             setAllDrivePower(0);
             align(90);
-            servoThread.setTarget(0.65);
+            servoThread.setExtTarget(0.65);
             moveInchesGOY_XF_F(info[pos+2]-1, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
         }
 
@@ -84,11 +82,11 @@ public class BlueAuto_NoF extends BaseAuto {
         for (int i = 0; i < 1; ++i) {
             setAllDrivePower(0);
             curX = getXOdometry();
-            if (i > 0) servoThread.setTarget(0.75);
+            if (i > 0) servoThread.setExtTarget(0.75);
             grabber.setPosition(grabber_open);
             align(90);
             moveInchesGOY_XF_F(-diss, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
-            servoThread.setTarget(0.98);
+            servoThread.setExtTarget(0.98);
             align(0);
 
             double yorigin = getY1Odometry();
@@ -100,13 +98,13 @@ public class BlueAuto_NoF extends BaseAuto {
             }
             grabber.setPosition(grabber_closed);
             wait(300);
-            servoThread.setTarget(0.85);
+            servoThread.setExtTarget(0.85);
             while ((getY1Odometry() - yorigin) * -1 > odometryEncYPerInch * 2) {
                 setAllDrivePowerG(.3, .3, -.3, -.3);
             }
             setAllDrivePower(0);
             align(90);
-            servoThread.setTarget(0.65);
+            servoThread.setExtTarget(0.65);
             moveInchesGOY_XF_F(diss-1, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
         }
         grabber.setPosition(grabber_open);

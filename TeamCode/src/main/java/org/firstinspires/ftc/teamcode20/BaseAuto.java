@@ -18,11 +18,9 @@ import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -45,7 +43,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 import org.openftc.revextensions2.ExpansionHubEx;
-import org.openftc.revextensions2.RevBulkData;
 
 public class BaseAuto extends BaseOpMode {
 
@@ -79,7 +76,21 @@ public class BaseAuto extends BaseOpMode {
     private double[] displacements = {2, 7};//+ = forward; + = right
     private double headingDisplacement = -90;
 
-    protected void initAutonomous(){
+    class StopHandlerThread extends Thread{
+        private Thread parentRef; //for calling interrupt
+        public StopHandlerThread(Thread parentRef) {
+            this.parentRef = parentRef;
+        }
+
+        @Override
+        public void run() {
+            while(time < 29.9 && !isStopRequested());
+            parentRef.interrupt();
+        }
+    }
+
+
+    protected void initAutonomous() throws InterruptedException{
         //AutonomousInitThread initThread = new AutonomousInitThread();
         //initThread.start();
         Log.i("Auto init",System.currentTimeMillis()+" start hub init");
@@ -978,7 +989,7 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(0);
     }
 
-    protected void moveInchesGOXT(double xInch, double speed,double kV, int timer){//0.5 only
+    protected void moveInchesGOXT(double xInch, double speed,double kV, int timer) throws InterruptedException{//0.5 only
         if(xInch == 0)return;
         ElapsedTime t = new ElapsedTime();
         int offsetX = getXOdometry();
@@ -1101,7 +1112,7 @@ public class BaseAuto extends BaseOpMode {
     protected void after_dragged_foundation_B(){
         ElapsedTime p = new ElapsedTime();
         platform_grabber.setPower(1);
-        servoThread.setTarget(0.5);
+        servoThread.setExtTarget(0.5);
         wait(300);
         //p.reset();
         ///while (p.milliseconds()<300);
@@ -1115,7 +1126,7 @@ public class BaseAuto extends BaseOpMode {
         p.reset();
         while (p.milliseconds()<1200)setAllDrivePowerG(-.4,-.4,.4,.4);
         setAllDrivePower(0);
-        servoThread.setTarget(0.75);
+        servoThread.setExtTarget(0.75);
         p.reset();
         while (p.milliseconds()<600);
         platform_grabber.setPower(0);
@@ -1125,7 +1136,7 @@ public class BaseAuto extends BaseOpMode {
     protected void after_dragged_foundation_R(){
         ElapsedTime p = new ElapsedTime();
         platform_grabber.setPower(1);
-        servoThread.setTarget(0.5);
+        servoThread.setExtTarget(0.5);
         wait(300);
         //p.reset();
         ///while (p.milliseconds()<300);
@@ -1139,7 +1150,7 @@ public class BaseAuto extends BaseOpMode {
         p.reset();
         while (p.milliseconds()<1200)setAllDrivePowerG(-.4,-.4,.4,.4);
         setAllDrivePower(0);
-        servoThread.setTarget(0.75);
+        servoThread.setExtTarget(0.75);
         p.reset();
         while (p.milliseconds()<600);
         platform_grabber.setPower(0);
@@ -1171,11 +1182,11 @@ public class BaseAuto extends BaseOpMode {
         for (int i = 0; i < times; ++i) {
             setAllDrivePower(0);
             curX = getXOdometry();
-            if (i > 0) servoThread.setTarget(0.75);
+            if (i > 0) servoThread.setExtTarget(0.75);
             grabber.setPosition(grabber_open);
             align(90);
             moveInchesGOY_XF_F(-info[result+2], 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
-            servoThread.setTarget(0.98);
+            servoThread.setExtTarget(0.98);
             align(0);
 
             double yorigin = getY1Odometry();
@@ -1187,13 +1198,13 @@ public class BaseAuto extends BaseOpMode {
             }
             grabber.setPosition(grabber_closed);
             wait(300);
-            servoThread.setTarget(0.85);
+            servoThread.setExtTarget(0.85);
             while ((getY1Odometry() - yorigin) * -1 > odometryEncYPerInch * 2) {
                 setAllDrivePowerG(.3, .3, -.3, -.3);
             }
             setAllDrivePower(0);
             align(90);
-            servoThread.setTarget(0.65);
+            servoThread.setExtTarget(0.65);
             moveInchesGOY_XF_F(info[result+2]-1, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
         }
         grabber.setPosition(grabber_open);
@@ -1206,11 +1217,11 @@ public class BaseAuto extends BaseOpMode {
         for (int i = 0; i < times; ++i) {
             setAllDrivePower(0);
             curX = getXOdometry();
-            if (i > 0) servoThread.setTarget(0.75);
+            if (i > 0) servoThread.setExtTarget(0.75);
             grabber.setPosition(grabber_open);
             align(-90);
             moveInchesGOY_XF_F(-info[result+2], 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
-            servoThread.setTarget(0.98);
+            servoThread.setExtTarget(0.98);
             align(0);
 
             double yorigin = getY1Odometry();
@@ -1222,13 +1233,13 @@ public class BaseAuto extends BaseOpMode {
             }
             grabber.setPosition(grabber_closed);
             wait(300);
-            servoThread.setTarget(0.85);
+            servoThread.setExtTarget(0.85);
             while ((getY1Odometry() - yorigin) * -1 > odometryEncYPerInch * 2) {
                 setAllDrivePowerG(.3, .3, -.3, -.3);
             }
             setAllDrivePower(0);
             align(-90);
-            servoThread.setTarget(0.65);
+            servoThread.setExtTarget(0.65);
             moveInchesGOY_XF_F(info[result+2]-1, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
             dd = adjustToViewMark(false);
         }
@@ -1242,17 +1253,99 @@ public class BaseAuto extends BaseOpMode {
     setAllDrivePowerG(-.1,-.1,.1,.1);
     grabber.setPosition(grabber_closed);
     wait(100);
-    servoThread.setTarget(0.85);
+    servoThread.setExtTarget(0.85);
     while(-getY1Odometry()> 27*odometryEncYPerInch){setAllDrivePowerG(.3,.3,-.3,-.3);}
     setAllDrivePower(0);
     }
 
     protected void before_start(){
-        servoThread.setTarget(0.88);
+        servoThread.setExtTarget(0.88);
         platform_grabber.setPower(1);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
         grabber.setPosition(grabber_open);
+    }
+
+    public void initV(){
+        initIMU();
+        initVuforia();
+        VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
+        VuforiaTrackable red1 = targetsSkyStone.get(5);
+        red1.setName("Red Perimeter 1");
+        VuforiaTrackable red2 = targetsSkyStone.get(6);
+        red2.setName("Red Perimeter 2");
+        VuforiaTrackable front1 = targetsSkyStone.get(7);
+        front1.setName("Front Perimeter 1");
+        VuforiaTrackable front2 = targetsSkyStone.get(8);
+        front2.setName("Front Perimeter 2");
+        VuforiaTrackable blue1 = targetsSkyStone.get(9);
+        blue1.setName("Blue Perimeter 1");
+        VuforiaTrackable blue2 = targetsSkyStone.get(10);
+        blue2.setName("Blue Perimeter 2");
+        VuforiaTrackable rear1 = targetsSkyStone.get(11);
+        rear1.setName("Rear Perimeter 1");
+        VuforiaTrackable rear2 = targetsSkyStone.get(12);
+        rear2.setName("Rear Perimeter 2");
+        allTrackables.addAll(targetsSkyStone);
+        //Set the position of the perimeter targets with relation to origin (center of field)
+        red1.setLocation(OpenGLMatrix
+                .translation(quadField, -halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
+        red2.setLocation(OpenGLMatrix
+                .translation(-quadField, -halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
+        front1.setLocation(OpenGLMatrix
+                .translation(-halfField, -quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
+        front2.setLocation(OpenGLMatrix
+                .translation(-halfField, quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
+        blue1.setLocation(OpenGLMatrix
+                .translation(-quadField, halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
+        blue2.setLocation(OpenGLMatrix
+                .translation(quadField, halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
+        rear1.setLocation(OpenGLMatrix
+                .translation(halfField, quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
+        rear2.setLocation(OpenGLMatrix
+                .translation(halfField, -quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
+        boolean PHONE_IS_PORTRAIT = false  ;
+        float phoneXRotate    = 0;
+        float phoneYRotate    = 0;
+        float phoneZRotate    = 0;
+        if (CAMERA_CHOICE == BACK) {
+            phoneYRotate = -90;
+        } else {
+            phoneYRotate = 90;
+        }
+
+        // Rotate the phone vertical about the X axis if it's in portrait mode
+        if (PHONE_IS_PORTRAIT) {
+            phoneXRotate = 90 ;
+        }
+
+        // Next, translate the camera lens to where it is on the robot.
+        // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
+        final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
+        final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
+        final float CAMERA_LEFT_DISPLACEMENT     = 9f * mmPerInch;     // eg: Camera is ON the robot's center line
+
+        OpenGLMatrix robotFromCamera = OpenGLMatrix
+                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
+
+        /**  Let all the trackable listeners know where the phone is.  */
+        for (VuforiaTrackable trackable : allTrackables) {
+            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
+        }
+        targetsSkyStone.activate();
     }
 }
 

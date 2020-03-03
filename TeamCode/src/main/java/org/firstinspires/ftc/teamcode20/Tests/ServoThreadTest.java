@@ -17,17 +17,17 @@ public class ServoThreadTest extends BaseOpMode {
         RF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         RB.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         initGrabber();
-        servoThread.setTarget(1);
+        servoThread.setExtTarget(1);
         waitForStart();
         while(opModeIsActive()){
             //for old bot only
             move(-this.gamepad1.left_stick_x, this.gamepad1.left_stick_y, -this.gamepad1.right_stick_x);
 
             if(this.gamepad1.a){
-                servoThread.setTarget(0.3);
+                servoThread.setExtTarget(0.3);
             }
             if(this.gamepad1.b){
-                servoThread.setTarget(1);
+                servoThread.setExtTarget(1);
             }
             if(this.gamepad1.x){
                 servoThread.setDelay(10);
@@ -35,8 +35,8 @@ public class ServoThreadTest extends BaseOpMode {
             if(this.gamepad1.y){
                 servoThread.setDelay(30);
             }
-            telemetry.addData("target", servoThread.targetPosition);
-            telemetry.addData("last pos", servoThread.lastPosition);
+            telemetry.addData("target", servoThread.extTargetPosition);
+            telemetry.addData("last pos", servoThread.extLastPosition);
             telemetry.addData("delay", servoThread.delayStep);
             telemetry.update();
         }
