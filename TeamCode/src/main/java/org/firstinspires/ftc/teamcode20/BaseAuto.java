@@ -576,7 +576,7 @@ public class BaseAuto extends BaseOpMode {
     }
 
     //Threads
-    protected CooThread cooThread;
+    protected CooThread cooThread=new CooThread();
 
     //Misc
     protected double[] n_pass ={0,0};
@@ -1016,7 +1016,8 @@ public class BaseAuto extends BaseOpMode {
                 steadyCounter++;
             }
             else if(tcur>timer){
-                steadyCounter = 5;
+                Log.d("GOX "+xInch,"timeout");
+                break;
             }
             else{
                 steadyCounter = 0;

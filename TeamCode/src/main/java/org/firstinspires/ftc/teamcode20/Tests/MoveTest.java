@@ -31,7 +31,6 @@ public class MoveTest extends BaseAuto {
     private ElapsedTime t=new ElapsedTime();
     private double speedLF=0,speedLB=0,speedRF=0,speedRB=0;
     private double  kP = 0.5, kI = 0, kD = 0.0025;
-    private SampleMecanumDriveREV drive;
     private FtcDashboard dashboard;
     int WaitingTime = 300;
     int steps = 20;
@@ -58,6 +57,7 @@ public class MoveTest extends BaseAuto {
         y = -90;
         x = 0;
         // 三天之内刹了你();
+        drive=new SampleMecanumDriveREV(hardwareMap);
         cooThread.start();
         waitForStart();
         while(!this.gamepad1.b) {
