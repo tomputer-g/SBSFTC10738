@@ -1285,5 +1285,11 @@ public class BaseAuto extends BaseOpMode {
         grabber.setPosition(grabber_open);
         platform_grabber.setPower(0.0);
     }
+
+    private void 三天之内刹了你(){
+        setAllDrivePower(1,1,-1,-1);
+        wait(200);
+        setAllDrivePower(0);
+    }
 }
 
