@@ -67,8 +67,8 @@ public class MoveTest extends BaseAuto {
             if(zheng(this.gamepad1.y,m))speed+=.1;
             if(zheng(this.gamepad1.right_bumper,m)){
                 telemetry.addData("s",adjustToViewMark(true)[1]);
-                telemetry.update();
             }
+            telemetry.update();
         }
         cooThread.stopThread();
     }
