@@ -1,19 +1,15 @@
 package org.firstinspires.ftc.teamcode20;
 
-import android.graphics.Color;
-
-import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
 import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveREV;
 import org.openftc.revextensions2.ExpansionHubEx;
 
 @Autonomous
 public class BlueAuto extends BaseAuto {
+    private final int[] PINK = {255,192,203}, GREEN = {0,255,0}, RED = {255,0,0};
     @Override public void runOpMode() throws InterruptedException {
         main:{
             ColorSensor led = hardwareMap.get(ColorSensor.class, "LED");
