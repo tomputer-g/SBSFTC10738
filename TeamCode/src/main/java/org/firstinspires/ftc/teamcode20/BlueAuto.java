@@ -48,7 +48,7 @@ public class BlueAuto extends BaseAuto {
             align(90);
             resetXOdometry();
             moveInchesGOY_XF((85.25 + shift), 0.9, 1);
-            moveInchesGOXT(13, .65, 1, 3000); //drag +errordistance
+            moveInchesGOXT(15, .45, 1, 2000); //magic, do not touch
 
             platform_grabber.setPower(-1);
             wait(300);
