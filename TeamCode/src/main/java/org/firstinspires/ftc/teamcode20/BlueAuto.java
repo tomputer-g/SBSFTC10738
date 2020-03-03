@@ -8,6 +8,87 @@ import org.openftc.revextensions2.ExpansionHubEx;
 
 @Autonomous
 public class BlueAuto extends BaseAuto {
+    protected void after_dragged_foundation_B(){
+        ElapsedTime p = new ElapsedTime();
+        platform_grabber.setPower(1);
+        servoThread.setExtTarget(0.5);
+        wait(300);
+        //p.reset();
+        ///while (p.milliseconds()<300);
+        PIDturnfast(-90,true);
+        //setAllDrivePower(0);
+        //turn(-90-getHeading(),0.5,1);
+        setNewGyro(90);
+        //setAllDrivePowerG(-.2,-.2,.2,.2);
+        //moveInchesGOY(5,0.4);
+
+        p.reset();
+        while (p.milliseconds()<1200)setAllDrivePowerG(-.4,-.4,.4,.4);
+        setAllDrivePower(0);
+
+        servoThread.setExtTarget(0.6);
+        p.reset();
+        while (p.milliseconds()<600);
+        platform_grabber.setPower(0);
+        grabber.setPosition(grabber_open);
+        //servoThread.setTarget(0.6);
+    }
+
+    protected void second_and_more_B(int result, int times) {
+        ElapsedTime p = new ElapsedTime();
+        platform_grabber.setPower(1);
+        servoThread.setExtTarget(0.5);
+        wait(300);
+        //p.reset();
+        ///while (p.milliseconds()<300);
+        PIDturnfast(-90,true);
+        //setAllDrivePower(0);
+        //turn(-90-getHeading(),0.5,1);
+        setNewGyro(90);
+        //setAllDrivePowerG(-.2,-.2,.2,.2);
+        //moveInchesGOY(5,0.4);
+
+        p.reset();
+        while (p.milliseconds()<1200)setAllDrivePowerG(-.4,-.4,.4,.4);
+        setAllDrivePower(0);
+        double origin[] = {0, 41}, dd[] = adjustToViewMark(true);
+        servoThread.setExtTarget(0.6);
+        p.reset();
+        while (p.milliseconds()<600);
+        platform_grabber.setPower(0);
+        grabber.setPosition(grabber_open);
+        double curX;
+        double info[] = {78.75,78.75+8,78.75+16,78.75+24,78.75+24,78.75+24};
+        for (int i = 0; i < times; ++i) {
+            setAllDrivePower(0);
+            curX = getXOdometry();
+            if (i > 0) servoThread.setExtTarget(0.75);
+            grabber.setPosition(grabber_open);
+            align(90);
+            moveInchesGOY_XF_F(-info[result+2], 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
+            servoThread.setExtTarget(0.98);
+            align(0);
+
+            double yorigin = getY1Odometry();
+            while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 4) {
+                setAllDrivePowerG(-.3, -.3, .3, .3);
+            }
+            while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 8) {
+                setAllDrivePowerG(-.1, -.1, .1, .1);
+            }
+            grabber.setPosition(grabber_closed);
+            wait(300);
+            servoThread.setExtTarget(0.85);
+            while ((getY1Odometry() - yorigin) * -1 > odometryEncYPerInch * 2) {
+                setAllDrivePowerG(.3, .3, -.3, -.3);
+            }
+            setAllDrivePower(0);
+            align(90);
+            servoThread.setExtTarget(0.4);
+            moveInchesGOY_XF_F(info[result+2]-1, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
+        }
+        grabber.setPosition(grabber_open);
+    }
     @Override public void runOpMode() throws InterruptedException {
         main:{
             //new StopHandlerThread(Thread.currentThread());
@@ -76,7 +157,7 @@ public class BlueAuto extends BaseAuto {
             setAllDrivePower(0);
             setNewGyro(180);
 
-            after_dragged_foundation_B();
+            //after_dragged_foundation_B();
             second_and_more_B(pos, 1);
             moveInchesGOY_XF_F(-44, 0.6, 1, (int) (getXOdometry() - (41 - adjustToViewMark(true)[1]) * odometryEncXPerInch));
         }

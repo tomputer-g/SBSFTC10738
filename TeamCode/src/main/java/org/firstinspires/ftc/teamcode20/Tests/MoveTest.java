@@ -52,8 +52,12 @@ public class MoveTest extends BaseAuto {
         y = -90;
         x = 0;
         // 三天之内刹了你();
-        drive=new SampleMecanumDriveREV(hardwareMap);
-        cooThread.start();
+        //drive=new SampleMecanumDriveREV(hardwareMap);
+        //cooThread.start();
+        initHubs();
+        initVuforia();
+        initViewMarks();
+        initIMU();
         waitForStart();
         while(!this.gamepad1.b) {
             if(zheng(this.gamepad1.dpad_left,eee))x-=2;
@@ -62,9 +66,8 @@ public class MoveTest extends BaseAuto {
             if(zheng(this.gamepad1.dpad_down,ff))y+=1;
             if(zheng(this.gamepad1.y,m))speed+=.1;
             if(zheng(this.gamepad1.right_bumper,m)){
-                setAllDrivePower(.3);
-                wait(1000);
-                setAllDrivePower(0);
+                telemetry.addData("s",adjustToViewMark(true)[1]);
+                telemetry.update();
             }
         }
         cooThread.stopThread();
