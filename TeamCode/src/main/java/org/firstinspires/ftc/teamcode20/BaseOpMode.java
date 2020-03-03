@@ -673,6 +673,12 @@ public class BaseOpMode extends LinearOpMode {
         }
     }
 
+    private void 三天之内刹了你(){
+        setAllDrivePower(1,1,-1,-1);
+        wait(200);
+        setAllDrivePower(0);
+    }
+
     protected class ServoThread extends Thread{
         public double extTargetPosition = 1, extLastPosition = 1;
         public double grabTargetPosition, grabLastPosition;
