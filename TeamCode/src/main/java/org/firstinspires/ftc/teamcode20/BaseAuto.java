@@ -79,13 +79,21 @@ public class BaseAuto extends BaseOpMode {
     private double[] displacements = {2, 7};//+ = forward; + = right
     private double headingDisplacement = -90;
 
-    protected void check30s(){
-        if(this.time > 30.0){
-            kill("30s timeout");
+    class StopHandlerThread extends Thread{
+        private Thread parentRef; //for calling interrupt
+        public StopHandlerThread(Thread parentRef) {
+            this.parentRef = parentRef;
+        }
+
+        @Override
+        public void run() {
+            while(time < 29.9 && !isStopRequested()){yield();}
+            parentRef.interrupt();
         }
     }
 
-    protected void initAutonomous(){
+
+    protected void initAutonomous() throws InterruptedException{
         //AutonomousInitThread initThread = new AutonomousInitThread();
         //initThread.start();
         Log.i("Auto init",System.currentTimeMillis()+" start hub init");
@@ -984,7 +992,7 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(0);
     }
 
-    protected void moveInchesGOXT(double xInch, double speed,double kV, int timer){//0.5 only
+    protected void moveInchesGOXT(double xInch, double speed,double kV, int timer) throws InterruptedException{//0.5 only
         if(xInch == 0)return;
         ElapsedTime t = new ElapsedTime();
         int offsetX = getXOdometry();
