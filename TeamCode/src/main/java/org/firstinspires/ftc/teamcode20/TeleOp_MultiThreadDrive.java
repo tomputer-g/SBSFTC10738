@@ -35,8 +35,8 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        drive=new SampleMecanumDriveREV(hardwareMap);
-        drive.setPoseEstimate(new Pose2d(0,0,0));
+        //drive=new SampleMecanumDriveREV(hardwareMap);
+        //drive.setPoseEstimate(new Pose2d(0,0,0));
         ElapsedTime t = new ElapsedTime();
         showTelemetry = true;
         Log.i("Teleop init", "" + t.nanoseconds() + " start drivetrain");
@@ -74,7 +74,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         servoThread.setExtTarget(grabberServoGrab);
         servoThread.directSetGrabTarget(grabber_open);
         while (opModeIsActive()) {
-            drive.update();
+            //drive.update();
             if(zheng(this.gamepad1.left_stick_button,leftStickButtonPrimed)){
                 L1.setPower(-0.2);
                 wait(700);

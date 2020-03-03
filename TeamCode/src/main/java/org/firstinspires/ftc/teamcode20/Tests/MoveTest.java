@@ -38,8 +38,6 @@ public class MoveTest extends BaseAuto {
     double basespeed = 0.2;
 
 
-    private PG pg=new PG();
-    private Thread uc=new UC();
     int dir;
     private void 三天之内刹了你(){
         setAllDrivePower(1,1,-1,-1);
@@ -52,7 +50,6 @@ public class MoveTest extends BaseAuto {
         msStuckDetectInit = 3000000;
         //drive=new SampleMecanumDriveREV(hardwareMap);
         //drive.setPoseEstimate(new Pose2d(36,63,-Math.PI/2));
-        dashboard=FtcDashboard.getInstance();
         //drive.setPoseEstimate(new Pose2d(63,63,-Math.PI/2));
         //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         speed=0.3;
@@ -60,69 +57,25 @@ public class MoveTest extends BaseAuto {
         dir=1;
         y = -90;
         x = 0;
-        initVuforia();
-        initViewMarks();
         // 三天之内刹了你();
-
+        cooThread.start();
         waitForStart();
-        //pg.start();
-        //uc.start();
-        //if(zheng(this.gamepad1.dpad_left,eee))x-=2;
-        //if(zheng(this.gamepad1.dpad_right,fff))x+=2;
-        //if(zheng(this.gamepad1.dpad_up,ee))y+=1;
-        //if(zheng(this.gamepad1.dpad_down,ff))y+=1;
-        //if(zheng(this.gamepad1.y,m))speed+=.1;
-        double dd[] = adjustToViewMark(true);
-        telemetry.addLine(dd[0]+" "+dd[1]);
-        telemetry.update();
-    }
-
-    private class UC extends Thread{
-        volatile boolean stop = false,run=false;
-        @Override
-        public void run() {
-            while(!isInterrupted()&&!stop){
-                updateCoo();
+        while(!this.gamepad1.b) {
+            if(zheng(this.gamepad1.dpad_left,eee))x-=2;
+            if(zheng(this.gamepad1.dpad_right,fff))x+=2;
+            if(zheng(this.gamepad1.dpad_up,ee))y+=1;
+            if(zheng(this.gamepad1.dpad_down,ff))y+=1;
+            if(zheng(this.gamepad1.y,m))speed+=.1;
+            if(zheng(this.gamepad1.right_bumper,m)){
+                setAllDrivePower(.3);
+                wait(1000);
+                setAllDrivePower(0);
             }
         }
-        public void stopThread(){
-            stop = true;
-        }
+        cooThread.stopThread();
     }
 
-    private class PG extends Thread {
-        volatile boolean stop = false, run = false;
-        private double a, b, c, d, Kp;
 
-        public void PG() {
-            a = 0;
-            b = 0;
-            c = 0;
-            d = 0;
-            Kp = .8;
-        }
-
-        public void setAllPower(double w, double x, double y, double z) {
-            a = w;
-            b = x;
-            c = y;
-            d = z;
-        }
-
-        @Override
-        public void run() {
-            double p = 0;
-            while (!isInterrupted() && !stop) {
-                if (a == 0 && b == 0 && c == 0 && d == 0) {
-                } else {
-                    p = Kp * (getHeading() * 0.1 / 9);
-                    setAllDrivePower(a - p, b - p, c - p, d - p);
-                }
-            }
-
-
-        }
-    }
 
     protected void tunePIDturn(double target, double kp, double kd, double speed){
         setNewGyro(acctarget);
