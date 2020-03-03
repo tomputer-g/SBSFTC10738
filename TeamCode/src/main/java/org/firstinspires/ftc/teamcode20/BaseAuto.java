@@ -78,7 +78,7 @@ public class BaseAuto extends BaseOpMode {
     private double headingDisplacement = -90;
 
     //Roadrunner
-    protected SampleMecanumDriveREV drive;//=new SampleMecanumDriveREV(hardwareMap);
+    protected SampleMecanumDriveREV drive;
 
     class StopHandlerThread extends Thread{
         private Thread parentRef; //for calling interrupt

@@ -9,6 +9,13 @@ import org.firstinspires.ftc.teamcode20.BaseAuto;
 @TeleOp
 public class BackAndForthTest extends BaseAuto {
     double kdx = 4, kdxx = 1;
+    private double[] params = {1,0};
+    private String[] paramNames = {"kT","ops"};
+    private int currentSelectParamIndex = 0;
+    private boolean[] aa = {true}, l ={true}, r = {true}, u, d, lb={true}, rb;
+    private boolean a;
+    private double speed = 0.1;
+
     protected void moveInchesGOY_XF_F_T(double yInch, double speed,double kV, int FixXOffset){//use 0.4 for short-dist
         yInch = -yInch;
         //setNexwGyro0();
@@ -70,13 +77,6 @@ public class BackAndForthTest extends BaseAuto {
         setAllDrivePower(0);
     }
 
-    private double[] params = {1,0};
-    private String[] paramNames = {"kT","ops"};
-    private int currentSelectParamIndex = 0;
-    private boolean[] aa = {true}, l ={true}, r = {true}, u, d, lb={true}, rb;
-    private boolean a;
-    private double speed = 0.1;
-
     @Override
     public void runOpMode() throws InterruptedException {
         initAutonomous();
@@ -85,56 +85,55 @@ public class BackAndForthTest extends BaseAuto {
         waitForStart();
         while(opModeIsActive())
         {
-            if(this.gamepad1.a){a = true;}if(!this.gamepad1.a && a)
-            {
-            a = false;
-            grabber.setPosition(grabber_open);
-            double curX;
-            //params[1] = getXOdometry();
-            double origin[] = {0,-41}, dd[]=adjustToViewMark(false);
-            telemetry.addData("posY", "%.2f",dd[1]);
-            telemetry.update();
-            wait(500);
+            if(this.gamepad1.a){a = true;}if(!this.gamepad1.a && a) {
+                a = false;
+                grabber.setPosition(grabber_open);
+                double curX;
+                //params[1] = getXOdometry();
+                double origin[] = {0,-41}, dd[]=adjustToViewMark(false);
+                telemetry.addData("posY", "%.2f",dd[1]);
+                telemetry.update();
+                wait(500);
 
-            for(int i = 0;i<2;++i){
-                setAllDrivePower(0);
-                curX = getXOdometry();
-                //if(i>0)servoThread.setTarget(0.75);
-                //grabber.setPosition(grabber_open);
-                align(0);
-                moveInchesGOY_XF_F_T(-50,0.3,1,(int) (curX-(origin[1]-dd[1])*odometryEncXPerInch));
-                //servoThread.setTarget(0.98);
-                /*
-                align(-90);
+                for(int i = 0;i<2;++i){
+                    setAllDrivePower(0);
+                    curX = getXOdometry();
+                    //if(i>0)servoThread.setTarget(0.75);
+                    //grabber.setPosition(grabber_open);
+                    align(0);
+                    moveInchesGOY_XF_F_T(-50,0.3,1,(int) (curX-(origin[1]-dd[1])*odometryEncXPerInch));
+                    //servoThread.setTarget(0.98);
+                    /*
+                    align(-90);
 
-                double yorigin = getY1Odometry();
-                while((getY1Odometry()-yorigin)*-1 < odometryEncYPerInch*4){
-                    setAllDrivePowerG(-.3,-.3,.3,.3);
+                    double yorigin = getY1Odometry();
+                    while((getY1Odometry()-yorigin)*-1 < odometryEncYPerInch*4){
+                        setAllDrivePowerG(-.3,-.3,.3,.3);
+                    }
+                    while((getY1Odometry()-yorigin)*-1 < odometryEncYPerInch*8){
+                        setAllDrivePowerG(-speed,-speed,speed,speed);
+                    }
+                    grabber.setPosition(grabber_closed);
+                    wait(300);
+                    servoThread.setTarget(0.85);
+                    while((getY1Odometry()-yorigin)*-1 > odometryEncYPerInch*2){
+                        setAllDrivePowerG(.3,.3,-.3,-.3);
+                    }
+                    setAllDrivePower(0);
+                    align(0);
+                    servoThread.setTarget(0.6);
+
+
+                     */
+
+                    moveInchesGOY_XF_F_T(50,0.3,1,(int) (curX-(origin[1]-dd[1])*odometryEncXPerInch));
+                    dd=adjustToViewMark(false);
+                    //telemetry.addData("original", "%.2f",origin[1]);
+                    //telemetry.addData("current", "%.2f",dd[1]);
+                    //telemetry.update();
                 }
-                while((getY1Odometry()-yorigin)*-1 < odometryEncYPerInch*8){
-                    setAllDrivePowerG(-speed,-speed,speed,speed);
-                }
-                grabber.setPosition(grabber_closed);
-                wait(300);
-                servoThread.setTarget(0.85);
-                while((getY1Odometry()-yorigin)*-1 > odometryEncYPerInch*2){
-                    setAllDrivePowerG(.3,.3,-.3,-.3);
-                }
-                setAllDrivePower(0);
-                align(0);
-                servoThread.setTarget(0.6);
 
-
-                 */
-
-                moveInchesGOY_XF_F_T(50,0.3,1,(int) (curX-(origin[1]-dd[1])*odometryEncXPerInch));
-                dd=adjustToViewMark(false);
-                //telemetry.addData("original", "%.2f",origin[1]);
-                //telemetry.addData("current", "%.2f",dd[1]);
-                //telemetry.update();
             }
-
-        }
             if(zheng(this.gamepad1.dpad_up, aa))kdx++;
             if(zheng(this.gamepad1.dpad_down, lb))kdx--;
             if(zheng(this.gamepad1.dpad_left, l))kdxx+=0.1;
