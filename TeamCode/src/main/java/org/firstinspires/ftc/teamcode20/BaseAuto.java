@@ -1252,7 +1252,7 @@ public class BaseAuto extends BaseOpMode {
     setAllDrivePowerG(-.1,-.1,.1,.1);
     grabber.setPosition(grabber_closed);
     wait(100);
-    servoThread.setExtTarget(0.85);
+    servoThread.setExtTarget(grabberServoGrab);
     while(-getY1Odometry()> 28*odometryEncYPerInch){setAllDrivePowerG(.3,.3,-.3,-.3);}
     setAllDrivePower(0);
     }
@@ -1266,7 +1266,6 @@ public class BaseAuto extends BaseOpMode {
     }
 
     public void initV(){
-        initIMU();
         initVuforia();
         VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
         VuforiaTrackable red1 = targetsSkyStone.get(5);
