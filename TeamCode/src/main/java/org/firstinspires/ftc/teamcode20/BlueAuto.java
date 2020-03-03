@@ -94,11 +94,10 @@ public class BlueAuto extends BaseAuto {
         private final int[] PINK = {255,192,203}, GREEN = {0,255,0}, RED = {255,0,0};
     @Override public void runOpMode() throws InterruptedException {
         main:{
-            ColorSensor led = hardwareMap.get(ColorSensor.class, "LED");
-            led.enableLed(true);
+
             //new StopHandlerThread(Thread.currentThread());
             initAutonomous();
-            led.enableLed(false);
+            hub4.setLedColor(255,192,203);
             drive = new SampleMecanumDriveREV(hardwareMap);
             //cooThread.start();
             int pos = 0;

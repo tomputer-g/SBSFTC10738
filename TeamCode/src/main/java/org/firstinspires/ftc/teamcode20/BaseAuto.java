@@ -228,10 +228,12 @@ public class BaseAuto extends BaseOpMode {
         if (targetVisible) {
             VectorF translation = lastLocation.getTranslation();
             x=translation.get(0) / mmPerInch-6.5; y= translation.get(1) / mmPerInch+9;
+            hub4.setLedColor(0,255,0);
         }
         else {
             if(isBlue){ x=38;y=39;}
             else{ x=-55.35;y=-24.7;}
+            hub4.setLedColor(255,0,0);
         }
         targetsSkyStone.deactivate();
         xy[0]=x;
