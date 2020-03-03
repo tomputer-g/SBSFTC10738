@@ -42,6 +42,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.ZYX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
+import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveREV;
 import org.openftc.revextensions2.ExpansionHubEx;
 
 public class BaseAuto extends BaseOpMode {
@@ -75,6 +76,9 @@ public class BaseAuto extends BaseOpMode {
     private ElapsedTime VuforiaPositionTime;
     private double[] displacements = {2, 7};//+ = forward; + = right
     private double headingDisplacement = -90;
+
+    //Roadrunner
+    protected SampleMecanumDriveREV drive=new SampleMecanumDriveREV(hardwareMap);
 
     class StopHandlerThread extends Thread{
         private Thread parentRef; //for calling interrupt
@@ -1091,17 +1095,11 @@ public class BaseAuto extends BaseOpMode {
         volatile public boolean stop = false;
         @Override
         public void run() {
-            this.setPriority(4);
+            //this.setPriority(4);
             this.setName("Coord Thread "+this.getId());
             Log.i("coordThread"+this.getId(),"Started running");
             while (!isInterrupted() && !stop) {
-                updateCoo();
-                try {
-                    wait(1);
-                }
-                catch(Exception e){}
-                telemetry.addData("position:", "%.3f %.3f", n_pass[0], n_pass[1]);
-                telemetry.update();
+                drive.update();
             }
             Log.i("coordThread"+this.getId(), "thread finished");
         }
