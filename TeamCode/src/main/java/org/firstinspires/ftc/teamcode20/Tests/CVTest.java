@@ -10,7 +10,6 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.Locale;
-
 @TeleOp
 public class CVTest extends BaseAuto {
     private OpenCvCamera phoneCam;

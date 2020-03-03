@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode20.Tests;
+package org.firstinspires.ftc.teamcode20.Frank;
 
 /**
  * Spline Generator program

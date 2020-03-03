@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 import org.openftc.revextensions2.ExpansionHubEx;
-
 @TeleOp
 public class OdometrySpeedRunningTest extends BaseAuto {
     private boolean runOdoSpeed = false, BPrimed = false;

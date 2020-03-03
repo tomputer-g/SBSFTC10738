@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode20.Tests;
+package org.firstinspires.ftc.teamcode20.Frank;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 @Disabled
-@TeleOp
 public class OdometryIKMoveInchesTest extends BaseAuto {
     private boolean APrimed = false, upP = false, downP = false, leftP = false, rightP = false, x = false;
     private double speed = 0.3, kP = 0.1, kI = 0, kD = 0, k = 1, brakeDist = 7.5,brakeSpeed = 0;//kP = 0.035, kI = 1E-5, kD = 5E-6, k = 0.5, brakeDist = 7.5, brakeSpeed = 0.1;

@@ -38,11 +38,6 @@ public class MoveTest extends BaseAuto {
 
 
     int dir;
-    private void 三天之内刹了你(){
-        setAllDrivePower(1,1,-1,-1);
-        wait(200);
-        setAllDrivePower(0);
-    }
 
     @Override
     public void runOpMode() throws InterruptedException {

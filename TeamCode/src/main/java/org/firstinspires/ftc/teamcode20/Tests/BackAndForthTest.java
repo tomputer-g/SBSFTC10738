@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode20.BaseAuto;
-@TeleOp
 public class BackAndForthTest extends BaseAuto {
     double kdx = 4, kdxx = 1;
     private double[] params = {1,0};

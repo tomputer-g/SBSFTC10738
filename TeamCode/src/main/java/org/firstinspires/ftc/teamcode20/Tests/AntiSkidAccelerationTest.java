@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 import org.openftc.revextensions2.ExpansionHubEx;
 
-@TeleOp
 public class AntiSkidAccelerationTest extends BaseAuto {
     private double[] params = {0.35, 1, 1000};
     private String[] paramNames =   {"startSpd", "goalSpd", "to1spd_MS"};

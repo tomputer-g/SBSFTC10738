@@ -11,7 +11,6 @@ import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.RevBulkData;
 
 
-@TeleOp
 public class AdaptiveOdometryPIDTest extends BaseAuto {
 
     /*max speed at 13.8V: -155,000 OC/s or 117in. going forward (bulk and normal agree there)
