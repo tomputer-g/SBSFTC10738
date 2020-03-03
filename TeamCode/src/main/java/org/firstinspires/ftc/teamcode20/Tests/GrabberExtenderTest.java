@@ -13,7 +13,7 @@ public class GrabberExtenderTest extends BaseAuto {
     public void runOpMode() throws InterruptedException {
         initGrabber();
         pos = 1;
-        servoThread.setTarget(pos);
+        servoThread.setExtTarget(pos);
         waitForStart();
         while(opModeIsActive()){
             if(zheng(this.gamepad1.dpad_down, a)){
@@ -22,7 +22,7 @@ public class GrabberExtenderTest extends BaseAuto {
             if(zheng(this.gamepad1.dpad_up, b)){
                 pos-=0.01;
             }
-            servoThread.setTarget(pos);
+            servoThread.setExtTarget(pos);
             telemetry.addData("pos", pos);
             telemetry.update();
         }

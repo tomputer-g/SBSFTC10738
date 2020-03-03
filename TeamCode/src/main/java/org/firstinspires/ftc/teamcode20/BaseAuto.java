@@ -18,11 +18,9 @@ import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -45,7 +43,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 import org.openftc.revextensions2.ExpansionHubEx;
-import org.openftc.revextensions2.RevBulkData;
 
 public class BaseAuto extends BaseOpMode {
 
@@ -1115,7 +1112,7 @@ public class BaseAuto extends BaseOpMode {
     protected void after_dragged_foundation_B(){
         ElapsedTime p = new ElapsedTime();
         platform_grabber.setPower(1);
-        servoThread.setTarget(0.5);
+        servoThread.setExtTarget(0.5);
         wait(300);
         //p.reset();
         ///while (p.milliseconds()<300);
@@ -1129,7 +1126,7 @@ public class BaseAuto extends BaseOpMode {
         p.reset();
         while (p.milliseconds()<1200)setAllDrivePowerG(-.4,-.4,.4,.4);
         setAllDrivePower(0);
-        servoThread.setTarget(0.75);
+        servoThread.setExtTarget(0.75);
         p.reset();
         while (p.milliseconds()<600);
         platform_grabber.setPower(0);
@@ -1139,7 +1136,7 @@ public class BaseAuto extends BaseOpMode {
     protected void after_dragged_foundation_R(){
         ElapsedTime p = new ElapsedTime();
         platform_grabber.setPower(1);
-        servoThread.setTarget(0.5);
+        servoThread.setExtTarget(0.5);
         wait(300);
         //p.reset();
         ///while (p.milliseconds()<300);
@@ -1153,7 +1150,7 @@ public class BaseAuto extends BaseOpMode {
         p.reset();
         while (p.milliseconds()<1200)setAllDrivePowerG(-.4,-.4,.4,.4);
         setAllDrivePower(0);
-        servoThread.setTarget(0.75);
+        servoThread.setExtTarget(0.75);
         p.reset();
         while (p.milliseconds()<600);
         platform_grabber.setPower(0);
@@ -1185,11 +1182,11 @@ public class BaseAuto extends BaseOpMode {
         for (int i = 0; i < times; ++i) {
             setAllDrivePower(0);
             curX = getXOdometry();
-            if (i > 0) servoThread.setTarget(0.75);
+            if (i > 0) servoThread.setExtTarget(0.75);
             grabber.setPosition(grabber_open);
             align(90);
             moveInchesGOY_XF_F(-info[result+2], 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
-            servoThread.setTarget(0.98);
+            servoThread.setExtTarget(0.98);
             align(0);
 
             double yorigin = getY1Odometry();
@@ -1201,13 +1198,13 @@ public class BaseAuto extends BaseOpMode {
             }
             grabber.setPosition(grabber_closed);
             wait(300);
-            servoThread.setTarget(0.85);
+            servoThread.setExtTarget(0.85);
             while ((getY1Odometry() - yorigin) * -1 > odometryEncYPerInch * 2) {
                 setAllDrivePowerG(.3, .3, -.3, -.3);
             }
             setAllDrivePower(0);
             align(90);
-            servoThread.setTarget(0.65);
+            servoThread.setExtTarget(0.65);
             moveInchesGOY_XF_F(info[result+2]-1, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
         }
         grabber.setPosition(grabber_open);
@@ -1220,11 +1217,11 @@ public class BaseAuto extends BaseOpMode {
         for (int i = 0; i < times; ++i) {
             setAllDrivePower(0);
             curX = getXOdometry();
-            if (i > 0) servoThread.setTarget(0.75);
+            if (i > 0) servoThread.setExtTarget(0.75);
             grabber.setPosition(grabber_open);
             align(-90);
             moveInchesGOY_XF_F(-info[result+2], 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
-            servoThread.setTarget(0.98);
+            servoThread.setExtTarget(0.98);
             align(0);
 
             double yorigin = getY1Odometry();
@@ -1236,13 +1233,13 @@ public class BaseAuto extends BaseOpMode {
             }
             grabber.setPosition(grabber_closed);
             wait(300);
-            servoThread.setTarget(0.85);
+            servoThread.setExtTarget(0.85);
             while ((getY1Odometry() - yorigin) * -1 > odometryEncYPerInch * 2) {
                 setAllDrivePowerG(.3, .3, -.3, -.3);
             }
             setAllDrivePower(0);
             align(-90);
-            servoThread.setTarget(0.65);
+            servoThread.setExtTarget(0.65);
             moveInchesGOY_XF_F(info[result+2]-1, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
             dd = adjustToViewMark(false);
         }
@@ -1256,13 +1253,13 @@ public class BaseAuto extends BaseOpMode {
     setAllDrivePowerG(-.1,-.1,.1,.1);
     grabber.setPosition(grabber_closed);
     wait(100);
-    servoThread.setTarget(0.85);
+    servoThread.setExtTarget(0.85);
     while(-getY1Odometry()> 27*odometryEncYPerInch){setAllDrivePowerG(.3,.3,-.3,-.3);}
     setAllDrivePower(0);
     }
 
     protected void before_start(){
-        servoThread.setTarget(0.88);
+        servoThread.setExtTarget(0.88);
         platform_grabber.setPower(1);
         platform_grabber.setPower(0.0);
         if(showTelemetry)telemetry.clear();
