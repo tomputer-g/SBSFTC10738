@@ -84,7 +84,7 @@ public class BaseAuto extends BaseOpMode {
 
         @Override
         public void run() {
-            while(time < 29.9 && !isStopRequested()){yield();}
+            while(time < 29.9 && !isStopRequested());
             parentRef.interrupt();
         }
     }

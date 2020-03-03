@@ -200,7 +200,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                     capstone.setPosition(0);
                 } else {
                     capstone.setPosition(.5);//open
-
                 }
             }
 

@@ -597,6 +597,7 @@ public class BaseOpMode extends LinearOpMode {
 
     protected final double grabberServoOut = 0.6, grabberServoIn = 0.99, grabberServoGrab = 0.76;
 
+    /*
     protected void autoPlace(){
         switch(autoPlaceState){
             case -1:
@@ -660,6 +661,7 @@ public class BaseOpMode extends LinearOpMode {
                 break;
         }
     }
+     */
 
 
 
@@ -701,7 +703,7 @@ public class BaseOpMode extends LinearOpMode {
         public int grabDelayCount = 0;
         volatile public int delayStep = 10;
         volatile public boolean stop = false;
-        private boolean upHeld, downHeld, upWasHeld, downWasHeld, grabberDelayMove = false;
+        private boolean upWasHeld, downWasHeld, grabberDelayMove = false;
         @Override
         public void run() {
             this.setName("Servo Thread "+this.getId());
@@ -715,52 +717,45 @@ public class BaseOpMode extends LinearOpMode {
                     stop = true;
                 }
 
-                upHeld = gamepad1.dpad_up;
-                downHeld = gamepad1.dpad_down;
                 //set target if manual input
 
-                if(upHeld && upWasHeld){
+                if(gamepad1.dpad_up && upWasHeld){
                     setExtTarget(extLastPosition - 0.01);
                     autoPlaceState = -1;
                     RTState = -1;
-                }else if(downHeld && downWasHeld){
+                }else if(gamepad1.dpad_down && downWasHeld){
                     setExtTarget(extLastPosition + 0.01);
                     autoPlaceState = -1;
                     RTState = -1;
                 }
 
                 //execute target
-                if(extLastPosition != extTargetPosition) {
-                    if (extLastPosition < extTargetPosition) {
-                        setExtenderServoPosition(extLastPosition + 0.01);
-                        extLastPosition += 0.01;
-                    } else {
-                        setExtenderServoPosition(extLastPosition - 0.01);
-                        extLastPosition -= 0.01;
-                    }
+                if (extLastPosition < extTargetPosition) {
+                    setExtenderServoPosition(extLastPosition + 0.01);
+                    extLastPosition += 0.01;
+                } else if(extLastPosition > extTargetPosition){
+                    setExtenderServoPosition(extLastPosition - 0.01);
+                    extLastPosition -= 0.01;
                 }
-                extLastPosition = roundTo2Dec(extLastPosition);
-                extTargetPosition = roundTo2Dec(extTargetPosition);
-
 
                 if(grabberDelayMove && grabDelayCount++ == 4){
                     grabDelayCount = 0;
-                    if(grabLastPosition != grabTargetPosition){
-                        if(grabLastPosition < grabTargetPosition){
-                            grabber.setPosition(grabLastPosition + 0.01);
-                            grabLastPosition += 0.01;
-                        }else{
-                            grabber.setPosition(grabLastPosition - 0.01);
-                            grabLastPosition -= 0.01;
-                        }
+                    if(grabLastPosition < grabTargetPosition){
+                        grabber.setPosition(grabLastPosition + 0.01);
+                        grabLastPosition += 0.01;
+                    }else if(grabLastPosition > grabTargetPosition){
+                        grabber.setPosition(grabLastPosition - 0.01);
+                        grabLastPosition -= 0.01;
                     }
                 }
+
+                extLastPosition = roundTo2Dec(extLastPosition);
+                extTargetPosition = roundTo2Dec(extTargetPosition);
                 grabLastPosition = roundTo2Dec(grabLastPosition);
                 grabTargetPosition = roundTo2Dec(grabTargetPosition);
 
             }
             Log.i("servoThread"+this.getId(), "thread finished");
-
         }
 
         public void directSetGrabTarget(double target){
