@@ -1268,5 +1268,87 @@ public class BaseAuto extends BaseOpMode {
         if(showTelemetry)telemetry.clear();
         grabber.setPosition(grabber_open);
     }
+
+    public void initV(){
+        initIMU();
+        initVuforia();
+        VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
+        VuforiaTrackable red1 = targetsSkyStone.get(5);
+        red1.setName("Red Perimeter 1");
+        VuforiaTrackable red2 = targetsSkyStone.get(6);
+        red2.setName("Red Perimeter 2");
+        VuforiaTrackable front1 = targetsSkyStone.get(7);
+        front1.setName("Front Perimeter 1");
+        VuforiaTrackable front2 = targetsSkyStone.get(8);
+        front2.setName("Front Perimeter 2");
+        VuforiaTrackable blue1 = targetsSkyStone.get(9);
+        blue1.setName("Blue Perimeter 1");
+        VuforiaTrackable blue2 = targetsSkyStone.get(10);
+        blue2.setName("Blue Perimeter 2");
+        VuforiaTrackable rear1 = targetsSkyStone.get(11);
+        rear1.setName("Rear Perimeter 1");
+        VuforiaTrackable rear2 = targetsSkyStone.get(12);
+        rear2.setName("Rear Perimeter 2");
+        allTrackables.addAll(targetsSkyStone);
+        //Set the position of the perimeter targets with relation to origin (center of field)
+        red1.setLocation(OpenGLMatrix
+                .translation(quadField, -halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
+        red2.setLocation(OpenGLMatrix
+                .translation(-quadField, -halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
+        front1.setLocation(OpenGLMatrix
+                .translation(-halfField, -quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
+        front2.setLocation(OpenGLMatrix
+                .translation(-halfField, quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
+        blue1.setLocation(OpenGLMatrix
+                .translation(-quadField, halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
+        blue2.setLocation(OpenGLMatrix
+                .translation(quadField, halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
+        rear1.setLocation(OpenGLMatrix
+                .translation(halfField, quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
+        rear2.setLocation(OpenGLMatrix
+                .translation(halfField, -quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
+        boolean PHONE_IS_PORTRAIT = false  ;
+        float phoneXRotate    = 0;
+        float phoneYRotate    = 0;
+        float phoneZRotate    = 0;
+        if (CAMERA_CHOICE == BACK) {
+            phoneYRotate = -90;
+        } else {
+            phoneYRotate = 90;
+        }
+
+        // Rotate the phone vertical about the X axis if it's in portrait mode
+        if (PHONE_IS_PORTRAIT) {
+            phoneXRotate = 90 ;
+        }
+
+        // Next, translate the camera lens to where it is on the robot.
+        // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
+        final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
+        final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
+        final float CAMERA_LEFT_DISPLACEMENT     = 9f * mmPerInch;     // eg: Camera is ON the robot's center line
+
+        OpenGLMatrix robotFromCamera = OpenGLMatrix
+                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
+
+        /**  Let all the trackable listeners know where the phone is.  */
+        for (VuforiaTrackable trackable : allTrackables) {
+            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
+        }
+        targetsSkyStone.activate();
+    }
 }
 
