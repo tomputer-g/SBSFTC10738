@@ -1285,21 +1285,20 @@ public class BaseAuto extends BaseOpMode {
     setAllDrivePowerG(-.1,-.1,.1,.1);
     grabber.setPosition(grabber_closed);
     wait(100);
-    servoThread.setExtTarget(0.85);
+    servoThread.setExtTarget(grabberServoGrab);
     while(-getY1Odometry()> 28*odometryEncYPerInch){setAllDrivePowerG(.3,.3,-.3,-.3);}
     setAllDrivePower(0);
     }
 
     protected void before_start(){
-        servoThread.setExtTarget(0.88);
         platform_grabber.setPower(1);
-        platform_grabber.setPower(0.0);
+        servoThread.setExtTarget(0.88);
         if(showTelemetry)telemetry.clear();
         grabber.setPosition(grabber_open);
+        platform_grabber.setPower(0.0);
     }
 
     public void initV(){
-        initIMU();
         initVuforia();
         VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
         VuforiaTrackable red1 = targetsSkyStone.get(5);
