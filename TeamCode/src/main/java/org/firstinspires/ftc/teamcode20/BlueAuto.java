@@ -28,8 +28,6 @@ public class BlueAuto extends BaseAuto {
         main:{
             try{
                 before_start();
-
-
                 //shift to align to skystone
                 int shift;
                 if (pos == 1) {
