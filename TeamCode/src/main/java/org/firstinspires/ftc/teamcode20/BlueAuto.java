@@ -73,10 +73,10 @@ public class BlueAuto extends BaseAuto {
                 LB.setPower(LB.getPower() * getError(180, imuAbsolute) / 20);
                 LF.setPower(LF.getPower() * getError(180, imuAbsolute) / 20);
             }
-            setNewGyro(180);
             setAllDrivePower(0);
-            after_dragged_foundation_B();
+            setNewGyro(180);
 
+            after_dragged_foundation_B();
             second_and_more_B(pos, 1);
             moveInchesGOY_XF_F(-44, 0.6, 1, (int) (getXOdometry() - (41 - adjustToViewMark(true)[1]) * odometryEncXPerInch));
         }
