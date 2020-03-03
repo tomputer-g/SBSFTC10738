@@ -1125,7 +1125,7 @@ public class BaseAuto extends BaseOpMode {
         p.reset();
         while (p.milliseconds()<1200)setAllDrivePowerG(-.4,-.4,.4,.4);
         setAllDrivePower(0);
-        servoThread.setExtTarget(0.75);
+        servoThread.setExtTarget(0.6);
         p.reset();
         while (p.milliseconds()<600);
         platform_grabber.setPower(0);
@@ -1149,7 +1149,7 @@ public class BaseAuto extends BaseOpMode {
         p.reset();
         while (p.milliseconds()<1200)setAllDrivePowerG(-.4,-.4,.4,.4);
         setAllDrivePower(0);
-        servoThread.setExtTarget(0.75);
+        servoThread.setExtTarget(0.6);
         p.reset();
         while (p.milliseconds()<600);
         platform_grabber.setPower(0);
@@ -1248,7 +1248,7 @@ public class BaseAuto extends BaseOpMode {
     protected void first_block(){
     //move forward to the skystone
     while(-getY1Odometry() < 20*odometryEncYPerInch){setAllDrivePowerG(-.3,-.3,.3,.3);}
-    while(-getY1Odometry() < 28*odometryEncYPerInch){setAllDrivePowerG(-.2,-.2,.2,.2);}
+    while(-getY1Odometry() < 30*odometryEncYPerInch){setAllDrivePowerG(-.2,-.2,.2,.2);}
     setAllDrivePowerG(-.1,-.1,.1,.1);
     grabber.setPosition(grabber_closed);
     wait(100);
