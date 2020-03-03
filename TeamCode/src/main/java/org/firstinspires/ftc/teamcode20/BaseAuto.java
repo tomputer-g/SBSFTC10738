@@ -1258,11 +1258,11 @@ public class BaseAuto extends BaseOpMode {
     }
 
     protected void before_start(){
-        servoThread.setExtTarget(0.88);
         platform_grabber.setPower(1);
-        platform_grabber.setPower(0.0);
+        servoThread.setExtTarget(0.88);
         if(showTelemetry)telemetry.clear();
         grabber.setPosition(grabber_open);
+        platform_grabber.setPower(0.0);
     }
 
     public void initV(){
