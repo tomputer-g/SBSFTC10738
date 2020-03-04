@@ -24,6 +24,7 @@ import java.util.Set;
 import static java.lang.Math.pow;
 import static java.lang.Math.round;
 import static java.lang.Math.sqrt;
+import static java.lang.Thread.dumpStack;
 import static java.lang.Thread.sleep;
 
 public class BaseOpMode extends LinearOpMode {
@@ -50,7 +51,7 @@ public class BaseOpMode extends LinearOpMode {
     protected RevBulkData tmpBulkData;//use this for all bulk reads
 
 
-/*    protected void kill(String message){
+    protected void kill(String message){
         //Drivetrain
         if(LF != null && LB != null && RF != null && RB != null)setAllDrivePower(0);
         //Slide Motors TODO: better stopping method?
@@ -60,7 +61,7 @@ public class BaseOpMode extends LinearOpMode {
         if(servoThread != null && servoThread.isAlive())servoThread.stopThread();
         if(grabber_extend1 != null)grabber_extend1.setPosition(0.99);//TODO: Better stopping method?
         if(grabber_extend2 != null)grabber_extend2.setPosition(0.01);
-        if(france != null)france.setPosition(0);
+        if(capstone != null)capstone.setPosition(0);
         if(grabber != null)grabber.setPosition(0.01);
         //tape
         if(xOdometry != null)xOdometry.setPower(0);
@@ -75,7 +76,7 @@ public class BaseOpMode extends LinearOpMode {
         dumpStack();
         stop();
     }
- */
+
 
     @Override
     public void runOpMode() throws InterruptedException {}

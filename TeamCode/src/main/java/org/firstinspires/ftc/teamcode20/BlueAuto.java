@@ -95,15 +95,13 @@ public class BlueAuto extends BaseAuto {
     }
     @Override public void runOpMode() throws InterruptedException {
         main:{
-
-            //new StopHandlerThread(Thread.currentThread());
             initAutonomous();
             hub4.setLedColor(255,20,147);
             drive = new SampleMecanumDriveREV(hardwareMap);
             //cooThread.start();
             int pos = 0;
             while (!isStarted()) {
-                if (isStopRequested()) {break main;}
+                if (isStopRequested()) {return;}
                 pos = new_skystoneposition();
                 wait(200);
             }
