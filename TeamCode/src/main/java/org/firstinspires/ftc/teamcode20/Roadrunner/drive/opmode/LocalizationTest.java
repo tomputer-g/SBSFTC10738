@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode20.Roadrunner.drive.opmode;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -155,10 +157,13 @@ public class LocalizationTest extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        SampleMecanumDriveREV drive = new SampleMecanumDriveREV(hardwareMap);
-initHubs();        initOdometry();
+        drive= new SampleMecanumDriveREV(hardwareMap);
+        initHubs();
+        initIMU();
+        initOdometry();
         initV();
-        drive.setPoseEstimate(new Pose2d(0,0,0));
+        drive.setPoseEstimate(new Pose2d(0,63,0));
+        cooThread.start();
         waitForStart();
         while (!isStopRequested()) {
             Pose2d baseVel = new Pose2d(
@@ -181,18 +186,18 @@ initHubs();        initOdometry();
                 vel = baseVel;
             }
             drive.setDrivePower(vel);
-            drive.update();
-            Pose2d p=PosCalibrate();
-            if(p!=null)drive.setPoseEstimate(p);
-            RevBulkData bulk = hub4.getBulkInputData();
+            //drive.update();
+            //if(p!=null)drive.setPoseEstimate(p);
+            //RevBulkData bulk = hub4.getBulkInputData();
             Pose2d poseEstimate = drive.getPoseEstimate();
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", Math.toDegrees(poseEstimate.getHeading()));
-            telemetry.addData("Xodo",bulk.getMotorCurrentPosition(2));
-            telemetry.addData("L2",bulk.getMotorCurrentPosition(1));
-            telemetry.addData("platform",bulk.getMotorCurrentPosition(3));
+            //telemetry.addData("Xodo",bulk.getMotorCurrentPosition(2));
+            //telemetry.addData("L2",bulk.getMotorCurrentPosition(1));
+            //telemetry.addData("platform",bulk.getMotorCurrentPosition(3));
             //telemetry.update();
         }
+        cooThread.stopThread();
     }
 }

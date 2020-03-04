@@ -55,15 +55,19 @@ public class BaseAuto extends BaseOpMode {
     protected List<VuforiaTrackable> allTrackables= new ArrayList<>();
     private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
     private VuforiaTrackable rear1,rear2;//from kuaishou.com
-        // Constants for perimeter targets
+
     private static final float halfField = 72 * mmPerInch;
     private static final float quadField  = 36 * mmPerInch;
     private ElapsedTime VuforiaPositionTime;
     private double[] displacements = {2, 7};//+ = forward; + = right
     private double headingDisplacement = -90;
 
+    //Sensors
+    protected ModernRoboticsI2cRangeSensor rangeSensorFront, rangeSensorSide;
+    protected Rev2mDistanceSensor left,right;
+
     //Roadrunner
-    protected SampleMecanumDriveREV drive;
+    public SampleMecanumDriveREV drive;
 
     //IMU
     protected static BNO055IMU imu;
@@ -78,7 +82,7 @@ public class BaseAuto extends BaseOpMode {
     protected double xmult = 1430.5/72, ymult = 18.65;
 
     //Threads
-    protected CooThread cooThread=new CooThread();
+    protected CooThread cooThread;
 
     //Misc
     protected double[] n_pass ={0,0};
@@ -523,9 +527,6 @@ public class BaseAuto extends BaseOpMode {
  */
 
     //-----------------------------------------------------------------Sensors----------------------------------------------------------------------
-    protected ModernRoboticsI2cRangeSensor rangeSensorFront, rangeSensorSide;
-    protected Rev2mDistanceSensor left,right;
-
     protected void initSensors(){
         rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
        // rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "front");
@@ -635,7 +636,7 @@ public class BaseAuto extends BaseOpMode {
             this.setName("Coord Thread "+this.getId());
             Log.i("coordThread"+this.getId(),"Started running");
             while (!isInterrupted() && !stop) {
-                drive.update();
+                drive.updatePoseEstimate();
             }
             Log.i("coordThread"+this.getId(), "thread finished");
         }
