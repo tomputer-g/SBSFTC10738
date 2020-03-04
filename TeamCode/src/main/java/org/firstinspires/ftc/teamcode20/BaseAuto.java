@@ -1141,30 +1141,6 @@ public class BaseAuto extends BaseOpMode {
     }
 
     //---------------------------------------------------------Autonomous methods-------------------------------------------------
-    protected void after_dragged_foundation_R(){
-        ElapsedTime p = new ElapsedTime();
-        platform_grabber.setPower(1);
-        servoThread.setExtTarget(0.5);
-        wait(300);
-        //p.reset();
-        ///while (p.milliseconds()<300);
-        PIDturnfast(-90,true);
-        //setAllDrivePower(0);
-        //turn(-90-getHeading(),0.5,1);
-        setNewGyro(-90);
-        //setAllDrivePowerG(-.2,-.2,.2,.2);
-        //moveInchesGOY(5,0.4);
-
-        p.reset();
-        while (p.milliseconds()<1200)setAllDrivePowerG(-.4,-.4,.4,.4);
-        setAllDrivePower(0);
-        servoThread.setExtTarget(0.6);
-        p.reset();
-        while (p.milliseconds()<600);
-        platform_grabber.setPower(0);
-        grabber.setPosition(grabber_open);
-        //servoThread.setTarget(0.6);
-    }
 
     protected int Ultra_get_position(){
         int poss = 0;
@@ -1184,59 +1160,6 @@ public class BaseAuto extends BaseOpMode {
         int curmax = -1;
         for (int i = 0;i<3;++i){ if(resultcounter[i]>curmax){poss = i;curmax=resultcounter[i];} }
         return poss;
-    }
-
-    protected void second_and_more_B(int result, int times) {
-        double curX;
-        double info[] = {78.75,78.75+8,78.75+16,78.75+24,78.75+24,78.75+24};
-        double origin[] = {0, 41}, dd[] = adjustToViewMark(true);
-        for (int i = 0; i < times; ++i) {
-            setAllDrivePower(0);
-            curX = getXOdometry();
-            if (i > 0) servoThread.setExtTarget(0.75);
-            grabber.setPosition(grabber_open);
-            align(90);
-            moveInchesGOY_XF_F(-info[result+2], 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
-            servoThread.setExtTarget(0.98);
-            align(0);
-        }
-    }
-
-
-    protected void second_and_more_R(int result, int times) {
-        double curX;
-        double info[] = {78.75,78.75+8,78.75+16,78.75+24,78.75+24,78.75+24};
-        double origin[] = {0, -38.5}, dd[] = adjustToViewMark(false);
-        for (int i = 0; i < times; ++i) {
-            setAllDrivePower(0);
-            curX = getXOdometry();
-            if (i > 0) servoThread.setExtTarget(0.75);
-            grabber.setPosition(grabber_open);
-            align(-90);
-            moveInchesGOY_XF_F(-info[result+2], 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
-            servoThread.setExtTarget(0.98);
-            align(0);
-
-            double yorigin = getY1Odometry();
-            while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 4) {
-                setAllDrivePowerG(-.3, -.3, .3, .3);
-            }
-            while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 8) {
-                setAllDrivePowerG(-.1, -.1, .1, .1);
-            }
-            grabber.setPosition(grabber_closed);
-            wait(300);
-            servoThread.setExtTarget(0.85);
-            while ((getY1Odometry() - yorigin) * -1 > odometryEncYPerInch * 2) {
-                setAllDrivePowerG(.3, .3, -.3, -.3);
-            }
-            setAllDrivePower(0);
-            align(-90);
-            servoThread.setExtTarget(0.65);
-            moveInchesGOY_XF_F(info[result+2]-1, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
-            dd = adjustToViewMark(false);
-        }
-        grabber.setPosition(grabber_open);
     }
 
     protected void first_block(){

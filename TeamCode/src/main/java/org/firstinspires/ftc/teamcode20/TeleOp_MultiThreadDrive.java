@@ -25,7 +25,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     private int placeLevel = 0;
     private double groundHeightEnc = 2 * slideEncoderPerInch;//1 higher placing + 1.25 base height
     private int autoplacemode = 0;
-    private double grabberOutSwitch = 0.6;
+    private double grabberOutSwitch = 0.63;
 
     private boolean nextGrabberDelay = false;
 
@@ -93,7 +93,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                 else{
                     autoplacemode=0;
                     groundHeightEnc=(2)*slideEncoderPerInch;
-                    grabberOutSwitch=0.6;
+                    grabberOutSwitch=0.63;
                 }
             }
 
