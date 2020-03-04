@@ -54,8 +54,8 @@ public class MoveTest extends BaseAuto {
         //initViewMarks();
         initIMU();
         initOdometry();
-        drive=new SampleMecanumDriveREV(hardwareMap);
-        cooThread.start();
+        //drive=new SampleMecanumDriveREV(hardwareMap);
+        //cooThread.start();
         waitForStart();
         while(!this.gamepad1.b) {
             if(zheng(this.gamepad1.dpad_left,eee))x-=2;
@@ -69,7 +69,7 @@ public class MoveTest extends BaseAuto {
             telemetry.addData("s",adjustToViewMark(false)[1]);
             telemetry.update();
         }
-        cooThread.stopThread();
+        //cooThread.stopThread();
     }
 
 
