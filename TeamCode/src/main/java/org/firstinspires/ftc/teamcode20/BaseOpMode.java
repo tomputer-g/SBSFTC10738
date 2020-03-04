@@ -50,16 +50,15 @@ public class BaseOpMode extends LinearOpMode {
 
     protected RevBulkData tmpBulkData;//use this for all bulk reads
 
-
     protected void kill(String message){
         //Drivetrain
         if(LF != null && LB != null && RF != null && RB != null)setAllDrivePower(0);
-        //Slide Motors TODO: better stopping method?
+        //Slide Motors
         if(L1 != null)L1.setPower(0);
         if(L2 != null)L2.setPower(0);
         //On slide: Servos (+ kill servo thread)
         if(servoThread != null && servoThread.isAlive())servoThread.stopThread();
-        if(grabber_extend1 != null)grabber_extend1.setPosition(0.99);//TODO: Better stopping method?
+        if(grabber_extend1 != null)grabber_extend1.setPosition(0.99);
         if(grabber_extend2 != null)grabber_extend2.setPosition(0.01);
         if(capstone != null)capstone.setPosition(0);
         if(grabber != null)grabber.setPosition(0.01);
@@ -77,9 +76,7 @@ public class BaseOpMode extends LinearOpMode {
         stop();
     }
 
-
-    @Override
-    public void runOpMode() throws InterruptedException {}
+    @Override public void runOpMode() throws InterruptedException {}
 
     protected void initPlatformGrabber(){
         platform_grabber = hardwareMap.get(DcMotor.class, "platform");
@@ -161,10 +158,6 @@ public class BaseOpMode extends LinearOpMode {
         LB.setPower(pX+pY);
         RF.setPower(-pX-pY);
         RB.setPower(pX-pY);
-    }
-
-    protected void wait(int time){
-        sleep(time);
     }
 
     protected boolean near(double value, double target, double tolerance){
@@ -259,7 +252,7 @@ public class BaseOpMode extends LinearOpMode {
     }
     //----------------------------------------Movement Code here-----------------------------------------
     //for phone: phone camera facing x-, extended grabber is y+
-    protected void brake(){
+    protected void brake() throws InterruptedException {
         double lf=LF.getPower(),lb=LB.getPower(),rf=RF.getPower(),rb=RB.getPower();
         for(int i=0;i<4;i++){
             setAllDrivePower(lf-0.2*lf*i,lb-0.2*lb*i,rf-rf*0.2*i,rb-rb*0.2*i);
@@ -268,12 +261,12 @@ public class BaseOpMode extends LinearOpMode {
         setAllDrivePower(0);
         for(int i=0;i<10;i++){
             setAllDrivePower(.3,.3,-.3,-.3);
-            wait(50);
+            Thread.sleep(50);
             setAllDrivePower(0);
-            wait(5);
+            Thread.sleep(5);
         }
         //setAllDrivePower(sigmoid_brake(lf),sigmoid_brake(lb),sigmoid_brake(rf),sigmoid_brake(rb));
-        //wait(300);
+        //Thread.sleep(300);
         setAllDrivePower(0);
     }
 
@@ -283,7 +276,7 @@ public class BaseOpMode extends LinearOpMode {
 
      */
 
-    protected void moveInches(double xInch, double yInch, double speed){
+    protected void moveInches(double xInch, double yInch, double speed) throws InterruptedException {
         /*
         sup fuckers
         69
@@ -303,7 +296,7 @@ public class BaseOpMode extends LinearOpMode {
             //coe=Math.max(coe,1);
         }
         setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
-        wait(120);
+        Thread.sleep(120);
         setAllDrivePower(0);
         reset_ENCODER();
     }
@@ -674,9 +667,9 @@ public class BaseOpMode extends LinearOpMode {
         }
     }
 
-    private void 三天之内刹了你(){
+    private void 三天之内刹了你() throws InterruptedException {
         setAllDrivePower(1,1,-1,-1);
-        wait(200);
+        Thread.sleep(200);
         setAllDrivePower(0);
     }
 
@@ -784,4 +777,6 @@ public class BaseOpMode extends LinearOpMode {
         }
         Log.d("All threads log end","-------------------------------------------");
     }
+
+
 }

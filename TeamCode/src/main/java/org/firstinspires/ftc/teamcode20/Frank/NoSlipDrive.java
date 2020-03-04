@@ -158,7 +158,7 @@ public class NoSlipDrive extends BaseAuto {
             omc = -platform_grabber.getCurrentPosition();
     }
 
-    protected void odobrake() {
+    protected void odobrake() throws InterruptedException {
         setAllDrivePowerG(0);
         setAllDrivePowerG(1, 1, -1, -1);
         /*
@@ -173,15 +173,15 @@ public class NoSlipDrive extends BaseAuto {
         for (int i = 0; i < 10; i++) {
             double koe = (1 + (10 - i) / 15)*1.2;
             setAllDrivePowerG(speed / koe / 2, speed / koe / 2, -speed / 2 / koe - 0.1, -speed / koe / 2 - 0.1);
-            wait(8);
+            Thread.sleep(8);
             setAllDrivePowerG(0.0);
         }
         //turn(-getHeading()+angle,.5,2);
     }
 
-    protected void odobrakeduo(){
+    protected void odobrakeduo() throws InterruptedException {
         updateOC();
-        wait(10);
+        Thread.sleep(10);
         updateOC();
         double power = Math.abs(odc)/odc;
         if(power>0)

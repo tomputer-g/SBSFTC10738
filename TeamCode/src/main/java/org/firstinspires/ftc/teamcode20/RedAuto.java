@@ -9,7 +9,7 @@ import org.openftc.revextensions2.ExpansionHubEx;
 @Autonomous
 public class RedAuto extends BaseAuto {
     int pos = 0;
-    protected void second_and_more_R(int result, int times) {
+    protected void second_and_more_R(int result, int times) throws InterruptedException {
         ElapsedTime p = new ElapsedTime();
         platform_grabber.setPower(1);
         servoThread.setExtTarget(0.2);
