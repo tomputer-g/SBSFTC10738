@@ -93,7 +93,6 @@ public class BlueAuto extends BaseAuto {
         }
         grabber.setPosition(grabber_open);
     }
-        private final int[] PINK = {255,192,203}, GREEN = {0,255,0}, RED = {255,0,0};
     @Override public void runOpMode() throws InterruptedException {
         main:{
 
@@ -154,8 +153,10 @@ public class BlueAuto extends BaseAuto {
             while (imuAbsolute < 160) {
                 getHeading();
             }
+
             ElapsedTime p = new ElapsedTime();
             while (imuAbsolute < 170 && p.milliseconds() < 3000) {
+                if(time > 29.9)break main;
                 getHeading();
                 RF.setPower(RF.getPower() * getError(180, imuAbsolute) / 20);
                 LB.setPower(LB.getPower() * getError(180, imuAbsolute) / 20);
