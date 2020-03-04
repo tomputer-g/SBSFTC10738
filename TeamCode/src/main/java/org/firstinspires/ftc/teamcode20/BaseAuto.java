@@ -898,7 +898,7 @@ public class BaseAuto extends BaseOpMode {
         int previousPos = offsetY, currentOdometry, Dterm;
         double tpre = 0, tcur;
         int steadyCounter = 0;
-        while(steadyCounter < 5 && !this.gamepad1.b){//b is there so we can break out of loop anytime
+        while(steadyCounter < 3 && !this.gamepad1.b){//b is there so we can break out of loop anytime
             currentOdometry = getY1Odometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
@@ -984,7 +984,8 @@ public class BaseAuto extends BaseOpMode {
             kP = 0.0325;
             kD = 7.3E-3;
         }
-        double kPx = 0.25, kDx = -0.0025;
+        //-0.0025
+        double kPx = 0.25, kDx = 0.005;
         ElapsedTime t = new ElapsedTime();
         int offsetY = getY1Odometry();
         int offsetX = FixXOffset;
@@ -996,7 +997,7 @@ public class BaseAuto extends BaseOpMode {
         int previousPos = offsetY, previousPosX = offsetX, currentOdometry, currentOdometryX, Dterm, DtermX;
         double tpre = 0, tcur;
         int steadyCounter = 0;
-        while(steadyCounter < 5 && !this.gamepad1.b){//b is there so we can break out of loop anytime
+        while(steadyCounter < 3 && !this.gamepad1.b){//b is there so we can break out of loop anytime
             //telemetry.addData("x",getXOdometry());
             //telemetry.addData("yL",getY1Odometry());
             //telemetry.addData("yR",getY2Odometry());

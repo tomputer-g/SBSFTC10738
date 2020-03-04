@@ -26,7 +26,7 @@ public class BlueAuto extends BaseAuto {
         p.reset();
         while (p.milliseconds()<1200)setAllDrivePowerG(-.4,-.4,.4,.4);
         setAllDrivePower(0);
-        double origin[] = {0, 41}, dd[] = adjustToViewMark(true);
+        double origin[] = {0, 40}, dd[] = adjustToViewMark(true);
         telemetry.addData("Y",dd[1]);
         telemetry.update();
         servoThread.setExtTarget(0.6);
@@ -46,7 +46,7 @@ public class BlueAuto extends BaseAuto {
             moveInchesGOY_XF_F(-info[result+2], 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
             servoThread.setExtTarget(0.98);
             align(0);
-
+            if(result==2||result==1)moveInchesGOX(-4,1);
             double yorigin = getY1Odometry();
             while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 4) {
                 setAllDrivePowerG(-.3, -.3, .3, .3);

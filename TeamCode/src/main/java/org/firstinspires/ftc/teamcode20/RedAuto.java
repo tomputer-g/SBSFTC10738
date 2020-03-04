@@ -26,7 +26,7 @@ public class RedAuto extends BaseAuto {
         p.reset();
         while (p.milliseconds()<1200)setAllDrivePowerG(-.4,-.4,.4,.4);
         setAllDrivePower(0);
-        double origin[] = {0, -38.5}, dd[] = adjustToViewMark(false);
+        double origin[] = {0, -40}, dd[] = adjustToViewMark(false);
         telemetry.addData("Y",dd[1]);
         telemetry.update();
         servoThread.setExtTarget(0.6);
@@ -36,17 +36,17 @@ public class RedAuto extends BaseAuto {
         grabber.setPosition(grabber_open);
 
         double curX;
-        double info[] = {78.75,78.75+8,78.75+16,78.75+24,78.75+24,78.75+24};
+        double info[] = {78.75,78.75+8,78.75+20,78.75+28,78.75+16,78.75+24};
         for (int i = 0; i < times; ++i) {
             setAllDrivePower(0);
             curX = getXOdometry();
             if (i > 0) servoThread.setExtTarget(0.75);
             grabber.setPosition(grabber_open);
-            align(-90);
+            align(-90-1);
             moveInchesGOY_XF_F(-info[result+2], 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
             servoThread.setExtTarget(0.98);
             align(0);
-
+            if(pos==0||pos==1)moveInchesGOX(-4,1);
             double yorigin = getY1Odometry();
             while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 4) {
                 setAllDrivePowerG(-.3, -.3, .3, .3);
@@ -61,7 +61,7 @@ public class RedAuto extends BaseAuto {
                 setAllDrivePowerG(.3, .3, -.3, -.3);
             }
             setAllDrivePower(0);
-            align(-90);
+            align(-91);
             servoThread.setExtTarget(0.4);
             moveInchesGOY_XF_F(info[result+2]-1, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
         }
@@ -103,8 +103,9 @@ public class RedAuto extends BaseAuto {
             int xx = getXOdometry();
             moveInchesGOY(-(85.25 + shift), 0.6, 1);
             p.reset();
+            moveInchesGOXT(12, .45, 1, 2000); //magic, do not touch
 
-            moveInchesGOXT(-adjustToViewMark(false)[1]-32, .45, 1, 2000); //magic, do not touch
+            //moveInchesGOXT(-adjustToViewMark(false)[1]-32, .45, 1, 2000); //magic, do not touch
             platform_grabber.setPower(-1);
             wait(300);
             moveInchesGOX_platform(-15, 1, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
