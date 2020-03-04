@@ -163,7 +163,7 @@ public class LocalizationTest extends BaseAuto {
         initOdometry();
         initV();
         drive.setPoseEstimate(new Pose2d(0,63,0));
-        cooThread.start();
+        //cooThread.start();
         waitForStart();
         while (!isStopRequested()) {
             Pose2d baseVel = new Pose2d(
