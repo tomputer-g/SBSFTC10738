@@ -177,7 +177,7 @@ public class BaseAuto extends BaseOpMode {
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
         final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
         final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT     = 9.0f * mmPerInch;     // eg: Camera is ON the robot's center line
+        final float CAMERA_LEFT_DISPLACEMENT     = -8.0f * mmPerInch;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
@@ -230,8 +230,8 @@ public class BaseAuto extends BaseOpMode {
             x=translation.get(0) / mmPerInch-6.5; y= translation.get(1) / mmPerInch+9;
         }
         else {
-            if(isBlue){ x=38;y=39;}
-            else{ x=-55.35;y=-24.7;}
+            if(isBlue){ x=38;y=39.2333333;}
+            else{ x=-55.35;y=-24.7233333;}
         }
         targetsSkyStone.deactivate();
         xy[0]=x;
@@ -1249,7 +1249,7 @@ public class BaseAuto extends BaseOpMode {
         grabber.setPosition(grabber_closed);
         wait(100);
         servoThread.setExtTarget(grabberServoGrab);
-        while(-getY1Odometry()> 28*odometryEncYPerInch){setAllDrivePowerG(.3,.3,-.3,-.3);}
+        while(-getY1Odometry()> 29.5*odometryEncYPerInch){setAllDrivePowerG(.3,.3,-.3,-.3);}
         setAllDrivePower(0);
     }
 

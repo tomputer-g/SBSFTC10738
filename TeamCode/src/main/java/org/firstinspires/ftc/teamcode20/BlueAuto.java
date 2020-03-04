@@ -54,6 +54,8 @@ public class BlueAuto extends BaseAuto {
         while (p.milliseconds()<1200)setAllDrivePowerG(-.4,-.4,.4,.4);
         setAllDrivePower(0);
         double origin[] = {0, 41}, dd[] = adjustToViewMark(true);
+        telemetry.addData("d",dd[1]);
+        telemetry.update();
         servoThread.setExtTarget(0.6);
         p.reset();
         while (p.milliseconds()<600);
@@ -135,7 +137,7 @@ public class BlueAuto extends BaseAuto {
             align(90);
             resetXOdometry();
             moveInchesGOY_XF((85.25 + shift), 0.9, 1);
-            moveInchesGOXT(15, .45, 1, 2000); //magic, do not touch
+            moveInchesGOXT(13, .45, 1, 2000); //magic, do not touch
 
             platform_grabber.setPower(-1);
             wait(300);
