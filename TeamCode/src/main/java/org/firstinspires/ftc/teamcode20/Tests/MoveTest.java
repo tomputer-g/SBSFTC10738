@@ -42,22 +42,20 @@ public class MoveTest extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {
         msStuckDetectInit = 3000000;
-        //drive=new SampleMecanumDriveREV(hardwareMap);
-        //drive.setPoseEstimate(new Pose2d(36,63,-Math.PI/2));
-        //drive.setPoseEstimate(new Pose2d(63,63,-Math.PI/2));
-        //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         speed=0.3;
         speeed = 0.03;
         dir=1;
         y = -90;
         x = 0;
         // 三天之内刹了你();
-        //drive=new SampleMecanumDriveREV(hardwareMap);
-        //cooThread.start();
+        initDrivetrain();
         initHubs();
         initVuforia();
         initViewMarks();
         initIMU();
+        initOdometry();
+        drive=new SampleMecanumDriveREV(hardwareMap);
+        cooThread.start();
         waitForStart();
         while(!this.gamepad1.b) {
             if(zheng(this.gamepad1.dpad_left,eee))x-=2;
@@ -66,8 +64,7 @@ public class MoveTest extends BaseAuto {
             if(zheng(this.gamepad1.dpad_down,ff))y+=1;
             if(zheng(this.gamepad1.y,m))speed+=.1;
             if(zheng(this.gamepad1.right_bumper,m)){
-                telemetry.addData("s",adjustToViewMark(true)[1]);
-                telemetry.update();
+                PIDturnfast(90,false);
             }
         }
         cooThread.stopThread();
