@@ -86,7 +86,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             //switch between autoplace on first and second block
             if(zheng(this.gamepad1.right_stick_button,rightStickButtonPrimed)){
                 if(autoplacemode==0){
-                    grabberOutSwitch=0.78;
+                    grabberOutSwitch=0.75;
                     groundHeightEnc=(2+1.18+1)*slideEncoderPerInch;
                     autoplacemode=1;
                 }

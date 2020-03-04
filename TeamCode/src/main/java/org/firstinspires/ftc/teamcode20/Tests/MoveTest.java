@@ -56,7 +56,7 @@ public class MoveTest extends BaseAuto {
         //cooThread.start();
         initHubs();
         initVuforia();
-        initViewMarks();
+        //initViewMarks();
         initIMU();
         waitForStart();
         while(!this.gamepad1.b) {
@@ -66,9 +66,10 @@ public class MoveTest extends BaseAuto {
             if(zheng(this.gamepad1.dpad_down,ff))y+=1;
             if(zheng(this.gamepad1.y,m))speed+=.1;
             if(zheng(this.gamepad1.right_bumper,m)){
-                telemetry.addData("s",adjustToViewMark(true)[1]);
-                telemetry.update();
             }
+            telemetry.addData("s",adjustToViewMark(true)[1]);
+            telemetry.addData("s",adjustToViewMark(false)[1]);
+            telemetry.update();
         }
         cooThread.stopThread();
     }

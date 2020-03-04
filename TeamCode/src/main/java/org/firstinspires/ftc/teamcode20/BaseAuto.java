@@ -134,7 +134,7 @@ public class BaseAuto extends BaseOpMode {
         Log.i("Auto init",System.currentTimeMillis()+" done init");
         initHubs();
         initVuforia();
-        initViewMarks();
+        //initViewMarks();
         //while(initThread.isAlive());
         Log.i("Auto init", "initThread done");
     }
@@ -155,8 +155,20 @@ public class BaseAuto extends BaseOpMode {
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
         vuforia.setFrameQueueCapacity(6);
 
-        cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
+        rear1 = targetsSkyStone.get(11);
+        rear1.setName("Rear Perimeter 1");
+        rear2 = targetsSkyStone.get(12);
+        rear2.setName("Rear Perimeter 2");
+        rear1.setLocation(OpenGLMatrix
+                .translation(halfField, quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
+
+        rear2.setLocation(OpenGLMatrix
+                .translation(halfField, -quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+        allTrackables.addAll(targetsSkyStone);
+        targetsSkyStone.activate();
         VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
         boolean PHONE_IS_PORTRAIT = false  ;
         float phoneXRotate    = 0;
@@ -177,7 +189,7 @@ public class BaseAuto extends BaseOpMode {
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
         final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
         final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT     = -8.0f * mmPerInch;     // eg: Camera is ON the robot's center line
+        final float CAMERA_LEFT_DISPLACEMENT     = 8.0f * mmPerInch;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
@@ -187,23 +199,6 @@ public class BaseAuto extends BaseOpMode {
         for (VuforiaTrackable trackable : allTrackables) {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
         }
-    }
-
-    protected void initViewMarks(){
-        targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
-        rear1 = targetsSkyStone.get(11);
-        rear1.setName("Rear Perimeter 1");
-        rear2 = targetsSkyStone.get(12);
-        rear2.setName("Rear Perimeter 2");
-        rear1.setLocation(OpenGLMatrix
-                .translation(halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
-
-        rear2.setLocation(OpenGLMatrix
-                .translation(halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
-        allTrackables.addAll(targetsSkyStone);
-        targetsSkyStone.activate();
     }
 
     protected double[] adjustToViewMark(boolean isBlue){

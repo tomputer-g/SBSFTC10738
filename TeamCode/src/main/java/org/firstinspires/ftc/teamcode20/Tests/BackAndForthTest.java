@@ -79,7 +79,7 @@ public class BackAndForthTest extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {
         initAutonomous();
-        initViewMarks();
+        //initViewMarks();
         //initVuMarksFull();
         waitForStart();
         while(opModeIsActive())
