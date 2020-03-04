@@ -1,19 +1,21 @@
 package org.firstinspires.ftc.teamcode20;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveREV;
+import org.firstinspires.ftc.teamcode20.Tests.StopAnytimeTest;
 import org.openftc.revextensions2.ExpansionHubEx;
 
 @Autonomous
 public class BlueAuto extends BaseAuto {
-    protected void second_and_more_B(int result, int times) {
+    protected void second_and_more_B(int result, int times) throws InterruptedException {
         ElapsedTime p = new ElapsedTime();
         platform_grabber.setPower(1);
         servoThread.setExtTarget(0.2);
-        wait(300);
+        Thread.sleep(300);
         //p.reset();
         ///while (p.milliseconds()<300);
         PIDturnfast(-90,true);
@@ -24,14 +26,17 @@ public class BlueAuto extends BaseAuto {
         //moveInchesGOY(5,0.4);
 
         p.reset();
-        while (p.milliseconds()<1200)setAllDrivePowerG(-.4,-.4,.4,.4);
+        while (p.milliseconds()<1200){
+            setAllDrivePowerG(-.4,-.4,.4,.4);
+            Thread.sleep(0);
+        }
         setAllDrivePower(0);
         double origin[] = {0, 40}, dd[] = adjustToViewMark(true);
         telemetry.addData("Y",dd[1]);
         telemetry.update();
         servoThread.setExtTarget(0.6);
         p.reset();
-        while (p.milliseconds()<600);
+        while (p.milliseconds()<600){Thread.sleep(0);}
         platform_grabber.setPower(0);
         grabber.setPosition(grabber_open);
 
@@ -49,13 +54,15 @@ public class BlueAuto extends BaseAuto {
             if(result==2||result==1)moveInchesGOX(-4,1);
             double yorigin = getY1Odometry();
             while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 4) {
+                Thread.sleep(0);
                 setAllDrivePowerG(-.3, -.3, .3, .3);
             }
             while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 8) {
+                Thread.sleep(0);
                 setAllDrivePowerG(-.1, -.1, .1, .1);
             }
             grabber.setPosition(grabber_closed);
-            wait(300);
+            Thread.sleep(300);
             servoThread.setExtTarget(0.85);
             while ((getY1Odometry() - yorigin) * -1 > odometryEncYPerInch * 2) {
                 setAllDrivePowerG(.3, .3, -.3, -.3);
@@ -68,18 +75,16 @@ public class BlueAuto extends BaseAuto {
         grabber.setPosition(grabber_open);
     }
     @Override public void runOpMode() throws InterruptedException {
+        new OpModeStopThread(Thread.currentThread()).start();
         main:{
-
-            //new StopHandlerThread(Thread.currentThread());
             initAutonomous();
             hub4.setLedColor(255,20,147);
             drive = new SampleMecanumDriveREV(hardwareMap);
             //cooThread.start();
             int pos = 0;
             while (!isStarted()) {
-                if (isStopRequested()) {break main;}
                 pos = new_skystoneposition();
-                wait(200);
+                Thread.sleep(200);
             }
             //go forward 1 floor mat (24")w
             //vuforia - recognize block & move to pick up
@@ -111,7 +116,7 @@ public class BlueAuto extends BaseAuto {
             moveInchesGOY_XF((85.25 + shift), 0.9, 1);
             moveInchesGOXT(adjustToViewMark(true)[1]-32, .45, 1, 2000); //magic, do not touch
             platform_grabber.setPower(-1);
-            wait(300);
+            Thread.sleep(300);
             moveInchesGOX_platform(-16, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
             int steps = 20;
             double basespeed = 0.3;
@@ -119,14 +124,14 @@ public class BlueAuto extends BaseAuto {
                 RF.setPower(i * basespeed / steps);
                 LB.setPower(2 * i * basespeed / steps);
                 LF.setPower(3 * i * basespeed / steps);
-                wait(20);
+                Thread.sleep(20);
                 //LB.setPower(0);
             }
 
-            while (imuAbsolute < 160) { getHeading(); }
+            while (imuAbsolute < 160) { Thread.sleep(0);getHeading(); }
             ElapsedTime p = new ElapsedTime();
             while (imuAbsolute < 170 && p.milliseconds() < 3000) {
-                if(time > 29.9)break main;
+                Thread.sleep(0);
                 getHeading();
                 RF.setPower(RF.getPower() * getError(180, imuAbsolute) / 20);
                 LB.setPower(LB.getPower() * getError(180, imuAbsolute) / 20);
@@ -139,5 +144,32 @@ public class BlueAuto extends BaseAuto {
             hub4.setLedColor(255,20,147);
             moveInchesGOY_XF_F(-44, 0.6, 1, (int) (getXOdometry() - (41 - adjustToViewMark(true)[1]) * odometryEncXPerInch));
         }
+        //kill("end");
+        requestOpModeStop();
     }
+
+    class OpModeStopThread extends Thread{
+        private Thread parentRef;
+
+        public OpModeStopThread(Thread parentRef) {
+            super();
+            this.parentRef = parentRef;
+        }
+
+        @Override
+        public void run() {
+            Log.i("StopAnytimeThread","Waiting");
+            while(!isInterrupted() && time < 10 && !isStopRequested());
+            if(isStopRequested())Log.i("StopAnytimeThread","Stopping because stop requested");
+            if(time > 10)Log.i("StopAnytimeThread","Stopping because overtime");
+            if(isInterrupted())Log.i("StopAnytimeThread","Stopping because interrupt");
+            parentRef.interrupt();
+            BlueAuto.this.stop();
+            Log.i("StopAnytimeThread","after stop call");
+        }
+    }
+
+
+
+
 }
