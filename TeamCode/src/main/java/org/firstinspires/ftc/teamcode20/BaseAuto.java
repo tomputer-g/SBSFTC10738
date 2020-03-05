@@ -7,6 +7,7 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.util.Log;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
@@ -626,10 +627,12 @@ public class BaseAuto extends BaseOpMode {
             Log.i("coordThread"+this.getId(),"Started running");
             while (!isInterrupted() && !stop) {
                 try{
-                    Thread.sleep(10);
+                    Thread.sleep(50);
                 }
                 catch(Exception e){}
                 drive.updatePoseEstimate();
+                Pose2d pos=drive.getPoseEstimate();
+                telemetry.addLine("x,y "+pos.getX()+","+pos.getY());
             }
             Log.i("coordThread"+this.getId(), "thread finished");
         }
