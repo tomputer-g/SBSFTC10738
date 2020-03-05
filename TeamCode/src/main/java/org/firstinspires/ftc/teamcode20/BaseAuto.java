@@ -613,8 +613,9 @@ public class BaseAuto extends BaseOpMode {
                 }
                 catch(Exception e){}
                 drive.updatePoseEstimate();
-                Pose2d pos=drive.getPoseEstimate();
-                telemetry.addLine("x,y "+pos.getX()+","+pos.getY());
+                //Pose2d pos=drive.getPoseEstimate();
+                //telemetry.addLine("x,y "+pos.getX()+","+pos.getY());
+                //telemetry.update();
             }
             Log.i("coordThread"+this.getId(), "thread finished");
         }
