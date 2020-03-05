@@ -54,7 +54,7 @@ public class RedAuto extends BaseAuto {
                 Thread.sleep(0);
                 setAllDrivePowerG(-.3, -.3, .3, .3);
             }
-            while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 8) {
+            while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 9) {
                 Thread.sleep(0);
                 setAllDrivePowerG(-.1, -.1, .1, .1);
             }
