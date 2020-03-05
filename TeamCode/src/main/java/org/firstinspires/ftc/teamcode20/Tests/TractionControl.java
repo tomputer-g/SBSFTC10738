@@ -45,7 +45,7 @@ public class TractionControl extends BaseAuto {
     }
 
 
-    private void brakeMyAss(double speed){
+    private void brakeMyAss(double speed) throws InterruptedException {
         setAllDrivePower(0, -speed);
         wait(delay);
         setAllDrivePower(0);

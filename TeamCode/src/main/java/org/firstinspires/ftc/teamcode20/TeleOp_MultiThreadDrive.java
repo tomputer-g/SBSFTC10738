@@ -25,7 +25,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     private int placeLevel = 0;
     private double groundHeightEnc = 2 * slideEncoderPerInch;//1 higher placing + 1.25 base height
     private int autoplacemode = 0;
-    private double grabberOutSwitch = 0.6;
+    private double grabberOutSwitch = 0.63;
 
     private boolean nextGrabberDelay = false;
 
@@ -86,14 +86,14 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             //switch between autoplace on first and second block
             if(zheng(this.gamepad1.right_stick_button,rightStickButtonPrimed)){
                 if(autoplacemode==0){
-                    grabberOutSwitch=0.78;
+                    grabberOutSwitch=0.75;
                     groundHeightEnc=(2+1.18+1)*slideEncoderPerInch;
                     autoplacemode=1;
                 }
                 else{
                     autoplacemode=0;
                     groundHeightEnc=(2)*slideEncoderPerInch;
-                    grabberOutSwitch=0.6;
+                    grabberOutSwitch=0.63;
                 }
             }
 

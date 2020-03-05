@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode20.BaseAuto;
+@TeleOp
 public class BackAndForthTest extends BaseAuto {
     double kdx = 4, kdxx = 1;
     private double[] params = {1,0};
@@ -79,7 +80,7 @@ public class BackAndForthTest extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {
         initAutonomous();
-        initViewMarks();
+        //initViewMarks();
         //initVuMarksFull();
         waitForStart();
         while(opModeIsActive())
@@ -100,7 +101,7 @@ public class BackAndForthTest extends BaseAuto {
                     //if(i>0)servoThread.setTarget(0.75);
                     //grabber.setPosition(grabber_open);
                     align(0);
-                    moveInchesGOY_XF_F_T(-50,0.3,1,(int) (curX-(origin[1]-dd[1])*odometryEncXPerInch));
+                    moveInchesGOY_XF_F_T(-50,0.6,1,(int) (curX-(origin[1]-dd[1])*odometryEncXPerInch));
                     //servoThread.setTarget(0.98);
                     /*
                     align(-90);
@@ -125,7 +126,7 @@ public class BackAndForthTest extends BaseAuto {
 
                      */
 
-                    moveInchesGOY_XF_F_T(50,0.3,1,(int) (curX-(origin[1]-dd[1])*odometryEncXPerInch));
+                    moveInchesGOY_XF_F_T(50,0.6,1,(int) (curX-(origin[1]-dd[1])*odometryEncXPerInch));
                     dd=adjustToViewMark(false);
                     //telemetry.addData("original", "%.2f",origin[1]);
                     //telemetry.addData("current", "%.2f",dd[1]);
