@@ -31,21 +31,18 @@ public class BlueAuto_NoF extends BaseAuto {
         else { moveInchesGOXT(8,0.8,1,1200);shift=8; }
 
         //move forward to the skystone
-        ElapsedTime p = new ElapsedTime();
-
         first_block();
 
         //move forward & approach foundation
         align(90);
-        p.reset();
         resetXOdometry();
         moveInchesGOY_XF((85.25+shift),0.9,1);
-        p.reset();
 
         double curX;
         double info[] = {78.75,78.75+8,78.75+16,78.75+24,78.75+24,78.75+24};
         double origin[] = {0, 41}, dd[] = adjustToViewMark(true);
         for (int i = 0; i < 1; ++i) {
+            Thread.sleep(0);
             setAllDrivePower(0);
             curX = getXOdometry();
             if (i > 0) servoThread.setExtTarget(0.75);
@@ -57,15 +54,18 @@ public class BlueAuto_NoF extends BaseAuto {
 
             double yorigin = getY1Odometry();
             while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 4) {
+                Thread.sleep(0);
                 setAllDrivePowerG(-.3, -.3, .3, .3);
             }
             while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 8) {
+                Thread.sleep(0);
                 setAllDrivePowerG(-.1, -.1, .1, .1);
             }
             grabber.setPosition(grabber_closed);
-            wait(300);
+            Thread.sleep(300);
             servoThread.setExtTarget(0.85);
             while ((getY1Odometry() - yorigin) * -1 > odometryEncYPerInch * 2) {
+                Thread.sleep(0);
                 setAllDrivePowerG(.3, .3, -.3, -.3);
             }
             setAllDrivePower(0);
@@ -80,6 +80,7 @@ public class BlueAuto_NoF extends BaseAuto {
         double diss=78.75+8;
         if(pos==0)diss=78.75;
         for (int i = 0; i < 1; ++i) {
+            Thread.sleep(0);
             setAllDrivePower(0);
             curX = getXOdometry();
             if (i > 0) servoThread.setExtTarget(0.75);
@@ -91,15 +92,18 @@ public class BlueAuto_NoF extends BaseAuto {
 
             double yorigin = getY1Odometry();
             while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 4) {
+                Thread.sleep(0);
                 setAllDrivePowerG(-.3, -.3, .3, .3);
             }
             while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 8) {
+                Thread.sleep(0);
                 setAllDrivePowerG(-.1, -.1, .1, .1);
             }
             grabber.setPosition(grabber_closed);
-            wait(300);
+            Thread.sleep(300);
             servoThread.setExtTarget(0.85);
             while ((getY1Odometry() - yorigin) * -1 > odometryEncYPerInch * 2) {
+                Thread.sleep(0);
                 setAllDrivePowerG(.3, .3, -.3, -.3);
             }
             setAllDrivePower(0);
