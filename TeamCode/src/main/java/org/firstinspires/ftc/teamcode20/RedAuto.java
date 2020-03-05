@@ -42,7 +42,7 @@ public class RedAuto extends BaseAuto {
             curX = getXOdometry();
             if (i > 0) servoThread.setExtTarget(0.75);
             grabber.setPosition(grabber_open);
-            align(-90-1);
+            align(-91);
             moveInchesGOY_XF_F(-info[result+2], 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
             servoThread.setExtTarget(0.98);
             align(0);
@@ -56,7 +56,7 @@ public class RedAuto extends BaseAuto {
             }
             grabber.setPosition(grabber_closed);
             Thread.sleep(300);
-            servoThread.setExtTarget(0.85);
+            servoThread.setExtTarget(0.72);
             while ((getY1Odometry() - yorigin) * -1 > odometryEncYPerInch * 2) {
                 setAllDrivePowerG(.3, .3, -.3, -.3);
             }
@@ -97,7 +97,7 @@ public class RedAuto extends BaseAuto {
             first_block();
 
             //move forward & approach foundation
-            align(90);
+            align(91);
             p.reset();
             resetXOdometry();
             int xx = getXOdometry();
