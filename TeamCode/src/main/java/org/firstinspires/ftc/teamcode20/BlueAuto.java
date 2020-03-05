@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveREV;
-import org.firstinspires.ftc.teamcode20.Tests.StopAnytimeTest;
 import org.openftc.revextensions2.ExpansionHubEx;
 
 @Autonomous
@@ -31,7 +30,7 @@ public class BlueAuto extends BaseAuto {
             Thread.sleep(0);
         }
         setAllDrivePower(0);
-        double origin[] = {0, 40}, dd[] = adjustToViewMark(true);
+        double origin[] = {0, 41}, dd[] = adjustToViewMark(true);
         telemetry.addData("Y",dd[1]);
         telemetry.update();
         servoThread.setExtTarget(0.6);

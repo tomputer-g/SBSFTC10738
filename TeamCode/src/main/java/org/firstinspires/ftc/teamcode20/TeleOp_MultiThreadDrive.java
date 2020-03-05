@@ -47,16 +47,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         initIMU();
         setNewGyro0();
 
-        /*2020-02-04 12:44:25.456 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 92240 start drivetrain
-          2020-02-04 12:44:25.639 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 183704394 start grabber
-          2020-02-04 12:44:25.640 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 184989237 start linSlide
-          2020-02-04 12:44:25.723 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 267567267 start odometry
-          2020-02-04 12::25.817 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 361695922 start platform
-          2020-02-04 12:44:25.818 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 362624672 start IMU
-          2020-02-04 12:44:27.010 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 1554783072 all init done (1.5s)
-
-         */
-
         //grabber.setPosition(grabber_open);
         //pwmThread = new PWMThread();
 

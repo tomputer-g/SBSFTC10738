@@ -32,7 +32,6 @@ public class BaseOpMode extends LinearOpMode {
     //Motors
     protected ExpansionHubMotor LF, LB, RF, RB;
 
-
     protected boolean showTelemetry = false;
     protected ExpansionHubEx hub2, hub4;
     protected ServoThread servoThread;
@@ -75,7 +74,6 @@ public class BaseOpMode extends LinearOpMode {
 
         Log.w("Kill()","Message: "+message+". Printing stack:\n");
         dumpStack();
-        //stop();
     }
 
     @Override public void runOpMode() throws InterruptedException {}
