@@ -57,7 +57,7 @@ public class BlueAuto extends BaseAuto {
                 Thread.sleep(0);
                 setAllDrivePowerG(-.3, -.3, .3, .3);
             }
-            while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 8) {
+            while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 9) {
                 Thread.sleep(0);
                 setAllDrivePowerG(-.1, -.1, .1, .1);
             }
@@ -114,7 +114,7 @@ public class BlueAuto extends BaseAuto {
             align(90);
             resetXOdometry();
             moveInchesGOY_XF((85.25 + shift), 0.9, 1);
-            moveInchesGOXT(adjustToViewMark(true)[1]-32, .45, 1, 2000); //magic, do not touch
+            moveInchesGOXT(12, .45, 1, 2000); //magic, do not touch
             platform_grabber.setPower(-1);
             Thread.sleep(300);
             moveInchesGOX_platform(-16, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
