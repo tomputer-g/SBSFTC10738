@@ -49,6 +49,7 @@ public class BaseOpMode extends LinearOpMode {
     protected final double odometryEncYPerInch = 1324.28, odometryEncXPerInch = 1314.42;
 
 
+    protected final double capstoneOpen = 0, capstoneClose = 0.5;
     protected RevBulkData tmpBulkData;//use this for all bulk reads
 
     protected void kill(String message){
@@ -99,6 +100,8 @@ public class BaseOpMode extends LinearOpMode {
         grabber = hardwareMap.get(Servo.class, "grabber");
         grabber_extend1 = hardwareMap.get(Servo.class, "servo1");
         grabber_extend2 = hardwareMap.get(Servo.class, "servo2");
+        capstone = hardwareMap.get(Servo.class, "capstone");
+        capstone.setPosition(capstoneClose);
         servoThread = new ServoThread();
         servoThread.start();
     }

@@ -46,7 +46,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         initPlatformGrabber();
         initIMU();
         setNewGyro0();
-        capstone = hardwareMap.get(Servo.class, "capstone");
 
         /*2020-02-04 12:44:25.456 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 92240 start drivetrain
           2020-02-04 12:44:25.639 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 183704394 start grabber
@@ -62,7 +61,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         //pwmThread = new PWMThread();
 
         waitForStart();
-        capstone.setPosition(0.5);
         servoThread.setExtTarget(grabberServoGrab);
         servoThread.directSetGrabTarget(grabber_open);
         while (opModeIsActive()) {
@@ -102,7 +100,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                 if (platformGrabbed) {//already held
                     platformGrabbed = false;
                     platform_grabber.setPower(1);
-                    wait(100);//TODO: blocks thread?
+                    Thread.sleep(100);
                     platform_grabber.setPower(0);
                 } else {
                     platformGrabbed = true;
@@ -116,12 +114,12 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
             if (start && !this.gamepad1.start) {
                 start = false;
-                if (capstone.getPosition() > .25) {
-                    capstone.setPosition(0);
+                if (capstone.getPosition() > (capstoneClose + capstoneOpen) / 2) {
+                    capstone.setPosition(capstoneOpen);
                     nextGrabberDelay = true;
                 }
                 else {
-                    capstone.setPosition(.5);
+                    capstone.setPosition(capstoneClose);
                 }
             }
 
@@ -181,18 +179,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                 servoThread.directSetGrabTarget(0.01);
                 //grabber.setPosition(0.01);
                 servoThread.setExtTarget(0.99);
-            }
-
-            if (this.gamepad1.start) {
-                start = true;
-            }
-            if (start && !this.gamepad1.start) {
-                start = false;
-                if (capstone.getPosition() > .25) {
-                    capstone.setPosition(0);
-                } else {
-                    capstone.setPosition(.5);//open
-                }
             }
 
             //driver cancel LT&RT (by dpad up/dpad down/ RB/ LB+Left stick
