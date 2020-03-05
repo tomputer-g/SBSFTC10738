@@ -31,7 +31,7 @@ public class BlueAuto extends BaseAuto {
             Thread.sleep(0);
         }
         setAllDrivePower(0);
-        double origin[] = {0, 40}, dd[] = adjustToViewMark(true);
+        double origin[] = {0, 41}, dd[] = adjustToViewMark(true);
         telemetry.addData("Y",dd[1]);
         telemetry.update();
         servoThread.setExtTarget(0.6);

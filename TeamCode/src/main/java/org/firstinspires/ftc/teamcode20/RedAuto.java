@@ -28,7 +28,7 @@ public class RedAuto extends BaseAuto {
             setAllDrivePowerG(-.4,-.4,.4,.4);
         }
         setAllDrivePower(0);
-        double origin[] = {0, -40}, dd[] = adjustToViewMark(false);
+        double origin[] = {0, -41}, dd[] = adjustToViewMark(false);
         telemetry.addData("Y",dd[1]);
         telemetry.update();
         servoThread.setExtTarget(0.6);
