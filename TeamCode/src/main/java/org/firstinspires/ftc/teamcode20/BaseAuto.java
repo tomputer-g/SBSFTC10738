@@ -93,21 +93,6 @@ public class BaseAuto extends BaseOpMode {
 
     //-------------------------------------------------------------Multithreading------------------------------------------------------------------
 /*
-    class StopHandlerThread extends Thread{
-        private Thread parentRef; //for calling interrupt
-        public StopHandlerThread(Thread parentRef) {
-            this.parentRef = parentRef;
-        }
-
-        @Override
-        public void run() {
-            while(time < 29.9 && !isStopRequested());
-            parentRef.interrupt();
-        }
-    }
-
-
-
     class AutonomousInitThread extends Thread{
         @Override
         public void run() {
@@ -119,7 +104,7 @@ public class BaseAuto extends BaseOpMode {
  */
 
     //------------------------------------------------------------------Init-----------------------------------------------------------------------
-    protected void initAutonomous() throws InterruptedException{
+    protected void initAutonomous() {
         showTelemetry = false;
         initDrivetrain();//181.64ms
         initIMU();//!!!!!1.259s : stops if thread has Interrupt flag
@@ -422,7 +407,7 @@ public class BaseAuto extends BaseOpMode {
         return result;
     }
 
-    protected int new_skystonepositionR(){
+    protected int new_skystonepositionR() throws InterruptedException {
         VuforiaLocalizer.CloseableFrame frame = null;
         Image image = null;
         int result = 0;
@@ -430,9 +415,7 @@ public class BaseAuto extends BaseOpMode {
         int curpixel_L, curpixel_R, curpixel_M;
         boolean l = true, r=true, m = true;
 
-        try {frame = this.vuforia.getFrameQueue().take(); }
-        catch (InterruptedException e)
-        {throw new RuntimeException(e);}
+        frame = this.vuforia.getFrameQueue().take();
 
         for(int i = 0;i<frame.getNumImages();++i){
             if(frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565){
@@ -864,11 +847,11 @@ public class BaseAuto extends BaseOpMode {
         moveInchesG(xInch,yInch,speed,.8);
     }
 
-    protected void moveInchesGOY(double yInch, double speed){
+    protected void moveInchesGOY(double yInch, double speed) throws InterruptedException {
         moveInchesGOY(yInch,speed,1);
     }
 
-    protected void moveInchesGOY(double yInch, double speed,double kV){//use 0.4 for short-dist
+    protected void moveInchesGOY(double yInch, double speed,double kV) throws InterruptedException {//use 0.4 for short-dist
         yInch = -yInch;
         //setNewGyro0();
         double kP = 1, kD = 0.12;
@@ -896,6 +879,7 @@ public class BaseAuto extends BaseOpMode {
         double tpre = 0, tcur;
         int steadyCounter = 0;
         while(steadyCounter < 3 && !this.gamepad1.b){//b is there so we can break out of loop anytime
+            Thread.sleep(0);
             currentOdometry = getY1Odometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
@@ -1023,11 +1007,11 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(0);
     }
 
-    protected void moveInchesGOX(double xInch, double speed){
+    protected void moveInchesGOX(double xInch, double speed) throws InterruptedException {
         moveInchesGOX(xInch,speed,1);
     }
 
-    protected void moveInchesGOX(double xInch, double speed,double kV){//0.5 only
+    protected void moveInchesGOX(double xInch, double speed,double kV) throws InterruptedException {//0.5 only
         if(xInch == 0)return;
         ElapsedTime t = new ElapsedTime();
         int offsetX = getXOdometry();
@@ -1039,6 +1023,7 @@ public class BaseAuto extends BaseOpMode {
         double tpre = 0, tcur;
         int steadyCounter = 0;
         while(steadyCounter < 5 && !this.gamepad1.b){
+            Thread.sleep(0);
             currentOdometry = getXOdometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
@@ -1154,7 +1139,7 @@ public class BaseAuto extends BaseOpMode {
         return poss;
     }
 
-    protected int Ultra_get_positionR(){
+    protected int Ultra_get_positionR() throws InterruptedException {
         int poss = 0;
         int[] resultcounter = {0,0,0};
         //find skystone
@@ -1184,4 +1169,3 @@ public class BaseAuto extends BaseOpMode {
         platform_grabber.setPower(0.0);
     }
 }
-

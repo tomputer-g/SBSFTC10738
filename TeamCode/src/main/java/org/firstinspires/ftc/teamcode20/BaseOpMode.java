@@ -74,7 +74,7 @@ public class BaseOpMode extends LinearOpMode {
 
         Log.w("Kill()","Message: "+message+". Printing stack:\n");
         dumpStack();
-        stop();
+        //stop();
     }
 
     @Override public void runOpMode() throws InterruptedException {}

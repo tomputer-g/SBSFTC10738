@@ -75,8 +75,7 @@ public class BlueAuto extends BaseAuto {
         grabber.setPosition(grabber_open);
     }
     @Override public void runOpMode() throws InterruptedException {
-        new OpModeStopThread(Thread.currentThread()).start();
-        main:{
+
             initAutonomous();
             hub4.setLedColor(255,20,147);
             drive = new SampleMecanumDriveREV(hardwareMap);
@@ -139,37 +138,9 @@ public class BlueAuto extends BaseAuto {
             }
             setAllDrivePower(0);
             setNewGyro(180);
-
             second_and_more_B(pos, 1);
             hub4.setLedColor(255,20,147);
             moveInchesGOY_XF_F(-44, 0.6, 1, (int) (getXOdometry() - (41 - adjustToViewMark(true)[1]) * odometryEncXPerInch));
-        }
-        //kill("end");
         requestOpModeStop();
     }
-
-    class OpModeStopThread extends Thread{
-        private Thread parentRef;
-
-        public OpModeStopThread(Thread parentRef) {
-            super();
-            this.parentRef = parentRef;
-        }
-
-        @Override
-        public void run() {
-            Log.i("StopAnytimeThread","Waiting");
-            while(!isInterrupted() && time < 10 && !isStopRequested());
-            if(isStopRequested())Log.i("StopAnytimeThread","Stopping because stop requested");
-            if(time > 10)Log.i("StopAnytimeThread","Stopping because overtime");
-            if(isInterrupted())Log.i("StopAnytimeThread","Stopping because interrupt");
-            parentRef.interrupt();
-            BlueAuto.this.stop();
-            Log.i("StopAnytimeThread","after stop call");
-        }
-    }
-
-
-
-
 }
