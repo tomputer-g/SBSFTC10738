@@ -37,6 +37,7 @@ public class BaseOpMode extends LinearOpMode {
     protected ExpansionHubEx hub2, hub4;
     protected ServoThread servoThread;
 
+    protected Servo xOdometryEnableServo;
     protected Servo grabber, capstone;
     protected Servo grabber_extend1, grabber_extend2;
     protected DcMotor platform_grabber, xOdometry;

@@ -48,6 +48,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         Log.i("Teleop init", "" + t.nanoseconds() + " start odometry");
         //initSensors();
         initOdometry();
+        xOdometryEnableServo.setPosition(xOdoDisable);
         Log.i("Teleop init", "" + t.nanoseconds() + " start platform");
         initPlatformGrabber();
         Log.i("Teleop init", "" + t.nanoseconds() + " start IMU");

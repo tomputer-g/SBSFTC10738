@@ -12,6 +12,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.vuforia.Image;
@@ -81,6 +82,7 @@ public class BaseAuto extends BaseOpMode {
 
     //Odometry
     protected double xmult = 1430.5/72, ymult = 18.65;
+    protected final double xOdoEnable = 0.8, xOdoDisable = 1;
 
     //Threads
     protected CooThread cooThread;
@@ -125,6 +127,7 @@ public class BaseAuto extends BaseOpMode {
         initPlatformGrabber();//34.20ms
         initSensors();//0.48ms
         initOdometry();//100.89ms
+        xOdometryEnableServo.setPosition(xOdoEnable);
         setNewGyro0();
         initHubs();
         initVuforia();
@@ -596,6 +599,7 @@ public class BaseAuto extends BaseOpMode {
         L2 = hardwareMap.get(DcMotor.class, "L2");
         L2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        xOdometryEnableServo = hardwareMap.get(Servo.class,"xOdoEnable");//0.8 down, 1 up
         cooThread=new CooThread();
     }
 
