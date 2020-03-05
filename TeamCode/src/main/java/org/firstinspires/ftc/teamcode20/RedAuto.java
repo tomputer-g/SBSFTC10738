@@ -13,7 +13,7 @@ public class RedAuto extends BaseAuto {
         ElapsedTime p = new ElapsedTime();
         platform_grabber.setPower(1);
         servoThread.setExtTarget(0.2);
-        wait(300);
+        Thread.sleep(300);
         //p.reset();
         ///while (p.milliseconds()<300);
         PIDturnfast(-90,true);
@@ -55,7 +55,7 @@ public class RedAuto extends BaseAuto {
                 setAllDrivePowerG(-.1, -.1, .1, .1);
             }
             grabber.setPosition(grabber_closed);
-            wait(300);
+            Thread.sleep(300);
             servoThread.setExtTarget(0.85);
             while ((getY1Odometry() - yorigin) * -1 > odometryEncYPerInch * 2) {
                 setAllDrivePowerG(.3, .3, -.3, -.3);
@@ -75,7 +75,7 @@ public class RedAuto extends BaseAuto {
 
             while (!isStarted() && !isStopRequested()) {
                 pos = new_skystonepositionR();
-                wait(200);
+                Thread.sleep(200);
             }
 
             before_start();
@@ -107,7 +107,7 @@ public class RedAuto extends BaseAuto {
 
             //moveInchesGOXT(-adjustToViewMark(false)[1]-32, .45, 1, 2000); //magic, do not touch
             platform_grabber.setPower(-1);
-            wait(300);
+            Thread.sleep(300);
             moveInchesGOX_platform(-15, 1, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
             int steps = 20;
             double basespeed = 0.33;
@@ -115,7 +115,7 @@ public class RedAuto extends BaseAuto {
                 RB.setPower(-i * basespeed / steps);
                 LF.setPower(-2 * i * basespeed / steps);
                 LB.setPower(-3 * i * basespeed / steps);
-                wait(20);
+                Thread.sleep(20);
                 //rf.setPower(0);
             }
             while (imuAbsolute > 20) {

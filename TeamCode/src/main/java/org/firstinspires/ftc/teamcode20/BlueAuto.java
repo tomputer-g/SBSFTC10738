@@ -79,7 +79,7 @@ public class BlueAuto extends BaseAuto {
             initAutonomous();
             hub4.setLedColor(255,20,147);
             drive = new SampleMecanumDriveREV(hardwareMap);
-            //cooThread.start();
+            cooThread.start();
             int pos = 0;
             while (!isStarted()) {
                 pos = new_skystoneposition();
