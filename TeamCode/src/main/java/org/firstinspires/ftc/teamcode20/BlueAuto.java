@@ -110,10 +110,32 @@ public class BlueAuto extends BaseAuto {
             align(90);
             resetXOdometry();
             moveInchesGOY_XF((85.25 + shift), 0.9, 1);
+            /*
             moveInchesGOXT(12, .45, 1, 2000); //magic, do not touch
             platform_grabber.setPower(-1);
             Thread.sleep(300);
             moveInchesGOX_platform(-16, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
+             */
+        int pre, cur = getXOdometry(), origin = cur;
+        boolean flag = false;
+        while (!flag){
+            setAllDrivePowerG(-0.5,0.5,-0.5,0.5);
+            pre = cur;
+            cur = getXOdometry();
+            if((cur-origin)/odometryEncXPerInch > 8){
+                //telemetry.addData("diff", cur-pre);
+                //       telemetry.update();
+                if(cur-pre < 3800){
+                    flag = true;
+                }
+            }
+            Thread.sleep(100);
+        }
+        platform_grabber.setPower(-1);
+        Thread.sleep(300);
+        moveInchesGOX_platform(-16, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
+        setAllDrivePower(0);
+
             int steps = 20;
             double basespeed = 0.3;
             for (int i = 10; i <= steps; ++i) {

@@ -82,7 +82,7 @@ public class MoveTest extends BaseAuto {
                     if((cur-origin)/odometryEncXPerInch > inchh){
                         telemetry.addData("diff", cur-pre);
                         telemetry.update();
-                        if(cur-pre < 4000){
+                        if(cur-pre < 3800){
                             flag = true;
                         }
                     }
