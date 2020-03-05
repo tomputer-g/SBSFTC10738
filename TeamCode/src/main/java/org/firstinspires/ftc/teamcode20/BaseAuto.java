@@ -125,7 +125,6 @@ public class BaseAuto extends BaseOpMode {
         initIMU();//!!!!!1.259s : stops if thread has Interrupt flag
         initGrabber();//1.14ms
         initPlatformGrabber();//34.20ms
-        initSensors();//0.48ms
         initOdometry();//100.89ms
         xOdometryEnableServo.setPosition(xOdoEnable);
         setNewGyro0();
@@ -631,8 +630,9 @@ public class BaseAuto extends BaseOpMode {
                 }
                 catch(Exception e){}
                 drive.updatePoseEstimate();
-                Pose2d pos=drive.getPoseEstimate();
-                telemetry.addLine("x,y "+pos.getX()+","+pos.getY());
+                //Pose2d pos=drive.getPoseEstimate();
+                //telemetry.addLine("x,y "+pos.getX()+","+pos.getY());
+                //telemetry.update();
             }
             Log.i("coordThread"+this.getId(), "thread finished");
         }
