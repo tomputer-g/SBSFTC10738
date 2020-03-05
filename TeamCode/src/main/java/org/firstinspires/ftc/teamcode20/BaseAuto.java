@@ -610,7 +610,7 @@ public class BaseAuto extends BaseOpMode {
             Log.i("coordThread"+this.getId(),"Started running");
             while (!isInterrupted() && !stop) {
                 try{
-                    Thread.sleep(50);
+                    Thread.sleep(20);
                 }
                 catch(Exception e){}
                 drive.updatePoseEstimate();
