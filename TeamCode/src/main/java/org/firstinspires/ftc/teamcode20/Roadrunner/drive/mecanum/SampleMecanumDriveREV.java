@@ -70,9 +70,10 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         // reverse any motors using DcMotor.setDirection()
         //leftFront.setDirection(DcMotorSimple.Direction.REVERSE); //TODO: add when using RR spline movement method
         //leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+
         // if desired, use setLocalizer() to change the localization method
-        setLocalizer(new OdometryWheelLocalizer(hardwareMap));
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+        setLocalizer(new OdometryWheelLocalizer(hardwareMap));
     }
 
     @Override
