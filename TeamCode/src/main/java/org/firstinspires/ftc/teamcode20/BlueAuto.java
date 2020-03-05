@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode20;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 

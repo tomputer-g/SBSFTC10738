@@ -279,11 +279,6 @@ public class BaseOpMode extends LinearOpMode {
      */
 
     protected void moveInches(double xInch, double yInch, double speed) throws InterruptedException {
-        /*
-        sup fuckers
-        69
-        by cole wdnmd-p'
-        */
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
         double xmult = 232.5088/12, ymult = 232.7551/12;
@@ -760,7 +755,7 @@ public class BaseOpMode extends LinearOpMode {
         public void setDelay(int delayPerStep){
             delayStep = delayPerStep;
         }
-        public void servoWait(int milisec){try {Thread.sleep(milisec);} catch (Exception e) {} }
+        public void servoWait(int milisec){try {Thread.sleep(milisec);} catch (Exception ignored) {} }
         public void stopThread(){
             stop = true;
         }

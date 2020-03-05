@@ -1,21 +1,14 @@
 package org.firstinspires.ftc.teamcode20;
 
-import android.util.Log;
-
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveREV;
-
-import static java.lang.Thread.sleep;
 
 @TeleOp(group = "Final")
 public class TeleOp_MultiThreadDrive extends BaseAuto {
 
-    private boolean b = false, rb = false, y = false, dpad_r = false, dpad_l = false, start = false, a = false, a_lt = false, a_rt = false;
+    private boolean b = false, rb = false, y = false, dpad_r = false, dpad_l = false, start = false, a = false;
     private boolean[] Xprimed = {true},leftStickButtonPrimed = {true},rightStickButtonPrimed = {true};
     private boolean autoLevel = false;
     private boolean tapeDirectionOut = true;
