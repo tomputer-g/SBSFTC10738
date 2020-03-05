@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode20;
 
 import android.util.Log;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -74,12 +75,13 @@ public class BlueAuto extends BaseAuto {
         grabber.setPosition(grabber_open);
     }
     @Override public void runOpMode() throws InterruptedException {
-
             initAutonomous();
             hub4.setLedColor(255,20,147);
             drive = new SampleMecanumDriveREV(hardwareMap);
             cooThread.start();
             int pos = 0;
+            drive.setPoseEstimate(new Pose2d(-36,63,-Math.PI/2));
+            drive.update();
             while (!isStarted()) {
                 pos = new_skystoneposition();
                 Thread.sleep(200);
@@ -107,7 +109,7 @@ public class BlueAuto extends BaseAuto {
             }
             //move forward to the skystone
             first_block();
-
+            drive.update();
             //move forward & approach foundation
             align(90);
             resetXOdometry();
@@ -125,7 +127,6 @@ public class BlueAuto extends BaseAuto {
                 Thread.sleep(20);
                 //LB.setPower(0);
             }
-
             while (imuAbsolute < 160) { Thread.sleep(0);getHeading(); }
             ElapsedTime p = new ElapsedTime();
             while (imuAbsolute < 170 && p.milliseconds() < 3000) {
@@ -140,6 +141,7 @@ public class BlueAuto extends BaseAuto {
             second_and_more_B(pos, 1);
             hub4.setLedColor(255,20,147);
             moveInchesGOY_XF_F(-44, 0.6, 1, (int) (getXOdometry() - (41 - adjustToViewMark(true)[1]) * odometryEncXPerInch));
-        requestOpModeStop();
+            drive.update();
+            requestOpModeStop();
     }
 }
