@@ -23,7 +23,6 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     private boolean nextGrabberDelay = false;
 
     private SampleMecanumDriveREV drive;
-    //private PWMThread pwmThread;
 
 
     @Override

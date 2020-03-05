@@ -3,16 +3,65 @@ package org.firstinspires.ftc.teamcode20.Tests;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.teamcode20.BaseAuto;
+
 @TeleOp
-public class MiscTest extends TractionControl {
-    double speed,x,y, GYRO_kp, side_distance, kp,kd,dist_target,koe,square_dist;
-    boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
-    ElapsedTime t=new ElapsedTime();
+public class MiscTest extends BaseAuto {
+    //double speed,x,y, GYRO_kp, side_distance, kp,kd,dist_target,koe,square_dist;
+    //boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
+    //ElapsedTime t=new ElapsedTime();
     //ModernRoboticsI2cRangeSensor rangeSensorSide;
 
+    //currently this is acceleration testing
+    boolean a = false;
+    private boolean running = false, trigger = false;
+    private double impactThreshold = 3.0;
 
     @Override
     public void runOpMode() throws InterruptedException {
+        initDrivetrain();
+        initHubs();
+        initIMU();
+        double max = 0, current;
+        Acceleration tmp;
+        waitForStart();
+        while(opModeIsActive()){
+            //run
+            if(this.gamepad1.a){a = true;}if(a && !this.gamepad1.a){
+                a = false;
+                running = !running;
+            }
+            if(running){
+                setAllDrivePower(-0.5,0.5,-0.5,0.5);
+            }else{
+                setAllDrivePower(0);
+                hub4.setLedColor(255,255,255);
+            }
+
+            //data collection
+            if(this.gamepad1.b){
+                max = 0;
+                trigger = false;
+                hub4.setLedColor(255,255,255);
+            }
+            tmp = imu.getLinearAcceleration();
+            current = Math.sqrt(Math.pow(tmp.xAccel,2)+Math.pow(tmp.yAccel,2));
+            if(current > max){
+                max = current;
+            }
+            if(current > impactThreshold){
+                trigger = true;
+                hub4.setLedColor(0,255,0);
+            }
+            if(running)telemetry.addLine("Running");
+            if(trigger)telemetry.addLine("TRIGGER");
+            telemetry.addData("Current acceleration","(%2f, %2f)",tmp.xAccel,tmp.yAccel);
+            telemetry.addData("Current acc. mag.", current);
+            telemetry.addData("Max acc. mag.", max);
+            telemetry.update();
+        }
+
         /*
         initIMU();
         initDrivetrain();
@@ -20,7 +69,7 @@ public class MiscTest extends TractionControl {
         initPlatformGrabber();
         initSensors();
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-         */
+
         speed=0.55;
         y = 15;
         x = 0;
@@ -150,6 +199,6 @@ public class MiscTest extends TractionControl {
         }
         telemetry.update();
         */
-        }
+
     }
 }
