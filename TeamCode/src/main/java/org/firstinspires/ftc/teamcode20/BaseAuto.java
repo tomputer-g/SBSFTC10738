@@ -124,7 +124,7 @@ public class BaseAuto extends BaseOpMode {
         initIMU();//!!!!!1.259s : stops if thread has Interrupt flag
         initGrabber();//1.14ms
         initPlatformGrabber();//34.20ms
-        initSensors();//0.48ms
+        //initSensors();//0.48ms
         initOdometry();//100.89ms
         xOdometryEnableServo.setPosition(xOdoEnable);
         setNewGyro0();
