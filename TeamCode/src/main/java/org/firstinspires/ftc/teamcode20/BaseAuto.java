@@ -117,30 +117,18 @@ public class BaseAuto extends BaseOpMode {
 
     //------------------------------------------------------------------Init-----------------------------------------------------------------------
     protected void initAutonomous() throws InterruptedException{
-        //AutonomousInitThread initThread = new AutonomousInitThread();
-        //initThread.start();
-        Log.i("Auto init",System.currentTimeMillis()+" start hub init");
-        //super.init();//uses 0.48 ms
         showTelemetry = false;
-        Log.i("Auto init",System.currentTimeMillis()+" start drivetrain init");
         initDrivetrain();//181.64ms
-        Log.i("Auto init",System.currentTimeMillis()+" start IMU");
         initIMU();//!!!!!1.259s : stops if thread has Interrupt flag
-        Log.i("Auto init",System.currentTimeMillis()+" start grabber");
         initGrabber();//1.14ms
-        Log.i("Auto init",System.currentTimeMillis()+" start platform");
         initPlatformGrabber();//34.20ms
-        Log.i("Auto init",System.currentTimeMillis()+" start sensors");
         initSensors();//0.48ms
-        Log.i("Auto init",System.currentTimeMillis()+" start odometry");
         initOdometry();//100.89ms
         setNewGyro0();
-        Log.i("Auto init",System.currentTimeMillis()+" done init");
         initHubs();
         initVuforia();
         //initViewMarks();
-        //while(initThread.isAlive());
-        Log.i("Auto init", "initThread done");
+        Log.i("Auto init", "done");
     }
 
     protected void initHubs(){
