@@ -37,23 +37,14 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     public void runOpMode() throws InterruptedException {
         //drive=new SampleMecanumDriveREV(hardwareMap);
         //drive.setPoseEstimate(new Pose2d(0,0,0));
-        ElapsedTime t = new ElapsedTime();
         showTelemetry = true;
-        Log.i("Teleop init", "" + t.nanoseconds() + " start drivetrain");
         initDrivetrain();
-        Log.i("Teleop init", "" + t.nanoseconds() + " start grabber");
         initGrabber();
-        Log.i("Teleop init", "" + t.nanoseconds() + " start linSlide");
         initLinSlide();
-        Log.i("Teleop init", "" + t.nanoseconds() + " start odometry");
-        //initSensors();
         initOdometry();
         xOdometryEnableServo.setPosition(xOdoDisable);
-        Log.i("Teleop init", "" + t.nanoseconds() + " start platform");
         initPlatformGrabber();
-        Log.i("Teleop init", "" + t.nanoseconds() + " start IMU");
         initIMU();
-        Log.i("Teleop init", "" + t.nanoseconds() + " all init done");
         setNewGyro0();
         capstone = hardwareMap.get(Servo.class, "capstone");
 

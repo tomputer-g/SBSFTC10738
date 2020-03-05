@@ -123,7 +123,6 @@ public class RedAuto extends BaseAuto {
             }
             p.reset();
             while (imuAbsolute > 10 && p.milliseconds() < 3000) {
-                if(time > 29.9)break main;
                 getHeading();
                 RB.setPower(RF.getPower() * getError(imuAbsolute, 0) / 20);
                 LF.setPower(LB.getPower() * getError(imuAbsolute, 0) / 20);

@@ -70,7 +70,7 @@ public class MoveTest extends BaseAuto {
             if(zheng(this.gamepad1.dpad_down,ff))y+=1;
             if(zheng(this.gamepad1.y,m))speed+=.1;
             if(zheng(this.gamepad1.right_bumper,bF)){
-                PIDturnfast(90,false)
+                PIDturnfast(90,false);
             }
             telemetry.addData("s",adjustToViewMark(true)[1]);
             telemetry.addData("s",adjustToViewMark(false)[1]);

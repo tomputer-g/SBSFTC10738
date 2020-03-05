@@ -92,21 +92,6 @@ public class BaseAuto extends BaseOpMode {
 
     //-------------------------------------------------------------Multithreading------------------------------------------------------------------
 /*
-    class StopHandlerThread extends Thread{
-        private Thread parentRef; //for calling interrupt
-        public StopHandlerThread(Thread parentRef) {
-            this.parentRef = parentRef;
-        }
-
-        @Override
-        public void run() {
-            while(time < 29.9 && !isStopRequested());
-            parentRef.interrupt();
-        }
-    }
-
-
-
     class AutonomousInitThread extends Thread{
         @Override
         public void run() {
@@ -124,7 +109,6 @@ public class BaseAuto extends BaseOpMode {
         initIMU();//!!!!!1.259s : stops if thread has Interrupt flag
         initGrabber();//1.14ms
         initPlatformGrabber();//34.20ms
-        initSensors();//0.48ms
         initOdometry();//100.89ms
         xOdometryEnableServo.setPosition(xOdoEnable);
         setNewGyro0();
