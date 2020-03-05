@@ -56,7 +56,7 @@ public class BaseAuto extends BaseOpMode {
     protected VuforiaTrackables targetsSkyStone;
     protected List<VuforiaTrackable> allTrackables= new ArrayList<>();
     private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
-    private VuforiaTrackable rear1,rear2;//from kuaishou.com
+    private VuforiaTrackable rear1,rear2;
 
     private static final float halfField = 72 * mmPerInch;
     private static final float quadField  = 36 * mmPerInch;
@@ -499,12 +499,13 @@ public class BaseAuto extends BaseOpMode {
 
     //-----------------------------------------------------------------Sensors----------------------------------------------------------------------
     protected void initSensors(){
-        rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
+        //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
        // rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "front");
         //left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
        // right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
         //tower_top = hardwareMap.get(Rev2mDistanceSensor.class, "tower_top");
     }
+
 
     //-------------------------------------------------------------------IMU-----------------------------------------------------------------------
 
@@ -581,7 +582,7 @@ public class BaseAuto extends BaseOpMode {
         L2 = hardwareMap.get(DcMotor.class, "L2");
         L2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        xOdometryEnableServo = hardwareMap.get(Servo.class,"xOdoEnable");//0.8 down, 1 up
+        xOdometryEnableServo = hardwareMap.get(Servo.class,"xOdoEnable");
         cooThread=new CooThread();
     }
 
