@@ -17,15 +17,16 @@ public class OdometryMoveInchesTest extends BaseAuto {
     0.6 speed: P = 0.075,   D = 1.4E-2, result: 0 in.
     0.9 speed: P = 0.0325,  D = 7.3E-3, result: spin +- 1/4 in
      */
-    private double[] params =       {0,  0,     0,       0.9,        85.25,           };
-    private String[] paramNames =   {"P",   "I",    "D",    "speed",    "targetInches"};
-    private int currentSelectParamIndex = 0;
+    private double[] params =       {0,  0,     0,       0.9,        90,           0.915};
+    private String[] paramNames =   {"P",   "I",    "D",    "speed",    "targetInches","k"};
+    private int currentSelectParamIndex = 3;
     private boolean l, r, u, d, lb, rb, y, APrimed = false, x = false, platformGrabbed = false;
 
     protected final double odometryEncYPerInch = 1324.28, odometryEncXPerInch = 1316.38;
 
     @Override //chiggas
     public void runOpMode() throws InterruptedException {
+        initHubs();
         initDrivetrain();
         initPlatformGrabber();
         initOdometry();
@@ -39,7 +40,7 @@ public class OdometryMoveInchesTest extends BaseAuto {
                 setNewGyro0();
                 LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                moveInchesGOY_XF(params[4], params[3],1);
+                moveInchesGOY_XF(params[4], params[3],params[5]);
             }
 
             if(this.gamepad1.left_bumper){lb = true;}if(!this.gamepad1.left_bumper && lb){
@@ -88,14 +89,14 @@ public class OdometryMoveInchesTest extends BaseAuto {
                 if(platformGrabbed){//already held
                     platformGrabbed = false;
                     platform_grabber.setPower(1);
-                    wait(100);//TODO: blocks thread?
+                    Thread.sleep(100);
                     platform_grabber.setPower(0);
                 }else{
                     platformGrabbed = true;
                     platform_grabber.setPower(-0.4);
                 }
             }
-            telemetry.addData("parameters",params[3]+", "+params[4]);
+            telemetry.addData("parameters",params[3]+", "+params[4]+","+params[5]);
             telemetry.addData("now changing", paramNames[currentSelectParamIndex]);
             telemetry.addData("enc X", getXOdometry());
             telemetry.addData("enc Y1",getY1Odometry());
@@ -103,4 +104,5 @@ public class OdometryMoveInchesTest extends BaseAuto {
         }
         stopLog();
     }
+
 }
