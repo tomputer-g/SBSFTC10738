@@ -34,7 +34,7 @@ public class BackAndForthTest extends BaseAuto {
             kP = 0.0325;
             kD = 7.3E-3;
         }
-        double kPx = 0.25, kDx = kdxx*Math.pow(10,-kdx);
+        double kPx = 0.2, kDx = kdxx*Math.pow(10,-kdx);
         ElapsedTime t = new ElapsedTime();
         int offsetY = getY1Odometry();
         int offsetX = FixXOffset;

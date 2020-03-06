@@ -979,8 +979,8 @@ public class BaseAuto extends BaseOpMode {
             kP = 0.0325;
             kD = 7.3E-3;
         }
-        //-0.0025
-        double kPx = 0.25, kDx = 0.005;
+        //0.25 0.005
+        double kPx = 0.2, kDx = 0.005;
         ElapsedTime t = new ElapsedTime();
         int offsetY = getY1Odometry();
         int offsetX = FixXOffset;
@@ -1169,7 +1169,7 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePowerG(-.1,-.1,.1,.1);
         grabber.setPosition(grabber_closed);
         Thread.sleep(100);
-        servoThread.setExtTarget(grabberServoGrab);
+        servoThread.setExtTarget(0.7);
         while(-getY1Odometry()> 29.5*odometryEncYPerInch){Thread.sleep(0);setAllDrivePowerG(.3,.3,-.3,-.3);}
         setAllDrivePower(0);
     }
