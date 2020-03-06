@@ -49,7 +49,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             //drive.update();
             if(zheng(this.gamepad1.left_stick_button,leftStickButtonPrimed)){
                 L1.setPower(-0.2);
-                wait(700);
+                Thread.sleep(700);
                 L1.setPower(0);
                 L1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 L1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

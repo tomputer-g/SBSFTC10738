@@ -1169,7 +1169,7 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePowerG(-.1,-.1,.1,.1);
         grabber.setPosition(grabber_closed);
         Thread.sleep(100);
-        servoThread.setExtTarget(grabberServoGrab);
+        servoThread.setExtTarget(0.7);
         while(-getY1Odometry()> 29.5*odometryEncYPerInch){Thread.sleep(0);setAllDrivePowerG(.3,.3,-.3,-.3);}
         setAllDrivePower(0);
     }

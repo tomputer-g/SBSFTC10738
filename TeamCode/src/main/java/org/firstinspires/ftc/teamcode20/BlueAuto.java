@@ -63,7 +63,7 @@ public class BlueAuto extends BaseAuto {
             }
             grabber.setPosition(grabber_closed);
             Thread.sleep(300);
-            servoThread.setExtTarget(0.72);
+            servoThread.setExtTarget(0.7);
             while ((getY1Odometry() - yorigin) * -1 > odometryEncYPerInch * 2) {
                 setAllDrivePowerG(.3, .3, -.3, -.3);
             }
