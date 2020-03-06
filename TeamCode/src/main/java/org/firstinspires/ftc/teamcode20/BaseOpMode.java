@@ -99,7 +99,6 @@ public class BaseOpMode extends LinearOpMode {
         grabber_extend1 = hardwareMap.get(Servo.class, "servo1");
         grabber_extend2 = hardwareMap.get(Servo.class, "servo2");
         capstone = hardwareMap.get(Servo.class, "capstone");
-        capstone.setPosition(capstoneClose);
         servoThread = new ServoThread();
         servoThread.start();
     }
@@ -505,7 +504,7 @@ public class BaseOpMode extends LinearOpMode {
     protected int autoPlaceState = -1;
 
     protected void setExtenderServoPosition(double position){
-        grabber_extend1.setPosition(roundTo2Dec(position));
+        grabber_extend1.setPosition(roundTo2Dec(position)); //one of these takes about 6 ms!
         grabber_extend2.setPosition(roundTo2Dec(1-position));
     }
     //---------------slide-----------------
@@ -676,27 +675,21 @@ public class BaseOpMode extends LinearOpMode {
         public int grabDelayCount = 0;
         volatile public int delayStep = 10;
         volatile public boolean stop = false;
-        private boolean upWasHeld, downWasHeld, grabberDelayMove = false;
+        private boolean grabberDelayMove = false;
         @Override
         public void run() {
             this.setName("Servo Thread "+this.getId());
             Log.i("servoThread"+this.getId(),"Started running");
+            ElapsedTime lastLoop = new ElapsedTime();
             while(!isInterrupted() && !stop){
-                upWasHeld = gamepad1.dpad_up;
-                downWasHeld = gamepad1.dpad_down;
-                try {
-                    sleep(delayStep);
-                } catch (InterruptedException e) {
-                    stop = true;
-                }
 
                 //set target if manual input
 
-                if(gamepad1.dpad_up && upWasHeld){
+                if(gamepad1.dpad_up){
                     setExtTarget(extLastPosition - 0.01);
                     autoPlaceState = -1;
                     RTState = -1;
-                }else if(gamepad1.dpad_down && downWasHeld){
+                }else if(gamepad1.dpad_down){
                     setExtTarget(extLastPosition + 0.01);
                     autoPlaceState = -1;
                     RTState = -1;
@@ -704,7 +697,7 @@ public class BaseOpMode extends LinearOpMode {
 
                 //execute target
                 if (extLastPosition < extTargetPosition) {
-                    setExtenderServoPosition(extLastPosition + 0.01);
+                    setExtenderServoPosition(extLastPosition + 0.01);//10+ms???
                     extLastPosition += 0.01;
                 } else if(extLastPosition > extTargetPosition){
                     setExtenderServoPosition(extLastPosition - 0.01);
@@ -722,11 +715,20 @@ public class BaseOpMode extends LinearOpMode {
                     }
                 }
 
+                if(!(gamepad1.dpad_up || gamepad1.dpad_down)){//manually setting the servos everytime takes 12ms. We don't do the delay if that happens.
+                    try {
+                        sleep(delayStep);
+                    } catch (InterruptedException e) {
+                        stop = true;
+                    }
+                }
+
                 extLastPosition = roundTo2Dec(extLastPosition);
                 extTargetPosition = roundTo2Dec(extTargetPosition);
                 grabLastPosition = roundTo2Dec(grabLastPosition);
                 grabTargetPosition = roundTo2Dec(grabTargetPosition);
-
+                Log.i("servoThread"+this.getId(), "last loop took "+lastLoop.milliseconds()+"ms.");
+                lastLoop.reset();
             }
             Log.i("servoThread"+this.getId(), "thread finished");
         }
