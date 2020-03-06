@@ -76,7 +76,8 @@ public class BlueAuto extends BaseAuto {
         grabber.setPosition(grabber_open);
     }
     @Override public void runOpMode() throws InterruptedException {
-            initAutonomous();
+        initAutonomous();
+        capstone.setPosition(capstoneClose);
             hub4.setLedColor(255,20,147);
             //drive = new SampleMecanumDriveREV(hardwareMap);
             //cooThread.start();
@@ -96,8 +97,6 @@ public class BlueAuto extends BaseAuto {
 
             //initialization
             before_start();
-
-
             //shift to align to skystone
             int shift;
             if (pos == 1) {

@@ -682,7 +682,6 @@ public class BaseOpMode extends LinearOpMode {
             Log.i("servoThread"+this.getId(),"Started running");
             ElapsedTime lastLoop = new ElapsedTime();
             while(!isInterrupted() && !stop){
-
                 //set target if manual input
 
                 if(gamepad1.dpad_up){

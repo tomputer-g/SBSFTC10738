@@ -114,6 +114,9 @@ public class BaseAuto extends BaseOpMode {
         setNewGyro0();
         initHubs();
         initVuforia();
+
+
+
         //initViewMarks();
         Log.i("Auto init", "done");
     }
@@ -1237,7 +1240,6 @@ public class BaseAuto extends BaseOpMode {
     }
 
     protected void before_start(){
-        xOdometryEnableServo.setPosition(xOdoEnable);
         platform_grabber.setPower(1);
         servoThread.setExtTarget(0.88);
         if(showTelemetry)telemetry.clear();
