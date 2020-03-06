@@ -114,7 +114,7 @@ public class BlueAuto extends BaseAuto {
             //move forward & approach foundation
             align(90);
             resetXOdometry();
-            moveInchesGOY_XF((85.25-2 + shift), 0.9, 1);
+            moveInchesGOY_XF((85.25 + shift), 0.9, 0.915);
             /*
             moveInchesGOXT(12, .45, 1, 2000); //magic, do not touch
             platform_grabber.setPower(-1);
@@ -138,7 +138,7 @@ public class BlueAuto extends BaseAuto {
         }
         platform_grabber.setPower(-1);
         Thread.sleep(300);
-        moveInchesGOX_platform(-18, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
+        moveInchesGOX_platform(pos==2?-21:-18, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
         setAllDrivePower(0);
 
             int steps = 20;

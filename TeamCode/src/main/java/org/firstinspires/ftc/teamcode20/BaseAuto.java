@@ -211,7 +211,7 @@ public class BaseAuto extends BaseOpMode {
                     y=adjustToViewMark(true)[1];
                 }
                 else{
-                    y=39.2333;
+                    y=37.2333;
                     vumarkCounter=0;
                 }
             }
@@ -219,7 +219,7 @@ public class BaseAuto extends BaseOpMode {
                 vumarkCounter=0;
         }
         else {
-            if(isBlue){ x=38;y=39.2333333;}
+            if(isBlue){ x=38;y=37.2333333;}
             else{ x=-55.35;y=-24.7233333;}
             hub4.setLedColor(255,0,0);
         }
