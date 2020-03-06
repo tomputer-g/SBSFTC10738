@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDr
 @TeleOp(group = "Final")
 public class TeleOp_MultiThreadDrive extends BaseAuto {
 
-    private boolean b = false, rb = false, y = false, dpad_r = false, dpad_l = false, start = false, a = false;
+    private boolean b = false, rb = false, y = false, dpad_r = false, dpad_l = false, start = false, a = false, back;
     private boolean[] Xprimed = {true},leftStickButtonPrimed = {true},rightStickButtonPrimed = {true};
     private boolean autoLevel = false;
     private boolean tapeDirectionOut = true;
@@ -175,6 +175,15 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                 holdSet = false;
                 autoPlaceState = -1;
                 RTState = 0;
+            }
+
+            if(this.gamepad1.back && !back){
+                servoThread.setExtTarget(0.57);
+                back=true;
+            }
+
+            if(!this.gamepad1.back && back){
+                back=false;
             }
 
             //RB toggle extender positions (not instant!)
