@@ -70,7 +70,7 @@ public class BlueAuto extends BaseAuto {
             setAllDrivePower(0);
             align(90);
             servoThread.setExtTarget(0.4);
-            moveInchesGOY_XF_F(info[result+2]-3, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
+            moveInchesGOY_XF_F_T(info[result+2]-3, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch),3000);
         }
         servoThread.setExtTarget(0.6);
         grabber.setPosition(grabber_open);
