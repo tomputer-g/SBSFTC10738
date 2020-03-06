@@ -1244,4 +1244,26 @@ public class BaseAuto extends BaseOpMode {
         grabber.setPosition(grabber_open);
         platform_grabber.setPower(0.0);
     }
+
+    protected void adaptive_platform_grabbing(int pos) throws InterruptedException {
+        int pre, cur = getXOdometry(), origin = cur;
+        boolean flag = false;
+        while (!flag){
+            setAllDrivePowerG(-0.5,0.5,-0.5,0.5);
+            pre = cur;
+            cur = getXOdometry();
+            if((cur-origin)/odometryEncXPerInch > 5){
+                //telemetry.addData("diff", cur-pre);
+                //       telemetry.update();
+                if(cur-pre <4000){
+                    flag = true;
+                }
+            }
+            Thread.sleep(100);
+        }
+        platform_grabber.setPower(-1);
+        Thread.sleep(300);
+        moveInchesGOX_platform(pos==2?-21:-18, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
+        setAllDrivePower(0);
+    }
 }
