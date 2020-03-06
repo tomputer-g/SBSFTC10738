@@ -128,7 +128,7 @@ public class BlueAuto extends BaseAuto {
                 setAllDrivePowerG(-0.5,0.5,-0.5,0.5);
                 pre = cur;
                 cur = getXOdometry();
-                if((cur-origin)/odometryEncXPerInch > 8){
+                if((cur-origin)/odometryEncXPerInch > 5){
                     //telemetry.addData("diff", cur-pre);
                     //       telemetry.update();
                     if(cur-pre <4000){
