@@ -111,7 +111,6 @@ public class BaseAuto extends BaseOpMode {
         initGrabber();//1.14ms
         initPlatformGrabber();//34.20ms
         initOdometry();//100.89ms
-        xOdometryEnableServo.setPosition(xOdoEnable);
         setNewGyro0();
         initHubs();
         initVuforia();
@@ -1175,6 +1174,7 @@ public class BaseAuto extends BaseOpMode {
     }
 
     protected void before_start(){
+        xOdometryEnableServo.setPosition(xOdoEnable);
         platform_grabber.setPower(1);
         servoThread.setExtTarget(0.88);
         if(showTelemetry)telemetry.clear();
