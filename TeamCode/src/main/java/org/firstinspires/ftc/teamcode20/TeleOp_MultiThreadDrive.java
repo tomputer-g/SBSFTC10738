@@ -43,6 +43,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         //pwmThread = new PWMThread();
 
         waitForStart();
+        capstone.setPosition(capstoneClose);
         servoThread.setExtTarget(grabberServoGrab);
         servoThread.directSetGrabTarget(grabber_open);
         while (opModeIsActive()) {
