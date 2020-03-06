@@ -14,7 +14,7 @@ public class BlueAuto extends BaseAuto {
     protected void second_and_more_B(int result, int times) throws InterruptedException {
         ElapsedTime p = new ElapsedTime();
         platform_grabber.setPower(1);
-        servoThread.setExtTarget(0.2);
+        servoThread.setExtTarget(0.1);
         Thread.sleep(300);
         //p.reset();
         ///while (p.milliseconds()<300);
@@ -51,7 +51,7 @@ public class BlueAuto extends BaseAuto {
             moveInchesGOY_XF_F(-info[result+2], 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
             servoThread.setExtTarget(0.98);
             align(0);
-            if(result==2||result==1)moveInchesGOX(-4,1);
+           // if(result==2||result==1)moveInchesGOX(-4,1);
             double yorigin = getY1Odometry();
             while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 4) {
                 Thread.sleep(0);
@@ -63,25 +63,26 @@ public class BlueAuto extends BaseAuto {
             }
             grabber.setPosition(grabber_closed);
             Thread.sleep(300);
-            servoThread.setExtTarget(0.85);
+            servoThread.setExtTarget(0.72);
             while ((getY1Odometry() - yorigin) * -1 > odometryEncYPerInch * 2) {
                 setAllDrivePowerG(.3, .3, -.3, -.3);
             }
             setAllDrivePower(0);
             align(90);
             servoThread.setExtTarget(0.4);
-            moveInchesGOY_XF_F(info[result+2]-1, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
+            moveInchesGOY_XF_F(info[result+2]-3, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
         }
         grabber.setPosition(grabber_open);
     }
     @Override public void runOpMode() throws InterruptedException {
             initAutonomous();
             hub4.setLedColor(255,20,147);
-            drive = new SampleMecanumDriveREV(hardwareMap);
-            cooThread.start();
+            //drive = new SampleMecanumDriveREV(hardwareMap);
+            //cooThread.start();
             int pos = 0;
-            drive.setPoseEstimate(new Pose2d(-36,63,-Math.PI/2));
-            drive.update();
+            //drive.setPoseEstimate(new Pose2d(-36,63,-Math.PI/2));
+            //drive.update();
+        printAllThreadsToLogcat();
             while (!isStarted()) {
                 pos = new_skystoneposition();
                 Thread.sleep(200);
@@ -109,15 +110,37 @@ public class BlueAuto extends BaseAuto {
             }
             //move forward to the skystone
             first_block();
-            drive.update();
+            //drive.update();
             //move forward & approach foundation
             align(90);
             resetXOdometry();
-            moveInchesGOY_XF((85.25 + shift), 0.9, 1);
+            moveInchesGOY_XF((85.25 + shift), 0.9, 0.915);
+            /*
             moveInchesGOXT(12, .45, 1, 2000); //magic, do not touch
             platform_grabber.setPower(-1);
             Thread.sleep(300);
             moveInchesGOX_platform(-16, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
+             */
+        int pre, cur = getXOdometry(), origin = cur;
+        boolean flag = false;
+        while (!flag){
+            setAllDrivePowerG(-0.5,0.5,-0.5,0.5);
+            pre = cur;
+            cur = getXOdometry();
+            if((cur-origin)/odometryEncXPerInch > 8){
+                //telemetry.addData("diff", cur-pre);
+                //       telemetry.update();
+                if(cur-pre <4000){
+                    flag = true;
+                }
+            }
+            Thread.sleep(100);
+        }
+        platform_grabber.setPower(-1);
+        Thread.sleep(300);
+        moveInchesGOX_platform(pos==2?-21:-18, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
+        setAllDrivePower(0);
+
             int steps = 20;
             double basespeed = 0.3;
             for (int i = 10; i <= steps; ++i) {
@@ -140,8 +163,9 @@ public class BlueAuto extends BaseAuto {
             setNewGyro(180);
             second_and_more_B(pos, 1);
             hub4.setLedColor(255,20,147);
-            moveInchesGOY_XF_F(-44, 0.6, 1, (int) (getXOdometry() - (41 - adjustToViewMark(true)[1]) * odometryEncXPerInch));
-            drive.update();
+            //moveInchesGOY_XF_F(-44, 0.6, 1, (int) (getXOdometry() - (41 - adjustToViewMark(true)[1]) * odometryEncXPerInch));
+            moveInchesGOY(-44,0.6);
+        //drive.update();
             requestOpModeStop();
     }
 }

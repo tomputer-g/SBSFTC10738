@@ -89,7 +89,7 @@ public class BaseAuto extends BaseOpMode {
 
     //Misc
     protected double[] n_pass ={0,0};
-    private double xpre=0,y1pre=0,y2pre=0,theta=0;
+    private double xpre=0,y1pre=0,y2pre=0,theta=0,vumarkCounter=0;
 
     //-------------------------------------------------------------Multithreading------------------------------------------------------------------
 /*
@@ -205,9 +205,21 @@ public class BaseAuto extends BaseOpMode {
             VectorF translation = lastLocation.getTranslation();
             x=translation.get(0) / mmPerInch; y= translation.get(1) / mmPerInch;
             hub4.setLedColor(0,255,0);
+            if(isBlue&&!near(y,40,5)){
+                if(vumarkCounter<3){
+                    vumarkCounter++;
+                    y=adjustToViewMark(true)[1];
+                }
+                else{
+                    y=37.2333;
+                    vumarkCounter=0;
+                }
+            }
+            if (near(y,40,5))
+                vumarkCounter=0;
         }
         else {
-            if(isBlue){ x=38;y=39.2333333;}
+            if(isBlue){ x=38;y=37.2333333;}
             else{ x=-55.35;y=-24.7233333;}
             hub4.setLedColor(255,0,0);
         }

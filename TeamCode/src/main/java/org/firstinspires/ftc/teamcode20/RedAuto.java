@@ -28,7 +28,7 @@ public class RedAuto extends BaseAuto {
             setAllDrivePowerG(-.4,-.4,.4,.4);
         }
         setAllDrivePower(0);
-        double origin[] = {0, -41}, dd[] = adjustToViewMark(false);
+        double origin[] = {0, -40}, dd[] = adjustToViewMark(false);
         telemetry.addData("Y",dd[1]);
         telemetry.update();
         servoThread.setExtTarget(0.6);
@@ -48,7 +48,7 @@ public class RedAuto extends BaseAuto {
             moveInchesGOY_XF_F(-info[result+2], 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
             servoThread.setExtTarget(0.98);
             align(0);
-            if(pos==0||pos==1)moveInchesGOX(-4,1);
+            if(pos==0||pos==1)moveInchesGOXT(-4,1,1,1500);
             double yorigin = getY1Odometry();
             while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 4) {
                 Thread.sleep(0);
@@ -101,14 +101,28 @@ public class RedAuto extends BaseAuto {
             //move forward & approach foundation
             align(91);
             resetXOdometry();
-            moveInchesGOY(-(85.25 + shift), 0.6, 1);
-            moveInchesGOXT(12, .45, 1, 2000); //magic, do not touch
+            moveInchesGOY(-(85.25 + shift), 0.6, 0.915);
+        int pre, cur = getXOdometry(), origin = cur;
+        boolean flag = false;
+        while (!flag){
+            setAllDrivePowerG(-0.5,0.5,-0.5,0.5);
+            pre = cur;
+            cur = getXOdometry();
+            if((cur-origin)/odometryEncXPerInch > 8){
+                //telemetry.addData("diff", cur-pre);
+                //       telemetry.update();
+                if(cur-pre <4000){
+                    flag = true;
+                }
+            }
+            Thread.sleep(100);
+        }
+        platform_grabber.setPower(-1);
+        Thread.sleep(300);
+        moveInchesGOX_platform(pos==2?-21:-18, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
+        setAllDrivePower(0);
 
-            //moveInchesGOXT(-adjustToViewMark(false)[1]-32, .45, 1, 2000); //magic, do not touch
-            platform_grabber.setPower(-1);
-            Thread.sleep(300);
-            moveInchesGOX_platform(-15, 1, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
-            int steps = 20;
+        int steps = 20;
             double basespeed = 0.33;
             for (int i = 10; i <= steps; ++i) {
                 RB.setPower(-i * basespeed / steps);

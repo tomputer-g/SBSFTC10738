@@ -20,6 +20,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveREV;
+import org.openftc.revextensions2.ExpansionHubEx;
 
 import static java.lang.Math.sqrt;
 
@@ -63,28 +64,40 @@ public class MoveTest extends BaseAuto {
         //drive=new SampleMecanumDriveREV(hardwareMap);
         //cooThread.start();
         waitForStart();
+        int inchh = 8;
         while(!this.gamepad1.b) {
             if(zheng(this.gamepad1.dpad_left,eee))x-=2;
             if(zheng(this.gamepad1.dpad_right,fff))x+=2;
-            if(zheng(this.gamepad1.dpad_up,ee))y+=1;
-            if(zheng(this.gamepad1.dpad_down,ff))y+=1;
+            if(zheng(this.gamepad1.dpad_up,ee))inchh+=1;
+            if(zheng(this.gamepad1.dpad_down,ff))inchh+=1;
             if(zheng(this.gamepad1.y,m))speed+=.1;
             if(zheng(this.gamepad1.right_bumper,bF)){
                 setNewGyro(0);
-                int pre, cur = getXOdometry();
+                int pre, cur = getXOdometry(), origin = cur;
                 boolean flag = false;
                 while (!flag){
                     setAllDrivePowerG(-0.5,0.5,-0.5,0.5);
                     pre = cur;
                     cur = getXOdometry();
-                    telemetry.addData("diff", pre-cur);
-                    telemetry.update();
+                    if((cur-origin)/odometryEncXPerInch > inchh){
+                        telemetry.addData("diff", cur-pre);
+                        telemetry.update();
+                        if(cur-pre < 3800){
+                            flag = true;
+                        }
+                    }
+                    Thread.sleep(100);
                 }
-
+                platform_grabber.setPower(-1);
+                Thread.sleep(300);
+                moveInchesGOX_platform(-16, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
+                setAllDrivePower(0);
+                platform_grabber.setPower(0);
                 //PIDturnfast(90,false);
             }
-            telemetry.addData("s",adjustToViewMark(true)[1]);
-            telemetry.addData("s",adjustToViewMark(false)[1]);
+            //telemetry.addData("s",adjustToViewMark(true)[1]);
+            //telemetry.addData("s",adjustToViewMark(false)[1]);
+            telemetry.addData("t", inchh);
             telemetry.update();
         }
         //cooThread.stopThread();
