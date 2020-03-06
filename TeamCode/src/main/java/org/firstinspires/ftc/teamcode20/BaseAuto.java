@@ -114,7 +114,7 @@ public class BaseAuto extends BaseOpMode {
         setNewGyro0();
         initHubs();
         initVuforia();
-
+        xOdometryEnableServo.setPosition(xOdoEnable);
 
 
         //initViewMarks();
