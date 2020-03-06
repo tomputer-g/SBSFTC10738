@@ -49,8 +49,8 @@ public class LocalizationTest extends BaseAuto {
     public static double OMEGA_WEIGHT = 1;
 
     //V
-    private static final float mmPerInch        = 25.4f;
-    private static final float mmTargetHeight   = (6) * mmPerInch;
+    private static final float mmPerInch = 25.4f;
+    private static final float mmTargetHeight = (6) * mmPerInch;
     private static final float halfField = 72 * mmPerInch;
     private static final float quadField  = 36 * mmPerInch;
 
