@@ -130,7 +130,7 @@ public class BlueAuto extends BaseAuto {
             if((cur-origin)/odometryEncXPerInch > 8){
                 //telemetry.addData("diff", cur-pre);
                 //       telemetry.update();
-                if(cur-pre <4300){
+                if(cur-pre <4000){
                     flag = true;
                 }
             }
