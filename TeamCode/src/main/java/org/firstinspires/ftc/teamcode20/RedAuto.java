@@ -31,7 +31,7 @@ public class RedAuto extends BaseAuto {
         double origin[] = {0, -40}, dd[] = adjustToViewMark(false);
         telemetry.addData("Y",dd[1]);
         telemetry.update();
-        servoThread.setExtTarget(0.6);
+        servoThread.setExtTarget(0.64);
         Thread.sleep(600);
         platform_grabber.setPower(0);
         grabber.setPosition(grabber_open);
@@ -70,6 +70,7 @@ public class RedAuto extends BaseAuto {
             servoThread.setExtTarget(0.4);
             moveInchesGOY_XF_F(info[result+2]-1, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
         }
+        servoThread.setExtTarget(0.6);
         grabber.setPosition(grabber_open);
     }
     @Override

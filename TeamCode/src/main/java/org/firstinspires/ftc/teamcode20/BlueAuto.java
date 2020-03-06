@@ -34,7 +34,7 @@ public class BlueAuto extends BaseAuto {
         double origin[] = {0, 41}, dd[] = adjustToViewMark(true);
         telemetry.addData("Y",dd[1]);
         telemetry.update();
-        servoThread.setExtTarget(0.6);
+        servoThread.setExtTarget(0.64);
         p.reset();
         while (p.milliseconds()<600){Thread.sleep(0);}
         platform_grabber.setPower(0);
@@ -72,6 +72,7 @@ public class BlueAuto extends BaseAuto {
             servoThread.setExtTarget(0.4);
             moveInchesGOY_XF_F(info[result+2]-3, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
         }
+        servoThread.setExtTarget(0.6);
         grabber.setPosition(grabber_open);
     }
     @Override public void runOpMode() throws InterruptedException {
