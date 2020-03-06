@@ -82,7 +82,7 @@ public class BlueAuto extends BaseAuto {
             int pos = 0;
             //drive.setPoseEstimate(new Pose2d(-36,63,-Math.PI/2));
             //drive.update();
-        printAllThreadsToLogcat();
+            printAllThreadsToLogcat();
             while (!isStarted()) {
                 pos = new_skystoneposition();
                 Thread.sleep(200);
@@ -120,26 +120,26 @@ public class BlueAuto extends BaseAuto {
             platform_grabber.setPower(-1);
             Thread.sleep(300);
             moveInchesGOX_platform(-16, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
-             */
-        int pre, cur = getXOdometry(), origin = cur;
-        boolean flag = false;
-        while (!flag){
-            setAllDrivePowerG(-0.5,0.5,-0.5,0.5);
-            pre = cur;
-            cur = getXOdometry();
-            if((cur-origin)/odometryEncXPerInch > 8){
-                //telemetry.addData("diff", cur-pre);
-                //       telemetry.update();
-                if(cur-pre <4000){
-                    flag = true;
+            */
+            int pre, cur = getXOdometry(), origin = cur;
+            boolean flag = false;
+            while (!flag){
+                setAllDrivePowerG(-0.5,0.5,-0.5,0.5);
+                pre = cur;
+                cur = getXOdometry();
+                if((cur-origin)/odometryEncXPerInch > 8){
+                    //telemetry.addData("diff", cur-pre);
+                    //       telemetry.update();
+                    if(cur-pre <4000){
+                        flag = true;
+                    }
                 }
+                Thread.sleep(100);
             }
-            Thread.sleep(100);
-        }
-        platform_grabber.setPower(-1);
-        Thread.sleep(300);
-        moveInchesGOX_platform(pos==2?-21:-18, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
-        setAllDrivePower(0);
+            platform_grabber.setPower(-1);
+            Thread.sleep(300);
+            moveInchesGOX_platform(pos==2?-21:-18, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
+            setAllDrivePower(0);
 
             int steps = 20;
             double basespeed = 0.3;
@@ -165,7 +165,7 @@ public class BlueAuto extends BaseAuto {
             hub4.setLedColor(255,20,147);
             //moveInchesGOY_XF_F(-44, 0.6, 1, (int) (getXOdometry() - (41 - adjustToViewMark(true)[1]) * odometryEncXPerInch));
             moveInchesGOY(-44,0.6);
-        //drive.update();
+            //drive.update();
             requestOpModeStop();
     }
 }
