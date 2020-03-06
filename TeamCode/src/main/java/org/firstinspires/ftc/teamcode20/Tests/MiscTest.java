@@ -16,49 +16,26 @@ public class MiscTest extends BaseAuto {
     //currently this is acceleration testing
     boolean a = false;
     private boolean running = false, trigger = false;
+    private boolean[] rb={true};
     private double impactThreshold = 3.0;
+    double[] ad=new double[2];
 
     @Override
     public void runOpMode() throws InterruptedException {
         initDrivetrain();
         initHubs();
         initIMU();
+        initVuforia();
         double max = 0, current;
         Acceleration tmp;
+        double[] pos={0,0};
         waitForStart();
         while(opModeIsActive()){
             //run
-            if(this.gamepad1.a){a = true;}if(a && !this.gamepad1.a){
-                a = false;
-                running = !running;
+            if(zheng(this.gamepad1.right_bumper,rb)){
+                pos=adjustToViewMark(true);
             }
-            if(running){
-                setAllDrivePower(-0.5,0.5,-0.5,0.5);
-            }else{
-                setAllDrivePower(0);
-                hub4.setLedColor(255,255,255);
-            }
-
-            //data collection
-            if(this.gamepad1.b){
-                max = 0;
-                trigger = false;
-                hub4.setLedColor(255,255,255);
-            }
-            tmp = imu.getLinearAcceleration();
-            current = Math.sqrt(Math.pow(tmp.xAccel,2)+Math.pow(tmp.yAccel,2));
-            if(current > max){
-                max = current;
-            }
-            if(current > impactThreshold){
-                trigger = true;
-                hub4.setLedColor(0,255,0);
-            }
-            if(running)telemetry.addLine("Running");
-            if(trigger)telemetry.addLine("TRIGGER");
-            telemetry.addData("Current acceleration","(%2f, %2f)",tmp.xAccel,tmp.yAccel);
-            telemetry.addData("Current acc. mag.", current);
-            telemetry.addData("Max acc. mag.", max);
+            telemetry.addLine("x,y "+pos[0]+" "+pos[1]);
             telemetry.update();
         }
 
