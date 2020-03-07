@@ -76,7 +76,8 @@ public class BlueAuto extends BaseAuto {
         grabber.setPosition(grabber_open);
     }
     @Override public void runOpMode() throws InterruptedException {
-            initAutonomous();
+        initAutonomous();
+        capstone.setPosition(capstoneClose);
             hub4.setLedColor(255,20,147);
             //drive = new SampleMecanumDriveREV(hardwareMap);
             //cooThread.start();
@@ -96,8 +97,6 @@ public class BlueAuto extends BaseAuto {
 
             //initialization
             before_start();
-
-
             //shift to align to skystone
             int shift;
             if (pos == 1) {
@@ -122,25 +121,7 @@ public class BlueAuto extends BaseAuto {
             Thread.sleep(300);
             moveInchesGOX_platform(-16, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
             */
-            int pre, cur = getXOdometry(), origin = cur;
-            boolean flag = false;
-            while (!flag){
-                setAllDrivePowerG(-0.5,0.5,-0.5,0.5);
-                pre = cur;
-                cur = getXOdometry();
-                if((cur-origin)/odometryEncXPerInch > 5){
-                    //telemetry.addData("diff", cur-pre);
-                    //       telemetry.update();
-                    if(cur-pre <4000){
-                        flag = true;
-                    }
-                }
-                Thread.sleep(100);
-            }
-            platform_grabber.setPower(-1);
-            Thread.sleep(300);
-            moveInchesGOX_platform(pos==2?-21:-18, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
-            setAllDrivePower(0);
+adaptive_platform_grabbing(pos);
 
             int steps = 20;
             double basespeed = 0.3;
