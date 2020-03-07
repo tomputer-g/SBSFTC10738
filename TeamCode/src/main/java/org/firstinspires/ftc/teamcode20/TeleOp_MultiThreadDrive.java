@@ -16,9 +16,9 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
     private boolean platformGrabbed = false;
 
     private int placeLevel = 0;
-    private double groundHeightEnc = 2 * slideEncoderPerInch;//1 higher placing + 1.25 base height
-    private int autoplacemode = 0;
-    private double grabberOutSwitch = 0.63;
+    private double groundHeightEnc = 4.18 * slideEncoderPerInch;//1 higher placing + 1.25 base height
+    private int autoplacemode = 1;
+    private double grabberOutSwitch = 0.75;
 
     private boolean nextGrabberDelay = false;
 
@@ -46,6 +46,11 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         capstone.setPosition(capstoneClose);
         servoThread.setExtTarget(grabberServoGrab);
         servoThread.directSetGrabTarget(grabber_open);
+        L1.setPower(-0.2);
+        Thread.sleep(500);
+        L1.setPower(0);
+        L1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        L1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         while (opModeIsActive()) {
             //drive.update();
             if(zheng(this.gamepad1.left_stick_button,leftStickButtonPrimed)){
