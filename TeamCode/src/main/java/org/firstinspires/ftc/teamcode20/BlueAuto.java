@@ -31,7 +31,7 @@ public class BlueAuto extends BaseAuto {
             Thread.sleep(0);
         }
         setAllDrivePower(0);
-        double origin[] = {0, 41}, dd[] = adjustToViewMark(true);
+        double origin[] = {0, 41.5}, dd[] = adjustToViewMark(true);
         telemetry.addData("Y",dd[1]);
         telemetry.update();
         servoThread.setExtTarget(0.64);
@@ -72,8 +72,8 @@ public class BlueAuto extends BaseAuto {
             servoThread.setExtTarget(0.4);
             moveInchesGOY_XF_F_T(info[result+2]-3, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch),3000);
         }
-        servoThread.setExtTarget(0.6);
         grabber.setPosition(grabber_open);
+        servoThread.setExtTarget(0.6);
     }
     @Override public void runOpMode() throws InterruptedException {
         initAutonomous();
@@ -121,7 +121,7 @@ public class BlueAuto extends BaseAuto {
             Thread.sleep(300);
             moveInchesGOX_platform(-16, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
             */
-adaptive_platform_grabbing(pos);
+            adaptive_platform_grabbing(pos);
 
             int steps = 20;
             double basespeed = 0.3;
@@ -148,6 +148,7 @@ adaptive_platform_grabbing(pos);
             //moveInchesGOY_XF_F(-44, 0.6, 1, (int) (getXOdometry() - (41 - adjustToViewMark(true)[1]) * odometryEncXPerInch));
             moveInchesGOY(-44,0.6);
             //drive.update();
+            servoThread.stopThread();
             requestOpModeStop();
     }
 }

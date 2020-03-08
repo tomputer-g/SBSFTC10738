@@ -28,7 +28,7 @@ public class RedAuto extends BaseAuto {
             setAllDrivePowerG(-.4,-.4,.4,.4);
         }
         setAllDrivePower(0);
-        double origin[] = {0, -41}, dd[] = adjustToViewMark(false);
+        double origin[] = {0, -38.5}, dd[] = adjustToViewMark(false);
         telemetry.addData("Y",dd[1]);
         telemetry.update();
         servoThread.setExtTarget(0.64);
@@ -134,5 +134,6 @@ public class RedAuto extends BaseAuto {
             hub4.setLedColor(255,20,147);
             //moveInchesGOY_XF_F(-44,0.6,1,(int) (getXOdometry() - (-38.5 - adjustToViewMark(false)[1]) * odometryEncXPerInch));
             moveInchesGOY(-44, 0.6);
+            servoThread.stopThread();   
     }
 }

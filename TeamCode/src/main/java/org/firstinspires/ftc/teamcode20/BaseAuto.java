@@ -217,7 +217,19 @@ public class BaseAuto extends BaseOpMode {
                     vumarkCounter=0;
                 }
             }
-            if (near(y,40,5))
+            if(!isBlue&&!near(y,-40,5)){
+                if(vumarkCounter<3){
+                    vumarkCounter++;
+                    y=adjustToViewMark(false)[1];
+                }
+                else{
+                    y=-24.72;
+                    vumarkCounter=0;
+                }
+            }
+            if (isBlue&&near(y,40,5))
+                vumarkCounter=0;
+            if(!isBlue&&near(y,-40,5))
                 vumarkCounter=0;
         }
         else {
