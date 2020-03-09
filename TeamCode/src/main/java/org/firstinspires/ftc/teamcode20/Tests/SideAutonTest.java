@@ -25,5 +25,7 @@ public class SideAutonTest extends BaseAuto {
     private void forleft(){
         double target=90;
         setAllDrivePower(-1,-1,1,1);
+        setAllDrivePower(1,1,1,1);
+        setAllDrivePower(-1,1,-1,1);
     }
 }
