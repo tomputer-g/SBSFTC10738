@@ -13,8 +13,8 @@ public class BackAndForthTest extends BaseAuto {
     private String[] paramNames = {"kT","ops"};
     private int currentSelectParamIndex = 0;
     private boolean[] aa = {true}, l ={true}, r = {true}, u, d, lb={true}, rb;
-    private boolean a;
-    private double speed = 0.1;
+    private boolean a, b;
+    private double speed = 0.9;
 
     protected void moveInchesGOY_XF_F_T(double yInch, double speed,double kV, int FixXOffset){//use 0.4 for short-dist
         yInch = -yInch;
@@ -85,6 +85,20 @@ public class BackAndForthTest extends BaseAuto {
         waitForStart();
         while(opModeIsActive())
         {
+            if(this.gamepad1.b){b = true;}if(!this.gamepad1.b && b) {
+            b = false;
+            ElapsedTime p = new ElapsedTime();
+            p.reset();
+            int aa = getXOdometry();
+            moveInchesGOY_XF_F_T(96,speed,1,aa);
+            for(int i = 0;i<4;++i){
+                moveInchesGOY_XF_F_T(-96,speed,1,aa);
+                moveInchesGOY_XF_F_T(96,speed,1,aa);
+            }
+                telemetry.addData("time", p.milliseconds());
+            telemetry.update();
+
+        }
             if(this.gamepad1.a){a = true;}if(!this.gamepad1.a && a) {
                 a = false;
                 grabber.setPosition(grabber_open);
@@ -122,8 +136,6 @@ public class BackAndForthTest extends BaseAuto {
                     setAllDrivePower(0);
                     align(0);
                     servoThread.setTarget(0.6);
-
-
                      */
 
                     moveInchesGOY_XF_F_T(50,0.6,1,(int) (curX-(origin[1]-dd[1])*odometryEncXPerInch));
@@ -134,15 +146,15 @@ public class BackAndForthTest extends BaseAuto {
                 }
 
             }
-            if(zheng(this.gamepad1.dpad_up, aa))kdx++;
-            if(zheng(this.gamepad1.dpad_down, lb))kdx--;
-            if(zheng(this.gamepad1.dpad_left, l))kdxx+=0.1;
-            if(zheng(this.gamepad1.dpad_right, r))kdxx-=0.1;
-            telemetry.addData("num","%.2f",kdxx);
-            telemetry.addData("power","%.2f",kdx);
+            //if(zheng(this.gamepad1.dpad_up, aa))kdx++;
+            //if(zheng(this.gamepad1.dpad_down, lb))kdx--;
+            if(zheng(this.gamepad1.dpad_left, l))speed-=0.1;
+            if(zheng(this.gamepad1.dpad_right, r))speed+=0.1;
+            //telemetry.addData("num","%.2f",kdxx);
+            //telemetry.addData("power","%.2f",kdx);
             //telemetry.addData("parameters",params[0]+", "+params[1]);
             //telemetry.addData("now changing", paramNames[currentSelectParamIndex]);
-            telemetry.update();
+            //telemetry.update();
             //telemetry.addData("x",getXOdometry());
         }
     }
