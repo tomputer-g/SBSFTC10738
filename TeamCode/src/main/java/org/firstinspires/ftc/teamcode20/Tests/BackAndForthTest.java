@@ -64,9 +64,6 @@ public class BackAndForthTest extends BaseAuto {
             }else{
                 steadyCounter = 0;
             }
-            telemetry.addData("O",currentOdometryX);
-            telemetry.addData("D", D);
-            telemetry.update();
             //Log.d("GOY "+yInch,"steady"+steadyCounter+", position"+currentOdometry+", LF speed"+prev_speed+", OC speed="+Dterm+"bulkSpd="+hub4.getBulkInputData().getMotorVelocity(platform_grabber));
             previousPos = currentOdometry;
             previousPosX = currentOdometryX;
@@ -101,6 +98,8 @@ public class BackAndForthTest extends BaseAuto {
                     //if(i>0)servoThread.setTarget(0.75);
                     //grabber.setPosition(grabber_open);
                     align(0);
+                    telemetry.addData("O",getY1Odometry());
+                    telemetry.update();
                     moveInchesGOY_XF_F_T(-50,0.6,1,(int) (curX-(origin[1]-dd[1])*odometryEncXPerInch));
                     //servoThread.setTarget(0.98);
                     /*
@@ -125,7 +124,8 @@ public class BackAndForthTest extends BaseAuto {
 
 
                      */
-
+                    telemetry.addData("O",getY1Odometry());
+                    telemetry.update();
                     moveInchesGOY_XF_F_T(50,0.6,1,(int) (curX-(origin[1]-dd[1])*odometryEncXPerInch));
                     dd=adjustToViewMark(false);
                     //telemetry.addData("original", "%.2f",origin[1]);
