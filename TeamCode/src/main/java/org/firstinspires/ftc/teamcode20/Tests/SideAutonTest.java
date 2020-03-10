@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode20.BaseAuto;
 public class SideAutonTest extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {
-        servoThread.setTarget(0.99);
+        servoThread.setExtTarget(0.99);
         grabber.setPosition(grabber_open);
         platform_grabber.setPower(1);
         platform_grabber.setPower(0.0);
