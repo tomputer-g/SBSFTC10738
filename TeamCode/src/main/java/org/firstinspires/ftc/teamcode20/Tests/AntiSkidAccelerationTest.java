@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 import org.openftc.revextensions2.ExpansionHubEx;
 
-@TeleOp
 public class AntiSkidAccelerationTest extends BaseAuto {
     private double[] params = {0.35, 1, 1000};
     private String[] paramNames =   {"startSpd", "goalSpd", "to1spd_MS"};
@@ -83,7 +82,7 @@ public class AntiSkidAccelerationTest extends BaseAuto {
 
     }
 
-    private void antiSkidAccelerationX(double start, double goal, double accTime){
+    private void antiSkidAccelerationX(double start, double goal, double accTime) throws InterruptedException {
         writeLogHeader("start="+start+",goal="+goal+",acc time="+accTime+",batt "+hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2").read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)+"V");
         writeLogHeader("time,delta,current,odometry,wheel");
         ElapsedTime t = new ElapsedTime();

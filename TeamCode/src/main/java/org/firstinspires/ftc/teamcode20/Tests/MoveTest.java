@@ -20,6 +20,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveREV;
+import org.openftc.revextensions2.ExpansionHubEx;
 
 import static java.lang.Math.sqrt;
 
@@ -31,98 +32,78 @@ public class MoveTest extends BaseAuto {
     private ElapsedTime t=new ElapsedTime();
     private double speedLF=0,speedLB=0,speedRF=0,speedRB=0;
     private double  kP = 0.5, kI = 0, kD = 0.0025;
-    private SampleMecanumDriveREV drive;
     private FtcDashboard dashboard;
     int WaitingTime = 300;
     int steps = 20;
     double basespeed = 0.2;
 
 
-    private PG pg=new PG();
-    private Thread uc=new UC();
     int dir;
-    private void 三天之内刹了你(){
-        setAllDrivePower(1,1,-1,-1);
-        wait(200);
-        setAllDrivePower(0);
-    }
 
     @Override
     public void runOpMode() throws InterruptedException {
         msStuckDetectInit = 3000000;
-        //drive=new SampleMecanumDriveREV(hardwareMap);
-        //drive.setPoseEstimate(new Pose2d(36,63,-Math.PI/2));
-        dashboard=FtcDashboard.getInstance();
-        //drive.setPoseEstimate(new Pose2d(63,63,-Math.PI/2));
-        //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
         speed=0.3;
         speeed = 0.03;
         dir=1;
         y = -90;
         x = 0;
-        initVuforia();
-        initViewMarks();
         // 三天之内刹了你();
-
+        initDrivetrain();
+        initHubs();
+        //initVuforia();
+        //initViewMarks();
+        initIMU();
+        drive=new SampleMecanumDriveREV(hardwareMap);
+        initOdometry();
+        cooThread.start();
+        initVuforia();
+        //initViewMarks();
+        initIMU();
+        initOdometry();
+        //drive=new SampleMecanumDriveREV(hardwareMap);
+        //cooThread.start();
         waitForStart();
-        //pg.start();
-        //uc.start();
-        //if(zheng(this.gamepad1.dpad_left,eee))x-=2;
-        //if(zheng(this.gamepad1.dpad_right,fff))x+=2;
-        //if(zheng(this.gamepad1.dpad_up,ee))y+=1;
-        //if(zheng(this.gamepad1.dpad_down,ff))y+=1;
-        //if(zheng(this.gamepad1.y,m))speed+=.1;
-        double dd[] = adjustToViewMark(true);
-        telemetry.addLine(dd[0]+" "+dd[1]);
-        telemetry.update();
-    }
-
-    private class UC extends Thread{
-        volatile boolean stop = false,run=false;
-        @Override
-        public void run() {
-            while(!isInterrupted()&&!stop){
-                updateCoo();
-            }
-        }
-        public void stopThread(){
-            stop = true;
-        }
-    }
-
-    private class PG extends Thread {
-        volatile boolean stop = false, run = false;
-        private double a, b, c, d, Kp;
-
-        public void PG() {
-            a = 0;
-            b = 0;
-            c = 0;
-            d = 0;
-            Kp = .8;
-        }
-
-        public void setAllPower(double w, double x, double y, double z) {
-            a = w;
-            b = x;
-            c = y;
-            d = z;
-        }
-
-        @Override
-        public void run() {
-            double p = 0;
-            while (!isInterrupted() && !stop) {
-                if (a == 0 && b == 0 && c == 0 && d == 0) {
-                } else {
-                    p = Kp * (getHeading() * 0.1 / 9);
-                    setAllDrivePower(a - p, b - p, c - p, d - p);
+        int inchh = 8;
+        while(!this.gamepad1.b) {
+            if(zheng(this.gamepad1.dpad_left,eee))x-=2;
+            if(zheng(this.gamepad1.dpad_right,fff))x+=2;
+            if(zheng(this.gamepad1.dpad_up,ee))inchh+=1;
+            if(zheng(this.gamepad1.dpad_down,ff))inchh+=1;
+            if(zheng(this.gamepad1.y,m))speed+=.1;
+            if(zheng(this.gamepad1.right_bumper,bF)){
+                setNewGyro(0);
+                int pre, cur = getXOdometry(), origin = cur;
+                boolean flag = false;
+                while (!flag){
+                    setAllDrivePowerG(-0.5,0.5,-0.5,0.5);
+                    pre = cur;
+                    cur = getXOdometry();
+                    if((cur-origin)/odometryEncXPerInch > inchh){
+                        telemetry.addData("diff", cur-pre);
+                        telemetry.update();
+                        if(cur-pre < 3800){
+                            flag = true;
+                        }
+                    }
+                    Thread.sleep(100);
                 }
+                platform_grabber.setPower(-1);
+                Thread.sleep(300);
+                moveInchesGOX_platform(-16, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
+                setAllDrivePower(0);
+                platform_grabber.setPower(0);
+                //PIDturnfast(90,false);
             }
-
-
+            //telemetry.addData("s",adjustToViewMark(true)[1]);
+            //telemetry.addData("s",adjustToViewMark(false)[1]);
+            telemetry.addData("t", inchh);
+            telemetry.update();
         }
+        //cooThread.stopThread();
     }
+
+
 
     protected void tunePIDturn(double target, double kp, double kd, double speed){
         setNewGyro(acctarget);

@@ -26,9 +26,9 @@ public class OdometryWheelLocalizer extends ThreeTrackingWheelLocalizer {
 
     public OdometryWheelLocalizer(HardwareMap hardwareMap) {
         super(Arrays.asList(//x and y are reversed
-                new Pose2d(44/25.4, -149/25.4,  Math.toRadians(180)),
-                new Pose2d(-100/25.4, 4/25.4,     Math.toRadians(270)),//+4mm
-                new Pose2d(44/25.4, 149/25.4,   Math.toRadians(180))));
+                new Pose2d(44/25.4, -152/25.4,  Math.toRadians(180)),
+                new Pose2d(-100/25.4, 4/25.4,     Math.toRadians(270)),//TODO: confirm?
+                new Pose2d(44/25.4, 152/25.4,   Math.toRadians(180))));
         L2 = hardwareMap.get(DcMotorEx.class,"L2");
         L2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

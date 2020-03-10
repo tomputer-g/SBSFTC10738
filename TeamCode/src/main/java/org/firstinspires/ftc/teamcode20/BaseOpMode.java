@@ -5,14 +5,12 @@ import android.util.Log;
 import com.qualcomm.hardware.motors.GoBILDA5202Series;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.R;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
@@ -26,31 +24,20 @@ import java.util.Set;
 import static java.lang.Math.pow;
 import static java.lang.Math.round;
 import static java.lang.Math.sqrt;
-import static java.lang.Thread.holdsLock;
+import static java.lang.Thread.dumpStack;
 import static java.lang.Thread.sleep;
 
-/*
-BaseOpMode should have:
-
-Mecanum driving & encoders (LF, RF, LB, RB)
-Lander-grabber set (definitely 1 motor + maybe 1 motor/servo)
-Vacuum set (2 motors)
-
-Make sure TeleOp2019Trident and BaseAuto can inherit needed stuff by setting them to *protected*!
- */
 public class BaseOpMode extends LinearOpMode {
 
     //Motors
     protected ExpansionHubMotor LF, LB, RF, RB;
 
-
     protected boolean showTelemetry = false;
     protected ExpansionHubEx hub2, hub4;
     protected ServoThread servoThread;
 
-    protected Servo light;
-
-    protected Servo grabber;
+    protected Servo xOdometryEnableServo;
+    protected Servo grabber, capstone;
     protected Servo grabber_extend1, grabber_extend2;
     protected DcMotor platform_grabber, xOdometry;
     protected DcMotor L1, L2;
@@ -61,22 +48,35 @@ public class BaseOpMode extends LinearOpMode {
     protected final double odometryEncYPerInch = 1324.28, odometryEncXPerInch = 1314.42;
 
 
+    protected final double capstoneOpen = 0, capstoneClose = 0.5;
     protected RevBulkData tmpBulkData;//use this for all bulk reads
 
+    protected void kill(String message){
+        //Drivetrain
+        if(LF != null && LB != null && RF != null && RB != null)setAllDrivePower(0);
+        //Slide Motors
+        if(L1 != null)L1.setPower(0);
+        if(L2 != null)L2.setPower(0);
+        //On slide: Servos (+ kill servo thread)
+        if(servoThread != null && servoThread.isAlive())servoThread.stopThread();
+        if(grabber_extend1 != null)grabber_extend1.setPosition(0.99);
+        if(grabber_extend2 != null)grabber_extend2.setPosition(0.01);
+        if(capstone != null)capstone.setPosition(0);
+        if(grabber != null)grabber.setPosition(0.01);
+        //tape
+        if(xOdometry != null)xOdometry.setPower(0);
+        //platform grabber
+        if(platform_grabber != null)platform_grabber.setPower(0);
 
-    @Override public void internalPreInit() {
-        super.internalPreInit();
-        msStuckDetectLoop = 30000;
-        msStuckDetectInit = 30000;
+        //Non-physical dependencies:
+        //Logger
+        if(logWriter != null)stopLog();
+
+        Log.w("Kill()","Message: "+message+". Printing stack:\n");
+        dumpStack();
     }
 
-
-    @Override
-    public void runOpMode() throws InterruptedException {
-        hub2 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
-        hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
-    }
-
+    @Override public void runOpMode() throws InterruptedException {}
 
     protected void initPlatformGrabber(){
         platform_grabber = hardwareMap.get(DcMotor.class, "platform");
@@ -94,27 +94,11 @@ public class BaseOpMode extends LinearOpMode {
         L2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    protected void initLight(){
-        light = hardwareMap.get(Servo.class, "light");
-    }
-
-    protected void setLight(boolean on){
-        if(on){
-            light.setPosition(1);
-        }else{
-            light.setPosition(0);
-        }
-    }
-
-    protected void moveLinSlide(double speed){
-        L1.setPower(speed);
-        L2.setPower(-speed);
-    }
-
     protected void initGrabber(){
         grabber = hardwareMap.get(Servo.class, "grabber");
         grabber_extend1 = hardwareMap.get(Servo.class, "servo1");
         grabber_extend2 = hardwareMap.get(Servo.class, "servo2");
+        capstone = hardwareMap.get(Servo.class, "capstone");
         servoThread = new ServoThread();
         servoThread.start();
     }
@@ -177,10 +161,6 @@ public class BaseOpMode extends LinearOpMode {
         RB.setPower(pX-pY);
     }
 
-    protected void wait(int time){
-        sleep(time);
-    }
-
     protected boolean near(double value, double target, double tolerance){
         return Math.abs(value-target) <= tolerance;
     }
@@ -234,12 +214,6 @@ public class BaseOpMode extends LinearOpMode {
     }
 
     protected boolean zheng(boolean b, boolean[] f){
-        //chzch butt on press
-        //淦 --yeah
-        //微笑着面对它
-        //int index=bFN.indexOf(s);
-        //boolean b=bFB[index];
-        //boolean c=bF[index];
         if(b||!f[0]){
             f[0]= !b;
             return f[0];
@@ -254,6 +228,7 @@ public class BaseOpMode extends LinearOpMode {
         RB.setPower(-0.5 * (-vx + vy + vr));
     }
 
+    /*
     private double sigmoid(double x){
         return (1.8/(1+pow(Math.E,5*x)))-0.9;
     }
@@ -264,6 +239,8 @@ public class BaseOpMode extends LinearOpMode {
         if(showTelemetry)telemetry.addLine("-----------------------");
         if(showTelemetry)telemetry.addLine(""+to3dstr(LB)+"  |  "+to3dstr(RB));
     }
+
+     */
 
     protected String to3dstr(double d){
         DecimalFormat df = new DecimalFormat("##0.000");
@@ -276,7 +253,7 @@ public class BaseOpMode extends LinearOpMode {
     }
     //----------------------------------------Movement Code here-----------------------------------------
     //for phone: phone camera facing x-, extended grabber is y+
-    protected void brake(){
+    protected void brake() throws InterruptedException {
         double lf=LF.getPower(),lb=LB.getPower(),rf=RF.getPower(),rb=RB.getPower();
         for(int i=0;i<4;i++){
             setAllDrivePower(lf-0.2*lf*i,lb-0.2*lb*i,rf-rf*0.2*i,rb-rb*0.2*i);
@@ -285,29 +262,24 @@ public class BaseOpMode extends LinearOpMode {
         setAllDrivePower(0);
         for(int i=0;i<10;i++){
             setAllDrivePower(.3,.3,-.3,-.3);
-            wait(50);
+            Thread.sleep(50);
             setAllDrivePower(0);
-            wait(5);
+            Thread.sleep(5);
         }
         //setAllDrivePower(sigmoid_brake(lf),sigmoid_brake(lb),sigmoid_brake(rf),sigmoid_brake(rb));
-        //wait(300);
+        //Thread.sleep(300);
         setAllDrivePower(0);
     }
 
-    protected void setAllDrivePower1(double a, double b, double c, double d){
+    /*protected void setAllDrivePower1(double a, double b, double c, double d){
         setAllDrivePower(-a,-b,c,d);
     }
 
-    protected void moveInches(double xInch, double yInch, double speed){
-        /*
-        sup fuckers
-        69
-        by cole wdnmd-p'
-        */
+     */
+
+    protected void moveInches(double xInch, double yInch, double speed) throws InterruptedException {
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
-        ElapsedTime t = new ElapsedTime();
-        int p_time = (int) (sqrt(xInch*xInch + yInch*yInch)*100);
         double xmult = 232.5088/12, ymult = 232.7551/12;
         int encoder_x=(int)(xInch*xmult),encoder_y=(int)(yInch*ymult);
         double theta=Math.atan(xInch/yInch);
@@ -320,7 +292,7 @@ public class BaseOpMode extends LinearOpMode {
             //coe=Math.max(coe,1);
         }
         setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
-        wait(120);
+        Thread.sleep(120);
         setAllDrivePower(0);
         reset_ENCODER();
     }
@@ -522,23 +494,24 @@ public class BaseOpMode extends LinearOpMode {
 
     protected final int slideEncoderTravel = -5156;//IMPORTANT: if up is negative, this is negative
     protected final double slideInchTravel = 72.0;//inch of slide travel
-    protected final double slideEncoderPerInch = slideEncoderTravel / slideInchTravel;
+
+    //value changed
+    protected final double slideEncoderPerInch = -85.2204;
     protected int RTState = -1;
     protected final double ctrl_deadzone = 0.2;
     protected int slow = 0;
 
-
     protected int autoPlaceState = -1;
 
     protected void setExtenderServoPosition(double position){
-        grabber_extend1.setPosition(roundTo2Dec(position));
+        grabber_extend1.setPosition(roundTo2Dec(position)); //one of these takes about 6 ms!
         grabber_extend2.setPosition(roundTo2Dec(1-position));
     }
     //---------------slide-----------------
     protected void runSlide(){
         int L1CurrentPos = L1.getCurrentPosition();
         if(this.gamepad1.left_bumper && !near(this.gamepad1.right_stick_y, 0, 0.05)) {//long-dist
-            if(servoThread.lastPosition < 0.75){//very slow?
+            if(servoThread.extLastPosition < 0.75){//very slow?
                 holdSet = false;
                 telemetry.addLine("slide is very slow");
                 if(-this.gamepad1.right_stick_y > 0){//asc
@@ -586,19 +559,20 @@ public class BaseOpMode extends LinearOpMode {
         }
     }
 
-    private int descendTarget = 0, ascendTarget = 0;
-    private double inchApproachTarget = 10.6, approachSpeed = 0.2;
+    //private int descendTarget = 0, ascendTarget = 0;
+    //private double inchApproachTarget = 10.6, approachSpeed = 0.2;
     protected Rev2mDistanceSensor tower_top;
 
-    protected final double grabberServoOut = 0.77, grabberServoIn = 0.99;
+    protected final double grabberServoOut = 0.6, grabberServoIn = 0.99, grabberServoGrab = 0.76;
 
+    /*
     protected void autoPlace(){
         switch(autoPlaceState){
             case -1:
                 break;
             case 0:
-                servoThread.setTarget(0.3);
-                if(near(servoThread.lastPosition, 0.3, 0.02)){
+                servoThread.setExtTarget(0.3);
+                if(near(servoThread.extLastPosition, 0.3, 0.02)){
                     autoPlaceState++;
                 }
             case 1://approach
@@ -619,7 +593,7 @@ public class BaseOpMode extends LinearOpMode {
                     ascendTarget = L1CurrentPos + (int)(10*slideEncoderPerInch);
                     L1.setPower(-.7);
                     L2.setPower(.7);
-                    servoThread.setTarget(grabberServoOut);
+                    servoThread.setExtTarget(grabberServoOut);
                     autoPlaceState++;
                 }
                 break;
@@ -634,7 +608,7 @@ public class BaseOpMode extends LinearOpMode {
                 break;
             case 4: //extend
 
-                if(near(servoThread.lastPosition, grabberServoOut, 0.05)){
+                if(near(servoThread.extLastPosition, grabberServoOut, 0.05)){
                     autoPlaceState++;
                     holdSet = false;
                     descendTarget = L1.getCurrentPosition() - (int)( 17 * slideEncoderPerInch);
@@ -655,8 +629,7 @@ public class BaseOpMode extends LinearOpMode {
                 break;
         }
     }
-
-
+     */
 
     protected void handleRTState(){//call in loop; non-blocking
         switch (RTState) {
@@ -664,8 +637,8 @@ public class BaseOpMode extends LinearOpMode {
                 break;
             case 0:
                 grabber.setPosition(0.1);
-                servoThread.setTarget(grabberServoIn);
-                if (near(servoThread.lastPosition, grabberServoIn, 0.05)){
+                servoThread.setExtTarget(grabberServoIn);
+                if (near(servoThread.extLastPosition, grabberServoIn, 0.05)){
                     RTState = 1;
                 }
                 break;
@@ -683,85 +656,107 @@ public class BaseOpMode extends LinearOpMode {
                     holdSet = false;
                     holdSlide(0);
                     grabber.setPosition(grabber_open);
+                    servoThread.setExtTarget(grabberServoGrab);
                 }
+                servoThread.setExtTarget(grabberServoGrab);
                 break;
         }
     }
 
+    private void 三天之内刹了你() throws InterruptedException {
+        setAllDrivePower(1,1,-1,-1);
+        Thread.sleep(200);
+        setAllDrivePower(0);
+    }
+
     protected class ServoThread extends Thread{
-        public double targetPosition = 1;
+        public double extTargetPosition = 1, extLastPosition = 1;
+        public double grabTargetPosition, grabLastPosition;
+        public int grabDelayCount = 0;
         volatile public int delayStep = 10;
         volatile public boolean stop = false;
-        public double lastPosition = 1;
-        private boolean upHeld, downHeld, upWasHeld, downWasHeld;
-
-        //getPosition does not actually read position. We'll have to keep track using a double
+        private boolean grabberDelayMove = false;
         @Override
         public void run() {
-            //this.setPriority(5);
             this.setName("Servo Thread "+this.getId());
             Log.i("servoThread"+this.getId(),"Started running");
+            ElapsedTime lastLoop = new ElapsedTime();
             while(!isInterrupted() && !stop){
-                upWasHeld = gamepad1.dpad_up;
-                downWasHeld = gamepad1.dpad_down;
-
-                try {
-                    sleep(delayStep);
-                } catch (InterruptedException e) {
-                    stop = true;
-                }
-
-                upHeld = gamepad1.dpad_up;
-                downHeld = gamepad1.dpad_down;
-
-
                 //set target if manual input
 
-                if(upHeld && upWasHeld){
-                    setTarget(lastPosition - 0.01);
+                if(gamepad1.dpad_up){
+                    setExtTarget(extLastPosition - 0.01);
                     autoPlaceState = -1;
                     RTState = -1;
-                }else if(downHeld && downWasHeld){
-                    setTarget(lastPosition + 0.01);
+                }else if(gamepad1.dpad_down){
+                    setExtTarget(extLastPosition + 0.01);
                     autoPlaceState = -1;
                     RTState = -1;
                 }
 
                 //execute target
-                if(lastPosition != targetPosition) {
-                    if (lastPosition < targetPosition) {
-                        setExtenderServoPosition(lastPosition + 0.01);
-                        lastPosition += 0.01;
-                    } else {
-                        setExtenderServoPosition(lastPosition - 0.01);
-                        lastPosition -= 0.01;
+                if (extLastPosition < extTargetPosition) {
+                    setExtenderServoPosition(extLastPosition + 0.01);//10+ms???
+                    extLastPosition += 0.01;
+                } else if(extLastPosition > extTargetPosition){
+                    setExtenderServoPosition(extLastPosition - 0.01);
+                    extLastPosition -= 0.01;
+                }
+
+                if(grabberDelayMove && grabDelayCount++ == 4){
+                    grabDelayCount = 0;
+                    if(grabLastPosition < grabTargetPosition){
+                        grabber.setPosition(grabLastPosition + 0.01);
+                        grabLastPosition += 0.01;
+                    }else if(grabLastPosition > grabTargetPosition){
+                        grabber.setPosition(grabLastPosition - 0.01);
+                        grabLastPosition -= 0.01;
                     }
                 }
-                lastPosition = roundTo2Dec(lastPosition);
-                targetPosition = roundTo2Dec(targetPosition);
+
+                if(!(gamepad1.dpad_up || gamepad1.dpad_down)){//manually setting the servos everytime takes 12ms. We don't do the delay if that happens.
+                    try {
+                        sleep(delayStep);
+                    } catch (InterruptedException e) {
+                        stop = true;
+                    }
+                }
+
+                extLastPosition = roundTo2Dec(extLastPosition);
+                extTargetPosition = roundTo2Dec(extTargetPosition);
+                grabLastPosition = roundTo2Dec(grabLastPosition);
+                grabTargetPosition = roundTo2Dec(grabTargetPosition);
+                Log.i("servoThread"+this.getId(), "last loop took "+lastLoop.milliseconds()+"ms.");
+                lastLoop.reset();
             }
             Log.i("servoThread"+this.getId(), "thread finished");
-
         }
 
-
-        public void setTargetAndSpeed(int delayPerStep, double target){
-            delayStep = delayPerStep;
-            targetPosition = target;
+        public void directSetGrabTarget(double target){
+            target = roundTo2Dec(target);
+            grabLastPosition = target;
+            grabTargetPosition = target;
+            grabber.setPosition(target);
+            grabberDelayMove = false;
         }
 
-        public void setTarget(double target){
+        public void delaySetGrabTarget(double target){
+            target = roundTo2Dec(target);
+            grabTargetPosition = target;
+            grabberDelayMove = true;
+        }
 
+        public void setExtTarget(double target){
             if(target > 0.99){target = 0.99;}
             if(target < 0.2){target = 0.2;}
             Log.i("servoThread"+this.getId(),"setting target "+target);
-            targetPosition = roundTo2Dec(target);
+            extTargetPosition = roundTo2Dec(target);
         }
 
         public void setDelay(int delayPerStep){
             delayStep = delayPerStep;
         }
-
+        public void servoWait(int milisec){try {Thread.sleep(milisec);} catch (Exception ignored) {} }
         public void stopThread(){
             stop = true;
         }
@@ -780,4 +775,6 @@ public class BaseOpMode extends LinearOpMode {
         }
         Log.d("All threads log end","-------------------------------------------");
     }
+
+
 }

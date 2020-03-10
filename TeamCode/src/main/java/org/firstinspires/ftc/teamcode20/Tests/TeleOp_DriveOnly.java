@@ -1,7 +1,9 @@
-package org.firstinspires.ftc.teamcode20;
+package org.firstinspires.ftc.teamcode20.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.teamcode20.BaseAuto;
 
 @Disabled
 public class TeleOp_DriveOnly extends BaseAuto {

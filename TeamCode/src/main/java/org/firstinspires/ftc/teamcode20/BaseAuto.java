@@ -7,10 +7,12 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.util.Log;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.vuforia.Image;
@@ -18,11 +20,9 @@ import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -44,73 +44,55 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.ZYX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
+import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveREV;
 import org.openftc.revextensions2.ExpansionHubEx;
-import org.openftc.revextensions2.RevBulkData;
 
 public class BaseAuto extends BaseOpMode {
 
     //Vuforia
     protected VuforiaLocalizer vuforia;
-    private boolean VuforiaInit = false;
     protected static final float mmPerInch = 25.4f;
     protected OpenGLMatrix lastLocation = null;
     protected VuforiaTrackables targetsSkyStone;
-    protected List<VuforiaTrackable> allTrackables= new ArrayList<VuforiaTrackable>();
-    private final float CAMERA_FORWARD_DISPLACEMENT = 0f * mmPerInch;//2.5 in from end + 1 in correction
-    private final float CAMERA_VERTICAL_DISPLACEMENT = 0f * mmPerInch;// eg: Camera is 8 Inches above ground
-    private final float CAMERA_LEFT_DISPLACEMENT = 0f * mmPerInch; // eg: Camera is ON the robot's center line
+    protected List<VuforiaTrackable> allTrackables= new ArrayList<>();
     private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
+    private VuforiaTrackable rear1,rear2;
 
-    // Constant for Stone Target
-    private static final float stoneZ = 2.00f * mmPerInch;
-
-    // Constants for the center support targets
-    private static final float bridgeZ = 6.42f * mmPerInch;
-    private static final float bridgeY = 23 * mmPerInch;
-    private static final float bridgeX = 5.18f * mmPerInch;
-    private static final float bridgeRotY = 59;                                 // Units are degrees
-    private static final float bridgeRotZ = 180;
-
-    private VuforiaTrackable rear1,rear2;//from kuaishou.com
-    // Constants for perimeter targets
     private static final float halfField = 72 * mmPerInch;
     private static final float quadField  = 36 * mmPerInch;
     private ElapsedTime VuforiaPositionTime;
     private double[] displacements = {2, 7};//+ = forward; + = right
     private double headingDisplacement = -90;
 
-    protected void initAutonomous(){
-        //AutonomousInitThread initThread = new AutonomousInitThread();
-        //initThread.start();
-        Log.i("Auto init",System.currentTimeMillis()+" start hub init");
-        //super.init();//uses 0.48 ms
-        showTelemetry = false;
-        Log.i("Auto init",System.currentTimeMillis()+" start drivetrain init");
-        initDrivetrain();//181.64ms
-        Log.i("Auto init",System.currentTimeMillis()+" start IMU");
-        initIMU();//!!!!!1.259s
-        Log.i("Auto init",System.currentTimeMillis()+" start grabber");
-        initGrabber();//1.14ms
-        Log.i("Auto init",System.currentTimeMillis()+" start platform");
-        initPlatformGrabber();//34.20ms
-        Log.i("Auto init",System.currentTimeMillis()+" start sensors");
-        initSensors();//0.48ms
-        Log.i("Auto init",System.currentTimeMillis()+" start odometry");
-        initOdometry();//100.89ms
-        setNewGyro0();
-        Log.i("Auto init",System.currentTimeMillis()+" done init");
-        initHubs();
-        initVuforia();
-        initViewMarks();
-        //while(initThread.isAlive());
-        Log.i("Auto init", "initThread done");
-    }
+    //Sensors
+    protected ModernRoboticsI2cRangeSensor rangeSensorFront, rangeSensorSide;
+    protected Rev2mDistanceSensor left,right;
 
-    protected void initHubs(){
-        hub2 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
-        hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
+    //Roadrunner
+    public SampleMecanumDriveREV drive;
 
-    }
+    //IMU
+    protected static BNO055IMU imu;
+    protected Orientation angles;
+    protected double angle;
+    protected static double imuHeading;
+    protected static double imuAbsolute=0;
+    protected static double imuOffset=0;
+    protected static double acctarget=0;
+
+    //Odometry
+    protected double xmult = 1430.5/72, ymult = 18.65;
+    protected final double xOdoEnable = 0.8, xOdoDisable = 1;
+
+    //Threads
+    protected CooThread cooThread;
+
+    //Misc
+    protected double[] n_pass ={0,0};
+    private double xpre=0,y1pre=0,y2pre=0,theta=0,vumarkCounter=0;
+
+    //-------------------------------------------------------------Multithreading------------------------------------------------------------------
+/*
     class AutonomousInitThread extends Thread{
         @Override
         public void run() {
@@ -118,6 +100,33 @@ public class BaseAuto extends BaseOpMode {
             Log.i("Auto init thread", "finished at "+ System.currentTimeMillis());
         }
     }
+
+ */
+
+    //------------------------------------------------------------------Init-----------------------------------------------------------------------
+    protected void initAutonomous() {
+        showTelemetry = false;
+        initDrivetrain();//181.64ms
+        initIMU();//!!!!!1.259s : stops if thread has Interrupt flag
+        initGrabber();//1.14ms
+        initPlatformGrabber();//34.20ms
+        initOdometry();//100.89ms
+        setNewGyro0();
+        initHubs();
+        initVuforia();
+        xOdometryEnableServo.setPosition(xOdoEnable);
+
+
+        //initViewMarks();
+        Log.i("Auto init", "done");
+    }
+
+    protected void initHubs(){
+        hub2 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
+        hub4 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
+    }
+
+    //----------------------------------------------------------------Vuforia----------------------------------------------------------------------
 
     protected void initVuforia(){
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -127,9 +136,7 @@ public class BaseAuto extends BaseOpMode {
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
         vuforia.setFrameQueueCapacity(6);
-    }
 
-    protected void initViewMarks(){
         targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
         rear1 = targetsSkyStone.get(11);
         rear1.setName("Rear Perimeter 1");
@@ -138,25 +145,56 @@ public class BaseAuto extends BaseOpMode {
         rear1.setLocation(OpenGLMatrix
                 .translation(halfField, quadField, mmTargetHeight)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
+
         rear2.setLocation(OpenGLMatrix
-                .translation(-halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
+                .translation(halfField, -quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
         allTrackables.addAll(targetsSkyStone);
+        targetsSkyStone.activate();
+        VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
+        boolean PHONE_IS_PORTRAIT = false  ;
+        float phoneXRotate    = 0;
+        float phoneYRotate    = 0;
+        float phoneZRotate    = 0;
+        if (CAMERA_CHOICE == BACK) {
+            phoneYRotate = -90;
+        } else {
+            phoneYRotate = 90;
+        }
+
+        // Rotate the phone vertical about the X axis if it's in portrait mode
+        if (PHONE_IS_PORTRAIT) {
+            phoneXRotate = 90 ;
+        }
+
+        // Next, translate the camera lens to where it is on the robot.
+        // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
+        final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
+        final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
+        final float CAMERA_LEFT_DISPLACEMENT     = 8.0f * mmPerInch;     // eg: Camera is ON the robot's center line
+
+        OpenGLMatrix robotFromCamera = OpenGLMatrix
+                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
+                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
+
+        /**  Let all the trackable listeners know where the phone is.  */
+        for (VuforiaTrackable trackable : allTrackables) {
+            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
+        }
     }
 
-    protected double[] adjustToViewMark(boolean isBlue){
+    protected double[] adjustToViewMark(boolean isBlue) throws InterruptedException {
         double[] xy=new double[2];
         double x,y;
         targetsSkyStone.activate();
         boolean targetVisible=false;
         VuforiaTrackable trackable;
-        if(isBlue)
-            trackable=rear1;
-        else
-            trackable=rear2;
+        if(isBlue) trackable=rear1;
+        else trackable=rear2;
 
         ElapsedTime ti=new ElapsedTime();
         while ((!targetVisible) && ti.milliseconds()<1000) {
+            Thread.sleep(0);
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
                 targetVisible = true;
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
@@ -167,11 +205,37 @@ public class BaseAuto extends BaseOpMode {
         }
         if (targetVisible) {
             VectorF translation = lastLocation.getTranslation();
-            x=translation.get(0) / mmPerInch-6.5; y= translation.get(1) / mmPerInch+9;
+            x=translation.get(0) / mmPerInch; y= translation.get(1) / mmPerInch;
+            hub4.setLedColor(0,255,0);
+            if(isBlue&&!near(y,40,5)){
+                if(vumarkCounter<3){
+                    vumarkCounter++;
+                    y=adjustToViewMark(true)[1];
+                }
+                else{
+                    y=37.2333;
+                    vumarkCounter=0;
+                }
+            }
+            if(!isBlue&&!near(y,-40,5)){
+                if(vumarkCounter<3){
+                    vumarkCounter++;
+                    y=adjustToViewMark(false)[1];
+                }
+                else{
+                    y=-24.72;
+                    vumarkCounter=0;
+                }
+            }
+            if (isBlue&&near(y,40,5))
+                vumarkCounter=0;
+            if(!isBlue&&near(y,-40,5))
+                vumarkCounter=0;
         }
         else {
-            if(isBlue){ x=38;y=44.5;}
-            else{ x=-55.35;y=-24.7;}
+            if(isBlue){ x=38;y=37.2333333;}
+            else{ x=-55.35;y=-24.7233333;}
+            hub4.setLedColor(255,0,0);
         }
         targetsSkyStone.deactivate();
         xy[0]=x;
@@ -239,7 +303,6 @@ public class BaseAuto extends BaseOpMode {
     }
 
      */
-
     protected void shutdownVuforia(){
         targetsSkyStone.deactivate();
     }
@@ -300,19 +363,15 @@ public class BaseAuto extends BaseOpMode {
         return 0;
     }
 
-    protected int new_skystoneposition() {
+    protected int new_skystoneposition() throws InterruptedException {
         VuforiaLocalizer.CloseableFrame frame = null;
         Image image = null;
         int result = 0;
         int red_L = 0, red_R = 0, blue_L = 0, blue_R = 0, green_L = 0, green_R = 0, red_M = 0, blue_M = 0, green_M = 0;
         int curpixel_L, curpixel_R, curpixel_M;
-        boolean l = true, r = true, m = true;
 
-        try {
-            frame = this.vuforia.getFrameQueue().take();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        frame = this.vuforia.getFrameQueue().take();
+
 
         for (int i = 0; i < frame.getNumImages(); ++i) {
             if (frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565) {
@@ -374,8 +433,7 @@ public class BaseAuto extends BaseOpMode {
         return result;
     }
 
-
-    protected int new_skystonepositionR(){
+    protected int new_skystonepositionR() throws InterruptedException {
         VuforiaLocalizer.CloseableFrame frame = null;
         Image image = null;
         int result = 0;
@@ -383,9 +441,7 @@ public class BaseAuto extends BaseOpMode {
         int curpixel_L, curpixel_R, curpixel_M;
         boolean l = true, r=true, m = true;
 
-        try {frame = this.vuforia.getFrameQueue().take(); }
-        catch (InterruptedException e)
-        {throw new RuntimeException(e);}
+        frame = this.vuforia.getFrameQueue().take();
 
         for(int i = 0;i<frame.getNumImages();++i){
             if(frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565){
@@ -439,6 +495,8 @@ public class BaseAuto extends BaseOpMode {
         return result;
     }
 
+    //------------------------------------------------------------------TFOD------------------------------------------------------------------------
+    /*
     //TFOD
     protected TFObjectDetector tfod;
 
@@ -462,27 +520,20 @@ public class BaseAuto extends BaseOpMode {
         }
     }
 
-    //Sensors
-    protected ModernRoboticsI2cRangeSensor rangeSensorFront, rangeSensorSide;
-    protected Rev2mDistanceSensor left,right;
 
+ */
+
+    //-----------------------------------------------------------------Sensors----------------------------------------------------------------------
     protected void initSensors(){
-        rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
+        //rangeSensorSide = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "side");
        // rangeSensorFront = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "front");
         //left = hardwareMap.get(Rev2mDistanceSensor.class,"left");
        // right = hardwareMap.get(Rev2mDistanceSensor.class,"right");
         //tower_top = hardwareMap.get(Rev2mDistanceSensor.class, "tower_top");
     }
 
-    //IMU
-    protected static BNO055IMU imu;
-    protected Orientation angles;
-    protected double angle;
-    protected static double imuHeading;
-    protected static double imuAbsolute=0;
-    protected static double imuOffset=0;
-    protected static double acctarget=0;
 
+    //-------------------------------------------------------------------IMU-----------------------------------------------------------------------
 
     protected void initIMU(){
         BNO055IMU.Parameters BNOParameters = new BNO055IMU.Parameters();
@@ -543,8 +594,7 @@ public class BaseAuto extends BaseOpMode {
         return onTarget;
     }
 
-    //Odometry
-    protected double xmult = 1430.5/72, ymult = 18.65;
+    //-----------------------------------------------------------------Odometry-------------------------------------------------------------------
 
     protected void initOdometry(){
         //L2 is Y encoder
@@ -558,75 +608,52 @@ public class BaseAuto extends BaseOpMode {
         L2 = hardwareMap.get(DcMotor.class, "L2");
         L2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        xOdometryEnableServo = hardwareMap.get(Servo.class,"xOdoEnable");
         cooThread=new CooThread();
     }
 
-    //Threads
-    protected CooThread cooThread;
-
-    //Misc
-    protected double[] n_pass ={0,0};
-    private double xpre=0,y1pre=0,y2pre=0,theta=0;
-
-
-    //Movement methods
-
-    protected void turn(double angle, double speed, double threshold) {
-        setMode_RUN_WITHOUT_ENCODER();
-        setNewGyro(theta);
-        double p_TURN = 6;
-        //double Ie=0;
-
-        double rangle = angle;
-        if(angle>25)rangle-=2;
-        else if(angle<-25)rangle+=1;
-
-        while(!onHeading(speed, rangle, p_TURN, threshold));
-        theta=getError(theta+angle,0);
-        //setNewGyro(angle);
+    protected void updateCoo(){
+        double heading=getError(getHeading()+imuOffset,0);
+        double dtheta=heading-theta;
+        tmpBulkData = hub4.getBulkInputData();
+        double xcur=tmpBulkData.getMotorCurrentPosition(xOdometry)/odometryEncXPerInch,y1cur=-tmpBulkData.getMotorCurrentPosition(platform_grabber)/odometryEncYPerInch,y2cur=-tmpBulkData.getMotorCurrentPosition(L2)/odometryEncYPerInch,thetacur=heading/180*Math.PI;
+        double dx=(near(dtheta,0,5))?xcur-xpre:0;
+        double dy=(y1cur+y2cur-y1pre-y2pre)/2;//(near(dtheta,0,5))?y1cur-y1pre:0;
+        n_pass[0] += (dx * Math.cos(thetacur) + dy * Math.sin(thetacur));
+        n_pass[1] += (dx * Math.sin(thetacur) + dy * Math.cos(thetacur));
+        xpre=xcur;
+        y1pre=y1cur;
+        y2pre=y2cur;
+        theta=heading;
     }
 
-    protected void PIDturn(double target, boolean resetOffset){
-        tunePIDturn(target,0.068,0.9,0.5,resetOffset);
-    }
-
-    protected void PIDturnfast(double target, boolean resetOffset){
-        tunePIDturn(target,0.029,2.291,1,false);
-    }
-    protected void align(double target){
-        PIDturnfast(-getError(imuAbsolute,target),false);
-        setNewGyro(target);
-    }
-    protected void tunePIDturn(double target, double kp, double kd, double speed, boolean resetOffset){
-        if(resetOffset){
-            acctarget=0;
-            setNewGyro0();
+    protected class CooThread extends Thread{
+        volatile public boolean stop = false;
+        @Override
+        public void run() {
+            //this.setPriority(4);
+            this.setName("Coord Thread "+this.getId());
+            Log.i("coordThread"+this.getId(),"Started running");
+            while (!isInterrupted() && !stop) {
+                try{
+                    Thread.sleep(60);
+                }
+                catch(Exception e){}
+                drive.updatePoseEstimate();
+                //Pose2d pos=drive.getPoseEstimate();
+                //telemetry.addLine("x,y "+pos.getX()+","+pos.getY());
+                //telemetry.update();
+            }
+            Log.i("coordThread"+this.getId(), "thread finished");
         }
-        double e = target;
-        ElapsedTime t = new ElapsedTime();
-        ElapsedTime n = new ElapsedTime();
-        int i=0;
-        while(i<5&&n.milliseconds()<((speed>0.5)?800:2000)){
-            double e2 = target-(getAdjustedHeading(target));
-            double D = kd*(e2-e)/t.milliseconds();
-            t.reset();
-            double P = e2*kp;
-            if(Math.abs(P)>Math.abs(speed))P=P>0?speed:-speed;
-            setAllDrivePower(P+D);
-            e=e2;
-            if(near(e2-e,0,0.3)&&near(e2,0,3))
-                i++;
+        public void stopThread(){
+            stop = true;
         }
-        setAllDrivePower(0);
-        acctarget+=target;
-        if(resetOffset) {
-            acctarget = 0;
-            setNewGyro0();
-        }
-        else
-            setNewGyro(acctarget);
     }
-    protected void lefty(){
+
+    //-------------------------------------------------------------Movement methods---------------------------------------------------------------
+
+    protected void lefty() throws InterruptedException {
         double target=90,kd=0.922,kp=0.028;
         acctarget=0;
         setNewGyro0();
@@ -634,7 +661,7 @@ public class BaseAuto extends BaseOpMode {
         ElapsedTime t = new ElapsedTime();
         int i=0;
         setAllDrivePower(1,1,-1,-1);
-        wait(40);
+        Thread.sleep(40);
         while(i<5){
             double e2 = target-(getAdjustedHeading(target));
             double D = kd*(e2-e)/t.milliseconds();
@@ -653,7 +680,7 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(0);
         setNewGyro0();
     }
-    protected void righty(){
+    protected void righty() throws InterruptedException {
         double target=-90;
         acctarget=0;
         setNewGyro0();
@@ -661,7 +688,7 @@ public class BaseAuto extends BaseOpMode {
         ElapsedTime t = new ElapsedTime();
         int i=0;
         setAllDrivePower(1,1,-1,-1);
-        wait(40);
+        Thread.sleep(40);
         while(i<5){
             double e2 = target-(getAdjustedHeading(target));
             double D = 0.922*(e2-e)/t.milliseconds();
@@ -680,8 +707,7 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(0);
         setNewGyro0();
     }
-
-    protected void backy(){
+    protected void backy() throws InterruptedException {
         Log.i("backY","called");
         double target=180,kd=0.922,kp=0.028;
         double e = target;
@@ -691,7 +717,7 @@ public class BaseAuto extends BaseOpMode {
         int i=0;
         ElapsedTime n = new ElapsedTime();
         setAllDrivePower(1,1,-1,-1);
-        wait(150);
+        Thread.sleep(150);
         Log.i("backY","starting main loop");
         while(i<5&&n.milliseconds()<5000){
             double e2 = target-(getAdjustedHeading(target));
@@ -717,6 +743,64 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(0);
     }
 
+    protected void turn(double angle, double speed, double threshold) {
+        setMode_RUN_WITHOUT_ENCODER();
+        setNewGyro(theta);
+        double p_TURN = 6;
+        //double Ie=0;
+
+        double rangle = angle;
+        if(angle>25)rangle-=2;
+        else if(angle<-25)rangle+=1;
+
+        while(!onHeading(speed, rangle, p_TURN, threshold));
+        theta=getError(theta+angle,0);
+        //setNewGyro(angle);
+    }
+
+    protected void PIDturn(double target, boolean resetOffset) throws InterruptedException {
+        tunePIDturn(target,0.068,0.9,0.5,resetOffset);
+    }
+
+    protected void PIDturnfast(double target, boolean resetOffset) throws InterruptedException {
+        tunePIDturn(target,0.029,2.291,1,false);
+    }
+
+    protected void align(double target) throws InterruptedException {
+        PIDturnfast(-getError(imuAbsolute,target),false);
+        setNewGyro(target);
+    }
+
+    protected void tunePIDturn(double target, double kp, double kd, double speed, boolean resetOffset) throws InterruptedException {
+        if(resetOffset){
+            acctarget=0;
+            setNewGyro0();
+        }
+        double e = target;
+        ElapsedTime t = new ElapsedTime();
+        ElapsedTime n = new ElapsedTime();
+        int i=0;
+        while(i<5&&n.milliseconds()<((speed>0.5)?800:2000)){
+            Thread.sleep(0);
+            double e2 = target-(getAdjustedHeading(target));
+            double D = kd*(e2-e)/t.milliseconds();
+            t.reset();
+            double P = e2*kp;
+            if(Math.abs(P)>Math.abs(speed))P=P>0?speed:-speed;
+            setAllDrivePower(P+D);
+            e=e2;
+            if(near(e2-e,0,0.3)&&near(e2,0,3))
+                i++;
+        }
+        setAllDrivePower(0);
+        acctarget+=target;
+        if(resetOffset) {
+            acctarget = 0;
+            setNewGyro0();
+        }
+        else
+            setNewGyro(acctarget);
+    }
 
     private double getAdjustedHeading(double target){
         double i = getHeading();
@@ -757,8 +841,7 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePowerG(-.02 * dir - .05 * x + .02 * w, -.02 * dir + .05 * x + .02 * w, .02 * dir - 0.05 * x + .02 * w, .2 * dir + .05 * x + .2 * w);
     }
 
-
-    protected void moveInchesG(double xInch, double yInch, double speed, double Kp){
+    protected void moveInchesG(double xInch, double yInch, double speed, double Kp) throws InterruptedException {
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
         //ElapsedTime t = new ElapsedTime();
@@ -781,21 +864,21 @@ public class BaseAuto extends BaseOpMode {
         }
         //brake
         setAllDrivePower(-LF.getPower()/Math.abs(LF.getPower()),-LB.getPower()/Math.abs(LB.getPower()),-RF.getPower()/Math.abs(RF.getPower()),-RB.getPower()/Math.abs(RB.getPower()));
-        wait(75);
+        Thread.sleep(75);
         setAllDrivePower(0);
         reset_ENCODER();
         setMode_RUN_WITHOUT_ENCODER();
     }
 
-    public void moveInchesG(double xInch, double yInch, double speed){
+    protected void moveInchesG(double xInch, double yInch, double speed) throws InterruptedException {
         moveInchesG(xInch,yInch,speed,.8);
     }
 
-    protected void moveInchesGOY(double yInch, double speed){
+    protected void moveInchesGOY(double yInch, double speed) throws InterruptedException {
         moveInchesGOY(yInch,speed,1);
     }
 
-    protected void moveInchesGOY(double yInch, double speed,double kV){//use 0.4 for short-dist
+    protected void moveInchesGOY(double yInch, double speed,double kV) throws InterruptedException {//use 0.4 for short-dist
         yInch = -yInch;
         //setNewGyro0();
         double kP = 1, kD = 0.12;
@@ -822,7 +905,8 @@ public class BaseAuto extends BaseOpMode {
         int previousPos = offsetY, currentOdometry, Dterm;
         double tpre = 0, tcur;
         int steadyCounter = 0;
-        while(steadyCounter < 5 && !this.gamepad1.b){//b is there so we can break out of loop anytime
+        while(steadyCounter < 3 && !this.gamepad1.b){//b is there so we can break out of loop anytime
+            Thread.sleep(0);
             currentOdometry = getY1Odometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
@@ -841,7 +925,7 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(0);
     }
 
-    protected void moveInchesGOY_XF(double yInch, double speed,double kV){//use 0.4 for short-dist
+    protected void moveInchesGOY_XF(double yInch, double speed,double kV) throws InterruptedException {//use 0.4 for short-dist
         yInch = -yInch;
         //setNewGyro0();
         double kP = 1, kD = 0.12;
@@ -871,6 +955,7 @@ public class BaseAuto extends BaseOpMode {
         double tpre = 0, tcur;
         int steadyCounter = 0;
         while(steadyCounter < 5 && !this.gamepad1.b){//b is there so we can break out of loop anytime
+            Thread.sleep(0);
             diff = (getXOdometry() - offsetX)/odometryEncXPerInch/10;
             currentOdometry = getY1Odometry();
             tcur=t.milliseconds();
@@ -889,7 +974,8 @@ public class BaseAuto extends BaseOpMode {
         }
         setAllDrivePower(0);
     }
-    protected void moveInchesGOY_XF_F(double yInch, double speed,double kV, int FixXOffset){//use 0.4 for short-dist
+
+    protected void moveInchesGOY_XF_F(double yInch, double speed,double kV, int FixXOffset) throws InterruptedException {//use 0.4 for short-dist
         yInch = -yInch;
         //setNewGyro0();
         double kP = 1, kD = 0.12;
@@ -907,7 +993,8 @@ public class BaseAuto extends BaseOpMode {
             kP = 0.0325;
             kD = 7.3E-3;
         }
-        double kPx = 0.25, kDx = 0;
+        //0.25 0.005
+        double kPx = 0.2, kDx = 0.005;
         ElapsedTime t = new ElapsedTime();
         int offsetY = getY1Odometry();
         int offsetX = FixXOffset;
@@ -916,19 +1003,21 @@ public class BaseAuto extends BaseOpMode {
         double multiply_factor, prev_speed = 0;
         int odometryYGoal = offsetY + (int)(yInch * odometryEncYPerInch);
         double vy = speed;
-        int previousPos = offsetY, currentOdometry, Dterm, DtermX;
+        int previousPos = offsetY, previousPosX = offsetX, currentOdometry, currentOdometryX, Dterm, DtermX;
         double tpre = 0, tcur;
         int steadyCounter = 0;
-        while(steadyCounter < 5 && !this.gamepad1.b){//b is there so we can break out of loop anytime
+        while(steadyCounter < 3 && !this.gamepad1.b){//b is there so we can break out of loop anytime
             //telemetry.addData("x",getXOdometry());
             //telemetry.addData("yL",getY1Odometry());
             //telemetry.addData("yR",getY2Odometry());
             //telemetry.update();
+            Thread.sleep(0);
             currentOdometry = getY1Odometry();
+            currentOdometryX = getXOdometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
-            DtermX = (int)((getXOdometry() - previousPos)/(tcur-tpre));
-            diff = (getXOdometry() - offsetX)/odometryEncXPerInch*kPx + (near(DtermX,0,speed * 5000 / 0.3)?(kDx *DtermX):0);
+            DtermX = (int)((currentOdometryX - previousPosX)/(tcur-tpre));
+            diff = (currentOdometryX - offsetX)/odometryEncXPerInch*kPx + (near(DtermX,0,speed * 5000 / 0.3)?(kDx *DtermX):0);
             multiply_factor = -Math.min(1, Math.max(-1, kV*((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
             if(near(prev_speed, multiply_factor*vy,0.001) && near(prev_speed, 0, 0.1)){
                 steadyCounter++;
@@ -937,17 +1026,82 @@ public class BaseAuto extends BaseOpMode {
             }
             Log.d("GOY "+yInch,"steady"+steadyCounter+", position"+currentOdometry+", LF speed"+prev_speed+", OC speed="+Dterm+"bulkSpd="+hub4.getBulkInputData().getMotorVelocity(platform_grabber));
             previousPos = currentOdometry;
+            previousPosX = currentOdometryX;
             tpre=tcur;
             setAllDrivePowerG(multiply_factor*vy + diff,multiply_factor*vy - diff,multiply_factor*-vy + diff,multiply_factor*-vy - diff,1.4);
             prev_speed = multiply_factor * vy;
         }
         setAllDrivePower(0);
     }
-    protected void moveInchesGOX(double xInch, double speed){
+
+    protected void moveInchesGOY_XF_F_T(double yInch, double speed,double kV, int FixXOffset, int timer) throws InterruptedException {//use 0.4 for short-dist
+        yInch = -yInch;
+        //setNewGyro0();
+        double kP = 1, kD = 0.12;
+        if(yInch == 0)return;
+        if(Math.abs(speed) == 0.3){
+            kP = 1;
+            kD = 0.12;
+        }else if(Math.abs(speed) == 0.4){
+            kP = 0.27;
+            kD = 0.03;
+        }else if(Math.abs(speed) == 0.6){
+            kP = 0.075;
+            kD = 1.4E-2;
+        }else if(Math.abs(speed) == 0.9){
+            kP = 0.0325;
+            kD = 7.3E-3;
+        }
+        //0.25 0.005
+        double kPx = 0.2, kDx = 0.005;
+        ElapsedTime t = new ElapsedTime();
+        int offsetY = getY1Odometry();
+        int offsetX = FixXOffset;
+        double diff = 0;
+        speed=Math.abs(speed);
+        double multiply_factor, prev_speed = 0;
+        int odometryYGoal = offsetY + (int)(yInch * odometryEncYPerInch);
+        double vy = speed;
+        int previousPos = offsetY, previousPosX = offsetX, currentOdometry, currentOdometryX, Dterm, DtermX;
+        double tpre = 0, tcur;
+        int steadyCounter = 0;
+        while(steadyCounter < 3 && !this.gamepad1.b){//b is there so we can break out of loop anytime
+            //telemetry.addData("x",getXOdometry());
+            //telemetry.addData("yL",getY1Odometry());
+            //telemetry.addData("yR",getY2Odometry());
+            //telemetry.update();
+            Thread.sleep(0);
+            currentOdometry = getY1Odometry();
+            currentOdometryX = getXOdometry();
+            tcur=t.milliseconds();
+            Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
+            DtermX = (int)((currentOdometryX - previousPosX)/(tcur-tpre));
+            diff = (currentOdometryX - offsetX)/odometryEncXPerInch*kPx + (near(DtermX,0,speed * 5000 / 0.3)?(kDx *DtermX):0);
+            multiply_factor = -Math.min(1, Math.max(-1, kV*((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
+            if(near(prev_speed, multiply_factor*vy,0.001) && near(prev_speed, 0, 0.1)){
+                steadyCounter++;
+            }
+            else if(tcur>timer){
+                break;
+            }
+            else{
+                steadyCounter = 0;
+            }
+            Log.d("GOY "+yInch,"steady"+steadyCounter+", position"+currentOdometry+", LF speed"+prev_speed+", OC speed="+Dterm+"bulkSpd="+hub4.getBulkInputData().getMotorVelocity(platform_grabber));
+            previousPos = currentOdometry;
+            previousPosX = currentOdometryX;
+            tpre=tcur;
+            setAllDrivePowerG(multiply_factor*vy + diff,multiply_factor*vy - diff,multiply_factor*-vy + diff,multiply_factor*-vy - diff,1.4);
+            prev_speed = multiply_factor * vy;
+        }
+        setAllDrivePower(0);
+    }
+
+    protected void moveInchesGOX(double xInch, double speed) throws InterruptedException {
         moveInchesGOX(xInch,speed,1);
     }
 
-    protected void moveInchesGOX(double xInch, double speed,double kV){//0.5 only
+    protected void moveInchesGOX(double xInch, double speed,double kV) throws InterruptedException {//0.5 only
         if(xInch == 0)return;
         ElapsedTime t = new ElapsedTime();
         int offsetX = getXOdometry();
@@ -959,6 +1113,7 @@ public class BaseAuto extends BaseOpMode {
         double tpre = 0, tcur;
         int steadyCounter = 0;
         while(steadyCounter < 5 && !this.gamepad1.b){
+            Thread.sleep(0);
             currentOdometry = getXOdometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
@@ -977,7 +1132,7 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(0);
     }
 
-    protected void moveInchesGOXT(double xInch, double speed,double kV, int timer){//0.5 only
+    protected void moveInchesGOXT(double xInch, double speed,double kV, int timer) throws InterruptedException{//0.5 only
         if(xInch == 0)return;
         ElapsedTime t = new ElapsedTime();
         int offsetX = getXOdometry();
@@ -990,6 +1145,7 @@ public class BaseAuto extends BaseOpMode {
         int steadyCounter = 0;
         t.reset();
         while(steadyCounter < 5 && !this.gamepad1.b){
+            Thread.sleep(0);
             //telemetry.addData("d",t.milliseconds());
             //telemetry.update();
             currentOdometry = getXOdometry();
@@ -999,8 +1155,9 @@ public class BaseAuto extends BaseOpMode {
             if(near(prev_speed, multiply_factor*vx,0.001) && near(prev_speed, 0, 0.1)){
                 steadyCounter++;
             }
-            else if(t.milliseconds()>timer){
-                steadyCounter = 5;
+            else if(tcur>timer){
+                Log.d("GOX "+xInch,"timeout");
+                break;
             }
             else{
                 steadyCounter = 0;
@@ -1014,11 +1171,11 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(0);
     }
 
-    protected void moveInchesGOX_platform(double xInch, double speed){
+    protected void moveInchesGOX_platform(double xInch, double speed) throws InterruptedException {
         moveInchesGOX_platform(xInch,speed,1);
     }
 
-    protected void moveInchesGOX_platform(double xInch, double speed,double kV){//0.8 only, for doing the platform
+    protected void moveInchesGOX_platform(double xInch, double speed,double kV) throws InterruptedException {//0.8 only, for doing the platform
         double kP = 1, kD = 0.07;
         if(Math.abs(speed) == 0.8){
             kP = 1;
@@ -1035,6 +1192,7 @@ public class BaseAuto extends BaseOpMode {
         double tpre = 0, tcur;
         int steadyCounter = 0;
         while(steadyCounter < 5 && !this.gamepad1.b){
+            Thread.sleep(0);
             currentOdometry = getXOdometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
@@ -1053,99 +1211,15 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(0);
     }
 
-    public void brake(){
+    protected void brake() throws InterruptedException {
         double speed = LF.getPower();
         setAllDrivePower(-speed,-speed,speed,speed);
-        wait(40+(int)(400*Math.abs(speed)));
+        Thread.sleep(40+(int)(400*Math.abs(speed)));
     }
 
-    //Coordinates
-    protected void updateCoo(){
-        double heading=getError(getHeading()+imuOffset,0);
-        double dtheta=heading-theta;
-        tmpBulkData = hub4.getBulkInputData();
-        double xcur=tmpBulkData.getMotorCurrentPosition(xOdometry)/odometryEncXPerInch,y1cur=-tmpBulkData.getMotorCurrentPosition(platform_grabber)/odometryEncYPerInch,y2cur=-tmpBulkData.getMotorCurrentPosition(L2)/odometryEncYPerInch,thetacur=heading/180*Math.PI;
-        double dx=(near(dtheta,0,5))?xcur-xpre:0;
-        double dy=(y1cur+y2cur-y1pre-y2pre)/2;//(near(dtheta,0,5))?y1cur-y1pre:0;
-        n_pass[0] += (dx * Math.cos(thetacur) + dy * Math.sin(thetacur));
-        n_pass[1] += (dx * Math.sin(thetacur) + dy * Math.cos(thetacur));
-        xpre=xcur;
-        y1pre=y1cur;
-        y2pre=y2cur;
-        theta=heading;
-    }
+    //---------------------------------------------------------Autonomous methods-------------------------------------------------
 
-    protected class CooThread extends Thread{
-        volatile public boolean stop = false;
-        @Override
-        public void run() {
-            this.setPriority(4);
-            this.setName("Coord Thread "+this.getId());
-            Log.i("coordThread"+this.getId(),"Started running");
-            while (!isInterrupted() && !stop) {
-                updateCoo();
-                try {
-                    wait(1);
-                }
-                catch(Exception e){}
-                telemetry.addData("position:", "%.3f %.3f", n_pass[0], n_pass[1]);
-                telemetry.update();
-            }
-            Log.i("coordThread"+this.getId(), "thread finished");
-        }
-        public void stopThread(){
-            stop = true;
-        }
-    }
-    protected void after_dragged_foundation_B(){
-        ElapsedTime p = new ElapsedTime();
-        platform_grabber.setPower(1);
-        servoThread.setTarget(0.5);
-        wait(300);
-        //p.reset();
-        ///while (p.milliseconds()<300);
-        PIDturnfast(-90,true);
-        //setAllDrivePower(0);
-        //turn(-90-getHeading(),0.5,1);
-        setNewGyro(90);
-        //setAllDrivePowerG(-.2,-.2,.2,.2);
-        //moveInchesGOY(5,0.4);
-
-        p.reset();
-        while (p.milliseconds()<1200)setAllDrivePowerG(-.4,-.4,.4,.4);
-        setAllDrivePower(0);
-        servoThread.setTarget(0.75);
-        p.reset();
-        while (p.milliseconds()<600);
-        platform_grabber.setPower(0);
-        grabber.setPosition(grabber_open);
-        //servoThread.setTarget(0.6);
-    }
-    protected void after_dragged_foundation_R(){
-        ElapsedTime p = new ElapsedTime();
-        platform_grabber.setPower(1);
-        servoThread.setTarget(0.5);
-        wait(300);
-        //p.reset();
-        ///while (p.milliseconds()<300);
-        PIDturnfast(-90,true);
-        //setAllDrivePower(0);
-        //turn(-90-getHeading(),0.5,1);
-        setNewGyro(-90);
-        //setAllDrivePowerG(-.2,-.2,.2,.2);
-        //moveInchesGOY(5,0.4);
-
-        p.reset();
-        while (p.milliseconds()<1200)setAllDrivePowerG(-.4,-.4,.4,.4);
-        setAllDrivePower(0);
-        servoThread.setTarget(0.75);
-        p.reset();
-        while (p.milliseconds()<600);
-        platform_grabber.setPower(0);
-        grabber.setPosition(grabber_open);
-        //servoThread.setTarget(0.6);
-    }
-    protected int Ultra_get_position(){
+    protected int Ultra_get_position() throws InterruptedException {
         int poss = 0;
         int[] resultcounter = {0,0,0};
         //find skystone
@@ -1154,7 +1228,8 @@ public class BaseAuto extends BaseOpMode {
         for (int i = 0;i<3;++i){ if(resultcounter[i]>curmax){poss = i;curmax=resultcounter[i];} }
         return poss;
     }
-    protected int Ultra_get_positionR(){
+
+    protected int Ultra_get_positionR() throws InterruptedException {
         int poss = 0;
         int[] resultcounter = {0,0,0};
         //find skystone
@@ -1163,86 +1238,46 @@ public class BaseAuto extends BaseOpMode {
         for (int i = 0;i<3;++i){ if(resultcounter[i]>curmax){poss = i;curmax=resultcounter[i];} }
         return poss;
     }
-    protected void second_and_more_B(int result) {
-        double curX;
-        double info[] = {78.75,78.75+8,78.75+16,78.75+24,78.75+24,78.75+24};
-        double origin[] = {0, 41}, dd[] = adjustToViewMark(true);
-        for (int i = 0; i < 1; ++i) {
-            setAllDrivePower(0);
-            curX = getXOdometry();
-            if (i > 0) servoThread.setTarget(0.75);
-            grabber.setPosition(grabber_open);
-            align(90);
-            moveInchesGOY_XF_F(-info[result+2], 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
-            servoThread.setTarget(0.98);
-            align(0);
 
-            double yorigin = getY1Odometry();
-            while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 4) {
-                setAllDrivePowerG(-.3, -.3, .3, .3);
-            }
-            while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 8) {
-                setAllDrivePowerG(-.1, -.1, .1, .1);
-            }
-            grabber.setPosition(grabber_closed);
-            wait(300);
-            servoThread.setTarget(0.85);
-            while ((getY1Odometry() - yorigin) * -1 > odometryEncYPerInch * 2) {
-                setAllDrivePowerG(.3, .3, -.3, -.3);
-            }
-            setAllDrivePower(0);
-            align(90);
-            servoThread.setTarget(0.65);
-            moveInchesGOY_XF_F(info[result+2]-1, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
-        }
-        grabber.setPosition(grabber_open);
+    protected void first_block() throws InterruptedException {
+        //move forward to the skystone
+        while(-getY1Odometry() < 20*odometryEncYPerInch){Thread.sleep(0);setAllDrivePowerG(-.3,-.3,.3,.3);}
+        while(-getY1Odometry() < 30*odometryEncYPerInch){Thread.sleep(0);setAllDrivePowerG(-.2,-.2,.2,.2);}
+        setAllDrivePowerG(-.1,-.1,.1,.1);
+        grabber.setPosition(grabber_closed);
+        Thread.sleep(100);
+        servoThread.setExtTarget(0.7);
+        while(-getY1Odometry()> 29.5*odometryEncYPerInch){Thread.sleep(0);setAllDrivePowerG(.3,.3,-.3,-.3);}
+        setAllDrivePower(0);
     }
 
-    protected void second_and_more_R(int result) {
-        double curX;
-        double info[] = {78.75,78.75+8,78.75+16,78.75+24,78.75+24,78.75+24};
-        double origin[] = {0, -38.5}, dd[] = adjustToViewMark(false);
-        for (int i = 0; i < 1; ++i) {
-            setAllDrivePower(0);
-            curX = getXOdometry();
-            if (i > 0) servoThread.setTarget(0.75);
-            grabber.setPosition(grabber_open);
-            align(-90);
-            moveInchesGOY_XF_F(-info[result+2], 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
-            servoThread.setTarget(0.98);
-            align(0);
-
-            double yorigin = getY1Odometry();
-            while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 4) {
-                setAllDrivePowerG(-.3, -.3, .3, .3);
-            }
-            while ((getY1Odometry() - yorigin) * -1 < odometryEncYPerInch * 8) {
-                setAllDrivePowerG(-.1, -.1, .1, .1);
-            }
-            grabber.setPosition(grabber_closed);
-            wait(300);
-            servoThread.setTarget(0.85);
-            while ((getY1Odometry() - yorigin) * -1 > odometryEncYPerInch * 2) {
-                setAllDrivePowerG(.3, .3, -.3, -.3);
-            }
-            setAllDrivePower(0);
-            align(-90);
-            servoThread.setTarget(0.65);
-            moveInchesGOY_XF_F(info[result+2]-1, 0.6, 1, (int) (curX - (origin[1] - dd[1]) * odometryEncXPerInch));
-            dd = adjustToViewMark(false);
-        }
+    protected void before_start(){
+        platform_grabber.setPower(1);
+        servoThread.setExtTarget(0.88);
+        if(showTelemetry)telemetry.clear();
         grabber.setPosition(grabber_open);
+        platform_grabber.setPower(0.0);
     }
 
-    protected void first_block(){
-    //move forward to the skystone
-    while(-getY1Odometry() < 27*odometryEncYPerInch){setAllDrivePowerG(-.3,-.3,.3,.3);}
-    setAllDrivePowerG(-.1,-.1,.1,.1);
-    grabber.setPosition(grabber_closed);
-    wait(300);
-    servoThread.setTarget(0.85);
-    while(-getY1Odometry()> 29*odometryEncYPerInch){setAllDrivePowerG(.3,.3,-.3,-.3);}
-    setAllDrivePower(0);
+    protected void adaptive_platform_grabbing(int pos) throws InterruptedException {
+        int pre, cur = getXOdometry(), origin = cur;
+        boolean flag = false;
+        while (!flag){
+            setAllDrivePowerG(-0.5,0.5,-0.5,0.5);
+            pre = cur;
+            cur = getXOdometry();
+            if((cur-origin)/odometryEncXPerInch > 5){
+                //telemetry.addData("diff", cur-pre);
+                //       telemetry.update();
+                if(cur-pre <4000){
+                    flag = true;
+                }
+            }
+            Thread.sleep(100);
+        }
+        platform_grabber.setPower(-1);
+        Thread.sleep(300);
+        moveInchesGOX_platform(pos==2?-21:-18, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
+        setAllDrivePower(0);
     }
 }
-

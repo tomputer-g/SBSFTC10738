@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode20.BaseOpMode;
-@TeleOp
+@Disabled
 public class CompositeMovementTest extends BaseAuto{
 
     private double kP=0.028,kD=0.922,speed=0.5,ssas=0.2;
@@ -114,7 +114,7 @@ public class CompositeMovementTest extends BaseAuto{
             setNewGyro(acctarget);
     }
 
-    private void backy2(){
+    private void backy2() throws InterruptedException {
         double target=180,kd=0.922,kp=0.028;
         double e = target;
         acctarget=0;

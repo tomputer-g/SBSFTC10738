@@ -1,24 +1,44 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode20.TractionControl;
-import com.acmerobotics.roadrunner.drive.MecanumDrive.MecanumLocalizer.*;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.teamcode20.BaseAuto;
+
 @TeleOp
-public class MiscTest extends TractionControl {
-    double speed,x,y, GYRO_kp, side_distance, kp,kd,dist_target,koe,square_dist;
-    boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
-    ElapsedTime t=new ElapsedTime();
+public class MiscTest extends BaseAuto {
+    //double speed,x,y, GYRO_kp, side_distance, kp,kd,dist_target,koe,square_dist;
+    //boolean[] bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
+    //ElapsedTime t=new ElapsedTime();
     //ModernRoboticsI2cRangeSensor rangeSensorSide;
 
+    //currently this is acceleration testing
+    boolean a = false;
+    private boolean running = false, trigger = false;
+    private boolean[] rb={true};
+    private double impactThreshold = 3.0;
+    double[] ad=new double[2];
 
     @Override
     public void runOpMode() throws InterruptedException {
+        initDrivetrain();
+        initHubs();
+        initIMU();
+        initVuforia();
+        double max = 0, current;
+        Acceleration tmp;
+        double[] pos={0,0};
+        waitForStart();
+        while(opModeIsActive()){
+            //run
+            if(zheng(this.gamepad1.right_bumper,rb)){
+                pos=adjustToViewMark(true);
+            }
+            telemetry.addLine("x,y "+pos[0]+" "+pos[1]);
+            telemetry.update();
+        }
+
         /*
         initIMU();
         initDrivetrain();
@@ -26,7 +46,7 @@ public class MiscTest extends TractionControl {
         initPlatformGrabber();
         initSensors();
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-         */
+
         speed=0.55;
         y = 15;
         x = 0;
@@ -37,8 +57,6 @@ public class MiscTest extends TractionControl {
         koe = 0.7;
         dist_target = 13;
         square_dist = 8.2;
-        initLight();
-        light.setPosition(.5);
         waitForStart();
         while(opModeIsActive()){
              /*
@@ -158,6 +176,6 @@ public class MiscTest extends TractionControl {
         }
         telemetry.update();
         */
-        }
+
     }
 }

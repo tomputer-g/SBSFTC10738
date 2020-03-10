@@ -1,12 +1,11 @@
-package org.firstinspires.ftc.teamcode20;
+package org.firstinspires.ftc.teamcode20.Tests;
 
 import android.util.Log;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode20.BaseAuto;
 
 import java.util.Set;
 
@@ -28,7 +27,7 @@ public class TeleOp_Demo extends BaseAuto {
         initIMU();
         setNewGyro0();
         grabber.setPosition(grabber_open);
-        servoThread.setTarget(0.99);
+        servoThread.setExtTarget(0.99);
 
         Set<Thread> keys = Thread.getAllStackTraces().keySet();
         Log.d("All threads log start","-------------------- "+keys.size()+"Threads -----------------------");
@@ -69,10 +68,10 @@ public class TeleOp_Demo extends BaseAuto {
 
             //RB toggle extender positions (not instant!)
             if(this.gamepad1.right_bumper){RBPrimed = true;}if(!this.gamepad1.right_bumper && RBPrimed){RBPrimed = false;
-                if(servoThread.lastPosition > 0.75){
-                    servoThread.setTarget(grabberServoOut);
+                if(servoThread.extLastPosition > 0.75){
+                    servoThread.setExtTarget(grabberServoOut);
                 }else{
-                    servoThread.setTarget(grabberServoIn);
+                    servoThread.setExtTarget(grabberServoIn);
                 }
             }
 
@@ -98,8 +97,8 @@ public class TeleOp_Demo extends BaseAuto {
 
             if(showTelemetry) {
                 telemetry.addData("servoThread is",servoThread.getState());
-                telemetry.addData("target",servoThread.targetPosition);
-                telemetry.addData("actual",servoThread.lastPosition);
+                telemetry.addData("target",servoThread.extTargetPosition);
+                telemetry.addData("actual",servoThread.extLastPosition);
                 telemetry.addData("RT state", RTState);
                 telemetry.addData("AutoPlaceState", autoPlaceState);
                 if(holdSet)telemetry.addData("Hold pos", hold);

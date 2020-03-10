@@ -61,18 +61,19 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
                 motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
             motor.setMotorType(MotorConfigurationType.getMotorType(GoBildaMotor1150.class));
-            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); 
         }
 
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
             setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
         // reverse any motors using DcMotor.setDirection()
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        //leftFront.setDirection(DcMotorSimple.Direction.REVERSE); //TODO: add when using RR spline movement method
+        //leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+
         // if desired, use setLocalizer() to change the localization method
-        setLocalizer(new OdometryWheelLocalizer(hardwareMap));
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+        setLocalizer(new OdometryWheelLocalizer(hardwareMap));
     }
 
     @Override
@@ -116,8 +117,8 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
 
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
-        leftFront.setPower(v);
-        leftRear.setPower(v1);
+        leftFront.setPower(-v);
+        leftRear.setPower(-v1);
         rightRear.setPower(v2);
         rightFront.setPower(v3);
     }

@@ -1,82 +1,78 @@
 package org.firstinspires.ftc.teamcode20;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-import static java.lang.Thread.sleep;
+import org.firstinspires.ftc.teamcode20.Roadrunner.drive.mecanum.SampleMecanumDriveREV;
 
 @TeleOp(group = "Final")
 public class TeleOp_MultiThreadDrive extends BaseAuto {
 
-    private boolean b = false, rb = false, y = false, dpad_r = false, dpad_l = false, start = false, a = false, a_lt = false, a_rt = false;
-    private boolean[] Xprimed = {true};
+    private boolean b = false, rb = false, y = false, dpad_r = false, dpad_l = false, start = false, a = false, back;
+    private boolean[] Xprimed = {true},leftStickButtonPrimed = {true},rightStickButtonPrimed = {true};
+    private boolean autoLevel = false;
     private boolean tapeDirectionOut = true;
     //slide
     private boolean platformGrabbed = false;
 
+    private int placeLevel = 0;
+    private double groundHeightEnc = 4.18 * slideEncoderPerInch;//1 higher placing + 1.25 base height
+    private int autoplacemode = 1;
+    private double grabberOutSwitch = 0.75;
 
-    private int placeLevel = 2;
-    private double groundHeightEnc = 2.25 * slideEncoderPerInch;//1 higher placing + 1.25 base height
+    private boolean nextGrabberDelay = false;
 
-    Servo france;
-
-    //private PWMThread pwmThread;
+    private SampleMecanumDriveREV drive;
 
 
     @Override
     public void runOpMode() throws InterruptedException {
-        ElapsedTime t = new ElapsedTime();
+        //drive=new SampleMecanumDriveREV(hardwareMap);
+        //drive.setPoseEstimate(new Pose2d(0,0,0));
         showTelemetry = true;
-        Log.i("Teleop init", "" + t.nanoseconds() + " start drivetrain");
         initDrivetrain();
-        Log.i("Teleop init", "" + t.nanoseconds() + " start grabber");
         initGrabber();
-        Log.i("Teleop init", "" + t.nanoseconds() + " start linSlide");
         initLinSlide();
-        Log.i("Teleop init", "" + t.nanoseconds() + " start odometry");
-        //initSensors();
         initOdometry();
-        Log.i("Teleop init", "" + t.nanoseconds() + " start platform");
+        xOdometryEnableServo.setPosition(xOdoDisable);
         initPlatformGrabber();
-        Log.i("Teleop init", "" + t.nanoseconds() + " start IMU");
         initIMU();
-        Log.i("Teleop init", "" + t.nanoseconds() + " all init done");
         setNewGyro0();
-        france = hardwareMap.get(Servo.class, "capstone");
-        /*2020-02-04 12:44:25.456 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 92240 start drivetrain
-          2020-02-04 12:44:25.639 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 183704394 start grabber
-          2020-02-04 12:44:25.640 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 184989237 start linSlide
-          2020-02-04 12:44:25.723 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 267567267 start odometry
-          2020-02-04 12:44:25.817 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 361695922 start platform
-          2020-02-04 12:44:25.818 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 362624672 start IMU
-          2020-02-04 12:44:27.010 7969-8570/com.qualcomm.ftcrobotcontroller I/Teleop init: 1554783072 all init done (1.5s)
 
-         */
-        servoThread.setTarget(0.99);
-        grabber.setPosition(grabber_open);
+        //grabber.setPosition(grabber_open);
         //pwmThread = new PWMThread();
 
         waitForStart();
+        capstone.setPosition(capstoneClose);
+        servoThread.setExtTarget(grabberServoGrab);
+        servoThread.directSetGrabTarget(grabber_open);
+        L1.setPower(-0.2);
+        Thread.sleep(500);
+        L1.setPower(0);
+        L1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        L1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         while (opModeIsActive()) {
-            //turn left move back onestep
-            if (this.gamepad1.y && this.gamepad1.left_bumper) {
-                lefty();
-                slow = 1;
+            //drive.update();
+            if(zheng(this.gamepad1.left_stick_button,leftStickButtonPrimed)){
+                L1.setPower(-0.2);
+                Thread.sleep(700);
+                L1.setPower(0);
+                L1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                L1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
 
-            if (this.gamepad1.y && this.gamepad1.right_bumper) {
-                righty();
-                slow = 1;
-            }
-
-            if (this.gamepad1.y && this.gamepad1.left_trigger > 0.5) {
-                backy();
-                slow = 1;
+            //switch between autoplace on first and second block
+            if(zheng(this.gamepad1.right_stick_button,rightStickButtonPrimed)){
+                if(autoplacemode==0){
+                    grabberOutSwitch=0.75;
+                    groundHeightEnc=(2+1.18+1)*slideEncoderPerInch;
+                    autoplacemode=1;
+                }
+                else{
+                    autoplacemode=0;
+                    groundHeightEnc=(2)*slideEncoderPerInch;
+                    grabberOutSwitch=0.63;
+                }
             }
 
             if (zheng(this.gamepad1.x, Xprimed)) {
@@ -92,7 +88,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                 if (platformGrabbed) {//already held
                     platformGrabbed = false;
                     platform_grabber.setPower(1);
-                    wait(100);//TODO: blocks thread?
+                    Thread.sleep(100);
                     platform_grabber.setPower(0);
                 } else {
                     platformGrabbed = true;
@@ -106,39 +102,44 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
             if (start && !this.gamepad1.start) {
                 start = false;
-                if (france.getPosition() > .25) {
-                    france.setPosition(0);
+                if (capstone.getPosition() > (capstoneClose + capstoneOpen) / 2) {
+                    capstone.setPosition(capstoneOpen);
+                    nextGrabberDelay = true;
                 }
                 else {
-                    france.setPosition(.5);
+                    capstone.setPosition(capstoneClose);
                 }
             }
 
-            if(this.gamepad1.a) {
-                a = true;
-                if (this.gamepad1.left_trigger > 0.5) {
-                    a_lt = true;
-                    //telemetry.addLine("LT");
-                }
-                if (this.gamepad1.right_trigger > 0.5) {
-                    a_rt = true;
-                    //telemetry.addLine("RT");
-                }
-                if (!this.gamepad1.a && a) {
-                    a = false;
-                    if (a_lt) {
-                        //remain the same level
-                    } else if (a_rt) {
-                        //reset
-                        placeLevel = 2;
-                    } else {
-                        placeLevel++;
-                    }
+            if(this.gamepad1.y&&!y){
+                y=true;
+                if(placeLevel<15)
+                    placeLevel++;
+                autoLevel=true;
+                holdSet=false;
+                servoThread.setExtTarget(grabberOutSwitch);
+                L1.setPower(-1);
+                L2.setPower(1);
+            }
 
-                    a_lt = false;
-                    a_rt = false;
-                    autoPlaceLevel();
-                }
+            if(!this.gamepad1.y&&y){
+                y=false;
+            }
+
+            if(this.gamepad1.a&&!a&&this.gamepad1.left_bumper) {
+                a=true;
+                placeLevel--;
+                autoLevel=false;
+            }
+
+            if(this.gamepad1.a&&!a&&this.gamepad1.left_trigger>0.5) {
+                a=true;
+                placeLevel=0;
+                autoLevel=false;
+            }
+
+            if (!this.gamepad1.a && a) {
+                a=false;
             }
 
             //servo toggle
@@ -147,26 +148,25 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             }
             if (!this.gamepad1.b && b) {
                 b = false;
-                if (grabber.getPosition() > (grabber_closed + grabber_open) / 2) {
-                    grabber.setPosition(grabber_open);
+                if (servoThread.grabLastPosition > (grabber_closed + grabber_open) / 2) {//grabber.getPosition()
+                    if(nextGrabberDelay){
+                        nextGrabberDelay = false;
+                        servoThread.delaySetGrabTarget(grabber_open);
+                    }else {
+                        servoThread.directSetGrabTarget(grabber_open);
+                        //grabber.setPosition(grabber_open);
+                    }
                 } else {
-                    grabber.setPosition(grabber_closed);
+                    servoThread.directSetGrabTarget(grabber_closed);
+                    //grabber.setPosition(grabber_closed);
+                    servoThread.servoWait(300);
+                    servoThread.setExtTarget(0.72);
                 }
             }
             if (this.gamepad1.b && this.gamepad1.left_bumper && !this.gamepad1.y) {
-                grabber.setPosition(0.01);
-            }
-
-            if (this.gamepad1.start) {
-                start = true;
-            }
-            if (start && !this.gamepad1.start) {
-                start = false;
-                if (france.getPosition() > .25) {
-                    france.setPosition(0);
-                } else {
-                    france.setPosition(.5);
-                }
+                servoThread.directSetGrabTarget(0.01);
+                //grabber.setPosition(0.01);
+                servoThread.setExtTarget(0.99);
             }
 
             //driver cancel LT&RT (by dpad up/dpad down/ RB/ LB+Left stick
@@ -176,11 +176,20 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             }
 
             //RT if RT not started - cancels LT
-            if (this.gamepad1.right_trigger > 0.3 && RTState == -1 && !this.gamepad1.y) {
+            if (this.gamepad1.right_trigger > 0.3 && RTState == -1 && !this.gamepad1.y &&!this.gamepad1.a) {
                 //when can go 12in above & extender is extended & not started
                 holdSet = false;
                 autoPlaceState = -1;
                 RTState = 0;
+            }
+
+            if(this.gamepad1.back && !back){
+                servoThread.setExtTarget(0.57);
+                back=true;
+            }
+
+            if(!this.gamepad1.back && back){
+                back=false;
             }
 
             //RB toggle extender positions (not instant!)
@@ -189,10 +198,10 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
             }
             if (!this.gamepad1.right_bumper && rb) {
                 rb = false;
-                if (servoThread.lastPosition > (grabberServoOut + grabberServoIn) / 2) {
-                    servoThread.setTarget(grabberServoOut);
+                if (servoThread.extLastPosition > (grabberOutSwitch + grabberServoGrab) / 2) {
+                    servoThread.setExtTarget(grabberOutSwitch);
                 } else {
-                    servoThread.setTarget(grabberServoIn);
+                    servoThread.setExtTarget(grabberServoGrab);
                 }
             }
 
@@ -229,14 +238,16 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
 
             //run LT, RT, normal control
-            runSlide();
+            runSlidetoBlock(placeLevel);
+            if(!autoLevel)
+                runSlide();
             //autoPlace();
             handleRTState();
 
             if (showTelemetry) {
                 telemetry.addData("slide 1", L1.getCurrentPosition());
                 telemetry.addData("slide auto level", placeLevel);
-                telemetry.addData("servo actual", servoThread.lastPosition);
+                telemetry.addData("ext actual", servoThread.extLastPosition);
                 telemetry.addData("RT state", RTState);
                 if (holdSet) telemetry.addData("Hold pos", hold);
                 telemetry.update();
@@ -285,16 +296,17 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
 
      */
 
-    private void handleTape () {
-
+    private void runSlidetoBlock(int block){
+        int goalEnc = (int) (slideEncoderPerInch * 4 * placeLevel + groundHeightEnc);
+        if(autoLevel) {
+            if (L1.getCurrentPosition() < goalEnc) {
+                autoLevel=false;
+                holdSet = false;
+                holdSlide(goalEnc);
+            }
+        }
     }
 
-
-    private void autoPlaceLevel () {
-        int goalEnc = (int) (slideEncoderPerInch * 4 * placeLevel + groundHeightEnc);//per inch is already neg.
-        holdSet = false;
-        holdSlide(goalEnc);
-    }
 
     protected void joystickScaledMove ( double vx, double vy, double vr){
         double[] speeds = {vx - vy + vr, -vy - vx + vr, vx + vy + vr, -vx + vy + vr};

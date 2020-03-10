@@ -1,12 +1,15 @@
-package org.firstinspires.ftc.teamcode20;
+package org.firstinspires.ftc.teamcode20.Tests;
 import android.graphics.Path;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode19.Tests.WallVUMarkTesting;
+import org.firstinspires.ftc.teamcode20.BaseAuto;
 
-public class TractionControl extends BaseAuto{
+@Disabled
+public class TractionControl extends BaseAuto {
     private double runSpeed = 0.3;
     private int delay = 200;
     private boolean DL, DR, DU, DD;
@@ -42,7 +45,7 @@ public class TractionControl extends BaseAuto{
     }
 
 
-    private void brakeMyAss(double speed){
+    private void brakeMyAss(double speed) throws InterruptedException {
         setAllDrivePower(0, -speed);
         wait(delay);
         setAllDrivePower(0);
