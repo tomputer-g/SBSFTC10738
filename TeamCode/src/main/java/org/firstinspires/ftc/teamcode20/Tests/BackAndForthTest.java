@@ -2,11 +2,12 @@ package org.firstinspires.ftc.teamcode20.Tests;
 
 import android.util.Log;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode20.BaseAuto;
-@TeleOp
+@TeleOp(name="CVTest")
 public class BackAndForthTest extends BaseAuto {
     double kdx = 4, kdxx = 1;
     private double[] params = {1,0};
@@ -16,7 +17,7 @@ public class BackAndForthTest extends BaseAuto {
     private boolean a, b;
     private double speed = 0.9;
 
-    protected void moveInchesGOY_XF_F_T(double yInch, double speed,double kV, int FixXOffset){//use 0.4 for short-dist
+    protected void moveInchesGOY_XF_F_T(double yInch, double speed,double kV, int FixXOffset) throws InterruptedException {//use 0.4 for short-dist
         yInch = -yInch;
         //setNexwGyro0();
         double kP = 1, kD = 0.12;
@@ -39,6 +40,7 @@ public class BackAndForthTest extends BaseAuto {
         int offsetY = getY1Odometry();
         int offsetX = FixXOffset;
         double diff = 0;
+        boolean braked = false;
         speed=Math.abs(speed);
         double multiply_factor, prev_speed = 0;
         int odometryYGoal = offsetY + (int)(yInch * odometryEncYPerInch);
@@ -46,7 +48,12 @@ public class BackAndForthTest extends BaseAuto {
         int previousPos = offsetY, previousPosX = offsetX, currentOdometry, currentOdometryX, Dterm, DtermX;
         double tpre = 0, tcur, D;
         int steadyCounter = 0;
-        while(steadyCounter < 5 && !this.gamepad1.b){//b is there so we can break out of loop anytime
+        for(int i=0; i<5;i++) {
+            double power=i/10.0+0.5;
+            setAllDrivePower(-power, -power, power,power);
+            Thread.sleep(50);
+        }
+        while(steadyCounter < 3 && !this.gamepad1.b){//b is there so we can break out of loop anytime
             //telemetry.addData("x",getXOdometry());
             //telemetry.addData("yL",getY1Odometry());
             //telemetry.addData("yR",getY2Odometry());
@@ -59,6 +66,11 @@ public class BackAndForthTest extends BaseAuto {
             D = (near(DtermX,0,speed * 5000 / 0.3)?(kDx *DtermX):0);
             diff = (currentOdometryX - offsetX)/odometryEncXPerInch*kPx + D;
             multiply_factor = -Math.min(1, Math.max(-1, kV*((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
+            if(Math.abs(odometryYGoal-currentOdometry)<Math.abs(yInch*odometryEncYPerInch*0.02)&&!braked) {
+                setAllDrivePower(0.7, 0.7, -0.7, -0.7);
+                Thread.sleep(70);
+                braked=true;
+            }
             if(near(prev_speed, multiply_factor*vy,0.001) && near(prev_speed, 0, 0.1)){
                 steadyCounter++;
             }else{
@@ -87,12 +99,8 @@ public class BackAndForthTest extends BaseAuto {
             ElapsedTime p = new ElapsedTime();
             p.reset();
             int aa = getXOdometry();
-            moveInchesGOY_XF_F_T(96,speed,1,aa);
-            for(int i = 0;i<4;++i){
-                moveInchesGOY_XF_F_T(-96,speed,1,aa);
-                moveInchesGOY_XF_F_T(96,speed,1,aa);
-            }
-                telemetry.addData("time", p.milliseconds());
+            moveInchesGOY_XF_F_T(90,speed,1,aa);
+            telemetry.addData("time", p.milliseconds());
             telemetry.update();
 
         }
