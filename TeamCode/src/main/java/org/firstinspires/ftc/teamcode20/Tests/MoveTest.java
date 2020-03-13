@@ -43,8 +43,8 @@ public class MoveTest extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {
         msStuckDetectInit = 3000000;
-        speed=0.3;
-        speeed = 0.03;
+        speed=0.5;
+        speeed=1;
         dir=1;
         y = -90;
         x = 0;
@@ -54,50 +54,69 @@ public class MoveTest extends BaseAuto {
         //initVuforia();
         //initViewMarks();
         initIMU();
-        drive=new SampleMecanumDriveREV(hardwareMap);
+        //drive=new SampleMecanumDriveREV(hardwareMap);
         initOdometry();
-        cooThread.start();
-        initVuforia();
+        //cooThread.start();
+        //initVuforia();
         //initViewMarks();
         initIMU();
         initOdometry();
-        //drive=new SampleMecanumDriveREV(hardwareMap);
+        initLogger("N.csv");
+        //drive=new SampleMecanumDriveREV(hardwareMap)
         //cooThread.start();
         waitForStart();
         int inchh = 8;
-        while(!this.gamepad1.b) {
-            if(zheng(this.gamepad1.dpad_left,eee))x-=2;
-            if(zheng(this.gamepad1.dpad_right,fff))x+=2;
-            if(zheng(this.gamepad1.dpad_up,ee))inchh+=1;
-            if(zheng(this.gamepad1.dpad_down,ff))inchh+=1;
+        int f=1;
+        while(!this.gamepad1.start) {
+            if(zheng(this.gamepad1.dpad_left,eee))x-=50;
+            if(zheng(this.gamepad1.dpad_right,fff))x+=50;
+            if(zheng(this.gamepad1.dpad_up,ee))speeed+=.05;
+            if(zheng(this.gamepad1.dpad_down,ff))speeed-=.05;
             if(zheng(this.gamepad1.y,m))speed+=.1;
+            if(zheng(this.gamepad1.a,mm))speed-=.1;
             if(zheng(this.gamepad1.right_bumper,bF)){
-                setNewGyro(0);
-                int pre, cur = getXOdometry(), origin = cur;
-                boolean flag = false;
-                while (!flag){
-                    setAllDrivePowerG(-0.5,0.5,-0.5,0.5);
-                    pre = cur;
-                    cur = getXOdometry();
-                    if((cur-origin)/odometryEncXPerInch > inchh){
-                        telemetry.addData("diff", cur-pre);
-                        telemetry.update();
-                        if(cur-pre < 3800){
-                            flag = true;
-                        }
-                    }
-                    Thread.sleep(100);
+                setAllDrivePower(-speed,-speed,speed,speed);
+                ElapsedTime t=new ElapsedTime();
+                double xpre=0,tpre=t.milliseconds();
+                double v=0;
+                while(t.milliseconds()<5000&&!this.gamepad1.b){
+                    double tcur=t.milliseconds();
+                    setAllDrivePowerG(-speed,-speed,speed,speed);
+                    double xcur = getY1Odometry();
+                    v=(xcur-xpre)/(tcur-tpre);
+                    telemetry.addData("v",v);
+                    telemetry.update();
+                    xpre = xcur;
+                    tpre=tcur;
+                    speed=speed*x/5000;
                 }
-                platform_grabber.setPower(-1);
-                Thread.sleep(300);
-                moveInchesGOX_platform(-16, 0.8, 1 + (13.65 - hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS)) / 13.65);
                 setAllDrivePower(0);
-                platform_grabber.setPower(0);
-                //PIDturnfast(90,false);
+                speed=0.5;
+            }
+            if(zheng(this.gamepad1.left_bumper,lF)){
+                ElapsedTime t=new ElapsedTime();
+                while(t.milliseconds()<x) {
+                    setAllDrivePowerG(-speed*f,-speed*f,speed*f,speed*f);
+                }
+                t.reset();
+                while(t.milliseconds()<x-100){
+                    setAllDrivePowerG(-0.7*f,-0.7*f,0.7*f,0.7*f);
+                }
+                while(t.milliseconds()<5000 && !this.gamepad1.b){
+                    setAllDrivePowerG(-speeed*f,-speeed*f,speeed*f,speeed*f);
+                }
+                setAllDrivePower(0);
+                f=-f;
             }
             //telemetry.addData("s",adjustToViewMark(true)[1]);
             //telemetry.addData("s",adjustToViewMark(false)[1]);
-            telemetry.addData("t", inchh);
+            telemetry.addData("y",x/5000);
+            telemetry.addData("x",x);
+            telemetry.addData("Imu",getHeading());
+            telemetry.addData("speeed",speeed);
+            telemetry.addData("speed", speed);
+            telemetry.addData("Y1: ",getY1Odometry());
+            telemetry.addData("Y2: ",getY2Odometry());
             telemetry.update();
         }
         //cooThread.stopThread();
