@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode20.BaseAuto;
-@TeleOp(name = "dfd")
+@TeleOp(name = "DataScienceTest")
 public class DataScienceTest extends BaseAuto {
 
     protected void moveInchesGOX_TT(double xInch, double speed,double kV, int timer) throws InterruptedException {//0.5 only
@@ -59,14 +59,14 @@ public class DataScienceTest extends BaseAuto {
         moveInchesGOY_XF_F(-24-97,0.6,1,offset);
         moveInchesGOY_XF_F(24+97,0.9,1,offset);
 
-        moveInchesGOY_XF_F(-97+8,0.6,1,offset);
-        moveInchesGOY_XF_F(97-8,0.9,1,offset);
+        moveInchesGOY_XF_F(-97+8-8,0.6,1,offset);
+        moveInchesGOY_XF_F(97-8+8,0.9,1,offset);
 
-        moveInchesGOY_XF_F(-97-8,0.6,1,offset);
-        moveInchesGOY_XF_F(97+8,0.9,1,offset);
+        moveInchesGOY_XF_F(-97-8-16,0.6,1,offset);
+        moveInchesGOY_XF_F(97+8+16,0.9,1,offset);
 
-        moveInchesGOY_XF_F(-97-8-8,0.6,1,offset);
-        moveInchesGOY_XF_F(97+8+8,0.9,1,offset);
+        moveInchesGOY_XF_F(-97-8-8-16,0.6,1,offset);
+        moveInchesGOY_XF_F(97+8+8+16,0.9,1,offset);
 telemetry.addData("t",y.milliseconds());
         telemetry.update();
 
