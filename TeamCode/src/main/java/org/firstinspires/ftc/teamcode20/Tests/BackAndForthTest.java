@@ -8,14 +8,50 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 @TeleOp
 public class BackAndForthTest extends BaseAuto {
-    double kdx = 4, kdxx = 1;
+    double kdx = 2, kdxx =1.7;
     private double[] params = {1,0};
     private String[] paramNames = {"kT","ops"};
     private int currentSelectParamIndex = 0;
     private boolean[] aa = {true}, l ={true}, r = {true}, u, d, lb={true}, rb;
     private boolean a, b;
     private double speed = 0.9;
-
+    protected double timme = 0;
+    protected void moveInchesGOX_T(double xInch, double speed,double kV) throws InterruptedException {//0.5 only
+        if(xInch == 0)return;
+        ElapsedTime t = new ElapsedTime();
+        int offsetX = getXOdometry();
+        speed=Math.abs(speed);
+        double multiply_factor, prev_speed = 0;
+        int odometryXGoal = offsetX + (int)(xInch * odometryEncXPerInch);
+        double vx = speed;//(xInch/Math.abs(xInch)*speed);//
+        int previousPos = offsetX, currentOdometry, Dterm;
+        double tpre = 0, tcur;
+        int steadyCounter = 0;
+        int steps = 20;
+        for(int i = 7;i<=steps;++i){
+            setAllDrivePower(-i*speed/steps, i*speed/steps,-i*speed/steps,i*speed/steps);
+            Thread.sleep(40);
+        }
+        while(steadyCounter < 5 && !this.gamepad1.b){
+            Thread.sleep(0);
+            currentOdometry = getXOdometry();
+            tcur=t.milliseconds();
+            Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
+            multiply_factor = -Math.min(1, Math.max(-1, kV*(0.19 * (currentOdometry - odometryXGoal)/odometryEncXPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kdxx*Math.pow(10,-kdx) * Dterm):0)));
+            if(near(prev_speed, multiply_factor*vx,0.001) && near(prev_speed, 0, 0.1)){
+                steadyCounter++;
+            }else{
+                steadyCounter = 0;
+            }
+            Log.d("GOX "+xInch,"steady"+steadyCounter+", position"+currentOdometry+", speed"+prev_speed);
+            previousPos = currentOdometry;
+            tpre=tcur;
+            setAllDrivePowerG(multiply_factor*-vx,multiply_factor*vx,multiply_factor*-vx,multiply_factor*vx, 1.5);
+            prev_speed = multiply_factor * vx;
+        }
+        setAllDrivePower(0);
+        timme = t.milliseconds();
+    }
     protected void moveInchesGOY_XF_F_T(double yInch, double speed,double kV, int FixXOffset){//use 0.4 for short-dist
         yInch = -yInch;
         //setNexwGyro0();
@@ -87,11 +123,12 @@ public class BackAndForthTest extends BaseAuto {
             ElapsedTime p = new ElapsedTime();
             p.reset();
             int aa = getXOdometry();
-            moveInchesGOY_XF_F_T(96,speed,1,aa);
+           // moveInchesGOY_XF_F_T(96,speed,1,aa);
             for(int i = 0;i<4;++i){
-                moveInchesGOY_XF_F_T(-96,speed,1,aa);
-                moveInchesGOY_XF_F_T(96,speed,1,aa);
+                //moveInchesGOY_XF_F_T(-96,speed,1,aa);
+                //moveInchesGOY_XF_F_T(96,speed,1,aa);
             }
+            moveInchesGOX_T(25,1,1);
                 telemetry.addData("time", p.milliseconds());
             telemetry.update();
 
@@ -146,15 +183,16 @@ public class BackAndForthTest extends BaseAuto {
                 }
 
             }
-            //if(zheng(this.gamepad1.dpad_up, aa))kdx++;
-            //if(zheng(this.gamepad1.dpad_down, lb))kdx--;
-            if(zheng(this.gamepad1.dpad_left, l))speed-=0.1;
-            if(zheng(this.gamepad1.dpad_right, r))speed+=0.1;
-            //telemetry.addData("num","%.2f",kdxx);
-            //telemetry.addData("power","%.2f",kdx);
+            if(zheng(this.gamepad1.dpad_up, aa))kdx++;
+            if(zheng(this.gamepad1.dpad_down, lb))kdx--;
+            if(zheng(this.gamepad1.dpad_left, l))kdxx-=0.1;
+            if(zheng(this.gamepad1.dpad_right, r))kdxx+=0.1;
+            telemetry.addData("num","%.2f",kdxx);
+            telemetry.addData("power","%.2f",kdx);
+            telemetry.addData("timer",timme);
             //telemetry.addData("parameters",params[0]+", "+params[1]);
             //telemetry.addData("now changing", paramNames[currentSelectParamIndex]);
-            //telemetry.update();
+            telemetry.update();
             //telemetry.addData("x",getXOdometry());
         }
     }
