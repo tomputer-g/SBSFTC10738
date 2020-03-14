@@ -34,7 +34,7 @@ import static org.firstinspires.ftc.teamcode20.Roadrunner.drive.DriveConstants.r
 @Autonomous(group = "drive")
 public class DriveFeedforwardTuner extends LinearOpMode {
     public static final double MAX_POWER = 1;
-    public static final double DISTANCE = 35;
+    public static final double DISTANCE = 150;
 
     @Override
     public void runOpMode() throws InterruptedException {
