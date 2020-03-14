@@ -38,8 +38,6 @@ public class OdometryMoveInchesTest extends BaseAuto {
                 resetY1Odometry();
                 resetXOdometry();
                 setNewGyro0();
-                LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 ElapsedTime t = new ElapsedTime();
                 //moveInchesYSpin(25,90,0.5);
                 //moveInchesGOY_XFixed(90,0.9,1,getXOdometry()); 0.96 deg in 2.35s
