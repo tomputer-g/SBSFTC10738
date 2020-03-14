@@ -40,7 +40,7 @@ public class BaseOpMode extends LinearOpMode {
     protected Servo grabber, capstone;
     protected Servo grabber_extend1, grabber_extend2;
     protected Servo LGrabElbow, LGrabClaw, RGrabElbow, RGrabClaw;
-    protected Servo 
+    protected Servo LPlatformGrabber, RPlatformGrabber;
 
     protected DcMotor platform_grabber, xOdometry;
     protected DcMotor L1, L2;
