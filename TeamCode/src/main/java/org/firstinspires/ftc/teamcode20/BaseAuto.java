@@ -815,6 +815,11 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(a-p,b-p,c-p,d-p);
     }
 
+    protected void setAllDrivePowerO(double a, double b, double c, double d,double Kp){
+        double p=Kp*(getY1Odometry() - getY2Odometry()) / 4000;
+        setAllDrivePower(a-p,b-p,c-p,d-p);
+    }
+
     protected void setAllDrivePowerG(double a, double b, double c, double d){
         setAllDrivePowerG(a,b,c,d,0.8);
     }
