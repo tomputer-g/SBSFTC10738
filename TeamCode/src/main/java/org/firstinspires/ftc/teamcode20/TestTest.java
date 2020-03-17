@@ -49,6 +49,5 @@ public class TestTest extends BaseAuto {
             telemetry.update();
         }
         //setAllDrivePower(-.3,-.3,.3,.3);
-
     }
 }

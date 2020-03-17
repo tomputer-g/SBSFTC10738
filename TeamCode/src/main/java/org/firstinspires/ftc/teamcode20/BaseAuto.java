@@ -815,9 +815,20 @@ public class BaseAuto extends BaseOpMode {
         setAllDrivePower(a-p,b-p,c-p,d-p);
     }
 
-    protected void setAllDrivePowerO(double a, double b, double c, double d,double Kp){
-        double p=Kp*(getY1Odometry() - getY2Odometry()) / 4000;
-        setAllDrivePower(a-p,b-p,c-p,d-p);
+
+    protected int previous_error = 0;
+    protected int previous_time = 0;
+    protected int current_error = 0;
+    protected int current_time = 0;
+    protected double setAllDrivePowerO(double a, double b, double c, double d,double time_,double Kp, double Kd){
+        ElapsedTime t = new ElapsedTime();
+        current_error = getY1Odometry() - getY2Odometry();
+        double kp=  Kp * (current_error);
+        double kd = Kd * (current_error - previous_error)/time_;
+        double ki = 0;
+        previous_error = getY1Odometry() - getY2Odometry();
+        setAllDrivePower(a-kp,b-kp,c-kp,d-kp);
+        return t.milliseconds();
     }
 
     protected void setAllDrivePowerG(double a, double b, double c, double d){
@@ -965,7 +976,7 @@ public class BaseAuto extends BaseOpMode {
             currentOdometry = getY1Odometry();
             tcur=t.milliseconds();
             Dterm = (int)((currentOdometry - previousPos)/(tcur-tpre));
-            multiply_factor = -Math.min(1, Math.max(-1, kV*((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0))));
+            multiply_factor = -Math.min(1, Math.max(-1, kV*((kP * (currentOdometry - odometryYGoal)/ odometryEncYPerInch) +  (near(Dterm,0,speed * 5000 / 0.3)?(kD * Dterm):0) )));
             if(near(prev_speed, multiply_factor*vy,0.001) && near(prev_speed, 0, 0.1)){
                 steadyCounter++;
             }else{

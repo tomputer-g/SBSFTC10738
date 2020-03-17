@@ -76,8 +76,10 @@ public class MoveTest extends BaseAuto {
             if(zheng(this.gamepad1.a,mm))speed-=.1;
             if(zheng(this.gamepad1.right_bumper,bF)){
                 ElapsedTime t = new ElapsedTime();
-                while(t.milliseconds()<2500){
-                    setAllDrivePowerO(-0.4,-0.4,.4,.4,2);
+                double a = 0;
+                while(t.milliseconds()<2900){
+                    a = setAllDrivePowerO(-0.4,-0.4,.4,.4,a,1/2000, 1);
+
                 }
                 setAllDrivePower(0);
             }
