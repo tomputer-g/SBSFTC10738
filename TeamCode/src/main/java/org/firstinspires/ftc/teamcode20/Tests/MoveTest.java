@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode20.Tests;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -37,6 +39,7 @@ public class MoveTest extends BaseAuto {
     int steps = 20;
     double basespeed = 0.2;
 
+    private PowerThread powerThread=new PowerThread();
 
     int dir;
 
@@ -133,25 +136,45 @@ public class MoveTest extends BaseAuto {
         //cooThread.stopThread();
     }
 
+    private class PowerThread extends Thread{
+        volatile public boolean stop = false;
+        private double powera,powerb,powerc,powerd;
 
-
-    protected void tunePIDturn(double target, double kp, double kd, double speed){
-        setNewGyro(acctarget);
-        double e =getError(target);
-        ElapsedTime t = new ElapsedTime();
-        int i=0;
-        while(i<5){
-            double e2 = getError(target);
-            double D = kd*(e2-e)/t.milliseconds();
-            t.reset();
-            double P = e2*kp;
-            double power=P+D;
-            if(power!=0)
-                setAllDrivePower((power>0)?Range.clip(power,.2,speed):Range.clip(power,-speed,-.2));
-            e=e2;
-            if(near(e2-e,0,0.1)&&near(e,0,2))i++;
+        public PowerThread(){
+            powera=0;
+            powerb=0;
+            powerc=0;
+            powerd=0;
         }
-        setAllDrivePower(0);
-        acctarget=getError(acctarget+target,0);
+        public void setPower(double p){
+            powera=p;
+            powerb=p;
+            powerc=p;
+            powerd=p;
+        }
+        public void setPower(double a,double b,double c,double d){
+            powera=a;
+            powerb=b;
+            powerc=c;
+            powerd=d;
+        }
+        @Override
+        public void run() {
+            //this.setPriority(4);
+            this.setName("Power Thread "+this.getId());
+            while (!isInterrupted() && !stop) {
+                if(powera!=0&&powerb!=0&&powerc!=0&&powerd!=0)setAllDrivePowerG(powera,powerb,powerc,powerd);
+            }
+        }
+        public void stopThread(){
+            stop = true;
+        }
+    }
+
+    public void setAllDrivePowerG(double p){
+        powerThread.setPower(p);
+    }
+    public void setAllDrivePowerG(double a,double b,double c,double d){
+        powerThread.setPower(a,b,c,d);
     }
 }

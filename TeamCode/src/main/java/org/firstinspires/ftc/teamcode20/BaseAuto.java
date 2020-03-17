@@ -607,6 +607,8 @@ public class BaseAuto extends BaseOpMode {
         xOdometry.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         L2 = hardwareMap.get(DcMotor.class, "L2");
         L2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
         L2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         xOdometryEnableServo = hardwareMap.get(Servo.class,"xOdoEnable");
         cooThread=new CooThread();
