@@ -34,6 +34,9 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         initGrabber();
         initLinSlide();
         initOdometry();
+        initSideGrabber();
+        LGrabElbow.setPosition(0.14);
+        RGrabElbow.setPosition(0);
         xOdometryEnableServo.setPosition(xOdoDisable);
         initPlatformGrabber();
         initIMU();
@@ -87,12 +90,14 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
                 dpad_r = false;
                 if (platformGrabbed) {//already held
                     platformGrabbed = false;
-                    platform_grabber.setPower(1);
-                    Thread.sleep(100);
-                    platform_grabber.setPower(0);
+                    //platform_grabber.setPower(1);
+                    //Thread.sleep(100);
+                    //platform_grabber.setPower(0);
+                    grabPlatform(false);
                 } else {
                     platformGrabbed = true;
-                    platform_grabber.setPower(-0.4);
+                    grabPlatform(true);
+                    //platform_grabber.setPower(-0.4);
                 }
             }
 

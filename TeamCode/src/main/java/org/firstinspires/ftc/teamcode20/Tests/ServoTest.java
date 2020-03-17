@@ -6,29 +6,119 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode20.BaseAuto;
+
 /**
  * Created by Ziming Gao on 1/16/2018.
  */
 @TeleOp
-public class ServoTest extends OpMode{
-    private boolean lP, rP;
-    private Servo servo;
+public class ServoTest extends BaseAuto {
+    private boolean lpad, rpad, upad, dpad;
+    //private Servo currentServo;
+    //private Servo LPlatform, RPlatform, Ext1, Ext2, XOdoEnable, LGClaw, LGElbow, Grabber, Capstone, RGClaw, RGElbow, Tape;
+    //private Servo[] servos = new Servo[12];
+    //private int selectIndex = 0;
+    //private double[] positions = new double[12];
 
+/*
     @Override public void init() {
-        servo = hardwareMap.get(Servo.class,"xOdoEnable");//0.8 down, 1 up
-        servo.setPosition(0.5);
+        LPlatform = hardwareMap.get(Servo.class, "LPlatformGrabber");
+        RPlatform = hardwareMap.get(Servo.class, "RPlatformGrabber");
+        Ext1 = hardwareMap.get(Servo.class, "servo1");
+        Ext2 = hardwareMap.get(Servo.class, "servo2");
+        XOdoEnable = hardwareMap.get(Servo.class, "xOdoEnable");
+        LGClaw = hardwareMap.get(Servo.class, "LGrabberClaw");
+        LGElbow = hardwareMap.get(Servo.class, "LGrabberElbow");
+        RGClaw = hardwareMap.get(Servo.class, "RGrabberClaw");
+        RGElbow = hardwareMap.get(Servo.class, "RGrabberElbow");
+        Grabber = hardwareMap.get(Servo.class, "grabber");
+        Capstone = hardwareMap.get(Servo.class, "capstone");
+        Tape = hardwareMap.get(Servo.class, "tapeMeasure");
+        servos[0] = LPlatform;
+        servos[1] = RPlatform;
+        servos[2] = Ext1;
+        servos[3] = Ext2;
+        servos[4] = XOdoEnable;
+        servos[5] = LGClaw;
+        servos[6] = LGElbow;
+        servos[7] = RGClaw;
+        servos[8] = RGElbow;
+        servos[9] = Grabber;
+        servos[10] = Capstone;
+        servos[11] = Tape;
+        for(int i = 0;i < 12; i++){
+            positions[i] = 0.5;
+        }
+        for(Servo servo : servos){
+            servo.setPosition(0.5);
+        }
+        currentServo = servos[selectIndex];
     }
 
     @Override public void loop() {
         if(this.gamepad1.dpad_left){lP = true;}if(lP && !this.gamepad1.dpad_left){
             lP = false;
-            servo.setPosition(Math.max(servo.getPosition() - 0.05, 0));
+            positions[selectIndex] -= 0.05;
+            if(positions[selectIndex] < 0){positions[selectIndex] = 0;}
+            currentServo.setPosition(positions[selectIndex]);
+            //servo.setPosition(Math.max(servo.getPosition() - 0.05, 0));
         }
         if(this.gamepad1.dpad_right){rP = true;}if(rP && !this.gamepad1.dpad_right) {
             rP = false;
-            servo.setPosition(Math.min(servo.getPosition() + 0.05, 1));
+            positions[selectIndex]+= 0.05;
+            if(positions[selectIndex] > 1){positions[selectIndex] = 1;}
+            currentServo.setPosition(positions[selectIndex]);
+            //servo.setPosition(Math.min(servo.getPosition() + 0.05, 1));
         }
-        telemetry.addData("servo: ",servo.getPosition());
+        if(this.gamepad1.left_bumper){lb = true;}if(!this.gamepad1.left_bumper && lb){
+            lb = false;
+            selectIndex--;
+            if(selectIndex < 0){
+                selectIndex = servos.length - 1;
+            }
+        }
+        if(this.gamepad1.right_bumper){rb = true;}if(!this.gamepad1.right_bumper && rb){
+            rb = false;
+            selectIndex++;
+            if(selectIndex >= servos.length){
+                selectIndex = 0;
+            }
+        }
+        //telemetry.addData("servo: ",servo.getPosition());
+        currentServo = servos[selectIndex];
+        telemetry.addData("Current servo pos",positions[selectIndex]);
+        telemetry.addData("Servo #",selectIndex);
         telemetry.update();
+    }
+
+ */
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+        initSideGrabber();
+        LGrabElbow.setPosition(0.5);
+        RGrabElbow.setPosition(0.5);
+        waitForStart();
+        while(opModeIsActive()){
+            if(this.gamepad1.dpad_down){dpad = true;}if(dpad && !this.gamepad1.dpad_down){
+                dpad = false;
+                LGrabElbow.setPosition(LGrabElbow.getPosition() - 0.02);
+            }
+            if(this.gamepad1.dpad_up){upad = true;}if(upad && !this.gamepad1.dpad_up){
+                upad = false;
+                LGrabElbow.setPosition(LGrabElbow.getPosition() + 0.02);
+            }
+            if(this.gamepad1.dpad_left){lpad = true;}if(lpad && !this.gamepad1.dpad_left){
+                lpad = false;
+                RGrabElbow.setPosition(RGrabElbow.getPosition() - 0.02);
+            }
+            if(this.gamepad1.dpad_right){rpad = true;}if(rpad && !this.gamepad1.dpad_right){
+                rpad = false;
+                RGrabElbow.setPosition(RGrabElbow.getPosition() + 0.02);
+            }
+            telemetry.addData("Left Elbow",LGrabElbow.getPosition());
+            telemetry.addData("Right Elbow",RGrabElbow.getPosition());
+            telemetry.update();
+        }
     }
 }

@@ -39,6 +39,9 @@ public class BaseOpMode extends LinearOpMode {
     protected Servo xOdometryEnableServo;
     protected Servo grabber, capstone;
     protected Servo grabber_extend1, grabber_extend2;
+    protected Servo LGrabElbow, LGrabClaw, RGrabElbow, RGrabClaw;
+    protected Servo LPlatformGrabber, RPlatformGrabber;
+
     protected DcMotor platform_grabber, xOdometry;
     protected DcMotor L1, L2;
     protected final double grabber_open = 0.35, grabber_closed = 0.7;
@@ -81,7 +84,20 @@ public class BaseOpMode extends LinearOpMode {
     protected void initPlatformGrabber(){
         platform_grabber = hardwareMap.get(DcMotor.class, "platform");
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        LPlatformGrabber = hardwareMap.get(Servo.class, "LPlatformGrabber");
+        RPlatformGrabber = hardwareMap.get(Servo.class, "RPlatformGrabber");
     }
+
+    protected void grabPlatform(boolean grab){
+        if(grab){
+            LPlatformGrabber.setPosition(1);
+            RPlatformGrabber.setPosition(0);
+        }else{
+            LPlatformGrabber.setPosition(0.5);
+            RPlatformGrabber.setPosition(0.5);
+        }
+    }
+
 
     protected void initLinSlide(){
         L1 = hardwareMap.get(DcMotor.class, "L1");
@@ -180,6 +196,15 @@ public class BaseOpMode extends LinearOpMode {
         RB.setMotorType(MotorConfigurationType.getMotorType(GoBILDA5202Series.class));
         setMode_RUN_WITHOUT_ENCODER();
     }
+
+    protected void initSideGrabber(){
+        LGrabElbow = hardwareMap.get(Servo.class, "LGrabberElbow");
+        LGrabClaw = hardwareMap.get(Servo.class, "LGrabberClaw");
+        RGrabElbow = hardwareMap.get(Servo.class, "RGrabberElbow");
+        RGrabClaw = hardwareMap.get(Servo.class, "RGrabberClaw");
+    }
+
+
 
     protected int getXOdometry(){
         return xOdometry.getCurrentPosition();

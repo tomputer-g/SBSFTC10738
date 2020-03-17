@@ -7,6 +7,7 @@ public class TestTest extends BaseAuto {
     @Override
     public void runOpMode() throws InterruptedException {
         double time =0;
+        boolean[] st={true};
         initIMU();
         initDrivetrain();
         initOdometry();
@@ -39,5 +40,16 @@ public class TestTest extends BaseAuto {
         time-=10000;
         telemetry.addData("time: ",time);
         telemetry.update();
+
+        while(!this.gamepad1.b){
+            if(zheng(this.gamepad1.start,st)){
+                resetY1Odometry();
+                resetY2Odometry();
+            }
+            telemetry.addData("Y1",getY1Odometry());
+            telemetry.addData("Y2",getY2Odometry());
+            telemetry.update();
+        }
+        //setAllDrivePower(-.3,-.3,.3,.3);
     }
 }
