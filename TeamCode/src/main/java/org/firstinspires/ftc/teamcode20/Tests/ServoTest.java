@@ -6,19 +6,21 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode20.BaseAuto;
+
 /**
  * Created by Ziming Gao on 1/16/2018.
  */
 @TeleOp
-public class ServoTest extends OpMode{
-    private boolean lP, rP, lb, rb;
-    private Servo currentServo;
-    private Servo LPlatform, RPlatform, Ext1, Ext2, XOdoEnable, LGClaw, LGElbow, Grabber, Capstone, RGClaw, RGElbow, Tape;
-    private Servo[] servos = new Servo[12];
-    private int selectIndex = 0;
-    private double[] positions = new double[12];
+public class ServoTest extends BaseAuto {
+    private boolean lpad, rpad, upad, dpad;
+    //private Servo currentServo;
+    //private Servo LPlatform, RPlatform, Ext1, Ext2, XOdoEnable, LGClaw, LGElbow, Grabber, Capstone, RGClaw, RGElbow, Tape;
+    //private Servo[] servos = new Servo[12];
+    //private int selectIndex = 0;
+    //private double[] positions = new double[12];
 
-
+/*
     @Override public void init() {
         LPlatform = hardwareMap.get(Servo.class, "LPlatformGrabber");
         RPlatform = hardwareMap.get(Servo.class, "RPlatformGrabber");
@@ -87,5 +89,36 @@ public class ServoTest extends OpMode{
         telemetry.addData("Current servo pos",positions[selectIndex]);
         telemetry.addData("Servo #",selectIndex);
         telemetry.update();
+    }
+
+ */
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+        initSideGrabber();
+        LGrabElbow.setPosition(0.5);
+        RGrabElbow.setPosition(0.5);
+        waitForStart();
+        while(opModeIsActive()){
+            if(this.gamepad1.dpad_down){dpad = true;}if(dpad && !this.gamepad1.dpad_down){
+                dpad = false;
+                LGrabElbow.setPosition(LGrabElbow.getPosition() - 0.02);
+            }
+            if(this.gamepad1.dpad_up){upad = true;}if(upad && !this.gamepad1.dpad_up){
+                upad = false;
+                LGrabElbow.setPosition(LGrabElbow.getPosition() + 0.02);
+            }
+            if(this.gamepad1.dpad_left){lpad = true;}if(lpad && !this.gamepad1.dpad_left){
+                lpad = false;
+                RGrabElbow.setPosition(RGrabElbow.getPosition() - 0.02);
+            }
+            if(this.gamepad1.dpad_right){rpad = true;}if(rpad && !this.gamepad1.dpad_right){
+                rpad = false;
+                RGrabElbow.setPosition(RGrabElbow.getPosition() + 0.02);
+            }
+            telemetry.addData("Left Elbow",LGrabElbow.getPosition());
+            telemetry.addData("Right Elbow",RGrabElbow.getPosition());
+            telemetry.update();
+        }
     }
 }

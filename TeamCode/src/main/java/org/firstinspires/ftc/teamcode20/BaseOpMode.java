@@ -84,9 +84,20 @@ public class BaseOpMode extends LinearOpMode {
     protected void initPlatformGrabber(){
         platform_grabber = hardwareMap.get(DcMotor.class, "platform");
         platform_grabber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-
+        LPlatformGrabber = hardwareMap.get(Servo.class, "LPlatformGrabber");
+        RPlatformGrabber = hardwareMap.get(Servo.class, "RPlatformGrabber");
     }
+
+    protected void grabPlatform(boolean grab){
+        if(grab){
+            LPlatformGrabber.setPosition(1);
+            RPlatformGrabber.setPosition(0);
+        }else{
+            LPlatformGrabber.setPosition(0.5);
+            RPlatformGrabber.setPosition(0.5);
+        }
+    }
+
 
     protected void initLinSlide(){
         L1 = hardwareMap.get(DcMotor.class, "L1");
@@ -192,6 +203,8 @@ public class BaseOpMode extends LinearOpMode {
         RGrabElbow = hardwareMap.get(Servo.class, "RGrabberElbow");
         RGrabClaw = hardwareMap.get(Servo.class, "RGrabberClaw");
     }
+
+
 
     protected int getXOdometry(){
         return xOdometry.getCurrentPosition();
