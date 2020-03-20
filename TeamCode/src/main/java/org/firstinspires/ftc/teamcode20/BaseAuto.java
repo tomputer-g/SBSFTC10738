@@ -822,12 +822,13 @@ public class BaseAuto extends BaseOpMode {
     protected int current_time = 0;
     protected double setAllDrivePowerO(double a, double b, double c, double d,double time_,double Kp, double Kd){
         ElapsedTime t = new ElapsedTime();
+        t.reset();
         current_error = getY1Odometry() - getY2Odometry();
         double kp=  Kp * (current_error);
         double kd = Kd * (current_error - previous_error)/time_;
         double ki = 0;
         previous_error = getY1Odometry() - getY2Odometry();
-        setAllDrivePower(a-kp,b-kp,c-kp,d-kp);
+        setAllDrivePower(a-kp-kd,b-kp-kd,c-kp-kd,d-kp-kd);
         return t.milliseconds();
     }
 

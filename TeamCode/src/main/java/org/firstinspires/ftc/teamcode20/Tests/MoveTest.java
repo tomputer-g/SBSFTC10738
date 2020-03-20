@@ -28,7 +28,7 @@ import static java.lang.Math.sqrt;
 public class MoveTest extends BaseAuto {
     private double speeed, speed,x,y, GYRO_kp, side_distance, kp,kd,moveInches_kP = 0.5,odometryEncPerInch =1316;
     private int offsetX = 0, offsetY = 0;
-    private boolean[] qq = {true}, bF={true}, lF = {true}, e = {true}, f = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
+    private boolean[] qq = {true}, bF={true}, lF = {true}, e = {true}, ee = {true}, ff = {true}, eee = {true}, fff = {true}, m = {true},mm={true},mmm={true},jk={true};
     private ElapsedTime t=new ElapsedTime();
     private double speedLF=0,speedLB=0,speedRF=0,speedRB=0;
     private double  kP = 0.5, kI = 0, kD = 0.0025;
@@ -37,7 +37,7 @@ public class MoveTest extends BaseAuto {
     int steps = 20;
     double basespeed = 0.2;
 
-
+int f = 1;
     int dir;
 
     @Override
@@ -66,20 +66,25 @@ public class MoveTest extends BaseAuto {
         //cooThread.start();
         waitForStart();
         int inchh = 8;
-        int f=1;
+        int powerr = 3; double basee = 1.0;int indicator = 0;
         while(!this.gamepad1.start) {
-            if(zheng(this.gamepad1.dpad_left,eee))x-=50;
-            if(zheng(this.gamepad1.dpad_right,fff))x+=50;
-            if(zheng(this.gamepad1.dpad_up,ee))speeed+=.05;
-            if(zheng(this.gamepad1.dpad_down,ff))speeed-=.05;
-            if(zheng(this.gamepad1.y,m))speed+=.1;
-            if(zheng(this.gamepad1.a,mm))speed-=.1;
+            if(zheng(this.gamepad1.dpad_up, e))powerr++;
+            if(zheng(this.gamepad1.dpad_down, eee))powerr--;
+            if(zheng(this.gamepad1.dpad_left, ee))basee-=0.1;
+            if(zheng(this.gamepad1.dpad_right, ff))basee+=0.1;
+            if(zheng(this.gamepad1.x,fff)) indicator++;
+
+            telemetry.addData("num","%.2f",basee);
+            telemetry.addData("power","%.2f",powerr);
+
+            if(indicator%3==0)telemetry.addData("KP",0);
+            else if(indicator%3==1)telemetry.addData("KI",0);
+            else telemetry.addData("KD",0);
+
             if(zheng(this.gamepad1.right_bumper,bF)){
-                ElapsedTime t = new ElapsedTime();
-                double a = 0;
+                double a = 100000;
                 while(t.milliseconds()<2900){
                     a = setAllDrivePowerO(-0.4,-0.4,.4,.4,a,1/2000, 1);
-
                 }
                 setAllDrivePower(0);
             }
@@ -123,11 +128,11 @@ public class MoveTest extends BaseAuto {
             }
             //telemetry.addData("s",adjustToViewMark(true)[1]);
             //telemetry.addData("s",adjustToViewMark(false)[1]);
-            telemetry.addData("y",x/5000);
-            telemetry.addData("x",x);
+            //telemetry.addData("y",x/5000);
+            //telemetry.addData("x",x);
             telemetry.addData("Imu",getHeading());
-            telemetry.addData("speeed",speeed);
-            telemetry.addData("speed", speed);
+            //telemetry.addData("speeed",speeed);
+            //telemetry.addData("speed", speed);
             telemetry.addData("Y1: ",getY1Odometry());
             telemetry.addData("Y2: ",getY2Odometry());
             telemetry.update();

@@ -19,30 +19,13 @@ public class TestTest extends BaseAuto {
         double clawpos = 0.0;
         while(!this.gamepad1.b){
             if(zheng(this.gamepad1.a,a)){
-                RGrabClaw.setPosition(0.3);
+                RGrabClaw.setPosition(0.6);
                 RGrabElbow.setPosition(0.53);
-                Thread.sleep(1000);
+                Thread.sleep(2000);
                 RGrabClaw.setPosition(0.0);
-                Thread.sleep(300);
-                RGrabElbow.setPosition(1);
+                Thread.sleep(500);
+                RGrabElbow.setPosition(0);
             }
-
-            if(zheng(this.gamepad1.x,x)){
-                RGrabClaw.setPosition(clawpos);
-            }
-            if(zheng(this.gamepad1.dpad_up,up)){
-                clawpos+=0.05;
-            }
-            if(zheng(this.gamepad1.dpad_down,down)){
-                clawpos-=0.05;
-            }
-            if(zheng(this.gamepad1.dpad_left,left)){
-                elbowpos+=0.05;
-            }
-            if(zheng(this.gamepad1.dpad_right,right)){
-                elbowpos-=0.05;
-            }
-
 
             telemetry.addData("RGrabElbow: ",elbowpos);
             telemetry.addData("RGrabClaw: ",clawpos);
