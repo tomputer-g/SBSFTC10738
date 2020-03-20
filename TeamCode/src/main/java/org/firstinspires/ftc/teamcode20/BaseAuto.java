@@ -818,18 +818,18 @@ public class BaseAuto extends BaseOpMode {
     }
 
 
-    protected int previous_error = 0;
+    protected double previous_error = 0;
     protected int previous_time = 0;
-    protected int current_error = 0;
+    protected double current_error = 0;
     protected int current_time = 0;
-    protected double setAllDrivePowerO(double a, double b, double c, double d,double time_,double Kp, double Kd){
+    protected double setAllDrivePowerO(double a, double b, double c, double d,double time_,double Kp, double Kd, double pp){
         ElapsedTime t = new ElapsedTime();
         t.reset();
-        current_error = getY1Odometry() - getY2Odometry();
+        current_error = pp*getY1Odometry() - getY2Odometry();
         double kp=  Kp * (current_error);
-        double kd = Kd * (current_error - previous_error)/time_;
+        double kd = -Kd * (current_error - previous_error)/time_;
         double ki = 0;
-        previous_error = getY1Odometry() - getY2Odometry();
+        previous_error = current_error;
         setAllDrivePower(a-kp-kd,b-kp-kd,c-kp-kd,d-kp-kd);
         return t.milliseconds();
     }
