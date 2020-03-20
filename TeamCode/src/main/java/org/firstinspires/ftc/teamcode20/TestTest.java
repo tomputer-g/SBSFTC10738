@@ -14,22 +14,16 @@ public class TestTest extends BaseAuto {
         initHubs();
         waitForStart();
         initSideGrabber();
+        initPlatformGrabber();
         ElapsedTime t = new ElapsedTime();
+        double value =0.0;
         double elbowpos = 0.0;
         double clawpos = 0.0;
         while(!this.gamepad1.b){
-            if(zheng(this.gamepad1.a,a)){
-                RGrabClaw.setPosition(0.6);
-                RGrabElbow.setPosition(0.53);
-                Thread.sleep(2000);
-                RGrabClaw.setPosition(0.0);
-                Thread.sleep(500);
-                RGrabElbow.setPosition(0);
+            if(zheng(this.gamepad1.x,x)){
+                platformGrab();
+                lefty();
             }
-
-            telemetry.addData("RGrabElbow: ",elbowpos);
-            telemetry.addData("RGrabClaw: ",clawpos);
-            telemetry.update();
         }
         //setAllDrivePower(-.3,-.3,.3,.3);
     }

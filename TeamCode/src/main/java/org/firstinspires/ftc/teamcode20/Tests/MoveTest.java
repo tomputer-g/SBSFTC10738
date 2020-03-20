@@ -114,6 +114,7 @@ public class MoveTest extends BaseAuto {
             }
 
              */
+            double f=1;
             if(zheng(this.gamepad1.left_bumper,lF)){
                 ElapsedTime t=new ElapsedTime();
                 while(t.milliseconds()<x) {

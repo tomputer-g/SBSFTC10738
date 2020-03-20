@@ -57,7 +57,7 @@ public class BaseAuto extends BaseOpMode {
     protected List<VuforiaTrackable> allTrackables= new ArrayList<>();
     private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
     private VuforiaTrackable rear1,rear2;
-
+    private double rightGrabberOut = 0.56;
     private static final float halfField = 72 * mmPerInch;
     private static final float quadField  = 36 * mmPerInch;
     private ElapsedTime VuforiaPositionTime;
@@ -670,7 +670,7 @@ public class BaseAuto extends BaseOpMode {
             double P = e2*kp;
             if(Math.abs(P)>Math.abs(0.7))P=P>0?0.7:-0.7;
             double A=P+D;
-            setAllDrivePower(A+0.3+0.1,A-0.3+0.1,A+0.3-0.1,A-0.3-0.1);
+            setAllDrivePower(A+0.3,A+0.3,A-0.3,A-0.3);
             e=e2;
             if(near(e2-e,0,0.2)&&near(e,0,4))
                 i++;
@@ -1276,6 +1276,41 @@ public class BaseAuto extends BaseOpMode {
         if(showTelemetry)telemetry.clear();
         grabber.setPosition(grabber_open);
         platform_grabber.setPower(0.0);
+    }
+
+    protected void prepPickupR(){
+        RGrabClaw.setPosition(0.6);
+        RGrabElbow.setPosition(rightGrabberOut);
+    }
+
+    protected void pickupR() throws InterruptedException{
+        RGrabClaw.setPosition(1);
+        Thread.sleep(300);
+        RGrabElbow.setPosition(0);
+        Thread.sleep(1000);
+        RGrabClaw.setPosition(0.8);
+        Thread.sleep(200);
+        RGrabClaw.setPosition(1);
+    }
+
+    protected void releasePickupR() throws InterruptedException{
+        RGrabElbow.setPosition(0.4);
+        Thread.sleep(500);
+        RGrabClaw.setPosition(0.6);
+        Thread.sleep(100);
+        RGrabElbow.setPosition(0);
+        RGrabClaw.setPosition(0);
+    }
+
+    protected void platformGrab() throws InterruptedException{
+        LPlatformGrabber.setPosition(1);
+        RPlatformGrabber.setPosition(0);
+        Thread.sleep(500);
+    }
+
+    protected void platformRelease() throws InterruptedException{
+        LPlatformGrabber.setPosition(0.58);
+        RPlatformGrabber.setPosition(0.4);
     }
 
     protected void adaptive_platform_grabbing(int pos) throws InterruptedException {
