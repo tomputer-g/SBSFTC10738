@@ -57,7 +57,7 @@ public class BaseAuto extends BaseOpMode {
     protected List<VuforiaTrackable> allTrackables= new ArrayList<>();
     private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
     private VuforiaTrackable rear1,rear2;
-    private double rightGrabberOut = 0.56;
+    private double rightGrabberOut = 0.68;
     private static final float halfField = 72 * mmPerInch;
     private static final float quadField  = 36 * mmPerInch;
     private ElapsedTime VuforiaPositionTime;

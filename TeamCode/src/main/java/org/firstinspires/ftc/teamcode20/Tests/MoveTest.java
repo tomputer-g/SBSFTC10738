@@ -118,7 +118,7 @@ public class MoveTest extends BaseAuto {
                 speed=0.5;
             }
 
-             */
+
             double f=1;
             if(zheng(this.gamepad1.left_bumper,lF)){
                 ElapsedTime t=new ElapsedTime();
@@ -135,8 +135,8 @@ public class MoveTest extends BaseAuto {
                 setAllDrivePower(0);
                 f=-f;
             }
+*/
 
-             */
             //telemetry.addData("s",adjustToViewMark(true)[1]);
             //telemetry.addData("s",adjustToViewMark(false)[1]);
             //telemetry.addData("y",x/5000);
