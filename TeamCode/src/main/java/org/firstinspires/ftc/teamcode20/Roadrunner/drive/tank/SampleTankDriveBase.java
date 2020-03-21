@@ -35,6 +35,7 @@ import java.util.List;
  * Base class with shared functionality for sample tank drives. All hardware-specific details are
  * handled in subclasses.
  */
+@Deprecated
 @Config
 public abstract class SampleTankDriveBase extends TankDrive {
     public static PIDCoefficients AXIAL_PID = new PIDCoefficients(0, 0, 0);

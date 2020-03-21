@@ -23,6 +23,7 @@ import org.openftc.revextensions2.RevBulkData;
  * Optimized tank drive implementation for REV ExHs. The time savings may significantly improve
  * trajectory following performance with moderate additional complexity.
  */
+@Deprecated
 public class SampleTankDriveREVOptimized extends SampleTankDriveBase {
     private ExpansionHubEx hub;
     private List<ExpansionHubMotor> motors, leftMotors, rightMotors;

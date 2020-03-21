@@ -23,6 +23,7 @@ import static org.firstinspires.ftc.teamcode20.Roadrunner.drive.DriveConstants.g
  * Simple tank drive hardware implementation for REV hardware. If your hardware configuration
  * satisfies the requirements, SampleTankDriveREVOptimized is highly recommended.
  */
+@Deprecated
 public class SampleTankDriveREV extends SampleTankDriveBase {
     private List<DcMotorEx> motors, leftMotors, rightMotors;
     private BNO055IMU imu;

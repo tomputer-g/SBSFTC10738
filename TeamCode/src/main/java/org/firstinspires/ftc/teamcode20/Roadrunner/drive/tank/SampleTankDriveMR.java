@@ -18,6 +18,7 @@ import static org.firstinspires.ftc.teamcode20.Roadrunner.drive.DriveConstants.e
 /*
  * Simple tank drive hardware implementation for Modern Robotics hardware.
  */
+@Deprecated
 public class SampleTankDriveMR extends SampleTankDriveBase {
     /*
      * As you may know, the MR communication system is implemented asynchronously. Thus, all

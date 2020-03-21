@@ -19,15 +19,15 @@ public class OdometryWheelLocalizer extends ThreeTrackingWheelLocalizer {
     private ExpansionHubEx hub4;
     private DcMotorEx L2, xOdo, platform;
 
-    public static double TICKS_PER_REV = 8192;
-    public static double WHEEL_RADIUS = 1; // in
-    public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
+    private static double TICKS_PER_REV = 8192;
+    private static double WHEEL_RADIUS = 1; // in
+    private static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
 
     public OdometryWheelLocalizer(HardwareMap hardwareMap) {
         super(Arrays.asList(//x and y are reversed
                 new Pose2d(44/25.4, -152/25.4,  Math.toRadians(180)),
-                new Pose2d(-100/25.4, 4/25.4,     Math.toRadians(270)),//TODO: confirm?
+                new Pose2d(-100/25.4, 4/25.4,     Math.toRadians(270)),
                 new Pose2d(44/25.4, 152/25.4,   Math.toRadians(180))));
         L2 = hardwareMap.get(DcMotorEx.class,"L2");
         L2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -42,7 +42,7 @@ public class OdometryWheelLocalizer extends ThreeTrackingWheelLocalizer {
     }
 
 
-    public static double encoderTicksToInches(int ticks) {
+    private static double encoderTicksToInches(int ticks) {
         return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
     }
 

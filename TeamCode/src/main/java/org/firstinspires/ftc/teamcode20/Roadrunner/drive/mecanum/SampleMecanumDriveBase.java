@@ -35,6 +35,7 @@ import java.util.List;
  * Base class with shared functionality for sample mecanum drives. All hardware-specific details are
  * handled in subclasses.
  */
+@Deprecated
 @Config
 public abstract class SampleMecanumDriveBase extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
