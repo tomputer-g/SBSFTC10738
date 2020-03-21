@@ -69,6 +69,7 @@ public class MoveTest extends BaseAuto {
         //cooThread.start();
         waitForStart();
         int inchh = 8;
+        double signn = 1;
         double powerr = 4; double basee = 1.0;int indicator = 2;
         double cur=0, curKp=4E-4, curKd=4E-5;
         while(!this.gamepad1.start) {
@@ -77,10 +78,13 @@ public class MoveTest extends BaseAuto {
             if(zheng(this.gamepad1.dpad_left, ee))basee-=0.1;
             if(zheng(this.gamepad1.dpad_right, ff))basee+=0.1;
             if(zheng(this.gamepad1.x,fff)) indicator++;
-            cur = basee*Math.pow(10,-powerr);
+            if(zheng(this.gamepad1.y,m))signn*=-1;
+            cur = 1-basee*Math.pow(10,-powerr);
 
             telemetry.addData("num","%.2f",basee);
             telemetry.addData("power","%.2f",powerr);
+            telemetry.addData("Kd sign","%.2f",signn);
+
             telemetry.addData("c","%.10f",cur);
 
             if(indicator%3==0)telemetry.addData("KP",curKp);
@@ -93,10 +97,24 @@ public class MoveTest extends BaseAuto {
                 //if(indicator%3==0) curKp = cur;
                 //else if(indicator%3==1) continue;
                 //else curKd = cur;
-                while(!this.gamepad1.b) a = setAllDrivePowerO(-.4,-.4,.4,.4,a,4E-4, 4E-5, 0.9945);
+                while(-getY1Odometry()/odometryEncYPerInch <  89 && (!this.gamepad1.b)) a = setAllDrivePowerO(-.4,-.4,.4,.4,a,4E-4, 4E-5);//0.9945 //1.0025
+                setAllDrivePower(1,1,-1,-1);
+                while(-getY1Odometry()/odometryEncYPerInch > -24.25 && (!this.gamepad1.b)) a = setAllDrivePowerO(.4,.4,-.4,-.4,a,4E-4, 4E-5);//0.9945 //1.0025
+                setAllDrivePower(-1,-1,1,1);
+                while(-getY1Odometry()/odometryEncYPerInch < 81.5 && (!this.gamepad1.b)) a = setAllDrivePowerO(-.4,-.4,.4,.4,a,4E-4, 4E-5);//0.9945 //1.0025
+                while(-getY1Odometry()/odometryEncYPerInch > 7.75 && (!this.gamepad1.b)) a = setAllDrivePowerO(.4,.4,-.4,-.4,a,4E-4, 4E-5);//0.9945 //1.0025
+                while(-getY1Odometry()/odometryEncYPerInch < 73.25 && (!this.gamepad1.b)) a = setAllDrivePowerO(-.4,-.4,.4,.4,a,4E-4, 4E-5);//0.9945 //1.0025
+                while(-getY1Odometry()/odometryEncYPerInch > -8.75 && (!this.gamepad1.b)) a = setAllDrivePowerO(.4,.4,-.4,-.4,a,4E-4, 4E-5);//0.9945 //1.0025
+                while(-getY1Odometry()/odometryEncYPerInch < 81.25 && (!this.gamepad1.b)) a = setAllDrivePowerO(-.4,-.4,.4,.4,a,4E-4, 4E-5);//0.9945 //1.0025
+
+                //while(!this.gamepad1.b) a = setAllDrivePowerO_T(.4,.4,-.4,-.4,a,4E-4, 4E-5, cur, signn);//0.9945 //1.0025
                 setAllDrivePower(0);
             }
+            if(zheng(this.gamepad1.left_bumper,mm)){
+                moveInchesGOY_O(72,0.4,1);
+                moveInchesGOY_O(-72,0.4,1);
 
+            }
             /*
             if(zheng(this.gamepad1.right_bumper,bF)){
                 setAllDrivePower(-speed,-speed,speed,speed);
