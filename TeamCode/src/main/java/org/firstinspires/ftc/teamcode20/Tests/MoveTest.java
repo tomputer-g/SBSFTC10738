@@ -52,21 +52,10 @@ public class MoveTest extends BaseAuto {
         dir=1;
         y = -90;
         x = 0;
-        // 三天之内刹了你();
         initDrivetrain();
         initHubs();
-        //initVuforia();
-        //initViewMarks();
         initIMU();
-        //drive=new SampleMecanumDriveREV(hardwareMap);
         initOdometry();
-        //cooThread.start();
-        //initVuforia();
-        //initViewMarks();
-        initOdometry();
-        initLogger("N.csv");
-        //drive=new SampleMecanumDriveREV(hardwareMap)
-        //cooThread.start();
         waitForStart();
         int inchh = 8;
         double signn = 1;
