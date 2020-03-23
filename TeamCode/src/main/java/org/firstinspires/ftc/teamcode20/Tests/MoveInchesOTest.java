@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode20.BaseAuto;
 
 @TeleOp
 public class MoveInchesOTest extends BaseAuto {
-    private double[] params =       {2.5E-3,  2.5E-4,      0,       0.99307,             90};
+    private double[] params =       {2.5E-3,  2.5E-4,      0,       0.99307,             90}; //TODO: change to better values
     private String[] paramNames =   {"kP",  "kD",          "kI",    "proportional",     "dist"};
     private int currentSelectParamIndex = 0;
     private boolean l, r, u, d, lb, rb,a;
