@@ -13,7 +13,7 @@ public class DrivetrainPIDFTuner extends LinearOpMode {
     DcMotorEx LF, LB, RF, RB;
     double currentVelocity;
     double maxVelocity = 0.0;
-    double currentPower = 0.5;
+    double currentPower = 1;
     boolean lb, rb;
 
     @Override public void runOpMode() {
@@ -59,7 +59,7 @@ public class DrivetrainPIDFTuner extends LinearOpMode {
             }
             telemetry.addData("current power", currentPower);
             telemetry.addData("current velocity", currentVelocity);
-            telemetry.addData("maximum avg velocity", maxVelocity);
+            telemetry.addData("maximum avg velocity", maxVelocity);//1170 for 0.5
             telemetry.update();
         }
         LF.setPower(0);
