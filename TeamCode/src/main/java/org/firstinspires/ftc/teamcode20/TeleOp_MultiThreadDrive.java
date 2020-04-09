@@ -49,7 +49,7 @@ public class TeleOp_MultiThreadDrive extends BaseAuto {
         capstone.setPosition(capstoneClose);
         servoThread.setExtTarget(grabberServoGrab);
         servoThread.directSetGrabTarget(grabber_open);
-        RGrabElbow.setPosition(0.3);
+        LGrabElbow.setPosition(0.3);
         L1.setPower(-0.2);
         Thread.sleep(500);
         L1.setPower(0);
