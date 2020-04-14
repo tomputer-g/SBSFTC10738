@@ -12,6 +12,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Rotation;
 @MotorType(ticksPerRev = 145.6, gearing = 5.2, maxRPM = 1150, orientation = Rotation.CCW)
 @DeviceProperties(xmlTag = "goBILDA5202Series1150Motor", name="GoBILDA 5202 1150RPM")
 @DistributorInfo(distributor = "goBILDA_distributor", model = "goBILDA-5202-0005", url="https://www.gobilda.com/5202-series-yellow-jacket-planetary-gear-motors/")
-@ExpansionHubPIDFVelocityParams(P=1.575, I=0.158, D=0, F=15.753)
+@ExpansionHubPIDFVelocityParams(P=1.394, I=0.139, D=0, F=13.943)//running no ground = 2350 at 13.2V
 @ExpansionHubPIDFPositionParams(P=5.0)
 public interface GoBildaMotor1150 {}
