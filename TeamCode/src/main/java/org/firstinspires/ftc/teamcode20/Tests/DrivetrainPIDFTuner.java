@@ -21,6 +21,10 @@ public class DrivetrainPIDFTuner extends LinearOpMode {
         LB = hardwareMap.get(DcMotorEx.class, "LB");
         RF = hardwareMap.get(DcMotorEx.class, "RF");
         RB = hardwareMap.get(DcMotorEx.class, "RB");
+        LF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         LF.setMotorType(MotorConfigurationType.getMotorType(GoBildaMotor1150.class));
         LB.setMotorType(MotorConfigurationType.getMotorType(GoBildaMotor1150.class));
         RF.setMotorType(MotorConfigurationType.getMotorType(GoBildaMotor1150.class));
