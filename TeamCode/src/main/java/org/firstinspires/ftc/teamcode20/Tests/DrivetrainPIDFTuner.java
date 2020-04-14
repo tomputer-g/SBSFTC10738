@@ -30,6 +30,21 @@ public class DrivetrainPIDFTuner extends LinearOpMode {
         RF.setMotorType(MotorConfigurationType.getMotorType(GoBildaMotor1150.class));
         RB.setMotorType(MotorConfigurationType.getMotorType(GoBildaMotor1150.class));
         waitForStart();
+        LF.setPower(-0.5);
+        LB.setPower(-0.5);
+        RF.setPower(0.5);
+        RB.setPower(0.5);
+        while(opModeIsActive()){
+            currentVelocity = (-LF.getVelocity() - LB.getVelocity() + RF.getVelocity() + RB.getVelocity()) / 4.0;
+            telemetry.addData("current velocity", currentVelocity);
+            telemetry.addData("target velocity","1040");
+            telemetry.update();
+        }
+        LF.setPower(0);
+        LB.setPower(0);
+        RF.setPower(0);
+        RB.setPower(0);
+        /*
         LF.setPower(-currentPower);
         LB.setPower(-currentPower);
         RF.setPower(currentPower);
@@ -82,10 +97,12 @@ public class DrivetrainPIDFTuner extends LinearOpMode {
                 RB.setPower(0);
                 telemetry.addData("current power", currentPower);
                 telemetry.addData("current velocity", currentVelocity);
-                telemetry.addData("maximum avg velocity", maxVelocity);//1170 for 0.5
+                telemetry.addData("maximum avg velocity", maxVelocity);//1830 based on 5 trials (12.7V) -> F 17.906, P 1.791, I 0.179, D 0
+                                                                               //2080 based on 2 trials (14..V) -> F 15.753, P 1.575, I 0.158, D 0
                 telemetry.update();
             }
         }
 
+         */
     }
 }
