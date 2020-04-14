@@ -37,7 +37,7 @@ public class DrivetrainPIDFTuner extends LinearOpMode {
         while(opModeIsActive()){
             if(!end) {
                 currentVelocity = (-LF.getVelocity() - LB.getVelocity() + RF.getVelocity() + RB.getVelocity()) / 4.0;
-                telemetry.addData("current velocity", currentVelocity);//1220 off mat, 1310 on mat
+                telemetry.addData("current velocity", currentVelocity);//1220 off mat, 1310|1290 on mat
                 telemetry.update();
                 if(this.gamepad1.a){
                     end = true;
@@ -45,9 +45,9 @@ public class DrivetrainPIDFTuner extends LinearOpMode {
             }else{
                 LF.setPower(0);
                 LB.setPower(0);
-                RF.setPower(0);
                 RB.setPower(0);
-                telemetry.addData("current velocity", currentVelocity);//1220 off mat, 1310 on mat
+                RF.setPower(0);
+                telemetry.addData("current velocity", currentVelocity);
                 telemetry.update();
             }
         }
