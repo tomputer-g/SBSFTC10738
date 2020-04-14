@@ -14,7 +14,7 @@ public class DrivetrainPIDFTuner extends LinearOpMode {
     double currentVelocity;
     double maxVelocity = 0.0;
     double currentPower = 1;
-    boolean lb, rb;
+    boolean lb, rb, end;
 
     @Override public void runOpMode() {
         LF = hardwareMap.get(DcMotorEx.class, "LF");
@@ -35,40 +35,57 @@ public class DrivetrainPIDFTuner extends LinearOpMode {
         RF.setPower(currentPower);
         RB.setPower(currentPower);
         while (opModeIsActive()) {
-            if(this.gamepad1.left_bumper){lb = true;}if(lb && !this.gamepad1.left_bumper){
-                lb = false;
-                currentPower -= 0.1;
-                currentPower = Math.max(currentPower,0);
-                LF.setPower(-currentPower);
-                LB.setPower(-currentPower);
-                RF.setPower(currentPower);
-                RB.setPower(currentPower);
-            }
-            if(this.gamepad1.right_bumper){rb = true;}if(rb && !this.gamepad1.right_bumper){
-                rb = false;
-                currentPower += 0.1;
-                currentPower = Math.min(currentPower,1);
-                LF.setPower(-currentPower);
-                LB.setPower(-currentPower);
-                RF.setPower(currentPower);
-                RB.setPower(currentPower);
-            }
-            currentVelocity = (-LF.getVelocity() - LB.getVelocity() + RF.getVelocity() + RB.getVelocity())/4.0;
+            if(!end) {
+                if (this.gamepad1.left_bumper) {
+                    lb = true;
+                }
+                if (lb && !this.gamepad1.left_bumper) {
+                    lb = false;
+                    currentPower -= 0.1;
+                    currentPower = Math.max(currentPower, 0);
+                    LF.setPower(-currentPower);
+                    LB.setPower(-currentPower);
+                    RF.setPower(currentPower);
+                    RB.setPower(currentPower);
+                }
+                if (this.gamepad1.right_bumper) {
+                    rb = true;
+                }
+                if (rb && !this.gamepad1.right_bumper) {
+                    rb = false;
+                    currentPower += 0.1;
+                    currentPower = Math.min(currentPower, 1);
+                    LF.setPower(-currentPower);
+                    LB.setPower(-currentPower);
+                    RF.setPower(currentPower);
+                    RB.setPower(currentPower);
+                }
+                currentVelocity = (-LF.getVelocity() - LB.getVelocity() + RF.getVelocity() + RB.getVelocity()) / 4.0;
 
-            if (currentVelocity > maxVelocity) {
-                maxVelocity = currentVelocity;
+                if (currentVelocity > maxVelocity) {
+                    maxVelocity = currentVelocity;
+                }
+                if (this.gamepad1.b) {
+                    maxVelocity = 0;
+                }
+                if(this.gamepad1.a){
+                    end = true;
+                }
+                telemetry.addData("current power", currentPower);
+                telemetry.addData("current velocity", currentVelocity);
+                telemetry.addData("maximum avg velocity", maxVelocity);//1170 for 0.5
+                telemetry.update();
+            }else{
+                LF.setPower(0);
+                LB.setPower(0);
+                RF.setPower(0);
+                RB.setPower(0);
+                telemetry.addData("current power", currentPower);
+                telemetry.addData("current velocity", currentVelocity);
+                telemetry.addData("maximum avg velocity", maxVelocity);//1170 for 0.5
+                telemetry.update();
             }
-            if(this.gamepad1.b){
-                maxVelocity = 0;
-            }
-            telemetry.addData("current power", currentPower);
-            telemetry.addData("current velocity", currentVelocity);
-            telemetry.addData("maximum avg velocity", maxVelocity);//1170 for 0.5
-            telemetry.update();
         }
-        LF.setPower(0);
-        LB.setPower(0);
-        RF.setPower(0);
-        RB.setPower(0);
+
     }
 }
