@@ -14,7 +14,7 @@ public class DrivetrainPIDFTuner extends BaseAuto {
     DcMotorEx LF, LB, RF, RB;
     double currentVelocity;
     double currentPower = 0.5;
-    boolean lb, rb, run = false;
+    boolean lb, rb, run = false, a;
 
     @Override public void runOpMode() {
         initLogger("MotorVelocityPIDF_"+System.currentTimeMillis()+".csv");
@@ -34,7 +34,13 @@ public class DrivetrainPIDFTuner extends BaseAuto {
         writeLogHeader("setpower,encVelocity");
 
         while(opModeIsActive()){
-
+            if(this.gamepad1.a){
+                a = true;
+            }
+            if(!this.gamepad1.a && a){
+                a = false;
+                run = !run;
+            }
             //set powers
             if(run) {
                 currentVelocity = (-LF.getVelocity() - LB.getVelocity() + RF.getVelocity() + RB.getVelocity()) / 4.0;
