@@ -15,6 +15,7 @@ public class DrivetrainPIDFTuner extends BaseAuto {
     double currentVelocity;
     double currentPower = 0.5;
     boolean lb, rb, run = false, a;
+    double maxVelocity =0;
 
     @Override public void runOpMode() {
         initLogger("MotorVelocityPIDF_"+System.currentTimeMillis()+".csv");
@@ -48,8 +49,10 @@ public class DrivetrainPIDFTuner extends BaseAuto {
                 LB.setPower(-currentPower);
                 RF.setPower(currentPower);
                 RB.setPower(currentPower);
-            }else{
                 writeLog(currentPower+","+currentVelocity);
+                if(currentVelocity>maxVelocity)
+                    maxVelocity=currentVelocity;
+            }else{
                 LF.setPower(0);
                 LB.setPower(0);
                 RB.setPower(0);
@@ -80,6 +83,7 @@ public class DrivetrainPIDFTuner extends BaseAuto {
 
             telemetry.addData("current power",currentPower);
             telemetry.addData("current velocity", currentVelocity);//1215|1220|1200 on mat (with 2600 max)
+            telemetry.addData("max velocity", maxVelocity);
             telemetry.update();
         }
         stopLog();
