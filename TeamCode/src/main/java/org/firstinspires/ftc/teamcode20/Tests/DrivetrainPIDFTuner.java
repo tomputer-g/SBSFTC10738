@@ -6,17 +6,18 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode20.BaseAuto;
 import org.firstinspires.ftc.teamcode20.Roadrunner.drive.GoBildaMotor1150;
 
 @Autonomous
-public class DrivetrainPIDFTuner extends LinearOpMode {
+public class DrivetrainPIDFTuner extends BaseAuto {
     DcMotorEx LF, LB, RF, RB;
     double currentVelocity;
-    double maxVelocity = 0.0;
-    double currentPower = 1;
-    boolean lb, rb, end;
+    double currentPower = 0.5;
+    boolean lb, rb, run = false;
 
     @Override public void runOpMode() {
+        initLogger("MotorVelocityPIDF_"+System.currentTimeMillis()+".csv");
         LF = hardwareMap.get(DcMotorEx.class, "LF");
         LB = hardwareMap.get(DcMotorEx.class, "LB");
         RF = hardwareMap.get(DcMotorEx.class, "RF");
@@ -30,27 +31,52 @@ public class DrivetrainPIDFTuner extends LinearOpMode {
         RF.setMotorType(MotorConfigurationType.getMotorType(GoBildaMotor1150.class));
         RB.setMotorType(MotorConfigurationType.getMotorType(GoBildaMotor1150.class));
         waitForStart();
-        LF.setPower(-0.5);
-        LB.setPower(-0.5);
-        RF.setPower(0.5);
-        RB.setPower(0.5);
+        writeLogHeader("setpower,encVelocity");
+
         while(opModeIsActive()){
-            if(!end) {
+
+            //set powers
+            if(run) {
                 currentVelocity = (-LF.getVelocity() - LB.getVelocity() + RF.getVelocity() + RB.getVelocity()) / 4.0;
-                telemetry.addData("current velocity", currentVelocity);//1220 off mat, 1310|1290 on mat
-                telemetry.update();
-                if(this.gamepad1.a){
-                    end = true;
-                }
+                LF.setPower(-currentPower);
+                LB.setPower(-currentPower);
+                RF.setPower(currentPower);
+                RB.setPower(currentPower);
             }else{
+                writeLog(currentPower+","+currentVelocity);
                 LF.setPower(0);
                 LB.setPower(0);
                 RB.setPower(0);
                 RF.setPower(0);
-                telemetry.addData("current velocity", currentVelocity);
-                telemetry.update();
             }
+
+            //change power
+            if(this.gamepad1.left_bumper){
+                lb = true;
+            }
+            if(!this.gamepad1.left_bumper && lb){
+                lb = false;
+                currentPower -= 0.05;
+                if (currentPower < 0.0)currentPower = 0;
+                currentPower = Math.round(currentPower * 100) / 100.0;
+            }
+
+            if(this.gamepad1.right_bumper){
+                rb = true;
+            }
+            if(!this.gamepad1.right_bumper && rb){
+                rb = false;
+                currentPower += 0.05;
+                if(currentPower > 1.0)currentPower = 1;
+                currentPower = Math.round(currentPower * 100) / 100.0;
+            }
+
+
+            telemetry.addData("current power",currentPower);
+            telemetry.addData("current velocity", currentVelocity);//1215|1220|1200 on mat (with 2600 max)
+            telemetry.update();
         }
+        stopLog();
 
         /*
         LF.setPower(-currentPower);
