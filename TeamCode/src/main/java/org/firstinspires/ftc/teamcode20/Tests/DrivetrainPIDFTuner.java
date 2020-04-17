@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 
 import org.firstinspires.ftc.teamcode20.BaseAuto;
 import org.firstinspires.ftc.teamcode20.Roadrunner.drive.GoBildaMotor1150;
+import org.openftc.revextensions2.ExpansionHubEx;
 
 @Autonomous
 public class DrivetrainPIDFTuner extends BaseAuto {
@@ -31,6 +32,15 @@ public class DrivetrainPIDFTuner extends BaseAuto {
         LB.setMotorType(MotorConfigurationType.getMotorType(GoBildaMotor1150.class));
         RF.setMotorType(MotorConfigurationType.getMotorType(GoBildaMotor1150.class));
         RB.setMotorType(MotorConfigurationType.getMotorType(GoBildaMotor1150.class));
+        ExpansionHubEx hub2 = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
+        double currentV = hub2.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS);
+        double maxVel = (14/currentV) * 2152;
+        double F = 32767/maxVel, P = F/10, I = P/10, D = 0;
+        LF.setVelocityPIDFCoefficients(P, I, D, F);
+        LB.setVelocityPIDFCoefficients(P, I, D, F);
+        RF.setVelocityPIDFCoefficients(P, I, D, F);
+        RB.setVelocityPIDFCoefficients(P, I, D, F);
+        writeLogHeader("batt="+currentV+",maxVel="+maxVel+",PIDF="+P+" "+I+" "+D+" "+F);
         waitForStart();
         writeLogHeader("setpower,encVelocity");
 
