@@ -14,13 +14,10 @@
 // Include common definitions from above.
 apply from: '../build.common.gradle'
 
-android {
-    buildToolsVersion = '28.0.3'
-    packagingOptions {
-        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
-    }
+repositories {
+    maven { url = "https://dl.bintray.com/first-tech-challenge/ftcsdk/" }
 }
 
-dependencies{
-    implementation 'org.openftc:rev-extensions-2:1.2'
+dependencies {
+    annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
 }

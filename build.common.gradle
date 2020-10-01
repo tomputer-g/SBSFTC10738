@@ -37,11 +37,10 @@ android {
     }
 
     defaultConfig {
+        signingConfig signingConfigs.debug
         applicationId 'com.qualcomm.ftcrobotcontroller'
         minSdkVersion 23
-        targetSdkVersion 26
-
-        multiDexEnabled true
+        targetSdkVersion 28
 
         /**
          * We keep the versionCode and versionName of robot controller applications in sync with
@@ -79,7 +78,7 @@ android {
             // Disable debugging for release versions so it can be uploaded to Google Play.
             //debuggable true
             ndk {
-                abiFilters "armeabi-v7a"
+                abiFilters "armeabi-v7a", "arm64-v8a"
             }
         }
         debug {
@@ -87,7 +86,7 @@ android {
             jniDebuggable true
             renderscriptDebuggable true
             ndk {
-                abiFilters "armeabi-v7a"
+                abiFilters "armeabi-v7a", "arm64-v8a"
             }
         }
     }
@@ -107,6 +106,5 @@ repositories {
     flatDir {
         dirs rootProject.file('libs')
     }
-    jcenter()
 }
 apply from: 'build.release.gradle'

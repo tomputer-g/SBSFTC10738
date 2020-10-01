@@ -82,7 +82,9 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * is explained below.
  */
 
-@TeleOp(name="SKYSTONE Vuforia Nav")
+
+@TeleOp(name="SKYSTONE Vuforia Nav", group ="Concept")
+@Disabled
 public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
 
     // IMPORTANT:  For Phone Camera, set 1) the camera source and 2) the orientation, based on how your phone is mounted:
@@ -92,8 +94,7 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
     // NOTE: If you are running on a CONTROL HUB, with only one USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
     //
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-    private static final boolean
-            PHONE_IS_PORTRAIT = false  ;
+    private static final boolean PHONE_IS_PORTRAIT = false  ;
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -108,9 +109,9 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
      * and paste it in to your code on the next line, between the double quotes.
      */
     private static final String VUFORIA_KEY =
-            "ATRaSk7/////AAAAGYLgjlimQklSl+oDhmYIEjhzUV34Rljx8+M72Lzbu408S2XaUuMmL8Z0SRdMoKdoQ0dZ4/MeKas+GaC6AGw9GOFc4XyrUVlne2Cue3tTjC75ZTPbhh4odsJQVBlXkb88Ww38LX0oWeUnRS9b2GhGhCqPwhKA+HlZk6SCPSBqMVQg/T3TLKPSpouwA74gpdbw0wtdgp+X6K/1zUkSkp43hx7DATnoDEy467aFKlC/V/vgpVfxMbEVZbiHp8rSgmiVlEfPQuIGSq/pMWdmSNEor5LNY1SpV8BBwSp65OxB6ct9WdmOHJHxlhHdPhqpNRtJSdleNSCO4xAjmXuZ+8dkaU+kmTV/+x/4Po4yxuJVBGKo";
+            " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
 
-    // Since ImageTarget trackables use mm to specify their dimensions, we must use mm for all the physical dimension.
+    // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
     private static final float mmPerInch        = 25.4f;
     private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
@@ -341,11 +342,8 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
             if (targetVisible) {
                 // express position (translation) of robot in inches.
                 VectorF translation = lastLocation.getTranslation();
-                double x = translation.get(0) / mmPerInch-6.5;
-                double y = translation.get(1) / mmPerInch+9;
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                        x,y, translation.get(2) / mmPerInch);
-                telemetry.addLine("Distance to back up: ");
+                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
                 // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
